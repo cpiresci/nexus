@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus — Seu Agente Financeiro Pessoal com IA</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400;500&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-dim: rgba(201,168,76,.15);
+    --bg: #080806;
+    --bg2: #0d0d0a;
+    --bg3: #131310;
+    --text: #c8c4b4;
+    --text-dim: #5a5648;
+    --border: rgba(201,168,76,.12);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    overflow-x: hidden;
+  }
+
+  /* GRAIN TEXTURE */
+  body::before {
+    content:'';
+    position:fixed;
+    inset:0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events:none;
+    z-index:9999;
+    opacity:.6;
+  }
+
+  /* NAV */
+  nav {
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:1000;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:24px 80px;
+    background:rgba(8,8,6,.9);
+    backdrop-filter:blur(30px);
+    border-bottom:1px solid var(--border);
+  }
+
+  .nav-logo {
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+
+  .nav-gem { font-size:1.4rem; }
+
+  .nav-name {
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:1.2rem;
+    color:#fff;
+    letter-spacing:5px;
+  }
+
+  .nav-links {
+    display:flex;
+    align-items:center;
+    gap:48px;
+  }
+
+  .nav-links a {
+    font-size:.72rem;
+    color:var(--text-dim);
+    text-decoration:none;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    transition:color .3s;
+  }
+
+  .nav-links a:hover { color:var(--gold); }
+
+  .nav-cta {
+    font-family:'Syne',sans-serif;
+    font-size:.72rem;
+    font-weight:700;
+    color:#000 !important;
+    background:var(--gold) !important;
+    padding:10px 28px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    transition:all .3s !important;
+  }
+
+  .nav-cta:hover {
+    background:var(--gold-light) !important;
+    box-shadow:0 0 30px rgba(201,168,76,.3);
+  }
+
+  /* HERO */
+  .hero {
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:140px 80px 100px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  /* Diagonal gold line decoration */
+  .hero::before {
+    content:'';
+    position:absolute;
+    top:-200px; right:-100px;
+    width:600px; height:600px;
+    border:1px solid var(--border);
+    border-radius:50%;
+    transform:rotate(15deg);
+    pointer-events:none;
+  }
+
+  .hero::after {
+    content:'';
+    position:absolute;
+    bottom:-300px; left:-200px;
+    width:800px; height:800px;
+    border:1px solid rgba(201,168,76,.05);
+    border-radius:50%;
+    pointer-events:none;
+  }
+
+  .hero-inner {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:80px;
+    align-items:center;
+    max-width:1200px;
+    width:100%;
+  }
+
+  .hero-left { position:relative; z-index:1; }
+
+  .hero-eyebrow {
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    font-size:.7rem;
+    color:var(--gold);
+    letter-spacing:4px;
+    text-transform:uppercase;
+    margin-bottom:28px;
+    animation:fadeUp .8s ease both;
+  }
+
+  .hero-eyebrow::before {
+    content:'';
+    width:24px; height:1px;
+    background:var(--gold);
+  }
+
+  .hero-title {
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(3rem,5vw,5rem);
+    line-height:1;
+    color:#fff;
+    margin-bottom:12px;
+    animation:fadeUp .8s .1s ease both;
+  }
+
+  .hero-title-italic {
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    font-weight:400;
+    color:var(--gold);
+    display:block;
+    font-size:clamp(2.5rem,4vw,4.2rem);
+    animation:fadeUp .8s .15s ease both;
+  }
+
+  .hero-desc {
+    font-size:.95rem;
+    color:var(--text-dim);
+    line-height:1.9;
+    max-width:480px;
+    margin:28px 0 40px;
+    animation:fadeUp .8s .2s ease both;
+  }
+
+  .hero-desc strong { color:var(--text); }
+
+  .hero-actions {
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+    animation:fadeUp .8s .3s ease both;
+  }
+
+  .btn-gold {
+    font-family:'Syne',sans-serif;
+    font-size:.78rem;
+    font-weight:700;
+    color:#000;
+    background:var(--gold);
+    padding:15px 36px;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    text-decoration:none;
+    transition:all .3s;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .btn-gold::after {
+    content:'';
+    position:absolute;
+    inset:0;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);
+    transform:translateX(-100%);
+    transition:transform .4s;
+  }
+
+  .btn-gold:hover { background:var(--gold-light); box-shadow:0 0 40px rgba(201,168,76,.3); }
+  .btn-gold:hover::after { transform:translateX(100%); }
+
+  .btn-outline {
+    font-family:'DM Mono',monospace;
+    font-size:.75rem;
+    color:var(--gold);
+    background:transparent;
+    border:1px solid var(--border);
+    padding:15px 36px;
+    letter-spacing:2px;
+    text-decoration:none;
+    transition:all .3s;
+  }
+
+  .btn-outline:hover {
+    border-color:var(--gold);
+    background:rgba(201,168,76,.05);
+  }
+
+  /* HERO RIGHT — mock dashboard */
+  .hero-right {
+    position:relative;
+    z-index:1;
+    animation:fadeUp .8s .4s ease both;
+  }
+
+  .mock-card {
+    background:var(--bg2);
+    border:1px solid var(--border);
+    border-radius:4px;
+    padding:28px;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .mock-card::before {
+    content:'';
+    position:absolute;
+    top:0; left:0;
+    width:100%; height:3px;
+    background:linear-gradient(90deg, var(--gold), transparent);
+  }
+
+  .mock-header {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:24px;
+  }
+
+  .mock-title {
+    font-family:'Syne',sans-serif;
+    font-size:.8rem;
+    color:#fff;
+    letter-spacing:3px;
+  }
+
+  .mock-badge {
+    font-size:.65rem;
+    color:var(--gold);
+    border:1px solid var(--border);
+    padding:3px 10px;
+    letter-spacing:2px;
+  }
+
+  .mock-metrics {
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:16px;
+    margin-bottom:24px;
+  }
+
+  .mock-metric {
+    background:var(--bg3);
+    border:1px solid var(--border);
+    padding:14px;
+    border-radius:2px;
+  }
+
+  .mock-metric-label {
+    font-size:.62rem;
+    color:var(--text-dim);
+    letter-spacing:2px;
+    margin-bottom:6px;
+  }
+
+  .mock-metric-value {
+    font-family:'Syne',sans-serif;
+    font-size:1.1rem;
+    font-weight:800;
+  }
+
+  .green { color:#4caf7d; }
+  .red { color:#e05555; }
+  .gold { color:var(--gold); }
+
+  .mock-bars { margin-bottom:20px; }
+
+  .mock-bar-item {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-bottom:10px;
+  }
+
+  .mock-bar-label { font-size:.68rem; color:var(--text-dim); width:90px; letter-spacing:1px; }
+
+  .mock-bar-track {
+    flex:1;
+    height:6px;
+    background:rgba(255,255,255,.04);
+    border-radius:3px;
+    overflow:hidden;
+  }
+
+  .mock-bar-fill {
+    height:100%;
+    background:var(--gold);
+    border-radius:3px;
+    opacity:.7;
+    animation:barGrow 1.5s .8s ease both;
+    transform-origin:left;
+  }
+
+  @keyframes barGrow { from{transform:scaleX(0)} to{transform:scaleX(1)} }
+
+  .mock-bar-val { font-size:.68rem; color:var(--gold); width:70px; text-align:right; }
+
+  .mock-insight {
+    background:rgba(201,168,76,.05);
+    border:1px solid rgba(201,168,76,.15);
+    border-left:3px solid var(--gold);
+    padding:12px 16px;
+    border-radius:2px;
+    font-size:.75rem;
+    color:var(--text);
+    line-height:1.6;
+  }
+
+  .mock-insight strong { color:var(--gold); }
+
+  /* DIVIDER */
+  .divider {
+    height:1px;
+    background:linear-gradient(90deg,transparent,var(--border),transparent);
+  }
+
+  /* SECTION */
+  .section {
+    padding:120px 80px;
+    max-width:1200px;
+    margin:0 auto;
+  }
+
+  .section-eyebrow {
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-size:.68rem;
+    color:var(--gold);
+    letter-spacing:4px;
+    text-transform:uppercase;
+    margin-bottom:20px;
+  }
+
+  .section-eyebrow::before {
+    content:'';
+    width:24px; height:1px;
+    background:var(--gold);
+  }
+
+  .section-title {
+    font-family:'Syne',sans-serif;
+    font-weight:800;
+    font-size:clamp(2rem,4vw,3.5rem);
+    color:#fff;
+    line-height:1.05;
+    margin-bottom:20px;
+  }
+
+  .section-title em {
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    font-weight:400;
+    color:var(--gold);
+  }
+
+  .section-desc {
+    font-size:.92rem;
+    color:var(--text-dim);
+    max-width:520px;
+    line-height:1.9;
+    margin-bottom:60px;
+  }
+
+  /* FEATURES GRID */
+  .features-grid {
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:var(--border);
+    border:1px solid var(--border);
+  }
+
+  .feature {
+    background:var(--bg2);
+    padding:40px 32px;
+    position:relative;
+    transition:background .3s;
+    overflow:hidden;
+  }
+
+  .feature::after {
+    content:'';
+    position:absolute;
+    bottom:0; left:0;
+    width:0; height:2px;
+    background:var(--gold);
+    transition:width .4s;
+  }
+
+  .feature:hover { background:var(--bg3); }
+  .feature:hover::after { width:100%; }
+
+  .feature-num {
+    font-family:'Playfair Display',serif;
+    font-size:3rem;
+    color:rgba(201,168,76,.08);
+    line-height:1;
+    margin-bottom:16px;
+  }
+
+  .feature-icon { font-size:1.6rem; margin-bottom:14px; display:block; }
+
+  .feature-title {
+    font-family:'Syne',sans-serif;
+    font-size:.88rem;
+    font-weight:700;
+    color:#fff;
+    letter-spacing:2px;
+    margin-bottom:10px;
+    text-transform:uppercase;
+  }
+
+  .feature-desc {
+    font-size:.82rem;
+    color:var(--text-dim);
+    line-height:1.8;
+  }
+
+  /* HOW IT WORKS */
+  .steps {
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:40px;
+    position:relative;
+  }
+
+  .steps::before {
+    content:'';
+    position:absolute;
+    top:40px; left:10%; right:10%;
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--border), var(--border), transparent);
+  }
+
+  .step { text-align:center; position:relative; }
+
+  .step-num {
+    width:60px; height:60px;
+    border:1px solid var(--border);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Syne',sans-serif;
+    font-size:1rem;
+    font-weight:800;
+    color:var(--gold);
+    margin:0 auto 20px;
+    background:var(--bg2);
+    position:relative;
+    z-index:1;
+    transition:all .3s;
+  }
+
+  .step:hover .step-num {
+    background:var(--gold);
+    color:#000;
+    box-shadow:0 0 30px rgba(201,168,76,.3);
+  }
+
+  .step-title {
+    font-family:'Syne',sans-serif;
+    font-size:.82rem;
+    font-weight:700;
+    color:#fff;
+    letter-spacing:2px;
+    margin-bottom:10px;
+    text-transform:uppercase;
+  }
+
+  .step-desc { font-size:.8rem; color:var(--text-dim); line-height:1.7; }
+
+  /* TESTIMONIAL */
+  .testimonial-section {
+    padding:100px 80px;
+    background:linear-gradient(180deg, transparent, rgba(201,168,76,.02), transparent);
+    border-top:1px solid var(--border);
+    border-bottom:1px solid var(--border);
+    text-align:center;
+  }
+
+  .quote-mark {
+    font-family:'Playfair Display',serif;
+    font-size:8rem;
+    color:rgba(201,168,76,.06);
+    line-height:.7;
+    margin-bottom:24px;
+  }
+
+  .quote-text {
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    font-size:clamp(1.2rem,2.5vw,1.8rem);
+    color:#888;
+    max-width:700px;
+    margin:0 auto 24px;
+    line-height:1.6;
+  }
+
+  .quote-text strong { color:#ddd; font-style:normal; }
+
+  /* PRICING */
+  .pricing-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1px;
+    background:var(--border);
+    border:1px solid var(--border);
+    max-width:800px;
+  }
+
+  .plan {
+    background:var(--bg2);
+    padding:52px 44px;
+    position:relative;
+    transition:background .3s;
+  }
+
+  .plan:hover { background:var(--bg3); }
+
+  .plan.pro {
+    background:var(--bg3);
+    border:1px solid rgba(201,168,76,.2);
+    margin:-1px;
+    z-index:2;
+  }
+
+  .plan-eyebrow {
+    font-size:.65rem;
+    color:var(--gold);
+    letter-spacing:3px;
+    text-transform:uppercase;
+    margin-bottom:16px;
+  }
+
+  .plan-name {
+    font-family:'Syne',sans-serif;
+    font-size:1.4rem;
+    font-weight:800;
+    color:#fff;
+    letter-spacing:4px;
+    margin-bottom:8px;
+  }
+
+  .plan-price {
+    font-family:'Syne',sans-serif;
+    font-size:3rem;
+    font-weight:800;
+    color:var(--gold);
+    line-height:1;
+    margin-bottom:6px;
+  }
+
+  .plan-period {
+    font-size:.7rem;
+    color:var(--text-dim);
+    letter-spacing:2px;
+    margin-bottom:36px;
+  }
+
+  .plan-features { list-style:none; margin-bottom:40px; }
+
+  .plan-features li {
+    font-size:.82rem;
+    color:var(--text-dim);
+    padding:10px 0;
+    border-bottom:1px solid rgba(255,255,255,.03);
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+
+  .plan-features li::before { content:'—'; color:var(--gold); flex-shrink:0; }
+
+  .plan-cta {
+    display:block;
+    font-family:'Syne',sans-serif;
+    font-size:.75rem;
+    font-weight:700;
+    text-align:center;
+    padding:16px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+    text-decoration:none;
+    transition:all .3s;
+  }
+
+  .plan-cta.gold-btn { background:var(--gold); color:#000; }
+  .plan-cta.gold-btn:hover { background:var(--gold-light); box-shadow:0 0 30px rgba(201,168,76,.3); }
+  .plan-cta.outline-btn { border:1px solid var(--border); color:var(--gold); }
+  .plan-cta.outline-btn:hover { border-color:var(--gold); background:rgba(201,168,76,.05); }
+
+  /* CTA FINAL */
+  .cta-section {
+    padding:160px 80px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+  }
+
+  .cta-section::before {
+    content:'';
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:700px; height:700px;
+    background:radial-gradient(ellipse, rgba(201,168,76,.04) 0%, transparent 70%);
+    pointer-events:none;
+  }
+
+  .cta-section h2 {
+    font-family:'Syne',sans-serif;
+    font-size:clamp(2.5rem,5vw,5rem);
+    font-weight:800;
+    color:#fff;
+    line-height:1;
+    margin-bottom:16px;
+    position:relative;
+  }
+
+  .cta-section h2 em {
+    font-family:'Playfair Display',serif;
+    font-style:italic;
+    font-weight:400;
+    color:var(--gold);
+  }
+
+  .cta-section p {
+    color:var(--text-dim);
+    font-size:.92rem;
+    max-width:440px;
+    margin:0 auto 48px;
+    line-height:1.8;
+    position:relative;
+  }
+
+  .cta-footnote {
+    margin-top:24px;
+    font-size:.68rem;
+    color:var(--text-dim);
+    letter-spacing:2px;
+  }
+
+  /* FOOTER */
+  footer {
+    padding:40px 80px;
+    border-top:1px solid var(--border);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:20px;
+  }
+
+  .footer-logo {
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+
+  .footer-logo-text {
+    font-family:'Syne',sans-serif;
+    font-size:.9rem;
+    font-weight:800;
+    color:#fff;
+    letter-spacing:4px;
+  }
+
+  .footer-copy {
+    font-size:.68rem;
+    color:var(--text-dim);
+    letter-spacing:2px;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(24px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity:0;
+    transform:translateY(30px);
+    transition:opacity .6s ease, transform .6s ease;
+  }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+
+  @media(max-width:900px) {
+    nav { padding:20px 24px; }
+    .nav-links { display:none; }
+    .hero { padding:120px 24px 80px; }
+    .hero-inner { grid-template-columns:1fr; }
+    .hero-right { display:none; }
+    .section { padding:80px 24px; }
+    .features-grid { grid-template-columns:1fr; }
+    .steps { grid-template-columns:1fr 1fr; }
+    .steps::before { display:none; }
+    .pricing-grid { grid-template-columns:1fr; }
+    .testimonial-section { padding:60px 24px; }
+    .cta-section { padding:100px 24px; }
+    footer { padding:40px 24px; flex-direction:column; text-align:center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <span class="nav-gem">💎</span>
+    <span class="nav-name">NEXUS</span>
+  </div>
+  <div class="nav-links">
+    <a href="#how">Como funciona</a>
+    <a href="#features">Funcionalidades</a>
+    <a href="#pricing">Planos</a>
+    <a href="https://huggingface.co/spaces/pirescl/nexus-finance" class="nav-cta">COMEÇAR GRÁTIS</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Inteligência Financeira com IA</div>
+      <h1 class="hero-title">
+        Seu dinheiro,
+        <em class="hero-title-italic">finalmente claro.</em>
+      </h1>
+      <p class="hero-desc">
+        O Nexus analisa seu extrato bancário, categoriza seus gastos e usa <strong>inteligência artificial</strong> para identificar onde seu dinheiro some — e o que fazer para mudar isso.
+      </p>
+      <div class="hero-actions">
+        <a href="https://huggingface.co/spaces/pirescl/nexus-finance" class="btn-gold">⚡ ANALISAR MEU EXTRATO</a>
+        <a href="#how" class="btn-outline">VER COMO FUNCIONA</a>
+      </div>
+    </div>
+
+    <!-- MOCK DASHBOARD -->
+    <div class="hero-right">
+      <div class="mock-card">
+        <div class="mock-header">
+          <span class="mock-title">💎 NEXUS</span>
+          <span class="mock-badge">FEVEREIRO 2026</span>
+        </div>
+        <div class="mock-metrics">
+          <div class="mock-metric">
+            <div class="mock-metric-label">ENTRADAS</div>
+            <div class="mock-metric-value green">R$ 8.450</div>
+          </div>
+          <div class="mock-metric">
+            <div class="mock-metric-label">SAÍDAS</div>
+            <div class="mock-metric-value red">R$ 6.230</div>
+          </div>
+          <div class="mock-metric">
+            <div class="mock-metric-label">SALDO</div>
+            <div class="mock-metric-value gold">R$ 2.220</div>
+          </div>
+        </div>
+        <div class="mock-bars">
+          <div class="mock-bar-item">
+            <span class="mock-bar-label">Alimentação</span>
+            <div class="mock-bar-track"><div class="mock-bar-fill" style="width:78%"></div></div>
+            <span class="mock-bar-val">R$ 1.840</span>
+          </div>
+          <div class="mock-bar-item">
+            <span class="mock-bar-label">Moradia</span>
+            <div class="mock-bar-track"><div class="mock-bar-fill" style="width:55%"></div></div>
+            <span class="mock-bar-val">R$ 1.300</span>
+          </div>
+          <div class="mock-bar-item">
+            <span class="mock-bar-label">Transporte</span>
+            <div class="mock-bar-track"><div class="mock-bar-fill" style="width:32%"></div></div>
+            <span class="mock-bar-val">R$ 760</span>
+          </div>
+          <div class="mock-bar-item">
+            <span class="mock-bar-label">Assinaturas</span>
+            <div class="mock-bar-track"><div class="mock-bar-fill" style="width:18%"></div></div>
+            <span class="mock-bar-val">R$ 430</span>
+          </div>
+        </div>
+        <div class="mock-insight">
+          <strong>💡 Insight do Nexus:</strong> Você gasta 29% da renda em alimentação — acima da média recomendada de 15%. Reduzir R$ 500/mês aqui gera R$ 6.000 extras por ano.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="section-eyebrow">COMO FUNCIONA</div>
+  <h2 class="section-title">De zero ao diagnóstico<br>em <em>4 passos.</em></h2>
+  <p class="section-desc">Sem planilhas. Sem configuração complexa. Cole seu extrato e o Nexus faz o resto.</p>
+
+  <div class="steps">
+    <div class="step reveal">
+      <div class="step-num">01</div>
+      <div class="step-title">IMPORTE</div>
+      <div class="step-desc">Faça upload do extrato CSV ou cole o texto direto. Qualquer banco brasileiro funciona.</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">02</div>
+      <div class="step-title">CATEGORIZE</div>
+      <div class="step-desc">A IA lê todas as transações e categoriza automaticamente — alimentação, transporte, lazer e mais.</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">03</div>
+      <div class="step-title">DIAGNOSE</div>
+      <div class="step-desc">Receba um diagnóstico completo com onde o dinheiro some, padrões invisíveis e projeções.</div>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">04</div>
+      <div class="step-title">PERGUNTE</div>
+      <div class="step-desc">Converse com o Nexus em linguagem natural. "Quanto gastei com iFood?" — e ele responde.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="section-eyebrow">FUNCIONALIDADES</div>
+  <h2 class="section-title">Tudo que você precisa<br>para entender <em>seu dinheiro.</em></h2>
+
+  <div class="features-grid">
+    <div class="feature reveal">
+      <div class="feature-num">01</div>
+      <span class="feature-icon">📤</span>
+      <div class="feature-title">Upload Universal</div>
+      <div class="feature-desc">CSV, TXT ou texto colado diretamente. Funciona com Nubank, Itaú, Bradesco, Inter, Santander e qualquer banco.</div>
+    </div>
+    <div class="feature reveal">
+      <div class="feature-num">02</div>
+      <span class="feature-icon">🤖</span>
+      <div class="feature-title">IA GPT-4o-mini</div>
+      <div class="feature-desc">Categorização inteligente com GPT-4o-mini. Identifica padrões que você nunca viu — e sabe a diferença entre supermercado e restaurante.</div>
+    </div>
+    <div class="feature reveal">
+      <div class="feature-num">03</div>
+      <span class="feature-icon">📊</span>
+      <div class="feature-title">Dashboard Visual</div>
+      <div class="feature-desc">Gráficos de gastos por categoria, evolução mensal e comparativo com meses anteriores — tudo visual e claro.</div>
+    </div>
+    <div class="feature reveal">
+      <div class="feature-num">04</div>
+      <span class="feature-icon">🔍</span>
+      <div class="feature-title">Diagnóstico Completo</div>
+      <div class="feature-desc">Onde o dinheiro some. Plano de 30 dias com ações concretas. Projeção de 3 meses se continuar assim ou se seguir o plano.</div>
+    </div>
+    <div class="feature reveal">
+      <div class="feature-num">05</div>
+      <span class="feature-icon">💬</span>
+      <div class="feature-title">Chat Financeiro</div>
+      <div class="feature-desc">Pergunte qualquer coisa em linguagem natural. O Nexus conhece suas finanças e responde com base nos seus dados reais.</div>
+    </div>
+    <div class="feature reveal">
+      <div class="feature-num">06</div>
+      <span class="feature-icon">🔐</span>
+      <div class="feature-title">Seguro e Privado</div>
+      <div class="feature-desc">Seus dados ficam no seu banco de dados exclusivo. Nunca compartilhamos informações financeiras com terceiros.</div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="testimonial-section">
+  <div class="quote-mark">"</div>
+  <p class="quote-text">
+    Não é falta de informação que quebra as finanças das pessoas.<br>
+    É a falta de <strong>clareza sobre o que está acontecendo agora.</strong>
+  </p>
+  <div class="section-eyebrow" style="justify-content:center;">Nexus · Agente Financeiro com IA</div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing">
+  <div class="section-eyebrow">PLANOS</div>
+  <h2 class="section-title">Invista menos<br>que um <em>cafezinho por dia.</em></h2>
+
+  <div class="pricing-grid">
+    <div class="plan">
+      <div class="plan-eyebrow">PARA COMEÇAR</div>
+      <div class="plan-name">FREE</div>
+      <div class="plan-price">R$ 0</div>
+      <div class="plan-period">PARA SEMPRE</div>
+      <ul class="plan-features">
+        <li>3 análises por mês</li>
+        <li>Dashboard básico</li>
+        <li>Categorização automática</li>
+        <li>Chat limitado</li>
+        <li>Sem cartão de crédito</li>
+      </ul>
+      <a href="https://huggingface.co/spaces/pirescl/nexus-finance" class="plan-cta outline-btn">COMEÇAR GRÁTIS</a>
+    </div>
+    <div class="plan pro">
+      <div class="plan-eyebrow">RECOMENDADO</div>
+      <div class="plan-name">💎 PRO</div>
+      <div class="plan-price">R$ 29</div>
+      <div class="plan-period">POR MÊS · MENOS DE R$ 1/DIA</div>
+      <ul class="plan-features">
+        <li>Análises ilimitadas</li>
+        <li>Dashboard completo</li>
+        <li>Diagnóstico profundo com IA</li>
+        <li>Chat financeiro ilimitado</li>
+        <li>Projeções e alertas</li>
+      </ul>
+      <a href="https://huggingface.co/spaces/pirescl/nexus-finance" class="plan-cta gold-btn">ASSINAR PRO</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-section">
+  <h2>Entenda seu<br><em>dinheiro hoje.</em></h2>
+  <p>3 análises gratuitas. Sem cartão. Sem burocracia.<br>Importe seu extrato e veja onde o dinheiro some em menos de 60 segundos.</p>
+  <a href="https://huggingface.co/spaces/pirescl/nexus-finance" class="btn-gold">💎 ANALISAR MEU EXTRATO AGORA</a>
+  <div class="cta-footnote">SEM CARTÃO · SEM CONTRATO · CANCELE QUANDO QUISER</div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <span>💎</span>
+    <span class="footer-logo-text">NEXUS</span>
+  </div>
+  <div class="footer-copy">© 2026 NEXUS · AGENTE FINANCEIRO PESSOAL · TODOS OS DIREITOS RESERVADOS</div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(el => {
+      if (el.isIntersecting) {
+        el.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
