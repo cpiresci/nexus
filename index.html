@@ -3,895 +3,1113 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wuzo — Super App Financeiro com IA</title>
-<meta name="description" content="Wuzo analisa seu extrato, categoriza gastos, controla dívidas, metas, investimentos e IR — tudo com IA. O super app financeiro que você precisava.">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400;500&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<title>Wuzo — O Super App Financeiro com IA</title>
+<meta name="description" content="Wuzo analisa extratos, controla dívidas, metas, investimentos, IR e te ensina finanças — tudo com IA em tempo real. Comece grátis agora.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --gold: #c9a84c;
-    --gold-light: #e8c97a;
-    --gold-dim: rgba(201,168,76,.15);
-    --bg: #080806;
-    --bg2: #0d0d0a;
-    --bg3: #131310;
-    --text: #c8c4b4;
-    --text-dim: #5a5648;
-    --border: rgba(201,168,76,.12);
-    --green: #4caf7d;
-    --red: #e05555;
-  }
+/* ══════════════════════════════════════════════
+   VARIABLES & RESET
+══════════════════════════════════════════════ */
+:root{
+  --g:#c9a84c;
+  --g2:#e8c97a;
+  --g3:rgba(201,168,76,.12);
+  --g4:rgba(201,168,76,.06);
+  --bg:#050503;
+  --bg2:#0b0b08;
+  --bg3:#11110d;
+  --bg4:#17170f;
+  --tx:#ccc8b8;
+  --tx2:#605c4e;
+  --tx3:#2e2c24;
+  --bd:rgba(201,168,76,.1);
+  --bd2:rgba(201,168,76,.22);
+  --gr:#3f8c60;
+  --rd:#b84848;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;font-size:16px;}
+body{background:var(--bg);color:var(--tx);font-family:'IBM Plex Mono',monospace;overflow-x:hidden;}
 
-  * { margin:0; padding:0; box-sizing:border-box; }
-  html { scroll-behavior:smooth; }
+/* grain */
+body::before{
+  content:'';position:fixed;inset:0;z-index:9997;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity:.7;
+}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    overflow-x: hidden;
-  }
+/* ── CURSOR ── */
+#c{position:fixed;width:8px;height:8px;background:var(--g);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;}
+#cr{position:fixed;width:40px;height:40px;border:1px solid rgba(201,168,76,.35);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .2s,height .2s,border-color .2s;}
+body:has(a:hover) #cr,body:has(button:hover) #cr{width:56px;height:56px;border-color:rgba(201,168,76,.6);}
 
-  body::before {
-    content:'';
-    position:fixed;
-    inset:0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events:none;
-    z-index:9999;
-    opacity:.6;
-  }
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  padding:24px 72px;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:all .4s;
+}
+nav.solid{
+  background:rgba(5,5,3,.97);
+  backdrop-filter:blur(40px);
+  border-bottom:1px solid var(--bd);
+  padding:16px 72px;
+}
+.nlogo{display:flex;align-items:center;gap:14px;text-decoration:none;}
+.nmark{
+  width:36px;height:36px;border:1px solid var(--g);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--g);
+  position:relative;transition:all .3s;
+}
+.nmark::after{content:'';position:absolute;inset:-5px;border:1px solid rgba(201,168,76,.15);transition:inset .3s;}
+.nlogo:hover .nmark{background:var(--g);color:#000;}
+.nlogo:hover .nmark::after{inset:-8px;}
+.nname{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:8px;color:#fff;}
+.nlinks{display:flex;align-items:center;gap:48px;}
+.nlinks a{font-size:.62rem;color:var(--tx2);text-decoration:none;letter-spacing:3px;text-transform:uppercase;transition:color .3s;}
+.nlinks a:hover{color:var(--g);}
+.ncta{
+  font-family:'Bebas Neue',sans-serif;font-size:.9rem;
+  color:#000 !important;background:var(--g);
+  padding:10px 28px;letter-spacing:3px;text-decoration:none;
+  transition:all .3s;position:relative;overflow:hidden;
+}
+.ncta::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.15);transform:translateX(-100%);transition:transform .4s;}
+.ncta:hover{background:var(--g2);box-shadow:0 0 40px rgba(201,168,76,.3);}
+.ncta:hover::before{transform:translateX(100%);}
 
-  /* ── NAV ── */
-  nav {
-    position:fixed;
-    top:0; left:0; right:0;
-    z-index:1000;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:22px 80px;
-    background:rgba(8,8,6,.92);
-    backdrop-filter:blur(30px);
-    border-bottom:1px solid var(--border);
-    transition:padding .3s;
-  }
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;align-items:center;
+  padding:160px 72px 120px;position:relative;overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    linear-gradient(180deg,transparent 60%,var(--bg) 100%),
+    radial-gradient(ellipse 60% 60% at 70% 50%,rgba(201,168,76,.04) 0%,transparent 70%);
+}
+/* diagonal line pattern */
+.hero-lines{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:repeating-linear-gradient(
+    -45deg,
+    transparent,transparent 40px,
+    rgba(201,168,76,.015) 40px,rgba(201,168,76,.015) 41px
+  );
+}
 
-  .nav-logo { display:flex; align-items:center; gap:12px; text-decoration:none; }
-  .nav-icon { font-size:1.3rem; }
-  .nav-name {
-    font-family:'Syne',sans-serif;
-    font-weight:800;
-    font-size:1.15rem;
-    color:#fff;
-    letter-spacing:6px;
-  }
+.hero-inner{
+  max-width:1280px;margin:0 auto;width:100%;
+  display:grid;grid-template-columns:1.1fr .9fr;gap:80px;align-items:center;
+  position:relative;z-index:1;
+}
 
-  .nav-links { display:flex; align-items:center; gap:44px; }
-  .nav-links a {
-    font-size:.7rem;
-    color:var(--text-dim);
-    text-decoration:none;
-    letter-spacing:3px;
-    text-transform:uppercase;
-    transition:color .3s;
-  }
-  .nav-links a:hover { color:var(--gold); }
+.h-eye{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:.6rem;color:var(--g);letter-spacing:5px;text-transform:uppercase;
+  margin-bottom:28px;opacity:0;animation:fadeUp .7s .1s ease forwards;
+}
+.h-eye-dot{width:6px;height:6px;border-radius:50%;background:var(--g);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.3;transform:scale(.5);}}
 
-  .nav-cta {
-    font-family:'Syne',sans-serif;
-    font-size:.7rem;
-    font-weight:700;
-    color:#000 !important;
-    background:var(--gold) !important;
-    padding:10px 28px;
-    letter-spacing:2px;
-    transition:all .3s !important;
-  }
-  .nav-cta:hover { background:var(--gold-light) !important; box-shadow:0 0 30px rgba(201,168,76,.3); }
+.hero h1{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(4rem,7vw,7.5rem);
+  line-height:.92;color:#fff;
+  margin-bottom:12px;
+  opacity:0;animation:fadeUp .8s .2s ease forwards;
+  letter-spacing:2px;
+}
+.hero h1 em{
+  font-family:'Libre Baskerville',serif;
+  font-style:italic;font-weight:400;
+  color:var(--g);font-size:clamp(3.2rem,6vw,6.5rem);
+  display:block;letter-spacing:0;
+}
 
-  /* ── HERO ── */
-  .hero {
-    min-height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:140px 80px 100px;
-    position:relative;
-    overflow:hidden;
-  }
+.hero-desc{
+  font-size:.88rem;color:var(--tx2);line-height:2;
+  max-width:520px;margin:28px 0 44px;
+  opacity:0;animation:fadeUp .8s .3s ease forwards;
+}
+.hero-desc b{color:var(--tx);}
 
-  .hero::before {
-    content:'';
-    position:absolute;
-    top:-200px; right:-100px;
-    width:700px; height:700px;
-    border:1px solid var(--border);
-    border-radius:50%;
-    transform:rotate(15deg);
-    pointer-events:none;
-  }
+.hero-ctas{
+  display:flex;gap:14px;flex-wrap:wrap;
+  opacity:0;animation:fadeUp .8s .4s ease forwards;
+}
 
-  .hero::after {
-    content:'';
-    position:absolute;
-    bottom:-300px; left:-200px;
-    width:900px; height:900px;
-    border:1px solid rgba(201,168,76,.04);
-    border-radius:50%;
-    pointer-events:none;
-  }
+.btn-main{
+  font-family:'Bebas Neue',sans-serif;font-size:.95rem;
+  color:#000;background:var(--g);
+  padding:14px 44px;letter-spacing:3px;text-decoration:none;
+  position:relative;overflow:hidden;transition:all .3s;display:inline-block;
+}
+.btn-main::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transform:translateX(-100%);transition:transform .5s;}
+.btn-main:hover{background:var(--g2);box-shadow:0 6px 40px rgba(201,168,76,.3);}
+.btn-main:hover::after{transform:translateX(100%);}
 
-  .hero-inner {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:80px;
-    align-items:center;
-    max-width:1200px;
-    width:100%;
-  }
+.btn-line{
+  font-size:.63rem;color:var(--g);border:1px solid var(--bd2);
+  padding:14px 32px;letter-spacing:3px;text-decoration:none;
+  transition:all .3s;display:inline-block;
+}
+.btn-line:hover{background:var(--g4);border-color:var(--g);}
 
-  .hero-left { position:relative; z-index:1; }
+.hero-proof{
+  display:flex;gap:36px;margin-top:52px;padding-top:40px;
+  border-top:1px solid var(--bd);
+  opacity:0;animation:fadeUp .8s .5s ease forwards;
+}
+.proof-n{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--g);display:block;line-height:1;}
+.proof-l{font-size:.58rem;color:var(--tx2);letter-spacing:2px;margin-top:4px;display:block;}
 
-  .hero-eyebrow {
-    display:inline-flex;
-    align-items:center;
-    gap:10px;
-    font-size:.68rem;
-    color:var(--gold);
-    letter-spacing:4px;
-    text-transform:uppercase;
-    margin-bottom:28px;
-    animation:fadeUp .8s ease both;
-  }
-  .hero-eyebrow::before { content:''; width:24px; height:1px; background:var(--gold); }
+/* ── HERO VISUAL ── */
+.hero-right{opacity:0;animation:fadeUp .9s .5s ease forwards;position:relative;}
 
-  .hero-title {
-    font-family:'Syne',sans-serif;
-    font-weight:800;
-    font-size:clamp(2.8rem,5vw,4.8rem);
-    line-height:1;
-    color:#fff;
-    margin-bottom:10px;
-    animation:fadeUp .8s .1s ease both;
-  }
+.dash{
+  background:var(--bg2);border:1px solid var(--bd);
+  position:relative;overflow:hidden;
+}
+.dash::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--g) 40%,transparent);}
 
-  .hero-title-italic {
-    font-family:'Playfair Display',serif;
-    font-style:italic;
-    font-weight:400;
-    color:var(--gold);
-    display:block;
-    font-size:clamp(2.4rem,4vw,4rem);
-    animation:fadeUp .8s .15s ease both;
-  }
+.dash-top{
+  padding:14px 18px;border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(201,168,76,.02);
+}
+.dtop-l{display:flex;align-items:center;gap:10px;}
+.wdots{display:flex;gap:5px;}
+.wd{width:8px;height:8px;border-radius:50%;}
+.w1{background:#ff5f57;}.w2{background:#febc2e;}.w3{background:#28c840;}
+.dtop-t{font-family:'Bebas Neue',sans-serif;font-size:.85rem;letter-spacing:4px;color:#fff;}
+.dtop-b{font-size:.6rem;color:var(--g);border:1px solid var(--bd);padding:3px 10px;letter-spacing:2px;}
 
-  .hero-desc {
-    font-size:.93rem;
-    color:var(--text-dim);
-    line-height:1.9;
-    max-width:480px;
-    margin:28px 0 40px;
-    animation:fadeUp .8s .2s ease both;
-  }
-  .hero-desc strong { color:var(--text); }
+.dash-body{padding:18px;}
+.d-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;}
+.dk{background:var(--bg3);border:1px solid var(--bd);padding:10px 12px;}
+.dk-l{font-size:.52rem;color:var(--tx2);letter-spacing:2px;margin-bottom:4px;}
+.dk-v{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;}
+.dk-v.g{color:#5dba88;}.dk-v.r{color:#e06b6b;}.dk-v.o{color:var(--g);}
 
-  .hero-actions {
-    display:flex;
-    gap:16px;
-    flex-wrap:wrap;
-    animation:fadeUp .8s .3s ease both;
-  }
+.d-row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.dm{background:var(--bg3);border:1px solid var(--bd);padding:9px 12px;display:flex;align-items:center;gap:9px;}
+.dm-ico{font-size:.9rem;}
+.dm-l{font-size:.52rem;color:var(--tx2);letter-spacing:1px;}
+.dm-v{font-family:'Bebas Neue',sans-serif;font-size:.82rem;color:#fff;}
 
-  .btn-gold {
-    font-family:'Syne',sans-serif;
-    font-size:.76rem;
-    font-weight:700;
-    color:#000;
-    background:var(--gold);
-    padding:15px 36px;
-    letter-spacing:2px;
-    text-transform:uppercase;
-    text-decoration:none;
-    transition:all .3s;
-    position:relative;
-    overflow:hidden;
-    display:inline-block;
-  }
-  .btn-gold::after {
-    content:'';
-    position:absolute;
-    inset:0;
-    background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);
-    transform:translateX(-100%);
-    transition:transform .4s;
-  }
-  .btn-gold:hover { background:var(--gold-light); box-shadow:0 0 40px rgba(201,168,76,.3); }
-  .btn-gold:hover::after { transform:translateX(100%); }
+.d-ai{
+  background:rgba(201,168,76,.05);
+  border:1px solid rgba(201,168,76,.18);
+  border-left:3px solid var(--g);
+  padding:10px 14px;font-size:.7rem;color:var(--tx);line-height:1.65;
+}
+.d-ai b{color:var(--g);}
 
-  .btn-outline {
-    font-family:'DM Mono',monospace;
-    font-size:.73rem;
-    color:var(--gold);
-    background:transparent;
-    border:1px solid var(--border);
-    padding:15px 36px;
-    letter-spacing:2px;
-    text-decoration:none;
-    transition:all .3s;
-    display:inline-block;
-  }
-  .btn-outline:hover { border-color:var(--gold); background:rgba(201,168,76,.05); }
+/* floaters */
+.floater{
+  position:absolute;background:var(--bg3);border:1px solid var(--bd2);
+  padding:10px 14px;font-size:.62rem;white-space:nowrap;
+  box-shadow:0 10px 40px rgba(0,0,0,.6);
+  animation:flot 3.5s ease-in-out infinite;
+}
+.f1{top:-18px;right:-16px;animation-delay:0s;}
+.f2{bottom:70px;left:-24px;animation-delay:-1.8s;}
+.fl{font-size:.52rem;color:var(--tx2);letter-spacing:1px;margin-bottom:3px;}
+.fv{font-family:'Bebas Neue',sans-serif;font-size:.95rem;color:var(--g);}
+@keyframes flot{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
 
-  /* ── MOCK DASHBOARD ── */
-  .hero-right {
-    position:relative;
-    z-index:1;
-    animation:fadeUp .8s .4s ease both;
-  }
+/* ── TICKER ── */
+.ticker-outer{
+  border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);
+  background:var(--bg2);padding:14px 0;overflow:hidden;position:relative;
+}
+.ticker-outer::before,.ticker-outer::after{
+  content:'';position:absolute;top:0;bottom:0;width:100px;z-index:2;
+}
+.ticker-outer::before{left:0;background:linear-gradient(90deg,var(--bg2),transparent);}
+.ticker-outer::after{right:0;background:linear-gradient(-90deg,var(--bg2),transparent);}
+.ticker{display:flex;width:max-content;animation:tick 35s linear infinite;}
+.ti{
+  font-size:.62rem;letter-spacing:3px;color:var(--tx2);
+  padding:0 28px;border-right:1px solid var(--bd);white-space:nowrap;
+  text-transform:uppercase;
+}
+.ti span{color:var(--g);margin-right:8px;}
+@keyframes tick{from{transform:translateX(0);}to{transform:translateX(-50%);}}
 
-  .mock-card {
-    background:var(--bg2);
-    border:1px solid var(--border);
-    border-radius:4px;
-    padding:28px;
-    position:relative;
-    overflow:hidden;
-  }
-  .mock-card::before {
-    content:'';
-    position:absolute;
-    top:0; left:0;
-    width:100%; height:3px;
-    background:linear-gradient(90deg, var(--gold), transparent);
-  }
+/* ── GENERIC SECTION ── */
+.sec{padding:120px 72px;max-width:1280px;margin:0 auto;}
+.sec-tag{
+  display:flex;align-items:center;gap:12px;font-size:.6rem;
+  color:var(--g);letter-spacing:5px;text-transform:uppercase;margin-bottom:20px;
+}
+.sec-tag::before{content:'';width:28px;height:1px;background:var(--g);}
+.sec-h2{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2.4rem,4.5vw,4.2rem);
+  color:#fff;line-height:.95;margin-bottom:20px;letter-spacing:1px;
+}
+.sec-h2 em{
+  font-family:'Libre Baskerville',serif;font-style:italic;
+  font-weight:400;color:var(--g);letter-spacing:0;
+}
+.sec-p{font-size:.86rem;color:var(--tx2);max-width:520px;line-height:2;margin-bottom:64px;}
 
-  .mock-header {
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:20px;
-  }
-  .mock-title {
-    font-family:'Syne',sans-serif;
-    font-size:.78rem;
-    color:#fff;
-    letter-spacing:3px;
-  }
-  .mock-badge {
-    font-size:.62rem;
-    color:var(--gold);
-    border:1px solid var(--border);
-    padding:3px 10px;
-    letter-spacing:2px;
-  }
+/* ── HOW ── */
+.how-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border:1px solid var(--bd);
+}
+.how-step{
+  padding:48px 36px;border-right:1px solid var(--bd);
+  position:relative;overflow:hidden;cursor:default;
+  transition:background .4s;
+}
+.how-step:last-child{border-right:none;}
+.how-step:hover{background:var(--bg2);}
+.how-step::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:var(--g);transform:scaleX(0);transform-origin:left;transition:transform .5s;
+}
+.how-step:hover::after{transform:scaleX(1);}
+.hs-n{
+  font-family:'Bebas Neue',sans-serif;font-size:5rem;
+  color:rgba(201,168,76,.05);line-height:1;margin-bottom:20px;
+}
+.hs-ico{font-size:1.8rem;margin-bottom:14px;display:block;}
+.hs-t{
+  font-family:'Bebas Neue',sans-serif;font-size:1rem;
+  color:#fff;letter-spacing:3px;margin-bottom:12px;
+}
+.hs-d{font-size:.76rem;color:var(--tx2);line-height:1.85;}
 
-  .mock-metrics {
-    display:grid;
-    grid-template-columns:1fr 1fr 1fr;
-    gap:12px;
-    margin-bottom:18px;
-  }
-  .mock-metric {
-    background:var(--bg3);
-    border:1px solid var(--border);
-    padding:12px;
-    border-radius:2px;
-  }
-  .mock-metric-label { font-size:.58rem; color:var(--text-dim); letter-spacing:2px; margin-bottom:5px; }
-  .mock-metric-value { font-family:'Syne',sans-serif; font-size:1rem; font-weight:800; }
+/* ── MODULES ── */
+.mods-big{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--bd);
+  border:1px solid var(--bd);
+}
+.mod{
+  background:var(--bg2);padding:44px 36px;
+  position:relative;overflow:hidden;cursor:default;
+  transition:background .4s;
+}
+.mod:hover{background:var(--bg3);}
+.mod::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,var(--g),transparent);
+  transform:scaleX(0);transform-origin:left;transition:transform .5s;
+}
+.mod:hover::before{transform:scaleX(1);}
+.mod-n{
+  font-family:'Libre Baskerville',serif;font-style:italic;
+  font-size:5rem;color:rgba(201,168,76,.04);
+  line-height:1;position:absolute;top:12px;right:20px;
+}
+.mod-ico{font-size:2.2rem;margin-bottom:18px;display:block;}
+.mod-title{
+  font-family:'Bebas Neue',sans-serif;font-size:1.05rem;
+  color:#fff;letter-spacing:4px;margin-bottom:12px;
+}
+.mod-desc{font-size:.78rem;color:var(--tx2);line-height:1.9;margin-bottom:16px;}
+.mod-chips{display:flex;gap:6px;flex-wrap:wrap;}
+.chip{
+  font-size:.56rem;letter-spacing:1px;border:1px solid var(--bd);
+  color:var(--tx2);padding:3px 9px;transition:all .3s;
+}
+.mod:hover .chip{border-color:rgba(201,168,76,.2);}
+.chip.gold{border-color:rgba(201,168,76,.3);color:var(--g);}
 
-  .green { color:var(--green); }
-  .red   { color:var(--red); }
-  .gold  { color:var(--gold); }
+/* ── AI CHAT DEMO ── */
+.ai-wrap{
+  background:var(--bg2);
+  border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);
+  padding:120px 72px;
+}
+.ai-inner{
+  max-width:1280px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center;
+}
+.ai-chat{background:var(--bg3);border:1px solid var(--bd);position:relative;}
+.ai-chat::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--g),transparent);}
+.chat-head{
+  padding:14px 18px;border-bottom:1px solid var(--bd);
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(201,168,76,.02);
+}
+.ch-l{display:flex;align-items:center;gap:10px;}
+.ch-av{
+  width:30px;height:30px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(201,168,76,.4),rgba(201,168,76,.1));
+  border:1px solid var(--bd2);
+  display:flex;align-items:center;justify-content:center;font-size:.8rem;
+}
+.ch-name{font-family:'Bebas Neue',sans-serif;font-size:.85rem;letter-spacing:3px;color:#fff;}
+.ch-st{font-size:.55rem;color:#5dba88;letter-spacing:2px;}
+.chat-body{padding:20px;display:flex;flex-direction:column;gap:12px;max-height:360px;overflow:hidden;}
+.msg{padding:11px 15px;font-size:.75rem;line-height:1.7;max-width:88%;}
+.msg.ai{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.15);color:var(--tx);}
+.msg.usr{align-self:flex-end;background:var(--bg4);border:1px solid var(--bd);color:var(--tx2);}
+.msg b{color:var(--g);}
+.msg-blink{
+  display:flex;gap:4px;align-items:center;
+  padding:11px 15px;
+  background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.1);
+  max-width:60px;
+  opacity:0;animation:pop 1s 3s ease forwards;
+}
+@keyframes pop{to{opacity:1;}}
+.bdot{width:5px;height:5px;border-radius:50%;background:var(--g);opacity:.3;animation:bdk 1.4s infinite;}
+.bdot:nth-child(2){animation-delay:.2s;}.bdot:nth-child(3){animation-delay:.4s;}
+@keyframes bdk{0%,60%,100%{opacity:.3;transform:none;}30%{opacity:1;transform:translateY(-3px);}}
 
-  .mock-modules {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:8px;
-    margin-bottom:16px;
-  }
-  .mock-module {
-    background:var(--bg3);
-    border:1px solid var(--border);
-    padding:10px 12px;
-    border-radius:2px;
-    display:flex;
-    align-items:center;
-    gap:8px;
-  }
-  .mock-module-icon { font-size:.9rem; }
-  .mock-module-info {}
-  .mock-module-name { font-size:.6rem; color:var(--text-dim); letter-spacing:1px; }
-  .mock-module-val { font-family:'Syne',sans-serif; font-size:.8rem; font-weight:700; color:#fff; }
+.ai-facts{margin-top:44px;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd);border:1px solid var(--bd);}
+.af{background:var(--bg3);padding:24px 28px;}
+.af-n{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--g);display:block;line-height:1;margin-bottom:4px;}
+.af-l{font-size:.6rem;color:var(--tx2);letter-spacing:2px;}
 
-  .mock-insight {
-    background:rgba(201,168,76,.05);
-    border:1px solid rgba(201,168,76,.15);
-    border-left:3px solid var(--gold);
-    padding:10px 14px;
-    border-radius:2px;
-    font-size:.72rem;
-    color:var(--text);
-    line-height:1.6;
-  }
-  .mock-insight strong { color:var(--gold); }
+/* ── ACADEMY ── */
+.acad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.lesson{
+  background:var(--bg2);border:1px solid var(--bd);
+  padding:28px 24px;position:relative;cursor:default;
+  transition:all .4s;overflow:hidden;
+}
+.lesson:hover{background:var(--bg3);border-color:rgba(201,168,76,.25);transform:translateY(-2px);}
+.les-cat{
+  font-size:.55rem;letter-spacing:3px;color:var(--g);
+  border:1px solid rgba(201,168,76,.25);padding:3px 9px;
+  display:inline-block;margin-bottom:14px;
+}
+.les-lvl{
+  position:absolute;top:16px;right:16px;
+  font-size:.52rem;letter-spacing:2px;padding:3px 8px;
+  border:1px solid var(--bd);color:var(--tx2);
+}
+.les-lvl.adv{border-color:rgba(201,168,76,.3);color:var(--g);}
+.les-lvl.int{border-color:rgba(93,186,136,.25);color:#5dba88;}
+.les-t{
+  font-family:'Bebas Neue',sans-serif;font-size:.95rem;
+  color:#fff;letter-spacing:2px;margin-bottom:10px;line-height:1.3;
+}
+.les-d{font-size:.73rem;color:var(--tx2);line-height:1.75;margin-bottom:12px;}
+.les-dur{font-size:.58rem;color:var(--tx2);letter-spacing:2px;}
+.les-dur span{color:var(--g);}
 
-  /* ── DIVIDER ── */
-  .divider { height:1px; background:linear-gradient(90deg,transparent,var(--border),transparent); }
+/* ── PROOF NUMBERS ── */
+.nums{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1px;background:var(--bd);border:1px solid var(--bd);
+}
+.nb{background:var(--bg2);padding:48px 36px;text-align:center;position:relative;overflow:hidden;transition:background .3s;}
+.nb:hover{background:var(--bg3);}
+.nb-n{font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--g);display:block;line-height:1;margin-bottom:6px;}
+.nb-l{font-size:.63rem;color:var(--tx2);letter-spacing:2px;}
 
-  /* ── SECTION ── */
-  .section {
-    padding:120px 80px;
-    max-width:1200px;
-    margin:0 auto;
-  }
+/* ── TESTIMONIALS ── */
+.testi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);}
+.testi{
+  background:var(--bg2);padding:36px 30px;
+  position:relative;transition:background .3s;cursor:default;
+}
+.testi:hover{background:var(--bg3);}
+.testi-q{
+  font-family:'Libre Baskerville',serif;font-style:italic;
+  font-size:4rem;color:rgba(201,168,76,.08);line-height:1;margin-bottom:12px;
+}
+.testi-stars{font-size:.7rem;color:var(--g);letter-spacing:4px;margin-bottom:12px;}
+.testi-txt{
+  font-size:.8rem;color:var(--tx2);line-height:1.9;
+  margin-bottom:20px;font-style:italic;
+}
+.testi-txt b{color:var(--g);font-style:normal;}
+.testi-who{display:flex;align-items:center;gap:12px;}
+.testi-av{
+  width:38px;height:38px;border-radius:50%;
+  background:linear-gradient(135deg,var(--g3),transparent);
+  border:1px solid var(--bd2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:.85rem;color:var(--g);
+}
+.testi-nm{font-family:'Bebas Neue',sans-serif;font-size:.8rem;letter-spacing:2px;color:#fff;}
+.testi-rl{font-size:.58rem;color:var(--tx2);letter-spacing:1px;margin-top:2px;}
 
-  .section-eyebrow {
-    display:flex;
-    align-items:center;
-    gap:12px;
-    font-size:.66rem;
-    color:var(--gold);
-    letter-spacing:4px;
-    text-transform:uppercase;
-    margin-bottom:20px;
-  }
-  .section-eyebrow::before { content:''; width:24px; height:1px; background:var(--gold); }
+/* ── PRICING ── */
+.price-wrap{
+  display:grid;grid-template-columns:1fr 1.08fr;
+  border:1px solid var(--bd);max-width:880px;
+}
+.plan{background:var(--bg2);padding:56px 52px;position:relative;}
+.plan.pro{
+  background:var(--bg3);
+  border-left:1px solid rgba(201,168,76,.28);
+  overflow:hidden;
+}
+.plan.pro::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--g),var(--g2));}
+.plan.pro::after{
+  content:'';position:absolute;top:-80px;right:-80px;
+  width:280px;height:280px;
+  background:radial-gradient(circle,rgba(201,168,76,.07) 0%,transparent 70%);
+  pointer-events:none;
+}
 
-  .section-title {
-    font-family:'Syne',sans-serif;
-    font-weight:800;
-    font-size:clamp(2rem,4vw,3.4rem);
-    color:#fff;
-    line-height:1.05;
-    margin-bottom:20px;
-  }
-  .section-title em {
-    font-family:'Playfair Display',serif;
-    font-style:italic;
-    font-weight:400;
-    color:var(--gold);
-  }
+.plan-pill{
+  font-family:'Bebas Neue',sans-serif;font-size:.72rem;letter-spacing:3px;
+  display:inline-block;padding:4px 14px;margin-bottom:18px;
+}
+.plan-pill.free{border:1px solid var(--bd);color:var(--tx2);}
+.plan-pill.pro-pill{background:var(--g);color:#000;}
 
-  .section-desc {
-    font-size:.9rem;
-    color:var(--text-dim);
-    max-width:520px;
-    line-height:1.9;
-    margin-bottom:60px;
-  }
+.plan-name{font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:6px;color:#fff;margin-bottom:14px;}
+.plan-price{
+  font-family:'Bebas Neue',sans-serif;font-size:4rem;color:var(--g);
+  line-height:1;display:flex;align-items:flex-start;gap:6px;
+}
+.plan-price sup{font-size:1.6rem;margin-top:12px;}
+.plan-period{font-size:.6rem;color:var(--tx2);letter-spacing:2px;margin:6px 0 40px;}
 
-  /* ── STEPS ── */
-  .steps {
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:40px;
-    position:relative;
-  }
-  .steps::before {
-    content:'';
-    position:absolute;
-    top:40px; left:10%; right:10%;
-    height:1px;
-    background:linear-gradient(90deg, transparent, var(--border), var(--border), transparent);
-  }
-  .step { text-align:center; position:relative; }
-  .step-num {
-    width:60px; height:60px;
-    border:1px solid var(--border);
-    border-radius:50%;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    font-family:'Syne',sans-serif;
-    font-size:1rem;
-    font-weight:800;
-    color:var(--gold);
-    margin:0 auto 20px;
-    background:var(--bg2);
-    position:relative;
-    z-index:1;
-    transition:all .3s;
-  }
-  .step:hover .step-num { background:var(--gold); color:#000; box-shadow:0 0 30px rgba(201,168,76,.3); }
-  .step-title {
-    font-family:'Syne',sans-serif;
-    font-size:.8rem;
-    font-weight:700;
-    color:#fff;
-    letter-spacing:2px;
-    margin-bottom:10px;
-    text-transform:uppercase;
-  }
-  .step-desc { font-size:.78rem; color:var(--text-dim); line-height:1.7; }
+.plan-l{list-style:none;margin-bottom:44px;}
+.plan-l li{
+  font-size:.77rem;color:var(--tx2);
+  padding:10px 0;border-bottom:1px solid rgba(255,255,255,.035);
+  display:flex;gap:12px;align-items:flex-start;line-height:1.5;
+}
+.plan-l li.on{color:var(--tx);}
+.ck{color:var(--g);flex-shrink:0;margin-top:1px;}
+.cx{color:var(--tx3);flex-shrink:0;}
 
-  /* ── FEATURES ── */
-  .features-grid {
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:1px;
-    background:var(--border);
-    border:1px solid var(--border);
-  }
+.pbtn{
+  display:block;font-family:'Bebas Neue',sans-serif;
+  font-size:.85rem;letter-spacing:4px;text-decoration:none;
+  text-align:center;padding:18px;transition:all .3s;
+}
+.pbtn.gld{background:var(--g);color:#000;}
+.pbtn.gld:hover{background:var(--g2);box-shadow:0 0 40px rgba(201,168,76,.3);}
+.pbtn.gh{border:1px solid var(--bd);color:var(--g);}
+.pbtn.gh:hover{border-color:var(--g);background:var(--g4);}
+.plan-note{font-size:.6rem;color:var(--tx2);text-align:center;margin-top:12px;letter-spacing:1px;}
 
-  .feature {
-    background:var(--bg2);
-    padding:36px 30px;
-    position:relative;
-    transition:background .3s;
-    overflow:hidden;
-  }
-  .feature::after {
-    content:'';
-    position:absolute;
-    bottom:0; left:0;
-    width:0; height:2px;
-    background:var(--gold);
-    transition:width .4s;
-  }
-  .feature:hover { background:var(--bg3); }
-  .feature:hover::after { width:100%; }
+/* ── CTA FINAL ── */
+.cta-s{
+  text-align:center;padding:180px 72px;
+  position:relative;overflow:hidden;
+  border-top:1px solid var(--bd);
+}
+.cta-s::before{
+  content:'';position:absolute;
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  width:1000px;height:600px;
+  background:radial-gradient(ellipse,rgba(201,168,76,.05) 0%,transparent 65%);
+  pointer-events:none;
+}
+.cta-sym{
+  font-family:'Libre Baskerville',serif;font-style:italic;
+  font-size:5rem;color:rgba(201,168,76,.15);
+  display:block;margin-bottom:36px;
+  animation:rotsym 30s linear infinite;
+  position:relative;
+}
+@keyframes rotsym{from{transform:rotate(0);}to{transform:rotate(360deg);}}
+.cta-h{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(3rem,6vw,6.5rem);color:#fff;
+  line-height:.9;margin-bottom:20px;letter-spacing:2px;
+  position:relative;z-index:1;
+}
+.cta-h em{
+  font-family:'Libre Baskerville',serif;font-style:italic;
+  font-weight:400;color:var(--g);font-size:clamp(2.6rem,5.5vw,6rem);
+  display:block;letter-spacing:0;
+}
+.cta-p{font-size:.87rem;color:var(--tx2);max-width:440px;margin:0 auto 52px;line-height:2;position:relative;z-index:1;}
+.cta-note{font-size:.6rem;color:var(--tx3);letter-spacing:3px;margin-top:20px;}
 
-  .feature-num {
-    font-family:'Playfair Display',serif;
-    font-size:2.8rem;
-    color:rgba(201,168,76,.07);
-    line-height:1;
-    margin-bottom:12px;
-  }
-  .feature-icon { font-size:1.5rem; margin-bottom:12px; display:block; }
-  .feature-title {
-    font-family:'Syne',sans-serif;
-    font-size:.84rem;
-    font-weight:700;
-    color:#fff;
-    letter-spacing:2px;
-    margin-bottom:10px;
-    text-transform:uppercase;
-  }
-  .feature-desc { font-size:.8rem; color:var(--text-dim); line-height:1.8; }
+/* ── FOOTER ── */
+footer{
+  padding:44px 72px;border-top:1px solid var(--bd);
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;
+}
+.flinks{display:flex;gap:32px;}
+.flinks a{font-size:.6rem;color:var(--tx2);text-decoration:none;letter-spacing:2px;transition:color .3s;}
+.flinks a:hover{color:var(--g);}
+.fcopy{font-size:.6rem;color:var(--tx3);letter-spacing:2px;}
 
-  /* ── QUOTE ── */
-  .testimonial-section {
-    padding:100px 80px;
-    background:linear-gradient(180deg, transparent, rgba(201,168,76,.02), transparent);
-    border-top:1px solid var(--border);
-    border-bottom:1px solid var(--border);
-    text-align:center;
-  }
-  .quote-mark {
-    font-family:'Playfair Display',serif;
-    font-size:8rem;
-    color:rgba(201,168,76,.06);
-    line-height:.7;
-    margin-bottom:24px;
-  }
-  .quote-text {
-    font-family:'Playfair Display',serif;
-    font-style:italic;
-    font-size:clamp(1.1rem,2.5vw,1.7rem);
-    color:#888;
-    max-width:700px;
-    margin:0 auto 24px;
-    line-height:1.6;
-  }
-  .quote-text strong { color:#ddd; font-style:normal; }
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:none;}}
+.rev{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease;}
+.rev.in{opacity:1;transform:none;}
+.d1{transition-delay:.08s;}.d2{transition-delay:.16s;}.d3{transition-delay:.24s;}.d4{transition-delay:.32s;}
 
-  /* ── PRICING ── */
-  .pricing-grid {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:1px;
-    background:var(--border);
-    border:1px solid var(--border);
-    max-width:820px;
-  }
-
-  .plan { background:var(--bg2); padding:52px 44px; position:relative; transition:background .3s; }
-  .plan:hover { background:var(--bg3); }
-
-  .plan.pro {
-    background:var(--bg3);
-    border:1px solid rgba(201,168,76,.2);
-    margin:-1px;
-    z-index:2;
-  }
-
-  .plan-eyebrow { font-size:.63rem; color:var(--gold); letter-spacing:3px; text-transform:uppercase; margin-bottom:16px; }
-  .plan-name { font-family:'Syne',sans-serif; font-size:1.4rem; font-weight:800; color:#fff; letter-spacing:4px; margin-bottom:8px; }
-  .plan-price { font-family:'Syne',sans-serif; font-size:2.8rem; font-weight:800; color:var(--gold); line-height:1; margin-bottom:6px; }
-  .plan-period { font-size:.68rem; color:var(--text-dim); letter-spacing:2px; margin-bottom:36px; }
-
-  .plan-features { list-style:none; margin-bottom:40px; }
-  .plan-features li {
-    font-size:.8rem;
-    color:var(--text-dim);
-    padding:10px 0;
-    border-bottom:1px solid rgba(255,255,255,.03);
-    display:flex;
-    gap:12px;
-    align-items:center;
-  }
-  .plan-features li::before { content:'—'; color:var(--gold); flex-shrink:0; }
-  .plan-features li.pro-item { color:var(--text); }
-
-  .plan-cta {
-    display:block;
-    font-family:'Syne',sans-serif;
-    font-size:.73rem;
-    font-weight:700;
-    text-align:center;
-    padding:16px;
-    letter-spacing:3px;
-    text-transform:uppercase;
-    text-decoration:none;
-    transition:all .3s;
-  }
-  .plan-cta.gold-btn { background:var(--gold); color:#000; }
-  .plan-cta.gold-btn:hover { background:var(--gold-light); box-shadow:0 0 30px rgba(201,168,76,.3); }
-  .plan-cta.outline-btn { border:1px solid var(--border); color:var(--gold); }
-  .plan-cta.outline-btn:hover { border-color:var(--gold); background:rgba(201,168,76,.05); }
-
-  /* ── CTA FINAL ── */
-  .cta-section {
-    padding:160px 80px;
-    text-align:center;
-    position:relative;
-    overflow:hidden;
-  }
-  .cta-section::before {
-    content:'';
-    position:absolute;
-    top:50%; left:50%;
-    transform:translate(-50%,-50%);
-    width:700px; height:700px;
-    background:radial-gradient(ellipse, rgba(201,168,76,.04) 0%, transparent 70%);
-    pointer-events:none;
-  }
-  .cta-section h2 {
-    font-family:'Syne',sans-serif;
-    font-size:clamp(2.4rem,5vw,4.8rem);
-    font-weight:800;
-    color:#fff;
-    line-height:1;
-    margin-bottom:16px;
-    position:relative;
-  }
-  .cta-section h2 em {
-    font-family:'Playfair Display',serif;
-    font-style:italic;
-    font-weight:400;
-    color:var(--gold);
-  }
-  .cta-section p {
-    color:var(--text-dim);
-    font-size:.9rem;
-    max-width:440px;
-    margin:0 auto 48px;
-    line-height:1.8;
-    position:relative;
-  }
-  .cta-footnote { margin-top:24px; font-size:.66rem; color:var(--text-dim); letter-spacing:2px; }
-
-  /* ── FOOTER ── */
-  footer {
-    padding:40px 80px;
-    border-top:1px solid var(--border);
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-    gap:20px;
-  }
-  .footer-logo { display:flex; align-items:center; gap:10px; }
-  .footer-logo-text { font-family:'Syne',sans-serif; font-size:.9rem; font-weight:800; color:#fff; letter-spacing:5px; }
-  .footer-links { display:flex; gap:32px; }
-  .footer-links a { font-size:.65rem; color:var(--text-dim); text-decoration:none; letter-spacing:2px; transition:color .3s; }
-  .footer-links a:hover { color:var(--gold); }
-  .footer-copy { font-size:.65rem; color:var(--text-dim); letter-spacing:2px; }
-
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity:0; transform:translateY(24px); }
-    to   { opacity:1; transform:translateY(0); }
-  }
-  .reveal {
-    opacity:0;
-    transform:translateY(30px);
-    transition:opacity .6s ease, transform .6s ease;
-  }
-  .reveal.visible { opacity:1; transform:translateY(0); }
-
-  /* ── RESPONSIVE ── */
-  @media(max-width:900px) {
-    nav { padding:18px 24px; }
-    .nav-links { display:none; }
-    .hero { padding:120px 24px 80px; }
-    .hero-inner { grid-template-columns:1fr; }
-    .hero-right { display:none; }
-    .section { padding:80px 24px; }
-    .features-grid { grid-template-columns:1fr; }
-    .steps { grid-template-columns:1fr 1fr; gap:24px; }
-    .steps::before { display:none; }
-    .pricing-grid { grid-template-columns:1fr; max-width:420px; }
-    .testimonial-section { padding:60px 24px; }
-    .cta-section { padding:100px 24px; }
-    footer { padding:40px 24px; flex-direction:column; text-align:center; }
-    .footer-links { justify-content:center; }
-  }
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  nav,nav.solid{padding:16px 24px;}
+  .nlinks .nlinks-items{display:none;}
+  .hero,.ai-wrap,.cta-s{padding-left:24px;padding-right:24px;}
+  .sec{padding:80px 24px;}
+  .hero-inner,.ai-inner{grid-template-columns:1fr;}
+  .hero-right{display:none;}
+  .mods-big{grid-template-columns:1fr 1fr;}
+  .how-grid{grid-template-columns:1fr 1fr;}
+  .how-step:nth-child(2){border-right:none;}
+  .how-step:nth-child(3){border-top:1px solid var(--bd);}
+  .acad-grid{grid-template-columns:1fr 1fr;}
+  .nums{grid-template-columns:1fr 1fr;}
+  .testi-row{grid-template-columns:1fr;}
+  .price-wrap{grid-template-columns:1fr;max-width:480px;}
+  .plan.pro{border-left:none;border-top:1px solid rgba(201,168,76,.28);}
+  footer{flex-direction:column;text-align:center;padding:32px 24px;}
+  .flinks{justify-content:center;}
+}
+@media(max-width:640px){
+  .mods-big{grid-template-columns:1fr;}
+  .how-grid{grid-template-columns:1fr;}
+  .how-step{border-right:none!important;border-top:1px solid var(--bd)!important;}
+  .how-step:first-child{border-top:none!important;}
+  .acad-grid{grid-template-columns:1fr;}
+  .nums{grid-template-columns:1fr 1fr;}
+}
 </style>
 </head>
 <body>
 
+<div id="c"></div>
+<div id="cr"></div>
+
 <!-- NAV -->
-<nav>
-  <a class="nav-logo" href="#">
-    <span class="nav-icon">🚀</span>
-    <span class="nav-name">WUZO</span>
+<nav id="nav">
+  <a class="nlogo" href="#">
+    <div class="nmark">W</div>
+    <span class="nname">WUZO</span>
   </a>
-  <div class="nav-links">
-    <a href="#how">Como funciona</a>
-    <a href="#features">Módulos</a>
-    <a href="#pricing">Planos</a>
-    <a href="https://huggingface.co/spaces/pirescl/wuzo" class="nav-cta">COMEÇAR GRÁTIS</a>
+  <div class="nlinks">
+    <span class="nlinks-items" style="display:flex;align-items:center;gap:48px;">
+      <a href="#how">Como funciona</a>
+      <a href="#mods">Módulos</a>
+      <a href="#ai">IA Financeira</a>
+      <a href="#academy">Academy</a>
+      <a href="#pricing">Planos</a>
+    </span>
+    <a href="https://app.wuzo.com.br" class="ncta">COMEÇAR GRÁTIS</a>
   </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
   <div class="hero-inner">
-    <div class="hero-left">
-      <div class="hero-eyebrow">Super App Financeiro com IA</div>
-      <h1 class="hero-title">
-        Seu dinheiro,
-        <em class="hero-title-italic">finalmente claro.</em>
+    <div>
+      <div class="h-eye"><span class="h-eye-dot"></span>Super App Financeiro · IA em Tempo Real</div>
+      <h1>
+        Controle total
+        <em>do seu dinheiro.</em>
       </h1>
       <p class="hero-desc">
-        O Wuzo analisa extratos, controla dívidas, investimentos e metas — e usa <strong>inteligência artificial</strong> para identificar onde seu dinheiro some e o que fazer para mudar isso.
+        O Wuzo analisa extratos, mapeia dívidas, monitora investimentos, cria planos de metas e te ensina finanças — tudo em um app com <b>inteligência artificial de última geração</b> operando 24/7 por você.
       </p>
-      <div class="hero-actions">
-        <a href="https://huggingface.co/spaces/pirescl/wuzo" class="btn-gold">🚀 COMEÇAR AGORA — É GRÁTIS</a>
-        <a href="#how" class="btn-outline">VER COMO FUNCIONA</a>
+      <div class="hero-ctas">
+        <a href="https://app.wuzo.com.br" class="btn-main">⚡ COMEÇAR AGORA — GRÁTIS</a>
+        <a href="#how" class="btn-line">VER COMO FUNCIONA →</a>
+      </div>
+      <div class="hero-proof">
+        <div><span class="proof-n">7</span><span class="proof-l">MÓDULOS ATIVOS</span></div>
+        <div><span class="proof-n">IA</span><span class="proof-l">ANÁLISE EM &lt;2SEG</span></div>
+        <div><span class="proof-n">R$0</span><span class="proof-l">PARA COMEÇAR</span></div>
+        <div><span class="proof-n">24/7</span><span class="proof-l">CONSULTOR IA</span></div>
       </div>
     </div>
 
-    <!-- MOCK DASHBOARD -->
     <div class="hero-right">
-      <div class="mock-card">
-        <div class="mock-header">
-          <span class="mock-title">🚀 WUZO</span>
-          <span class="mock-badge">MARÇO 2026</span>
+      <div class="floater f1"><div class="fl">SCORE FINANCEIRO</div><div class="fv">74/100 ↑</div></div>
+      <div class="floater f2"><div class="fl">META: RESERVA</div><div class="fv">68% atingida</div></div>
+      <div class="dash">
+        <div class="dash-top">
+          <div class="dtop-l">
+            <div class="wdots"><div class="wd w1"></div><div class="wd w2"></div><div class="wd w3"></div></div>
+            <span class="dtop-t">WUZO</span>
+          </div>
+          <span class="dtop-b">MARÇO 2026</span>
         </div>
-        <div class="mock-metrics">
-          <div class="mock-metric">
-            <div class="mock-metric-label">ENTRADAS</div>
-            <div class="mock-metric-value green">R$ 8.450</div>
+        <div class="dash-body">
+          <div class="d-row">
+            <div class="dk"><div class="dk-l">ENTRADAS</div><div class="dk-v g">R$8.450</div></div>
+            <div class="dk"><div class="dk-l">SAÍDAS</div><div class="dk-v r">R$6.230</div></div>
+            <div class="dk"><div class="dk-l">SALDO</div><div class="dk-v o">R$2.220</div></div>
+            <div class="dk"><div class="dk-l">AI SCORE</div><div class="dk-v o">7.4/10</div></div>
           </div>
-          <div class="mock-metric">
-            <div class="mock-metric-label">SAÍDAS</div>
-            <div class="mock-metric-value red">R$ 6.230</div>
+          <div class="d-row2">
+            <div class="dm"><span class="dm-ico">📈</span><div><div class="dm-l">CARTEIRA</div><div class="dm-v">R$24.800</div></div></div>
+            <div class="dm"><span class="dm-ico">💳</span><div><div class="dm-l">DÍVIDAS</div><div class="dm-v" style="color:#e06b6b">R$3.200</div></div></div>
+            <div class="dm"><span class="dm-ico">🎯</span><div><div class="dm-l">META CASA</div><div class="dm-v" style="color:var(--g)">42%</div></div></div>
+            <div class="dm"><span class="dm-ico">📋</span><div><div class="dm-l">IR 2025</div><div class="dm-v" style="color:#5dba88">+R$840</div></div></div>
           </div>
-          <div class="mock-metric">
-            <div class="mock-metric-label">SCORE</div>
-            <div class="mock-metric-value gold">74 / 100</div>
-          </div>
-        </div>
-        <div class="mock-modules">
-          <div class="mock-module">
-            <span class="mock-module-icon">📈</span>
-            <div class="mock-module-info">
-              <div class="mock-module-name">CARTEIRA</div>
-              <div class="mock-module-val green">R$ 24.800</div>
-            </div>
-          </div>
-          <div class="mock-module">
-            <span class="mock-module-icon">💳</span>
-            <div class="mock-module-info">
-              <div class="mock-module-name">DÍVIDAS</div>
-              <div class="mock-module-val red">R$ 3.200</div>
-            </div>
-          </div>
-          <div class="mock-module">
-            <span class="mock-module-icon">🎯</span>
-            <div class="mock-module-info">
-              <div class="mock-module-name">META: CASA</div>
-              <div class="mock-module-val gold">42% atingida</div>
-            </div>
-          </div>
-          <div class="mock-module">
-            <span class="mock-module-icon">📋</span>
-            <div class="mock-module-info">
-              <div class="mock-module-name">IR 2025</div>
-              <div class="mock-module-val green">R$ 840 a restituir</div>
-            </div>
-          </div>
-        </div>
-        <div class="mock-insight">
-          <strong>💡 Wuzo AI:</strong> Você gasta 29% da renda em alimentação. Reduzir R$ 400/mês aqui quita sua dívida do cartão em 8 meses.
+          <div class="d-ai"><b>⬡ Wuzo AI:</b> Gastos com alimentação = 31% da renda. Reduzir R$400/mês elimina sua dívida de cartão em 8 meses e libera R$4.800/ano para investir.</div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<div class="divider"></div>
+<!-- TICKER -->
+<div class="ticker-outer">
+  <div class="ticker" id="tkr">
+    <div class="ti"><span>⬡</span>Análise de Extrato PDF/CSV</div>
+    <div class="ti"><span>⬡</span>Score Financeiro com IA</div>
+    <div class="ti"><span>⬡</span>Controle de Dívidas</div>
+    <div class="ti"><span>⬡</span>Carteira de Investimentos</div>
+    <div class="ti"><span>⬡</span>Metas de Vida</div>
+    <div class="ti"><span>⬡</span>Consultor IA 24/7</div>
+    <div class="ti"><span>⬡</span>Market Insights Diário</div>
+    <div class="ti"><span>⬡</span>Academy Financeira</div>
+    <div class="ti"><span>⬡</span>Declaração de IR</div>
+    <div class="ti"><span>⬡</span>Dashboard Integrado</div>
+    <div class="ti"><span>⬡</span>Relatórios PDF PRO</div>
+    <div class="ti"><span>⬡</span>Alertas Inteligentes</div>
+    <div class="ti"><span>⬡</span>Análise de Extrato PDF/CSV</div>
+    <div class="ti"><span>⬡</span>Score Financeiro com IA</div>
+    <div class="ti"><span>⬡</span>Controle de Dívidas</div>
+    <div class="ti"><span>⬡</span>Carteira de Investimentos</div>
+    <div class="ti"><span>⬡</span>Metas de Vida</div>
+    <div class="ti"><span>⬡</span>Consultor IA 24/7</div>
+    <div class="ti"><span>⬡</span>Market Insights Diário</div>
+    <div class="ti"><span>⬡</span>Academy Financeira</div>
+    <div class="ti"><span>⬡</span>Declaração de IR</div>
+    <div class="ti"><span>⬡</span>Dashboard Integrado</div>
+    <div class="ti"><span>⬡</span>Relatórios PDF PRO</div>
+    <div class="ti"><span>⬡</span>Alertas Inteligentes</div>
+  </div>
+</div>
 
 <!-- HOW IT WORKS -->
-<section class="section" id="how">
-  <div class="section-eyebrow">COMO FUNCIONA</div>
-  <h2 class="section-title">Do extrato ao diagnóstico<br>em <em>60 segundos.</em></h2>
-  <p class="section-desc">Sem planilhas. Sem configuração. Importe seu extrato e o Wuzo faz o resto — com IA de verdade.</p>
+<section id="how" class="sec">
+  <div class="sec-tag rev">Como funciona</div>
+  <h2 class="sec-h2 rev">Em 4 passos você tem <em>clareza financeira total.</em></h2>
+  <p class="sec-p rev">De zero a diagnóstico completo com plano de ação em menos de 5 minutos. Sem planilhas. Sem consultor. Só você e a IA.</p>
 
-  <div class="steps">
-    <div class="step reveal">
-      <div class="step-num">01</div>
-      <div class="step-title">IMPORTE</div>
-      <div class="step-desc">CSV, TXT ou PDF direto do seu banco. Ou cole o texto do extrato. Qualquer banco brasileiro funciona.</div>
+  <div class="how-grid">
+    <div class="how-step rev">
+      <div class="hs-n">01</div>
+      <span class="hs-ico">📤</span>
+      <div class="hs-t">Importe seu extrato</div>
+      <div class="hs-d">Faça upload do PDF bancário, cole o CSV, ou digitalize o texto do app do banco. Bradesco, Itaú, Nubank, Inter, Santander — qualquer formato.</div>
     </div>
-    <div class="step reveal">
-      <div class="step-num">02</div>
-      <div class="step-title">A IA LÊ</div>
-      <div class="step-desc">O Wuzo categoriza todas as transações automaticamente e cruza com suas dívidas, metas e investimentos.</div>
+    <div class="how-step rev d1">
+      <div class="hs-n">02</div>
+      <span class="hs-ico">🤖</span>
+      <div class="hs-t">IA analisa em segundos</div>
+      <div class="hs-d">O LLaMA 3.3 70B categoriza cada transação, calcula entradas e saídas, identifica padrões perigosos e gera um score financeiro de 0 a 10.</div>
     </div>
-    <div class="step reveal">
-      <div class="step-num">03</div>
-      <div class="step-title">DIAGNÓSTICO</div>
-      <div class="step-desc">Score financeiro, onde o dinheiro some, alertas de orçamento e projeção de 3 meses com plano de ação.</div>
+    <div class="how-step rev d2">
+      <div class="hs-n">03</div>
+      <span class="hs-ico">📊</span>
+      <div class="hs-t">Veja o diagnóstico</div>
+      <div class="hs-d">Dashboard com métricas detalhadas, alertas inteligentes, comparação histórica mês a mês e análise narrativa completa gerada pela IA.</div>
     </div>
-    <div class="step reveal">
-      <div class="step-num">04</div>
-      <div class="step-title">PERGUNTE</div>
-      <div class="step-desc">"Quanto gastei com iFood?" "Quando quito minha dívida?" O Wuzo responde com base nos seus dados reais.</div>
+    <div class="how-step rev d3">
+      <div class="hs-n">04</div>
+      <span class="hs-ico">🚀</span>
+      <div class="hs-t">Execute o plano</div>
+      <div class="hs-d">Receba ações concretas priorizadas por impacto financeiro estimado em R$. Acompanhe progresso mês a mês e veja sua situação melhorar.</div>
     </div>
   </div>
 </section>
 
-<div class="divider"></div>
+<!-- MODULES -->
+<section id="mods" style="padding:0 72px 120px;max-width:1280px;margin:0 auto;">
+  <div class="sec-tag rev">Módulos do App</div>
+  <h2 class="sec-h2 rev">7 módulos. <em>1 app.</em></h2>
+  <p class="sec-p rev">Cada módulo usa IA de forma diferente para cobrir 100% da sua vida financeira — do extrato bancário ao Imposto de Renda.</p>
 
-<!-- FEATURES -->
-<section class="section" id="features">
-  <div class="section-eyebrow">MÓDULOS</div>
-  <h2 class="section-title">8 módulos integrados.<br><em>Uma visão completa.</em></h2>
+  <div class="mods-big">
 
-  <div class="features-grid">
-    <div class="feature reveal">
-      <div class="feature-num">01</div>
-      <span class="feature-icon">💰</span>
-      <div class="feature-title">Finanças Pessoais</div>
-      <div class="feature-desc">Upload de CSV, TXT ou PDF. Categorização automática com IA. Dashboard com score financeiro, gráficos, metas de gasto e histórico mensal comparativo.</div>
+    <div class="mod rev">
+      <div class="mod-n">01</div>
+      <span class="mod-ico">💰</span>
+      <div class="mod-title">Finanças</div>
+      <div class="mod-desc">Importe extratos em PDF, CSV ou texto direto. A IA extrai e categoriza cada transação, calcula taxa de poupança, identifica anomalias e entrega diagnóstico narrativo com score de 0 a 10 e plano de ação personalizado.</div>
+      <div class="mod-chips">
+        <span class="chip">PDF · CSV · Texto</span>
+        <span class="chip">Histórico mensal</span>
+        <span class="chip gold">Score IA</span>
+        <span class="chip gold">PDF download</span>
+      </div>
     </div>
-    <div class="feature reveal">
-      <div class="feature-num">02</div>
-      <span class="feature-icon">📈</span>
-      <div class="feature-title">Investimentos</div>
-      <div class="feature-desc">Registre Tesouro Direto, CDB, ações, FIIs, criptos e mais. Visualize distribuição da carteira e peça análise completa com oportunidades e riscos.</div>
+
+    <div class="mod rev d1">
+      <div class="mod-n">02</div>
+      <span class="mod-ico">📈</span>
+      <div class="mod-title">Investimentos</div>
+      <div class="mod-desc">Monte e monitore sua carteira com Tesouro Direto, CDB, LCI/LCA, Ações, FIIs, ETFs, Cripto e Previdência. A IA analisa alocação por tipo, risco concentrado e sugere rebalanceamento com impacto estimado.</div>
+      <div class="mod-chips">
+        <span class="chip">11 tipos de ativo</span>
+        <span class="chip">Alocação %</span>
+        <span class="chip gold">Análise de risco IA</span>
+        <span class="chip gold">PDF download</span>
+      </div>
     </div>
-    <div class="feature reveal">
-      <div class="feature-num">03</div>
-      <span class="feature-icon">🎯</span>
-      <div class="feature-title">Metas de Vida</div>
-      <div class="feature-desc">Casa própria, viagem, reserva de emergência, aposentadoria. Defina prazos e o Wuzo calcula quanto guardar por mês para chegar lá.</div>
+
+    <div class="mod rev d2">
+      <div class="mod-n">03</div>
+      <span class="mod-ico">💳</span>
+      <div class="mod-title">Dívidas</div>
+      <div class="mod-desc">Cadastre cartão de crédito, empréstimo pessoal, financiamento imobiliário, veicular, crédito estudantil. A IA cria estratégia de quitação avalanche ou bola de neve com cronograma e economia em juros projetada.</div>
+      <div class="mod-chips">
+        <span class="chip">6 categorias</span>
+        <span class="chip">Avalanche / Bola de Neve</span>
+        <span class="chip gold">Estratégia IA</span>
+        <span class="chip gold">PDF download</span>
+      </div>
     </div>
-    <div class="feature reveal">
-      <div class="feature-num">04</div>
-      <span class="feature-icon">💳</span>
-      <div class="feature-title">Controle de Dívidas</div>
-      <div class="feature-desc">Cadastre cartões, empréstimos e financiamentos. A IA monta a estratégia de quitação (avalanche ou bola de neve) com cronograma e economia de juros.</div>
+
+    <div class="mod rev">
+      <div class="mod-n">04</div>
+      <span class="mod-ico">🎯</span>
+      <div class="mod-title">Metas de Vida</div>
+      <div class="mod-desc">Defina Casa Própria, Carro, Viagem, Educação, Casamento, Família, Aposentadoria ou Reserva de Emergência. A IA calcula aporte mensal necessário, prazo realista e o impacto de cada meta no seu fluxo de caixa.</div>
+      <div class="mod-chips">
+        <span class="chip">9 categorias</span>
+        <span class="chip">Priorização automática</span>
+        <span class="chip gold">Plano IA</span>
+      </div>
     </div>
-    <div class="feature reveal">
-      <div class="feature-num">05</div>
-      <span class="feature-icon">📋</span>
-      <div class="feature-title">Simulador de IR</div>
-      <div class="feature-desc">Calcule se vai pagar ou restituir. Informe rendimentos, deduções e o Wuzo aplica a tabela progressiva 2025 — com alertas de malha fina.</div>
+
+    <div class="mod rev d1">
+      <div class="mod-n">05</div>
+      <span class="mod-ico">🌐</span>
+      <div class="mod-title">Market Insights</div>
+      <div class="mod-desc">Briefing financeiro diário gerado por IA com cenário macroeconômico: Selic, IPCA, câmbio, Ibovespa, Fed, commodities. A análise sintetiza o que muda na sua estratégia pessoal e que ações concretas tomar hoje.</div>
+      <div class="mod-chips">
+        <span class="chip">Atualização diária</span>
+        <span class="chip">Macro + pessoal</span>
+        <span class="chip gold">Briefing IA · PRO</span>
+        <span class="chip gold">PDF download</span>
+      </div>
     </div>
-    <div class="feature reveal">
-      <div class="feature-num">06</div>
-      <span class="feature-icon">🧾</span>
-      <div class="feature-title">Notas Fiscais</div>
-      <div class="feature-desc">Registre e organize comprovantes e NF-e por categoria. Útil para deduções no IR e controle de gastos empresariais ou de MEI.</div>
+
+    <div class="mod rev d2">
+      <div class="mod-n">06</div>
+      <span class="mod-ico">📋</span>
+      <div class="mod-title">Declaração de IR</div>
+      <div class="mod-desc">Suporte completo ao IRPF. A IA identifica rendimentos tributáveis, isentos e exclusivos; mapeia deduções legais (saúde, educação, previdência, dependentes); calcula imposto a pagar ou valor a restituir.</div>
+      <div class="mod-chips">
+        <span class="chip">Rendimentos isentos</span>
+        <span class="chip">Deduções legais</span>
+        <span class="chip gold">Análise de restituição IA</span>
+      </div>
     </div>
-    <div class="feature reveal">
-      <div class="feature-num">07</div>
-      <span class="feature-icon">📊</span>
-      <div class="feature-title">Assistente de Burocracia</div>
-      <div class="feature-desc">MEI, INSS, FGTS, CLT vs PJ, SIMPLES Nacional. Tire dúvidas em linguagem natural com um especialista virtual em burocracia brasileira.</div>
+
+    <div class="mod rev" style="background:rgba(201,168,76,.03);border-color:rgba(201,168,76,.18);">
+      <div class="mod-n">07</div>
+      <span class="mod-ico">⬡</span>
+      <div class="mod-title">Dashboard Integrado</div>
+      <div class="mod-desc">Painel central que agrega dados de todos os módulos em tempo real: alertas de risco, métricas-chave, progresso das metas, total investido e passivo. Uma visão completa do seu patrimônio num único lugar.</div>
+      <div class="mod-chips">
+        <span class="chip">Dados em tempo real</span>
+        <span class="chip">Alertas IA</span>
+        <span class="chip gold">Todos os módulos</span>
+      </div>
     </div>
-    <div class="feature reveal">
-      <div class="feature-num">08</div>
-      <span class="feature-icon">🤖</span>
-      <div class="feature-title">Wuzo AI — Chat Financeiro</div>
-      <div class="feature-desc">Converse em linguagem natural com base nos seus dados reais. "Por que meu score caiu?" "Quanto posso gastar em lazer este mês?" — resposta em segundos.</div>
+
+    <div class="mod rev d1">
+      <div class="mod-n">+</div>
+      <span class="mod-ico">🤖</span>
+      <div class="mod-title">Consultor IA 24/7</div>
+      <div class="mod-desc">Chat com IA especialista em finanças pessoais brasileiras. Contexto completo: seu histórico, dívidas, metas e investimentos informam cada resposta. CDI, PGBL, FGTS, consórcio, FIDC — qualquer dúvida, qualquer hora.</div>
+      <div class="mod-chips">
+        <span class="chip">Contexto personalizado</span>
+        <span class="chip">Histórico de conversa</span>
+        <span class="chip gold">LLaMA 3.3 70B</span>
+        <span class="chip gold">Ilimitado · PRO</span>
+      </div>
     </div>
-    <div class="feature reveal">
-      <div class="feature-num">09</div>
-      <span class="feature-icon">🔐</span>
-      <div class="feature-title">Privado e Seguro</div>
-      <div class="feature-desc">Seus dados ficam no seu banco exclusivo. Sessão persistente por URL token. Nunca compartilhamos informações financeiras com terceiros.</div>
+
+    <div class="mod rev d2">
+      <div class="mod-n">+</div>
+      <span class="mod-ico">📥</span>
+      <div class="mod-title">Relatórios PDF PRO</div>
+      <div class="mod-desc">Exporte qualquer análise como PDF profissional — diagnóstico financeiro mensal, estratégia de quitação de dívidas, análise de carteira, plano de metas. Pronto para compartilhar com contador ou consultor.</div>
+      <div class="mod-chips">
+        <span class="chip">Todos os módulos</span>
+        <span class="chip">Design profissional</span>
+        <span class="chip gold">PRO · Ilimitado</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- AI SECTION -->
+<section id="ai" class="ai-wrap">
+  <div class="ai-inner">
+    <div>
+      <div class="sec-tag rev">IA Financeira</div>
+      <h2 class="sec-h2 rev">Não é um chatbot.<br><em>É seu CFO pessoal.</em></h2>
+      <p class="sec-p rev" style="margin-bottom:0;">
+        O Consultor IA do Wuzo usa <b style="color:var(--tx)">LLaMA 3.3 70B via Groq</b> — um dos modelos mais avançados do mundo. Mas a diferença real está no contexto: cada resposta é informada pelo seu histórico financeiro completo, dívidas, metas e investimentos.<br><br>
+        Não recebe respostas genéricas. Recebe estratégia personalizada para a <b style="color:var(--tx)">sua situação real</b>.
+      </p>
+
+      <div class="ai-facts rev" style="margin-top:44px;">
+        <div class="af"><span class="af-n">70B</span><span class="af-l">PARÂMETROS DE IA</span></div>
+        <div class="af"><span class="af-n">&lt;2s</span><span class="af-l">TEMPO DE ANÁLISE</span></div>
+        <div class="af"><span class="af-n">24/7</span><span class="af-l">DISPONÍVEL</span></div>
+        <div class="af"><span class="af-n">9+</span><span class="af-l">PONTOS DE CONTEXTO</span></div>
+      </div>
+    </div>
+
+    <div class="ai-chat rev">
+      <div class="chat-head">
+        <div class="ch-l">
+          <div class="ch-av">⬡</div>
+          <div>
+            <div class="ch-name">WUZO AI ADVISOR</div>
+            <div class="ch-st">● Online agora</div>
+          </div>
+        </div>
+        <div style="font-size:.55rem;color:var(--tx2);letter-spacing:2px;">LLaMA 3.3 · 70B</div>
+      </div>
+      <div class="chat-body">
+        <div class="msg usr">Vale a pena pagar meu financiamento antes ou investir o dinheiro?</div>
+        <div class="msg ai">
+          Analisei seu perfil: financiamento a <b>9,5% a.a.</b> e CDB disponível a <b>12,8% a.a.</b> (109% CDI).<br><br>
+          O custo efetivo do financiamento após benefício fiscal é <b>7,2% a.a.</b> O CDB líquido (IR 15%) rende <b>10,9% a.a.</b><br><br>
+          <b>Resposta: investir é matematicamente superior</b> — diferença de 3,7% a.a. sobre R$85k = R$3.145/ano a favor dos investimentos.
+        </div>
+        <div class="msg usr">E se eu antecipar mesmo assim por segurança emocional?</div>
+        <div class="msg ai">
+          Válido. Segurança emocional tem valor real. Mas calcule o custo: <b>R$3.145/ano</b> ou <b>R$262/mês</b> é o que você "paga" por esse conforto.<br><br>
+          Alternativa: mantenha investido e configure um CDB com liquidez diária. Você tem o dinheiro acessível, mas ele rende mais do que o custo do financiamento.
+        </div>
+        <div class="msg-blink"><div class="bdot"></div><div class="bdot"></div><div class="bdot"></div></div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- QUOTE -->
-<section class="testimonial-section">
-  <div class="quote-mark">"</div>
-  <p class="quote-text">
-    Não é falta de renda que quebra as finanças das pessoas.<br>
-    É a falta de <strong>clareza sobre o que está acontecendo agora.</strong>
-  </p>
-  <div class="section-eyebrow" style="justify-content:center; margin-bottom:0;">Wuzo · Super App Financeiro com IA</div>
+<!-- ACADEMY -->
+<section id="academy" class="sec">
+  <div class="sec-tag rev">Wuzo Academy</div>
+  <h2 class="sec-h2 rev">Aprenda finanças com <em>IA como professor.</em></h2>
+  <p class="sec-p rev">Aulas geradas por IA sobre temas que realmente importam para o seu patrimônio — do básico ao avançado. Cada lição é gerada fresca, com exemplos adaptados ao cenário atual.</p>
+
+  <div class="acad-grid">
+    <div class="lesson rev">
+      <span class="les-cat">MENTALIDADE</span>
+      <span class="les-lvl">INICIANTE</span>
+      <div class="les-t">Plano de Liberdade Financeira</div>
+      <div class="les-d">Os 4 pilares da independência financeira: ativos, renda passiva, alavancagem e tempo.</div>
+      <div class="les-dur">⏱ <span>8 min</span></div>
+    </div>
+    <div class="lesson rev d1">
+      <span class="les-cat">INVESTIMENTOS</span>
+      <span class="les-lvl">INICIANTE</span>
+      <div class="les-t">Juros Compostos: A 8ª Maravilha</div>
+      <div class="les-d">Como R$500/mês vira R$1,2M em 30 anos. A matemática que transforma disciplina em riqueza.</div>
+      <div class="les-dur">⏱ <span>6 min</span></div>
+    </div>
+    <div class="lesson rev d2">
+      <span class="les-cat">MENTALIDADE</span>
+      <span class="les-lvl">INICIANTE</span>
+      <div class="les-t">Armadilhas de Finanças Comportamentais</div>
+      <div class="les-d">12 vieses cognitivos que destroem patrimônio — e como neutralizá-los antes que ataquem você.</div>
+      <div class="les-dur">⏱ <span>7 min</span></div>
+    </div>
+    <div class="lesson rev">
+      <span class="les-cat">DÍVIDAS</span>
+      <span class="les-lvl int">INTERMEDIÁRIO</span>
+      <div class="les-t">Protocolo de Quitação Total</div>
+      <div class="les-d">O método híbrido avalanche + bola de neve que elimina dívidas 40% mais rápido que qualquer abordagem isolada.</div>
+      <div class="les-dur">⏱ <span>9 min</span></div>
+    </div>
+    <div class="lesson rev d1">
+      <span class="les-cat">RIQUEZA</span>
+      <span class="les-lvl int">INTERMEDIÁRIO</span>
+      <div class="les-t">Alocação de Ativos Mestre</div>
+      <div class="les-d">A alocação exata usada pelos 1% mais ricos do mundo: renda fixa, variável, real assets e reserva.</div>
+      <div class="les-dur">⏱ <span>10 min</span></div>
+    </div>
+    <div class="lesson rev d2">
+      <span class="les-cat">IMÓVEIS</span>
+      <span class="les-lvl int">INTERMEDIÁRIO</span>
+      <div class="les-t">FIIs vs Imóvel Físico</div>
+      <div class="les-d">Liquidez, rendimento, alavancagem, IR e diversificação comparados lado a lado com números reais do mercado.</div>
+      <div class="les-dur">⏱ <span>11 min</span></div>
+    </div>
+    <div class="lesson rev">
+      <span class="les-cat">CRIPTO</span>
+      <span class="les-lvl adv">AVANÇADO</span>
+      <div class="les-t">Estratégia Solana 2025</div>
+      <div class="les-d">Por que Solana lidera o DeFi em 2025. Protocolos-chave, gestão de risco e alocação segura de 2–5% de carteira.</div>
+      <div class="les-dur">⏱ <span>12 min</span></div>
+    </div>
+    <div class="lesson rev d1">
+      <span class="les-cat">CRIPTO</span>
+      <span class="les-lvl adv">AVANÇADO</span>
+      <div class="les-t">DeFi Yield Farming</div>
+      <div class="les-d">Pools de liquidez, perda impermanente, APY vs APR. Como gerar renda passiva em cripto com risco calculado.</div>
+      <div class="les-dur">⏱ <span>14 min</span></div>
+    </div>
+    <div class="lesson rev d2">
+      <span class="les-cat">IMPOSTOS</span>
+      <span class="les-lvl adv">AVANÇADO</span>
+      <div class="les-t">Otimização Fiscal Global</div>
+      <div class="les-d">Estratégias legais de planejamento tributário: PGBL, holding familiar, residência fiscal e diferimento de IR.</div>
+      <div class="les-dur">⏱ <span>15 min</span></div>
+    </div>
+  </div>
+  <p style="font-size:.65rem;color:var(--tx2);letter-spacing:2px;margin-top:20px;text-align:center;" class="rev">⬡ ACADEMY DISPONÍVEL NO PLANO PRO · ACESSO ILIMITADO A TODAS AS LIÇÕES</p>
+</section>
+
+<!-- NUMBERS -->
+<div style="padding:0 72px;max-width:1280px;margin:0 auto 0;">
+  <div class="nums rev">
+    <div class="nb"><span class="nb-n">7</span><span class="nb-l">MÓDULOS INTEGRADOS</span></div>
+    <div class="nb"><span class="nb-n">70B</span><span class="nb-l">PARÂMETROS DE IA</span></div>
+    <div class="nb"><span class="nb-n">5</span><span class="nb-l">ANÁLISES GRÁTIS/MÊS</span></div>
+    <div class="nb"><span class="nb-n">3x</span><span class="nb-l">IDIOMAS SUPORTADOS</span></div>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<section class="sec" style="padding-top:100px;">
+  <div class="sec-tag rev">Resultados reais</div>
+  <h2 class="sec-h2 rev">O que nossos usuários <em>conquistaram.</em></h2>
+  <p class="sec-p rev">Histórias reais de pessoas que usaram o Wuzo para transformar sua relação com o dinheiro.</p>
+
+  <div class="testi-row">
+    <div class="testi rev">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-q">"</div>
+      <div class="testi-txt">Em 2 semanas descobri que gastava <b>R$1.200/mês sem perceber</b> em assinaturas e delivery. O diagnóstico da IA foi cirúrgico — mostrou exatamente onde estava sangrando dinheiro com números reais.</div>
+      <div class="testi-who">
+        <div class="testi-av">MR</div>
+        <div><div class="testi-nm">MARCOS R.</div><div class="testi-rl">ANALISTA DE SISTEMAS · SÃO PAULO</div></div>
+      </div>
+    </div>
+    <div class="testi rev d1">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-q">"</div>
+      <div class="testi-txt">Tinha <b>3 dívidas diferentes</b> e não sabia por onde começar. O módulo de dívidas criou um plano avalanche específico para minha situação — agora tenho data certa para me livrar de tudo.</div>
+      <div class="testi-who">
+        <div class="testi-av">CF</div>
+        <div><div class="testi-nm">CARLA F.</div><div class="testi-rl">PROFESSORA · BELO HORIZONTE</div></div>
+      </div>
+    </div>
+    <div class="testi rev d2">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-q">"</div>
+      <div class="testi-txt">O módulo de IR encontrou <b>R$2.300 em deduções</b> que eu não sabia que tinha direito. Só isso pagou o PRO por anos. O Consultor IA explicou cada item melhor que meu contador.</div>
+      <div class="testi-who">
+        <div class="testi-av">PL</div>
+        <div><div class="testi-nm">PEDRO L.</div><div class="testi-rl">MÉDICO · PORTO ALEGRE</div></div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- PRICING -->
-<section class="section" id="pricing">
-  <div class="section-eyebrow">PLANOS</div>
-  <h2 class="section-title">Comece grátis.<br>Escale quando <em>precisar.</em></h2>
+<section id="pricing" class="sec" style="padding-top:60px;">
+  <div class="sec-tag rev">Planos</div>
+  <h2 class="sec-h2 rev">Comece grátis. <em>Escale com o PRO.</em></h2>
+  <p class="sec-p rev">O Free já entrega valor real com 5 análises mensais. O PRO remove todos os limites e desbloqueia o poder total da IA.</p>
 
-  <div class="pricing-grid">
+  <div class="price-wrap rev">
     <div class="plan">
-      <div class="plan-eyebrow">PARA COMEÇAR</div>
-      <div class="plan-name">FREE</div>
-      <div class="plan-price">R$ 0</div>
-      <div class="plan-period">SEM CARTÃO · SEM COMPROMISSO</div>
-      <ul class="plan-features">
-        <li>3 análises de extrato por mês</li>
-        <li>Todos os 8 módulos inclusos</li>
-        <li>Score financeiro</li>
-        <li>Controle de dívidas e metas</li>
-        <li>Chat de burocracia ilimitado</li>
+      <div class="plan-pill free">FREE</div>
+      <div class="plan-name">WUZO FREE</div>
+      <div class="plan-price"><sup>R$</sup>0</div>
+      <div class="plan-period">PARA SEMPRE GRÁTIS</div>
+      <ul class="plan-l">
+        <li class="on"><span class="ck">✓</span>5 análises de extrato por mês</li>
+        <li class="on"><span class="ck">✓</span>Dashboard integrado completo</li>
+        <li class="on"><span class="ck">✓</span>Controle de dívidas + estratégia IA</li>
+        <li class="on"><span class="ck">✓</span>Carteira de investimentos</li>
+        <li class="on"><span class="ck">✓</span>Metas de vida (até 3 ativas)</li>
+        <li class="on"><span class="ck">✓</span>Consultor IA (5 perguntas/mês)</li>
+        <li class="on"><span class="ck">✓</span>Suporte de IR básico</li>
+        <li><span class="cx">✕</span>Market Insights diário</li>
+        <li><span class="cx">✕</span>Academy PRO — todas as aulas</li>
+        <li><span class="cx">✕</span>Relatórios PDF ilimitados</li>
+        <li><span class="cx">✕</span>Análise de IR avançada com deduções</li>
       </ul>
-      <a href="https://huggingface.co/spaces/pirescl/wuzo" class="plan-cta outline-btn">COMEÇAR GRÁTIS</a>
+      <a href="https://app.wuzo.com.br" class="pbtn gh">COMEÇAR GRÁTIS</a>
     </div>
+
     <div class="plan pro">
-      <div class="plan-eyebrow">RECOMENDADO</div>
-      <div class="plan-name">🚀 PRO</div>
-      <div class="plan-price">R$ 29</div>
-      <div class="plan-period">POR MÊS · MENOS DE R$ 1/DIA</div>
-      <ul class="plan-features">
-        <li class="pro-item">Análises de extrato ilimitadas</li>
-        <li class="pro-item">Chat financeiro personalizado ilimitado</li>
-        <li class="pro-item">Diagnóstico profundo com IA</li>
-        <li class="pro-item">Histórico completo 12 meses</li>
-        <li class="pro-item">Alertas automáticos de orçamento</li>
-        <li class="pro-item">Análise de carteira de investimentos</li>
-        <li class="pro-item">Estratégia de quitação de dívidas</li>
-        <li class="pro-item">Suporte prioritário</li>
+      <div class="plan-pill pro-pill">MAIS POPULAR</div>
+      <div class="plan-name">WUZO PRO</div>
+      <div class="plan-price"><sup>$</sup>29</div>
+      <div class="plan-period">POR MÊS · CANCELE QUANDO QUISER</div>
+      <ul class="plan-l">
+        <li class="on"><span class="ck">✓</span><b>Análises de extrato ilimitadas</b></li>
+        <li class="on"><span class="ck">✓</span>Dashboard + todos os módulos PRO</li>
+        <li class="on"><span class="ck">✓</span>Dívidas + estratégia IA ilimitada</li>
+        <li class="on"><span class="ck">✓</span>Investimentos + análise avançada</li>
+        <li class="on"><span class="ck">✓</span>Metas ilimitadas + projeção IA</li>
+        <li class="on"><span class="ck">✓</span><b>Consultor IA ilimitado</b></li>
+        <li class="on"><span class="ck">✓</span><b>Market Insights diário</b></li>
+        <li class="on"><span class="ck">✓</span><b>Academy PRO — 9+ aulas exclusivas</b></li>
+        <li class="on"><span class="ck">✓</span>Relatórios PDF profissionais ilimitados</li>
+        <li class="on"><span class="ck">✓</span><b>IR completo com deduções IA</b></li>
+        <li class="on"><span class="ck">✓</span>Suporte prioritário</li>
       </ul>
-      <a href="https://huggingface.co/spaces/pirescl/wuzo" class="plan-cta gold-btn">🚀 ASSINAR WUZO PRO</a>
+      <a href="https://app.wuzo.com.br" class="pbtn gld">⚡ QUERO O WUZO PRO</a>
+      <div class="plan-note">Cancele a qualquer hora · Sem contrato · Sem pegadinha</div>
     </div>
   </div>
 </section>
 
 <!-- CTA FINAL -->
-<section class="cta-section">
-  <h2>Entenda seu<br><em>dinheiro hoje.</em></h2>
-  <p>3 análises gratuitas. Sem cartão. Sem burocracia.<br>Importe seu extrato e veja onde o dinheiro some em menos de 60 segundos.</p>
-  <a href="https://huggingface.co/spaces/pirescl/wuzo" class="btn-gold">🚀 ANALISAR MEU EXTRATO AGORA</a>
-  <div class="cta-footnote">SEM CARTÃO · SEM CONTRATO · CANCELE QUANDO QUISER</div>
+<section class="cta-s">
+  <span class="cta-sym">⬡</span>
+  <h2 class="cta-h rev">
+    Seu dinheiro
+    <em>merece atenção.</em>
+  </h2>
+  <p class="cta-p rev">Cada mês sem clareza financeira custa caro. O Wuzo te dá diagnóstico, estratégia e execução — em minutos, não meses.</p>
+  <div class="rev">
+    <a href="https://app.wuzo.com.br" class="btn-main" style="font-size:1rem;padding:18px 60px;">🚀 COMEÇAR AGORA — É GRÁTIS</a>
+  </div>
+  <div class="cta-note rev">SEM CARTÃO DE CRÉDITO · SEM CONTRATO · 100% ONLINE</div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">
-    <span>🚀</span>
-    <span class="footer-logo-text">WUZO</span>
-  </div>
-  <div class="footer-links">
+  <a class="nlogo" href="#" style="text-decoration:none;">
+    <div class="nmark">W</div>
+    <span class="nname" style="font-size:1.1rem;">WUZO</span>
+  </a>
+  <div class="flinks">
     <a href="#how">Como funciona</a>
-    <a href="#features">Módulos</a>
+    <a href="#mods">Módulos</a>
+    <a href="#ai">IA Financeira</a>
+    <a href="#academy">Academy</a>
     <a href="#pricing">Planos</a>
-    <a href="https://huggingface.co/spaces/pirescl/wuzo">Acessar app</a>
+    <a href="https://app.wuzo.com.br">App</a>
   </div>
-  <div class="footer-copy">© 2026 WUZO · SUPER APP FINANCEIRO · TODOS OS DIREITOS RESERVADOS</div>
+  <div class="fcopy">© 2026 WUZO · TODOS OS DIREITOS RESERVADOS</div>
 </footer>
 
 <script>
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(el => {
-      if (el.isIntersecting) el.target.classList.add('visible');
-    });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-</script>
+// ── CURSOR ──
+const c=document.getElementById('c'),cr=document.getElementById('cr');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;c.style.left=mx+'px';c.style.top=my+'px';});
+(function loop(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;cr.style.left=rx+'px';cr.style.top=ry+'px';requestAnimationFrame(loop);})();
 
+// ── NAV ──
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('solid',scrollY>50);
+});
+
+// ── REVEAL ──
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');});},{threshold:.1});
+document.querySelectorAll('.rev').forEach(el=>obs.observe(el));
+</script>
 </body>
 </html>
