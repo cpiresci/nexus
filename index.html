@@ -304,6 +304,8 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
 .rev{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease;}
 .rev.in{opacity:1;transform:none;}
 .d1{transition-delay:.08s;}.d2{transition-delay:.16s;}.d3{transition-delay:.24s;}.d4{transition-delay:.32s;}
+/* AGENT BADGES */
+.mod .md b { font-size:.62rem; letter-spacing:1px; }
 /* COUNTER */
 .counter{display:inline-block;}
 /* RESPONSIVE */
@@ -376,17 +378,17 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
         <a href="#how" class="btn-line">VER COMO FUNCIONA →</a>
       </div>
       <div class="hproof">
-        <div><span class="pn">9</span><span class="pl">MÓDULOS INTEGRADOS</span></div>
-        <div><span class="pn">8B+</span><span class="pl">PARÂMETROS DE IA</span></div>
+        <div><span class="pn">10</span><span class="pl">MÓDULOS INTEGRADOS</span></div>
+        <div><span class="pn">70B+</span><span class="pl">PARÂMETROS DE IA</span></div>
         <div><span class="pn">R$0</span><span class="pl">PARA COMEÇAR</span></div>
         <div><span class="pn">24/7</span><span class="pl">CONSULTOR IA</span></div>
-        <div><span class="pn">10</span><span class="pl">NOTÍCIAS DIÁRIAS</span></div>
+        <div><span class="pn">8</span><span class="pl">AGENTES ESPECIALIZADOS</span></div>
       </div>
     </div>
     <div class="hero-right">
       <div class="fl f1"><div class="fll">SCORE FINANCEIRO</div><div class="flv up">8.2/10</div></div>
       <div class="fl f2"><div class="fll">META: RESERVA</div><div class="flv">68% atingida</div></div>
-      <div class="fl f3"><div class="fll">BTC HOJE</div><div class="flv up">$84.2K</div></div>
+      <div class="fl f3"><div class="fll">BTC HOJE</div><div class="flv up" id="lp-btc-floater">—</div></div>
       <div class="dash">
         <div class="dtop">
           <div class="dtl">
@@ -409,10 +411,10 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
             <div class="dk"><div class="dkl">INSIGHTS</div><div class="dkv g">10/dia</div></div>
           </div>
           <div class="mstrip">
-            <div class="msi"><span class="msin">BTC</span><span class="msiv up">$84.2K</span></div>
-            <div class="msi"><span class="msin">IBOV</span><span class="msiv up">131K</span></div>
-            <div class="msi"><span class="msin">USD</span><span class="msiv dn">R$5.74</span></div>
-            <div class="msi"><span class="msin">SELIC</span><span class="msiv">13.75%</span></div>
+            <div class="msi"><span class="msin">BTC</span><span class="msiv" id="lp-btc-strip">—</span></div>
+            <div class="msi"><span class="msin">IBOV</span><span class="msiv" id="lp-ibov-strip">131K</span></div>
+            <div class="msi"><span class="msin">USD</span><span class="msiv" id="lp-usd-strip">—</span></div>
+            <div class="msi"><span class="msin">SELIC</span><span class="msiv">14.75%</span></div>
           </div>
           <div class="dai" style="margin-top:8px;"><b>⬡ Wuzo AI:</b> Gastos com alimentação 31% da renda — R$400/mês acima do ideal. Redução elimina dívida em 8 meses e libera R$4.800/ano para carteira.</div>
         </div>
@@ -431,11 +433,11 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
     <div class="ti"><span>⬡</span>Metas de Vida com IA</div>
     <div class="ti hot"><span>⬡</span>Consultor IA 24/7 · Contexto Real</div>
     <div class="ti"><span>⬡</span>10 Notícias de Mercado por Dia</div>
-    <div class="ti"><span>⬡</span>BTC · ETH · SOL · IBOV · S&P500</div>
-    <div class="ti"><span>⬡</span>Academy Financeira IA</div>
-    <div class="ti"><span>⬡</span>Diagnóstico Narrativo Completo</div>
+    <div class="ti"><span>⬡</span>BTC · ETH · SOL · BNB · XRP · IBOV · SPY</div>
+    <div class="ti"><span>⬡</span>Academy · 12 Lições · 3 Níveis</div>
+    <div class="ti"><span>⬡</span>Diagnóstico Narrativo 700+ Palavras</div>
     <div class="ti hot"><span>⬡</span>Índice Medo & Ganância Diário</div>
-    <div class="ti"><span>⬡</span>Relatórios PDF Profissionais</div>
+    <div class="ti"><span>⬡</span>8 Agentes IA Especializados · CFA · CFP · Atuarial</div>
     <div class="ti"><span>⬡</span>Alertas Inteligentes Automáticos</div>
     <div class="ti"><span>⬡</span>Referral · +3 Análises por Indicação</div>
     <div class="ti hot"><span>⬡</span>Análise de Extrato PDF · CSV · Texto</div>
@@ -445,11 +447,11 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
     <div class="ti"><span>⬡</span>Metas de Vida com IA</div>
     <div class="ti hot"><span>⬡</span>Consultor IA 24/7 · Contexto Real</div>
     <div class="ti"><span>⬡</span>10 Notícias de Mercado por Dia</div>
-    <div class="ti"><span>⬡</span>BTC · ETH · SOL · IBOV · S&P500</div>
-    <div class="ti"><span>⬡</span>Academy Financeira IA</div>
-    <div class="ti"><span>⬡</span>Diagnóstico Narrativo Completo</div>
+    <div class="ti"><span>⬡</span>BTC · ETH · SOL · BNB · XRP · IBOV · SPY</div>
+    <div class="ti"><span>⬡</span>Academy · 12 Lições · 3 Níveis</div>
+    <div class="ti"><span>⬡</span>Diagnóstico Narrativo 700+ Palavras</div>
     <div class="ti hot"><span>⬡</span>Índice Medo & Ganância Diário</div>
-    <div class="ti"><span>⬡</span>Relatórios PDF Profissionais</div>
+    <div class="ti"><span>⬡</span>8 Agentes IA Especializados · CFA · CFP · Atuarial</div>
     <div class="ti"><span>⬡</span>Alertas Inteligentes Automáticos</div>
     <div class="ti"><span>⬡</span>Referral · +3 Análises por Indicação</div>
   </div>
@@ -469,7 +471,7 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
     <div class="hstep rev d1">
       <div class="hsn">02</div><span class="hsi">🤖</span>
       <div class="hst">IA analisa em segundos</div>
-      <div class="hsd">IA categoriza cada transação, calcula taxa de poupança, detecta padrões comportamentais e gera score financeiro 0–10 com diagnóstico narrativo de 300+ palavras.</div>
+      <div class="hsd">IA categoriza cada transação, calcula taxa de poupança, detecta padrões comportamentais e gera score financeiro 0–10 com diagnóstico narrativo de 700+ palavras.</div>
     </div>
     <div class="hstep rev d2">
       <div class="hsn">03</div><span class="hsi">📊</span>
@@ -484,34 +486,92 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
   </div>
 </section>
 
+
+<!-- AGENTS SECTION -->
+<section style="padding:0 72px 100px;max-width:1320px;margin:0 auto;">
+  <div class="stag rev">Inteligência Especializada</div>
+  <h2 class="sh2 rev">8 agentes de IA.<em> Um para cada missão.</em></h2>
+  <p class="sp rev">Cada módulo usa um agente com identidade, especialização e temperatura calibrada para aquele trabalho específico — não um chatbot genérico respondendo a tudo.</p>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);" class="rev">
+    <div style="background:var(--bg2);padding:28px 24px;transition:background .3s;" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background='var(--bg2)'">
+      <div style="font-size:.52rem;color:var(--g);letter-spacing:3px;margin-bottom:10px;border:1px solid rgba(201,168,76,.2);padding:2px 7px;display:inline-block;">FINANÇAS</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:.88rem;color:#fff;letter-spacing:2px;margin-bottom:7px;">Finance Analyzer</div>
+      <div style="font-size:.7rem;color:var(--tx2);line-height:1.8;margin-bottom:8px;">CFP + Terapeuta Comportamental. Diagnóstico 700+ palavras em 3 passes com benchmarks e plano 30/60/90 dias.</div>
+      <div style="font-size:.52rem;color:var(--tx2);letter-spacing:1px;">temp: 0.3 · max: 4096 tokens</div>
+    </div>
+    <div style="background:var(--bg2);padding:28px 24px;transition:background .3s;" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background='var(--bg2)'">
+      <div style="font-size:.52rem;color:var(--g);letter-spacing:3px;margin-bottom:10px;border:1px solid rgba(201,168,76,.2);padding:2px 7px;display:inline-block;">INVESTIMENTOS</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:.88rem;color:#fff;letter-spacing:2px;margin-bottom:7px;">Portfolio Manager</div>
+      <div style="font-size:.7rem;color:var(--tx2);line-height:1.8;margin-bottom:8px;">CFA Level 3 + CNPI-P. HHI, stress test 3 cenários, benchmark vs CDI/IBOV/BTC, rebalanceamento com custo de IR.</div>
+      <div style="font-size:.52rem;color:var(--tx2);letter-spacing:1px;">temp: 0.2 · max: 4096 tokens</div>
+    </div>
+    <div style="background:var(--bg2);padding:28px 24px;transition:background .3s;" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background='var(--bg2)'">
+      <div style="font-size:.52rem;color:var(--g);letter-spacing:3px;margin-bottom:10px;border:1px solid rgba(201,168,76,.2);padding:2px 7px;display:inline-block;">DÍVIDAS</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:.88rem;color:#fff;letter-spacing:2px;margin-bottom:7px;">Debt Strategist</div>
+      <div style="font-size:.7rem;color:var(--tx2);line-height:1.8;margin-bottom:8px;">Formação atuarial. Planos Avalanche + Snowball + Consolidação com tabela mês a mês, juros totais e impacto no Serasa.</div>
+      <div style="font-size:.52rem;color:var(--tx2);letter-spacing:1px;">temp: 0.1 · max: 4096 tokens</div>
+    </div>
+    <div style="background:var(--bg2);padding:28px 24px;transition:background .3s;" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background='var(--bg2)'">
+      <div style="font-size:.52rem;color:var(--g);letter-spacing:3px;margin-bottom:10px;border:1px solid rgba(201,168,76,.2);padding:2px 7px;display:inline-block;">METAS</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:.88rem;color:#fff;letter-spacing:2px;margin-bottom:7px;">Goals Planner</div>
+      <div style="font-size:.7rem;color:var(--tx2);line-height:1.8;margin-bottom:8px;">CFP especializado. FV=PV×(1+i)ⁿ para 3 cenários reais, tabela 12 meses com magic moment e estratégias de aceleração.</div>
+      <div style="font-size:.52rem;color:var(--tx2);letter-spacing:1px;">temp: 0.2 · max: 4096 tokens</div>
+    </div>
+    <div style="background:var(--bg2);padding:28px 24px;transition:background .3s;" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background='var(--bg2)'">
+      <div style="font-size:.52rem;color:var(--g);letter-spacing:3px;margin-bottom:10px;border:1px solid rgba(201,168,76,.2);padding:2px 7px;display:inline-block;">MARKET INSIGHTS</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:.88rem;color:#fff;letter-spacing:2px;margin-bottom:7px;">Market Intelligence</div>
+      <div style="font-size:.7rem;color:var(--tx2);line-height:1.8;margin-bottom:8px;">Dados reais em tempo real: Yahoo Finance + Polygon.io (preços) e Polygon News + CryptoPanic (notícias). JSON estruturado com sinais e ação recomendada.</div>
+      <div style="font-size:.52rem;color:var(--tx2);letter-spacing:1px;">temp: 0.1 · max: 4096 tokens</div>
+    </div>
+    <div style="background:var(--bg2);padding:28px 24px;transition:background .3s;" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background='var(--bg2)'">
+      <div style="font-size:.52rem;color:var(--g);letter-spacing:3px;margin-bottom:10px;border:1px solid rgba(201,168,76,.2);padding:2px 7px;display:inline-block;">ACADEMY</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:.88rem;color:#fff;letter-spacing:2px;margin-bottom:7px;">Academy Educator</div>
+      <div style="font-size:.7rem;color:var(--tx2);line-height:1.8;margin-bottom:8px;">Profundidade + didática. Artigos de 900+ palavras com tabelas, exemplos para 3 perfis de renda e plano de ação em 5 passos.</div>
+      <div style="font-size:.52rem;color:var(--tx2);letter-spacing:1px;">temp: 0.45 · max: 4096 tokens</div>
+    </div>
+    <div style="background:rgba(201,168,76,.03);border-left:2px solid rgba(201,168,76,.3);padding:28px 24px;transition:background .3s;" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background='rgba(201,168,76,.03)'">
+      <div style="font-size:.52rem;color:var(--g);letter-spacing:3px;margin-bottom:10px;border:1px solid rgba(201,168,76,.2);padding:2px 7px;display:inline-block;">CONSULTOR IA</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:.88rem;color:#fff;letter-spacing:2px;margin-bottom:7px;">AI Advisor</div>
+      <div style="font-size:.7rem;color:var(--tx2);line-height:1.8;margin-bottom:8px;">CFA + CFP + coach ICF. Contexto real do usuário em cada resposta. Detecta vieses cognitivos, calcula FV inline e termina com AÇÃO PARA HOJE.</div>
+      <div style="font-size:.52rem;color:var(--tx2);letter-spacing:1px;">temp: 0.35 · max: 4096 tokens</div>
+    </div>
+    <div style="background:var(--bg2);padding:28px 24px;transition:background .3s;" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background='var(--bg2)'">
+      <div style="font-size:.52rem;color:var(--g);letter-spacing:3px;margin-bottom:10px;border:1px solid rgba(201,168,76,.2);padding:2px 7px;display:inline-block;">FINANÇAS JSON</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:.88rem;color:#fff;letter-spacing:2px;margin-bottom:7px;">Finance Parser</div>
+      <div style="font-size:.7rem;color:var(--tx2);line-height:1.8;margin-bottom:8px;">Extração estruturada pura. Temperatura 0.05 — máxima precisão. Categoriza transações, calcula score 0–10 e gera 5 dicas com R$ economizados.</div>
+      <div style="font-size:.52rem;color:var(--tx2);letter-spacing:1px;">temp: 0.05 · max: 3000 tokens</div>
+    </div>
+  </div>
+</section>
+
 <!-- MODULES -->
 <section id="mods" style="padding:0 72px 120px;max-width:1320px;margin:0 auto;">
   <div class="stag rev">Módulos do App</div>
-  <h2 class="sh2 rev">9 módulos integrados. <em>1 super app.</em></h2>
+  <h2 class="sh2 rev">10 módulos integrados. <em>1 super app.</em></h2>
   <p class="sp rev">Cada módulo usa IA especializada para cobrir o que realmente importa na sua vida financeira — do diagnóstico ao plano de ação.</p>
   <div class="mgrid">
     <div class="mod rev">
       <div class="mn">01</div><span class="mi">💰</span>
       <div class="mt">Finanças</div>
-      <div class="md">Importe PDF, CSV ou texto. A IA faz duas análises paralelas: estrutura JSON com transações categorizadas, score ponderado e alertas; diagnóstico narrativo completo de 300+ palavras com perfil comportamental, padrões detectados e plano de ação em 6 seções.</div>
+      <div class="md"><b style="color:var(--g)">2 agentes IA especializados:</b> <em>Parser</em> extrai transações, calcula score 0–10 e gera alertas em JSON; <em>Finance Analyzer</em> (CFP + terapeuta comportamental) escreve diagnóstico de 700+ palavras em 3 passes — perfil, radiografia dos gastos com benchmarks, saúde financeira, riscos em R$ e plano 30/60/90 dias.</div>
       <div class="mchips"><span class="chip">PDF · CSV · Texto</span><span class="chip">Histórico mensal</span><span class="chip gd">Score IA 0–10</span><span class="chip gd">Diagnóstico 300+ palavras</span><span class="chip new">Perfil comportamental</span></div>
     </div>
     <div class="mod rev d1">
       <div class="mn">02</div><span class="mi">📈</span>
       <div class="mt">Investimentos</div>
-      <div class="md">Monte e monitore carteira com Tesouro, CDB, LCI/LCA, Ações, FIIs, ETFs, Cripto, Poupança, Previdência. IA analisa em 6 partes: diagnóstico, concentração, benchmark (CDI/IBOV/BTC), riscos em R$, rebalanceamento e 5 ações priorizadas.</div>
+      <div class="md"><b style="color:var(--g)">Agente: WUZO Portfolio Manager</b> (CFA Level 3 + CNPI-P). Analisa 5 seções: diagnóstico com HHI de concentração, stress test 3 cenários em R$, benchmark vs CDI/IBOV/S&P500 com cálculo de alpha, rebalanceamento cirúrgico com custo de IR, e Top 5 ações com ticker, stop loss e target.</div>
       <div class="mchips"><span class="chip">11 tipos de ativo</span><span class="chip">Alocação %</span><span class="chip gd">Análise 6 partes IA</span><span class="chip gd">Benchmark real</span></div>
     </div>
     <div class="mod rev d2">
       <div class="mn">03</div><span class="mi">💳</span>
       <div class="mt">Dívidas</div>
-      <div class="md">Cadastre cartão, empréstimo, financiamento imobiliário, veicular e estudantil. IA cria 3 planos: Avalanche (menor custo), Snowball (maior motivação) e Consolidação — cada um com cronograma mes a mes, juros totais e data de quitação.</div>
-      <div class="mchips"><span class="chip">6 categorias</span><span class="chip">3 planos IA</span><span class="chip gd">Cronograma 6 meses</span><span class="chip new">Impacto score Serasa</span></div>
+      <div class="md"><b style="color:var(--g)">Agente: WUZO Debt Strategist</b> (formação atuarial). 3 planos com matemática exata: <em>Avalanche</em> (menor custo total), <em>Snowball</em> (quick wins motivacionais) e <em>Consolidação</em> — tabela mês a mês 12 meses, juros economizados, data de quitação e impacto no score Serasa.</div>
+      <div class="mchips"><span class="chip">6 categorias</span><span class="chip">3 planos IA</span><span class="chip gd">Cronograma 12 meses</span><span class="chip new">Impacto score Serasa</span></div>
     </div>
     <div class="mod rev">
       <div class="mn">04</div><span class="mi">🎯</span>
       <div class="mt">Metas de Vida</div>
-      <div class="md">Casa, Carro, Viagem, Educação, Casamento, Aposentadoria ou Reserva. IA cria plano com 3 cenários (conservador, moderado, agressivo), produtos ideais recomendados, marco mensal por 12 meses e gatilho de alerta personalizado.</div>
+      <div class="md"><b style="color:var(--g)">Agente: WUZO Goals Planner</b> (CFP). Usa fórmula FV = PV×(1+i)ⁿ + PMT×... para 3 cenários reais: conservador (CDI 0,87%/mês), moderado (IPCA+6%) e agressivo (IBOV 1,5%/mês). Tabela 12 meses com <em>magic moment</em> (juro supera o aporte) e plano de aceleração.</div>
       <div class="mchips"><span class="chip">9 categorias</span><span class="chip">3 cenários de risco</span><span class="chip gd">Marco mensal IA</span><span class="chip new">Gatilho de alerta</span></div>
     </div>
     <div class="mod rev d1">
@@ -523,8 +583,8 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
     <div class="mod rev d2">
       <div class="mn">06</div><span class="mi">🎓</span>
       <div class="mt">Academy</div>
-      <div class="md">9+ aulas geradas por IA — do básico ao avançado. Juros compostos, alocação de ativos, DeFi, Solana, yield farming, otimização fiscal, PGBL/VGBL, holding familiar. Cada lição com exemplos do cenário atual e exportação em PDF.</div>
-      <div class="mchips"><span class="chip">9+ aulas</span><span class="chip">3 níveis</span><span class="chip gd">Gerada por IA</span><span class="chip gd">Exclusivo PRO</span></div>
+      <div class="md">12+ aulas geradas por IA — do básico ao avançado. Juros compostos, alocação de ativos, DeFi, Solana, yield farming, otimização fiscal, PGBL/VGBL, holding familiar. Cada lição com exemplos do cenário atual e exportação em PDF.</div>
+      <div class="mchips"><span class="chip">12+ aulas</span><span class="chip">3 níveis</span><span class="chip gd">Gerada por IA</span><span class="chip gd">Exclusivo PRO</span></div>
     </div>
     <div class="mod highlight rev">
       <div class="mn">+</div><span class="mi">⬡</span>
@@ -535,8 +595,8 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
     <div class="mod rev d1">
       <div class="mn">+</div><span class="mi">🤖</span>
       <div class="mt">Consultor IA 24/7</div>
-      <div class="md">Chat especialista com contexto real do usuário: histórico financeiro, dívidas, metas e investimentos alimentam cada resposta. CDI, PGBL, FGTS, consórcio, FIIs — qualquer dúvida, qualquer hora. Memória de conversa de 6 turnos.</div>
-      <div class="mchips"><span class="chip">Contexto real</span><span class="chip">Histórico 6 turnos</span><span class="chip gd">Nível CFA + CFP</span><span class="chip gd">Ilimitado PRO</span></div>
+      <div class="md">Chat especialista com contexto real do usuário: histórico financeiro, dívidas, metas e investimentos alimentam cada resposta. CDI, PGBL, FGTS, consórcio, FIIs — qualquer dúvida, qualquer hora. Memória persistente de até 50 mensagens salvas no banco de dados.</div>
+      <div class="mchips"><span class="chip">Contexto real</span><span class="chip">Memória persistente</span><span class="chip gd">Nível CFA + CFP</span><span class="chip gd">Ilimitado PRO</span></div>
     </div>
     <div class="mod rev d2">
       <div class="mn">+</div><span class="mi">📥</span>
@@ -606,7 +666,7 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
         <div style="font-size:.66rem;color:var(--g);margin-top:10px;line-height:1.7;border-top:1px solid var(--bd);padding-top:10px;">⬡ SELIC alta beneficia renda fixa: CDB 110% CDI rende ~15% bruto ao ano. Momento ideal para aumentar posição em pós-fixados enquanto aguarda clareza sobre trajetória de juros.</div>
       </div>
     </div>
-    <p style="font-size:.62rem;color:var(--tx2);letter-spacing:2px;margin-top:16px;text-align:center;" class="rev">⬡ AMOSTRA · WUZO GERA 10 NOTÍCIAS REAIS ATUALIZADAS DIARIAMENTE COM IA · DISPONÍVEL NO APP</p>
+    <p style="font-size:.62rem;color:var(--tx2);letter-spacing:2px;margin-top:16px;text-align:center;" class="rev">⬡ AMOSTRA · WUZO GERA 8+ NOTÍCIAS COM DADOS REAIS: POLYGON.IO + CRYPTOPANIC + YAHOO FINANCE · DISPONÍVEL NO APP</p>
   </div>
 </section>
 
@@ -616,12 +676,12 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
     <div>
       <div class="stag rev">Consultor IA</div>
       <h2 class="sh2 rev">Não é um chatbot.<br><em>É seu CFO pessoal.</em></h2>
-      <p class="sp rev" style="margin-bottom:0;">O Consultor IA combina o rigor de um <b style="color:var(--tx)">CFA + CFP + MBA em Finanças Comportamentais</b> com contexto real sobre suas finanças.<br><br>Cada resposta usa seu histórico completo, dívidas, metas e investimentos. Cita números concretos, percentuais reais e termina sempre com <b style="color:var(--tx)">1 ação executável hoje</b>.</p>
+      <p class="sp rev" style="margin-bottom:0;">O <b style="color:var(--tx)">WUZO AI Advisor</b> combina CFA + CFP + coach ICF com contexto real sobre suas finanças.<br><br>Cada resposta usa seu histórico completo, dívidas, metas e investimentos. Calcula <b style="color:var(--tx)">FV = PV×(1+i)ⁿ</b> inline, identifica vieses cognitivos (loss aversion, hyperbolic discounting) e termina sempre com <b style="color:var(--tx)">AÇÃO PARA HOJE</b> com app, valor e horário específicos.</p>
       <div class="aifacts rev" style="margin-top:40px;">
-        <div class="af"><span class="afn">8B+</span><span class="afl">PARÂMETROS DE IA</span></div>
-        <div class="af"><span class="afn">&lt;3s</span><span class="afl">TEMPO DE RESPOSTA</span></div>
+        <div class="af"><span class="afn">8</span><span class="afl">AGENTES ESPECIALIZADOS</span></div>
+        <div class="af"><span class="afn">70B+</span><span class="afl">PARÂMETROS IA</span></div>
         <div class="af"><span class="afn">24/7</span><span class="afl">DISPONÍVEL</span></div>
-        <div class="af"><span class="afn">6</span><span class="afl">TURNOS DE MEMÓRIA</span></div>
+        <div class="af"><span class="afn">50</span><span class="afl">MSGS PERSISTENTES</span></div>
       </div>
     </div>
     <div class="aichat rev">
@@ -630,7 +690,7 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
           <div class="chav">⬡</div>
           <div><div class="chn">WUZO AI ADVISOR</div><div class="chs">● Online agora</div></div>
         </div>
-        <div style="font-size:.52rem;color:var(--tx2);letter-spacing:2px;">Cerebras · 8B</div>
+        <div style="font-size:.52rem;color:var(--tx2);letter-spacing:2px;">llama-3.3-70b · 70B</div>
       </div>
       <div class="chb">
         <div class="msg us">Vale a pena pagar meu financiamento antes ou investir o dinheiro extra?</div>
@@ -647,7 +707,7 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
 <section id="academy" class="sec">
   <div class="stag rev">Wuzo Academy</div>
   <h2 class="sh2 rev">Aprenda finanças com <em>IA como professor.</em></h2>
-  <p class="sp rev">Aulas geradas por IA com exemplos do cenário atual. Do básico ao avançado — juros compostos, DeFi, otimização fiscal, holding familiar. Exclusivo PRO.</p>
+  <p class="sp rev">Aulas geradas por IA com exemplos do cenário atual. Do básico ao avançado — juros compostos, Bitcoin 2026, DeFi, Factor Investing, otimização fiscal, estratégias com opções. 12 lições, 3 níveis. Exclusivo PRO.</p>
   <div class="acadgrid">
     <div class="les rev"><span class="lcat">MENTALIDADE</span><span class="llvl">INICIANTE</span><div class="lt">Plano de Liberdade Financeira</div><div class="ld">Os 4 pilares da independência: ativos, renda passiva, alavancagem e tempo.</div><div class="ldur">⏱ <span>8 min</span></div></div>
     <div class="les rev d1"><span class="lcat">INVESTIMENTOS</span><span class="llvl">INICIANTE</span><div class="lt">Juros Compostos: A 8ª Maravilha</div><div class="ld">R$500/mês → R$1,2M em 30 anos. A matemática que transforma disciplina em riqueza.</div><div class="ldur">⏱ <span>6 min</span></div></div>
@@ -658,6 +718,9 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
     <div class="les rev"><span class="lcat">CRIPTO</span><span class="llvl adv">AVANÇADO</span><div class="lt">Estratégia Solana 2026</div><div class="ld">Protocolos DeFi líderes, gestão de risco em on-chain e alocação segura.</div><div class="ldur">⏱ <span>12 min</span></div></div>
     <div class="les rev d1"><span class="lcat">CRIPTO</span><span class="llvl adv">AVANÇADO</span><div class="lt">DeFi Yield Farming</div><div class="ld">Pools de liquidez, perda impermanente, APY vs APR. Renda passiva com risco calculado.</div><div class="ldur">⏱ <span>14 min</span></div></div>
     <div class="les rev d2"><span class="lcat">IMPOSTOS</span><span class="llvl adv">AVANÇADO</span><div class="lt">Otimização Fiscal Global</div><div class="ld">PGBL, holding familiar, residência fiscal e diferimento de IR. 100% legal.</div><div class="ldur">⏱ <span>15 min</span></div></div>
+    <div class="les rev"><span class="lcat">CRIPTO</span><span class="llvl adv">AVANÇADO</span><div class="lt">Bitcoin Thesis 2026</div><div class="ld">Caso macro para BTC como ouro digital: escassez, halvings, adoção institucional e modelos de preço.</div><div class="ldur">⏱ <span>10 min</span></div></div>
+    <div class="les rev d1"><span class="lcat">RIQUEZA</span><span class="llvl adv">AVANÇADO</span><div class="lt">Estratégias com Opções para Renda</div><div class="ld">Covered calls e puts para gerar renda mensal sobre a carteira existente. Risco controlado.</div><div class="ldur">⏱ <span>13 min</span></div></div>
+    <div class="les rev d2"><span class="lcat">INVESTIMENTOS</span><span class="llvl adv">AVANÇADO</span><div class="lt">Factor Investing e Smart Beta</div><div class="ld">Value, momentum, quality e low-vol — como bater o mercado com ETFs comprovadamente.</div><div class="ldur">⏱ <span>12 min</span></div></div>
   </div>
   <p style="font-size:.62rem;color:var(--tx2);letter-spacing:2px;margin-top:18px;text-align:center;" class="rev">⬡ ACADEMY COMPLETA DISPONÍVEL NO PLANO PRO · ACESSO IMEDIATO APÓS ASSINAR</p>
 </section>
@@ -665,8 +728,8 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
 <!-- NUMBERS -->
 <div style="padding:0 72px;max-width:1320px;margin:0 auto;" class="rev">
   <div class="nums">
-    <div class="nb"><span class="nbn counter" data-target="9">0</span><span class="nbl">MÓDULOS INTEGRADOS</span></div>
-    <div class="nb"><span class="nbn">8B+</span><span class="nbl">PARÂMETROS IA</span></div>
+    <div class="nb"><span class="nbn counter" data-target="10">0</span><span class="nbl">MÓDULOS INTEGRADOS</span></div>
+    <div class="nb"><span class="nbn">8</span><span class="nbl">AGENTES ESPECIALIZADOS</span></div>
     <div class="nb"><span class="nbn counter" data-target="10">0</span><span class="nbl">NOTÍCIAS/DIA</span></div>
     <div class="nb"><span class="nbn counter" data-target="5">0</span><span class="nbl">ANÁLISES GRÁTIS/MÊS</span></div>
     <div class="nb"><span class="nbn counter" data-target="3">0</span><span class="nbl">IDIOMAS SUPORTADOS</span></div>
@@ -749,8 +812,8 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
         <li class="on"><span class="ck">✓</span>Consultor IA (5 perguntas/mês)</li>
         <li class="on"><span class="ck">✓</span>+2 análises bônus por indicação recebida</li>
         <li><span class="cx">✕</span>Market Insights diário (10 notícias)</li>
-        <li><span class="cx">✕</span>Academy — todas as aulas</li>
-        <li><span class="cx">✕</span>Diagnóstico narrativo completo</li>
+        <li><span class="cx">✕</span>Academy — 12+ aulas PRO</li>
+        <li><span class="cx">✕</span>Diagnóstico narrativo 700+ palavras (PRO)</li>
         <li><span class="cx">✕</span>Relatórios PDF ilimitados</li>
       </ul>
       <a href="https://app.wuzo.com.br" class="pbtn gh">COMEÇAR GRÁTIS</a>
@@ -762,13 +825,13 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
       <div class="pper">POR MÊS · CANCELE QUANDO QUISER</div>
       <ul class="plist">
         <li class="on"><span class="ck">✓</span><b>Análises de extrato ilimitadas</b></li>
-        <li class="on"><span class="ck">✓</span><b>Diagnóstico narrativo 300+ palavras</b></li>
+        <li class="on"><span class="ck">✓</span><b>Diagnóstico narrativo 700+ palavras</b></li>
         <li class="on"><span class="ck">✓</span>Dashboard + todos os módulos PRO</li>
         <li class="on"><span class="ck">✓</span>Dívidas — 3 planos IA + cronograma</li>
         <li class="on"><span class="ck">✓</span>Investimentos — análise 6 partes</li>
         <li class="on"><span class="ck">✓</span><b>Consultor IA ilimitado · CFA nível</b></li>
         <li class="on"><span class="ck">✓</span><b>Market Insights · 10 notícias/dia</b></li>
-        <li class="on"><span class="ck">✓</span><b>Academy completa · 9+ aulas PRO</b></li>
+        <li class="on"><span class="ck">✓</span><b>Academy completa · 12+ aulas PRO</b></li>
         <li class="on"><span class="ck">✓</span>Metas ilimitadas + plano 3 cenários</li>
         <li class="on"><span class="ck">✓</span>Relatórios PDF profissionais ilimitados</li>
         <li class="on"><span class="ck">✓</span>Suporte prioritário</li>
@@ -786,7 +849,7 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
   <div class="faq-wrap rev">
     <div class="faq-item">
       <div class="faq-q" onclick="toggleFaq(this)">Meus dados bancários ficam salvos no Wuzo? <span class="faq-icon">+</span></div>
-      <div class="faq-a">Não armazenamos credenciais bancárias. Você importa apenas o extrato (PDF, CSV ou texto) — o Wuzo analisa o conteúdo e armazena somente as transações categorizadas e os resultados da análise no banco de dados.</div>
+      <div class="faq-a">Não armazenamos credenciais bancárias. Você importa apenas o extrato (PDF, CSV ou texto) — o Wuzo analisa o conteúdo e armazena somente as transações categorizadas e os resultados da análise em banco de dados PostgreSQL criptografado. Seus dados financeiros nunca são compartilhados com terceiros.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q" onclick="toggleFaq(this)">Que bancos e formatos são aceitos? <span class="faq-icon">+</span></div>
@@ -794,7 +857,7 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
     </div>
     <div class="faq-item">
       <div class="faq-q" onclick="toggleFaq(this)">O Market Insights usa dados reais ou a IA inventa? <span class="faq-icon">+</span></div>
-      <div class="faq-a">A IA usa seu conhecimento treinado em dados financeiros reais para gerar análises de mercado. As notícias refletem o contexto econômico mais recente disponível no modelo. Para precisão máxima em operações, sempre confirme em fontes como Bloomberg ou Reuters.</div>
+      <div class="faq-a">O Market Insights usa dados reais em tempo real: preços de cripto via Yahoo Finance (BTC, ETH, SOL, BNB, XRP), ações via Polygon.io (TSLA, AAPL, SPY) e notícias via Polygon News API + CryptoPanic. A IA analisa esses dados reais para gerar o briefing diário — não são informações inventadas.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q" onclick="toggleFaq(this)">Posso cancelar o PRO a qualquer momento? <span class="faq-icon">+</span></div>
@@ -841,7 +904,7 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
 </footer>
 
 <script>
-// Cursor
+// ── CURSOR ────────────────────────────────────────────────────────────────────
 const c=document.getElementById('c'),cr=document.getElementById('cr');
 let mx=0,my=0,rx=0,ry=0;
 document.addEventListener('mousemove',e=>{
@@ -855,46 +918,227 @@ document.querySelectorAll('a,.hstep,.mod,.testi,.les,.nb,.faq-q').forEach(el=>{
 });
 (function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;cr.style.left=rx+'px';cr.style.top=ry+'px';requestAnimationFrame(loop);})();
 
-// Nav scroll
+// ── NAV SCROLL ────────────────────────────────────────────────────────────────
 window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('solid',scrollY>50);});
 
-// Reveal on scroll
+// ── REVEAL ON SCROLL ──────────────────────────────────────────────────────────
 const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');});},{threshold:.08});
 document.querySelectorAll('.rev').forEach(el=>obs.observe(el));
 
-// Counter animation
+// ── COUNTER ANIMATION ─────────────────────────────────────────────────────────
 const counterObs=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
     if(e.isIntersecting){
-      const el=e.target;
-      const target=parseInt(el.dataset.target);
+      const el=e.target,target=parseInt(el.dataset.target);
       let cur=0;
       const step=Math.ceil(target/20);
-      const t=setInterval(()=>{
-        cur=Math.min(cur+step,target);
-        el.textContent=cur;
-        if(cur>=target)clearInterval(t);
-      },60);
+      const t=setInterval(()=>{cur=Math.min(cur+step,target);el.textContent=cur;if(cur>=target)clearInterval(t);},60);
       counterObs.unobserve(el);
     }
   });
 },{threshold:.5});
 document.querySelectorAll('.counter').forEach(el=>counterObs.observe(el));
 
-// FAQ toggle
+// ── FAQ ───────────────────────────────────────────────────────────────────────
 function toggleFaq(el){
-  const item=el.parentElement;
-  const isOpen=item.classList.contains('open');
+  const item=el.parentElement,isOpen=item.classList.contains('open');
   document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
   if(!isOpen)item.classList.add('open');
 }
 
-// Ticker live-ish update sim
-const tickers=[
-  {name:'BTC',val:'$84.2K',up:true},{name:'ETH',val:'$3.85K',up:true},
-  {name:'SOL',val:'$142',up:false},{name:'IBOV',val:'131.4K',up:true},
-  {name:'USD',val:'R$5.74',up:false},{name:'GOLD',val:'$3,050',up:true}
-];
+// ── LIVE PRICES — APIs com CORS nativo (sem proxy, sem cache) ────────────────
+// 1. Coinbase Public API  — CORS aberto, sem chave, dados frescos
+// 2. CoinCap API          — CORS aberto, sem chave, tempo real
+// 3. Blockchain.info      — CORS aberto, sem chave, fallback final
+
+function fmt_price(v, sym) {
+  if (sym === 'btc') return v >= 1000 ? (v/1000).toFixed(1)+'K' : v.toFixed(0);
+  if (v >= 1000) return (v/1000).toFixed(1)+'K';
+  if (v >= 100)  return v.toFixed(0);
+  return v.toFixed(2);
+}
+
+function set_price(id, text, change) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = text;
+  if (change !== null) {
+    el.className = el.className.replace(/\bup\b|\bdn\b/g,'').trim();
+    el.classList.add(change >= 0 ? 'up' : 'dn');
+  }
+}
+
+function set_signal(sym, change) {
+  const sig = [...document.querySelectorAll('.sig')]
+    .find(s => s.querySelector('.sig-name')?.textContent.trim() === sym)
+    ?.querySelector('.sig-val');
+  if (!sig) return;
+  const val = change > 1.5 ? 'BUY' : change < -1.5 ? 'SELL' : 'WATCH';
+  sig.textContent = val;
+  sig.className   = 'sig-val ' + (val === 'BUY' ? 'buy' : val === 'SELL' ? 'sell' : 'watch');
+}
+
+function set_live_badge(ok, source) {
+  let badge = document.getElementById('lp-live-badge');
+  if (!badge) {
+    const floater = document.querySelector('.fl.f3');
+    if (!floater) return;
+    badge = document.createElement('div');
+    badge.id = 'lp-live-badge';
+    badge.style.cssText = 'font-size:.44rem;letter-spacing:2px;margin-top:3px;';
+    floater.appendChild(badge);
+  }
+  badge.textContent = ok ? `● LIVE · ${source}` : '● OFFLINE';
+  badge.style.color = ok ? '#5dba88' : '#e05252';
+}
+
+// ── SOURCE 1: Coinbase (CORS nativo, mais rápido) ─────────────────────────────
+async function btc_coinbase() {
+  try {
+    // Spot price — sem variação 24h, usamos 2 chamadas
+    const [spot, day] = await Promise.all([
+      fetch('https://api.coinbase.com/v2/prices/BTC-USD/spot',       { signal: AbortSignal.timeout(4000) }),
+      fetch('https://api.coinbase.com/v2/prices/BTC-USD/buy',        { signal: AbortSignal.timeout(4000) }),
+    ]);
+    const s = await spot.json();
+    const price = parseFloat(s?.data?.amount);
+    if (!price || price < 1000) return null;
+    // Variação 24h via stats endpoint
+    const stats = await fetch('https://api.coinbase.com/v2/assets/spot?base=BTC', { signal: AbortSignal.timeout(3000) }).catch(()=>null);
+    let change = 0;
+    if (stats?.ok) {
+      const sd = await stats.json().catch(()=>null);
+      change = parseFloat(sd?.data?.percent_change_24h || 0);
+    }
+    return { price, change, source: 'Coinbase' };
+  } catch { return null; }
+}
+
+// ── SOURCE 2: CoinCap (CORS nativo, dados em tempo real) ─────────────────────
+async function btc_coincap() {
+  try {
+    const r = await fetch('https://api.coincap.io/v2/assets/bitcoin', { signal: AbortSignal.timeout(4000) });
+    if (!r.ok) return null;
+    const d = await r.json();
+    const price  = parseFloat(d?.data?.priceUsd);
+    const change = parseFloat(d?.data?.changePercent24Hr || 0);
+    if (!price || price < 1000) return null;
+    return { price, change, source: 'CoinCap' };
+  } catch { return null; }
+}
+
+// ── SOURCE 3: Blockchain.info (CORS nativo, fallback final) ──────────────────
+async function btc_blockchain() {
+  try {
+    const r = await fetch('https://blockchain.info/ticker', { signal: AbortSignal.timeout(4000) });
+    if (!r.ok) return null;
+    const d = await r.json();
+    const price = d?.USD?.last;
+    if (!price || price < 1000) return null;
+    return { price, change: 0, source: 'Blockchain' };
+  } catch { return null; }
+}
+
+// ── ETH via CoinCap ───────────────────────────────────────────────────────────
+async function eth_coincap() {
+  try {
+    const r = await fetch('https://api.coincap.io/v2/assets/ethereum', { signal: AbortSignal.timeout(4000) });
+    if (!r.ok) return null;
+    const d = await r.json();
+    return { price: parseFloat(d?.data?.priceUsd), change: parseFloat(d?.data?.changePercent24Hr || 0) };
+  } catch { return null; }
+}
+
+// ── SOL via CoinCap ───────────────────────────────────────────────────────────
+async function sol_coincap() {
+  try {
+    const r = await fetch('https://api.coincap.io/v2/assets/solana', { signal: AbortSignal.timeout(4000) });
+    if (!r.ok) return null;
+    const d = await r.json();
+    return { price: parseFloat(d?.data?.priceUsd), change: parseFloat(d?.data?.changePercent24Hr || 0) };
+  } catch { return null; }
+}
+
+// ── USD/BRL via exchangerate-api (CORS nativo) ────────────────────────────────
+async function usd_brl() {
+  try {
+    const r = await fetch('https://open.er-api.com/v6/latest/USD', { signal: AbortSignal.timeout(4000) });
+    if (!r.ok) return null;
+    const d = await r.json();
+    return d?.rates?.BRL ? parseFloat(d.rates.BRL) : null;
+  } catch { return null; }
+}
+
+// ── UPDATE PRINCIPAL ──────────────────────────────────────────────────────────
+async function update_live_prices() {
+  // BTC: tenta as 3 fontes em cascata até uma responder
+  let btc = await btc_coincap();              // mais rápido e confiável
+  if (!btc?.price) btc = await btc_coinbase();
+  if (!btc?.price) btc = await btc_blockchain();
+
+  if (btc?.price) {
+    const fmt = '$' + fmt_price(btc.price, 'btc');
+    set_price('lp-btc-floater', fmt, btc.change);
+    set_price('lp-btc-strip',   fmt, btc.change);
+    set_signal('BTC', btc.change);
+    set_live_badge(true, btc.source);
+
+    // Atualiza mock do dashboard com preço real
+    const aiLine = document.querySelector('.dai');
+    if (aiLine && btc.price) {
+      aiLine.innerHTML = aiLine.innerHTML.replace(
+        /\$[\d.,]+K?(?= de BTC| BTC)/g,
+        '$' + fmt_price(btc.price, 'btc')
+      );
+    }
+  } else {
+    set_live_badge(false, '');
+  }
+
+  // ETH e SOL em paralelo
+  const [eth, sol] = await Promise.all([eth_coincap(), sol_coincap()]);
+  if (eth?.price) set_signal('ETH', eth.change);
+  if (sol?.price) set_signal('SOL', sol.change);
+
+  // USD/BRL
+  const brl = await usd_brl();
+  if (brl) set_price('lp-usd-strip', 'R$' + brl.toFixed(2), null);
+
+  // Atualiza ticker BTC com preço real
+  if (btc?.price) {
+    document.querySelectorAll('.ti').forEach(ti => {
+      if (ti.textContent.includes('BTC ·') || ti.textContent.includes('BTC·')) {
+        const arrow = (btc.change || 0) >= 0 ? ' ↑' : ' ↓';
+        ti.querySelector('span').nextSibling && (
+          ti.innerHTML = ti.innerHTML.replace(
+            /BTC[^·]*/,
+            `BTC $${fmt_price(btc.price,'btc')}${arrow} · `
+          )
+        );
+      }
+    });
+  }
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Loading state
+  ['lp-btc-floater','lp-btc-strip'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.textContent = '...'; el.style.opacity = '.5'; }
+  });
+
+  // Busca imediata
+  update_live_prices().then(() => {
+    ['lp-btc-floater','lp-btc-strip','lp-usd-strip'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.opacity = '1';
+    });
+  });
+
+  // Refresh a cada 30 segundos
+  setInterval(update_live_prices, 30_000);
+});
 </script>
 </body>
 </html>
