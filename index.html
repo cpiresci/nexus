@@ -1,26 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wuzo — Institutional-grade financial AI. Free to start.</title>
-<meta name="description" content="Wuzo is a 10-module AI finance super app with 8 specialized agents. Upload a bank statement → 700+ word diagnosis. Debt plans, portfolio analysis, life goals, real-time market insights. Free to start.">
-<meta property="og:title" content="Wuzo — Institutional-grade financial AI. Free to start.">
-<meta property="og:description" content="8 specialized AI agents for complete financial clarity. Upload a statement → instant diagnosis. Free.">
+<meta name="description" content="Wuzo analisa extratos, controla dívidas, investimentos e metas com IA de nível institucional. 10 módulos integrados, Market Insights em tempo real, Consultor IA 24/7. Comece grátis.">
+<meta property="og:title" content="Wuzo — Super App Financeiro com IA">
+<meta property="og:description" content="Diagnóstico financeiro completo em segundos. IA que conhece sua situação real.">
 <meta name="theme-color" content="#050503">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --g:#c9a84c;--g2:#e8c97a;--g3:rgba(201,168,76,.12);--g4:rgba(201,168,76,.06);
-  --bg:#050503;--bg2:#0b0b08;--bg3:#11110d;--bg4:#17170f;
-  --tx:#ccc8b8;--tx2:#605c4e;--tx3:#2e2c24;
-  --bd:rgba(201,168,76,.1);--bd2:rgba(201,168,76,.22);--bd3:rgba(201,168,76,.35);
+  --g:#e8c97a;--g2:#f5dfa0;--g3:rgba(201,168,76,.12);--g4:rgba(201,168,76,.06);
+  --bg:#020201;--bg2:#080806;--bg3:#0e0e0a;--bg4:#141410;
+  --tx:#f0ece2;--tx2:#c4bca8;--tx3:#8a8070;
+  --bd:rgba(232,201,122,.15);--bd2:rgba(232,201,122,.30);--bd3:rgba(232,201,122,.45);
   --red:#e05252;--grn:#5dba88;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--tx);font-family:'IBM Plex Mono',monospace;overflow-x:hidden;}
+body{background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-family:'IBM Plex Mono',monospace;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;z-index:9997;pointer-events:none;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");opacity:.8;}
 /* CURSOR */
@@ -75,7 +75,7 @@ h1 em{font-family:'Libre Baskerville',serif;font-style:italic;font-weight:400;co
 .btn-line:hover{background:var(--g4);border-color:var(--g);}
 .hproof{display:flex;gap:24px;margin-top:32px;padding-top:24px;border-top:1px solid var(--bd);opacity:0;animation:up .8s .5s ease forwards;flex-wrap:wrap;}
 .pn{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;color:var(--g);display:block;line-height:1;}
-.pl{font-size:.56rem;color:var(--tx2);letter-spacing:2px;margin-top:4px;display:block;}
+.pl{font-size:.68rem;color:#c4bca8;letter-spacing:2px;margin-top:4px;display:block;}
 /* HERO VISUAL */
 .hero-right{opacity:0;animation:up .9s .5s ease forwards;position:relative;}
 .dash{background:var(--bg2);border:1px solid var(--bd);position:relative;overflow:hidden;}
@@ -122,7 +122,7 @@ h1 em{font-family:'Libre Baskerville',serif;font-style:italic;font-weight:400;co
 .ticker:hover{animation-play-state:paused;}
 .ti{font-size:.6rem;letter-spacing:3px;color:var(--tx2);padding:0 26px;border-right:1px solid var(--bd);white-space:nowrap;text-transform:uppercase;}
 .ti span{color:var(--g);margin-right:7px;}
-.ti.hot{color:var(--tx);}
+.ti.hot{color:#f0ece2;}
 .ti.hot span{color:var(--g2);}
 @keyframes tick{from{transform:translateX(0);}to{transform:translateX(-50%);}}
 /* SECTIONS */
@@ -171,8 +171,8 @@ h1 em{font-family:'Libre Baskerville',serif;font-style:italic;font-weight:400;co
 .chs{font-size:.52rem;color:var(--grn);letter-spacing:2px;}
 .chb{padding:18px;display:flex;flex-direction:column;gap:11px;}
 .msg{padding:10px 14px;font-size:.73rem;line-height:1.75;max-width:90%;}
-.msg.ai{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.14);color:var(--tx);}
-.msg.us{align-self:flex-end;background:var(--bg4);border:1px solid var(--bd);color:var(--tx2);}
+.msg.ai{background:rgba(232,201,122,.09);border:1px solid rgba(232,201,122,.22);color:#f0ece2;}
+.msg.us{align-self:flex-end;background:var(--bg4);border:1px solid var(--bd);color:#d8d4c8;}
 .msg b{color:var(--g);}
 .mblink{display:flex;gap:4px;align-items:center;padding:10px 14px;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.1);max-width:56px;opacity:0;animation:pop .5s 3.5s ease forwards;}
 @keyframes pop{to{opacity:1;}}
@@ -203,7 +203,7 @@ h1 em{font-family:'Libre Baskerville',serif;font-style:italic;font-weight:400;co
 .mood-pill.neu{border-color:var(--bd);color:var(--tx2);}
 .signal-row{display:grid;grid-template-columns:repeat(8,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);}
 .sig{background:var(--bg2);padding:14px;text-align:center;}
-.sig-name{font-size:.56rem;color:var(--tx2);letter-spacing:2px;margin-bottom:6px;}
+.sig-name{font-size:.70rem;color:#c4bca8;letter-spacing:2px;margin-bottom:6px;}
 .sig-val{font-family:'Bebas Neue',sans-serif;font-size:.85rem;letter-spacing:1px;}
 .sig-val.buy{color:var(--g);}
 .sig-val.sell{color:var(--red);}
@@ -218,7 +218,7 @@ h1 em{font-family:'Libre Baskerville',serif;font-style:italic;font-weight:400;co
 .llvl.int{border-color:rgba(93,186,136,.25);color:var(--grn);}
 .lt{font-family:'Bebas Neue',sans-serif;font-size:.92rem;color:#fff;letter-spacing:2px;margin-bottom:9px;line-height:1.3;}
 .ld{font-size:.71rem;color:var(--tx2);line-height:1.8;margin-bottom:11px;}
-.ldur{font-size:.56rem;color:var(--tx2);letter-spacing:2px;}
+.ldur{font-size:.68rem;color:#b8b09e;letter-spacing:2px;}
 .ldur span{color:var(--g);}
 /* NUMBERS */
 .nums{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);}
@@ -265,7 +265,7 @@ h1 em{font-family:'Libre Baskerville',serif;font-style:italic;font-weight:400;co
 .pper{font-size:.58rem;color:var(--tx2);letter-spacing:2px;margin:5px 0 36px;}
 .plist{list-style:none;margin-bottom:40px;}
 .plist li{font-size:.75rem;color:var(--tx2);padding:9px 0;border-bottom:1px solid rgba(255,255,255,.03);display:flex;gap:11px;align-items:flex-start;line-height:1.5;}
-.plist li.on{color:var(--tx);}
+.plist li.on{color:#f0ece2;}
 .ck{color:var(--g);flex-shrink:0;margin-top:1px;}
 .cx{color:var(--tx3);flex-shrink:0;}
 .pbtn{display:block;font-family:'Bebas Neue',sans-serif;font-size:.83rem;letter-spacing:4px;text-decoration:none;text-align:center;padding:17px;transition:all .3s;}
@@ -307,33 +307,28 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
 /* AGENT BADGES */
 .mod .md b { font-size:.62rem; letter-spacing:1px; }
 
-/* LANG TOGGLE */
-#lang-toggle{align-items:center;}
+/* AGENTS RESPONSIVE */
 @media(max-width:1024px){
-  #lang-toggle{display:flex!important;margin-left:4px;}
-  #lang-toggle span{font-size:.5rem;}
-}
-/* AGENTS GRID RESPONSIVE */
-.agents-grid{grid-template-columns:repeat(4,1fr)!important;}
-@media(max-width:1024px){
-  .agents-grid{grid-template-columns:repeat(2,1fr)!important;}
-  .hero{padding:80px 24px 60px!important;}
+  [class*="agents-grid"],[style*="repeat(4,1fr)"]{grid-template-columns:repeat(2,1fr)!important;}
 }
 @media(max-width:640px){
-  .agents-grid{grid-template-columns:1fr!important;}
   .hero{padding:70px 20px 50px!important;}
-  .hero-inner{gap:32px!important;}
-  h1{font-size:clamp(3rem,10vw,5rem)!important;}
-  .hproof{gap:16px!important;}
-  .pn{font-size:1.5rem!important;}
+  h1{font-size:clamp(3rem,12vw,5rem)!important;}
+  .hproof{gap:14px!important;}
 }
+
+
+/* LANG TOGGLE */
+.lang-toggle{display:flex;gap:6px;align-items:center;margin-left:10px;}
+.lang-btn{cursor:pointer;color:var(--tx2);background:none;border:none;font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:2px;padding:2px 4px;transition:color .2s;}
+.lang-btn.active,.lang-btn:hover{color:var(--g);}
 
 /* COUNTER */
 .counter{display:inline-block;}
 /* RESPONSIVE */
 @media(max-width:1024px){
   nav,nav.solid{padding:14px 24px;}
-  .navitems{display:none;} #lang-toggle{display:flex!important;}
+  .navitems{display:none;}
   .hero,.ai-bg,.ctas,.insights-bg,.ref-section{padding-left:24px;padding-right:24px;}
   .sec{padding:80px 24px;}
   .hero-inner,.ai-in,.ref-wrap{grid-template-columns:1fr;}
@@ -375,20 +370,20 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
   </a>
   <div class="nlinks">
     <span class="navitems">
-      <a href="#how"><span class="pt">Como funciona</span><span class="en" style="display:none">How it works</span><span class="es" style="display:none">Cómo funciona</span></a>
-      <a href="#mods"><span class="pt">Módulos</span><span class="en" style="display:none">Modules</span><span class="es" style="display:none">Módulos</span></a>
+      <a href="#how">Como funciona</a>
+      <a href="#mods">Módulos</a>
       <a href="#insights">Market Insights</a>
-      <a href="#ai"><span class="pt">Consultor IA</span><span class="en" style="display:none">AI Advisor</span></a>
+      <a href="#ai">Consultor IA</a>
       <a href="#academy">Academy</a>
-      <a href="#pricing"><span class="pt">Planos</span><span class="en" style="display:none">Pricing</span><span class="es" style="display:none">Planes</span></a>
+      <a href="#pricing">Planos</a>
     </span>
-    <a href="https://app.wuzo.com.br" class="ncta"><span class="pt">COMEÇAR GRÁTIS</span><span class="en" style="display:none">START FREE</span><span class="es" style="display:none">EMPEZAR GRATIS</span></a>
-    <div id="lang-toggle" style="display:flex;gap:8px;font-size:.55rem;letter-spacing:2px;margin-left:8px;">
-      <span id="lt-pt" onclick="setLang('pt')" style="cursor:pointer;transition:color .2s;">PT</span>
+    <a href="https://app.wuzo.com.br" class="ncta">COMEÇAR GRÁTIS</a>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btn-pt" onclick="setLang('pt')">PT</button>
       <span style="color:var(--tx3)">·</span>
-      <span id="lt-en" onclick="setLang('en')" style="cursor:pointer;transition:color .2s;">EN</span>
+      <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
       <span style="color:var(--tx3)">·</span>
-      <span id="lt-es" onclick="setLang('es')" style="cursor:pointer;transition:color .2s;">ES</span>
+      <button class="lang-btn" id="btn-es" onclick="setLang('es')">ES</button>
     </div>
   </div>
 </nav>
@@ -399,19 +394,19 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
   <div class="hero-grid"></div>
   <div class="hero-inner">
     <div>
-      <div class="h-eye"><span class="edot"></span><span class="pt">Super App Financeiro · IA Nível Institucional</span><span class="en" style="display:none">AI Finance Super App · Institutional-grade Intelligence</span><span class="es" style="display:none">Super App Financiero · IA de Nivel Institucional</span></div>
-      <h1><span class="pt">Clareza total<em>sobre seu dinheiro.</em></span><span class="en" style="display:none">Total clarity<em>over your money.</em></span></h1>
-      <p class="hdesc"><span class="pt">O Wuzo analisa extratos, monitora dívidas, investimentos e metas — e usa <b>inteligência artificial de nível institucional</b> para te dizer exatamente onde seu patrimônio vai e o que fazer para mudar isso. Diagnóstico completo em segundos.</span><span class="en" style="display:none">Wuzo analyzes bank statements, tracks debts, investments and goals — using <b>institutional-grade AI</b> to tell you exactly where your wealth is going and what to do about it. Complete diagnosis in seconds.</span></p>
+      <div class="h-eye"><span class="edot"></span>Super App Financeiro · IA Nível Institucional</div>
+      <h1>Clareza total<em>sobre seu dinheiro.</em></h1>
+      <p class="hdesc">O Wuzo analisa extratos, monitora dívidas, investimentos e metas — e usa <b>inteligência artificial de nível institucional</b> para te dizer exatamente onde seu patrimônio vai e o que fazer para mudar isso. Diagnóstico completo em segundos.</p>
       <div class="hctas">
-        <a href="https://app.wuzo.com.br" class="btn-main"><span class="pt">⚡ COMEÇAR AGORA — GRÁTIS</span><span class="en" style="display:none">⚡ START NOW — FREE</span><span class="es" style="display:none">⚡ EMPEZAR AHORA — GRATIS</span></a>
-        <a href="#how" class="btn-line"><span class="pt">VER COMO FUNCIONA →</span><span class="en" style="display:none">HOW IT WORKS →</span><span class="es" style="display:none">VER CÓMO FUNCIONA →</span></a>
+        <a href="https://app.wuzo.com.br" class="btn-main">⚡ COMEÇAR AGORA — GRÁTIS</a>
+        <a href="#how" class="btn-line">VER COMO FUNCIONA →</a>
       </div>
       <div class="hproof">
-        <div><span class="pn">10</span><span class="pl"><span class="pt">MÓDULOS INTEGRADOS</span><span class="en" style="display:none">INTEGRATED MODULES</span><span class="es" style="display:none">MÓDULOS INTEGRADOS</span></span></div>
-        <div><span class="pn">70B+</span><span class="pl"><span class="pt">PARÂMETROS DE IA</span><span class="en" style="display:none">AI PARAMETERS</span><span class="es" style="display:none">PARÁMETROS DE IA</span></span></div>
-        <div><span class="pn">R$0</span><span class="pl"><span class="pt">PARA COMEÇAR</span><span class="en" style="display:none">TO START</span><span class="es" style="display:none">PARA COMENZAR</span></span></div>
-        <div><span class="pn">24/7</span><span class="pl"><span class="pt">CONSULTOR IA</span><span class="en" style="display:none">AI CONSULTANT</span><span class="es" style="display:none">CONSULTOR IA</span></span></div>
-        <div><span class="pn">8</span><span class="pl"><span class="pt">AGENTES ESPECIALIZADOS</span><span class="en" style="display:none">SPECIALIZED AGENTS</span><span class="es" style="display:none">AGENTES ESPECIALIZADOS</span></span></div>
+        <div><span class="pn">10</span><span class="pl">MÓDULOS INTEGRADOS</span></div>
+        <div><span class="pn">70B+</span><span class="pl">PARÂMETROS DE IA</span></div>
+        <div><span class="pn">R$0</span><span class="pl">PARA COMEÇAR</span></div>
+        <div><span class="pn">24/7</span><span class="pl">CONSULTOR IA</span></div>
+        <div><span class="pn">8</span><span class="pl">AGENTES ESPECIALIZADOS</span></div>
       </div>
     </div>
     <div class="hero-right">
@@ -424,7 +419,7 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
             <div class="wdots"><div class="wd w1"></div><div class="wd w2"></div><div class="wd w3"></div></div>
             <span class="dtt">WUZO</span>
           </div>
-          <span class="dtb" id="lp-dash-month">MARÇO 2026</span>
+          <span class="dtb" id="lp-dash-month">MAR 2026</span>
         </div>
         <div class="dbody">
           <div class="drow">
@@ -488,9 +483,9 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
 
 <!-- HOW IT WORKS -->
 <section id="how" class="sec">
-  <div class="stag rev"><span class="pt">Como funciona</span><span class="en" style="display:none">How it works</span><span class="es" style="display:none">Cómo funciona</span></div>
-  <h2 class="sh2 rev"><span class="pt">Em 4 passos, <em>clareza financeira total.</em></span><span class="en" style="display:none">In 4 steps, <em>total financial clarity.</em></span></h2>
-  <p class="sp rev"><span class="pt">De zero a diagnóstico completo com plano de ação em menos de 5 minutos. Sem planilhas. Sem consultor caro. Só você e a IA.</span><span class="en" style="display:none">From zero to complete diagnosis with action plan in under 5 minutes. No spreadsheets. No expensive consultant. Just you and the AI.</span><span class="es" style="display:none">De cero a diagnóstico completo con plan de acción en menos de 5 minutos. Sin planillas. Sin consultor caro. Solo tú y la IA.</span></p>
+  <div class="stag rev">Como funciona</div>
+  <h2 class="sh2 rev">Em 4 passos, <em>clareza financeira total.</em></h2>
+  <p class="sp rev">De zero a diagnóstico completo com plano de ação em menos de 5 minutos. Sem planilhas. Sem consultor caro. Só você e a IA.</p>
   <div class="how-grid">
     <div class="hstep rev">
       <div class="hsn">01</div><span class="hsi">📤</span>
@@ -521,7 +516,7 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
   <div class="stag rev">Inteligência Especializada</div>
   <h2 class="sh2 rev">8 agentes de IA.<em> Um para cada missão.</em></h2>
   <p class="sp rev">Cada módulo usa um agente com identidade, especialização e temperatura calibrada para aquele trabalho específico — não um chatbot genérico respondendo a tudo.</p>
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);" class="rev agents-grid">
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);" class="rev">
     <div style="background:var(--bg2);padding:28px 24px;transition:background .3s;" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background='var(--bg2)'">
       <div style="font-size:.52rem;color:var(--g);letter-spacing:3px;margin-bottom:10px;border:1px solid rgba(201,168,76,.2);padding:2px 7px;display:inline-block;">FINANÇAS</div>
       <div style="font-family:'Bebas Neue',sans-serif;font-size:.88rem;color:#fff;letter-spacing:2px;margin-bottom:7px;">Finance Analyzer</div>
@@ -656,7 +651,7 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
           <div style="font-size:.54rem;color:var(--tx2);letter-spacing:2px;">GANÂNCIA · FEAR & GREED</div>
         </div>
       </div>
-      <div style="color:#fff;font-family:'Libre Baskerville',serif;font-style:italic;font-size:.95rem;line-height:1.7;"><span class="pt">Preços em tempo real via CoinCap + Coinbase (cripto) e Polygon.io (ações). Notícias via Polygon News API + CryptoPanic. SELIC atual: 14,75% a.a. Análise gerada pelo agente Market Intelligence.</span><span class="en" style="display:none">Real-time prices via CoinCap + Coinbase (crypto) and Polygon.io (stocks). News via Polygon News API + CryptoPanic. Analysis generated by the Market Intelligence agent.</span></div>
+      <div style="color:#fff;font-family:'Libre Baskerville',serif;font-style:italic;font-size:.95rem;line-height:1.7;">Bitcoin consolida acima de $84K após dados de inflação dos EUA abaixo do esperado. Ibovespa opera lateralmente aguardando COPOM. Dólar em queda frente ao real após superávit comercial recorde.</div>
     </div>
 
     <!-- Signal Row -->
@@ -671,28 +666,28 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
       <div class="sig"><div class="sig-name">USD/BRL</div><div class="sig-val watch">WATCH</div></div>
     </div>
 
-    <!-- 3 sample news — formato real do app -->
+    <!-- 3 sample news -->
     <div class="ins-grid rev">
       <div class="ins-card">
-        <div class="ins-label">CoinCap · CRYPTO · BTC</div>
-        <div class="ins-title" id="news-btc-title">BTC · Preço ao vivo carregando...</div>
-        <div class="ins-summary">Bitcoin mantém posição de referência global entre ativos digitais, com preço atualizado em tempo real via CoinCap API. Volume 24h superior a $20B nas principais exchanges.</div>
+        <div class="ins-label">CoinDesk · CRYPTO · BTC</div>
+        <div class="ins-title">Bitcoin: preço ao vivo atualizado em tempo real via CoinCap + Coinbase</div>
+        <div class="ins-summary">Wuzo Market Intelligence busca preços reais a cada 30 segundos via CoinCap API e Coinbase — sem cache, sem proxy. Variação 24h alimenta os sinais BUY/SELL/WATCH automaticamente.</div>
         <span class="ins-tag pos">POSITIVO</span><span class="ins-tag pos">⬆ ALTO</span>
-        <div style="font-size:.66rem;color:var(--g);margin-top:10px;line-height:1.7;border-top:1px solid var(--bd);padding-top:10px;">⬡ <span class="pt">Acompanhe BTC, ETH, SOL e mais 5 ativos em tempo real no app — com sinais BUY/SELL/WATCH e ação recomendada com stop loss específico.</span><span class="en" style="display:none">Track BTC, ETH, SOL and 5 more assets in real-time — with BUY/SELL/WATCH signals and a specific recommended action with stop loss.</span></div>
+        <div style="font-size:.66rem;color:var(--g);margin-top:10px;line-height:1.7;border-top:1px solid var(--bd);padding-top:10px;">⬡ Corte de juros nos EUA favorece ativos de risco. BTC historicamente sobe 30–60% nos 6 meses após primeiro corte do ciclo — momento de acumular posição gradual.</div>
       </div>
       <div class="ins-card">
-        <div class="ins-label">Polygon News · BOLSA BR · PETR4</div>
-        <div class="ins-title"><span class="pt">Análise ao vivo: ações BR e macro Brasil</span><span class="en" style="display:none">Live analysis: Brazilian stocks and macro</span></div>
-        <div class="ins-summary"><span class="pt">O agente Market Intelligence analisa PETR4, VALE3, IBOV e SELIC (14,75% a.a.) em tempo real com dados da Polygon News API e CryptoPanic. Notícias com impacto quantificado para o investidor.</span><span class="en" style="display:none">The Market Intelligence agent analyzes PETR4, VALE3, IBOV and SELIC (14.75% p.a.) in real-time with Polygon News API and CryptoPanic data.</span></div>
-        <span class="ins-tag neu">NEUTRO</span><span class="ins-tag neu">➡ MEDIO</span>
-        <div style="font-size:.66rem;color:var(--g);margin-top:10px;line-height:1.7;border-top:1px solid var(--bd);padding-top:10px;">⬡ <span class="pt">SELIC em 14,75% a.a. — Tesouro IPCA+ 2029 rende acima da inflação com segurança soberana. Veja a análise completa no app.</span><span class="en" style="display:none">SELIC at 14.75% p.a. — Tesouro IPCA+ 2029 beats inflation with sovereign safety. See full analysis in the app.</span></div>
+        <div class="ins-label">Bloomberg · BOLSA BR · PETR4</div>
+        <div class="ins-title">Petrobras anuncia dividendos extraordinários de R$0,89 por ação</div>
+        <div class="ins-summary">Conselho aprovou distribuição extraordinária após resultado trimestral acima das expectativas. Dividend yield total de 2025 chega a 14,2% — entre os maiores do IBOV.</div>
+        <span class="ins-tag pos">POSITIVO</span><span class="ins-tag neu">➡ MEDIO</span>
+        <div style="font-size:.66rem;color:var(--g);margin-top:10px;line-height:1.7;border-top:1px solid var(--bd);padding-top:10px;">⬡ Para investidor de renda passiva com horizonte longo, PETR4 oferece yield acima do CDI líquido no momento — mas risco político da empresa estatal deve estar no cálculo.</div>
       </div>
       <div class="ins-card">
-        <div class="ins-label">CryptoPanic · MACRO · FED</div>
-        <div class="ins-title"><span class="pt">Macro global: Fed, inflação e fluxos EM</span><span class="en" style="display:none">Global macro: Fed, inflation and EM flows</span></div>
-        <div class="ins-summary"><span class="pt">Wuzo Market Intelligence acompanha dados macro em tempo real: decisões do Fed, CPI americano, fluxo de capital em mercados emergentes e impacto no real brasileiro.</span><span class="en" style="display:none">Wuzo Market Intelligence tracks macro data in real-time: Fed decisions, US CPI, capital flows in emerging markets and impact on the Brazilian real.</span></div>
+        <div class="ins-label">Reuters · MACRO BR · SELIC</div>
+        <div class="ins-title">SELIC em 14,75% a.a. — análise de impacto para renda fixa e variável</div>
+        <div class="ins-summary">Wuzo analisa o impacto da SELIC atual em CDBs, Tesouro IPCA+ e ações. Dados via Polygon.io e CryptoPanic atualizados diariamente pelo agente Market Intelligence.</div>
         <span class="ins-tag neu">NEUTRO</span><span class="ins-tag neu">➡ MEDIO</span>
-        <div style="font-size:.66rem;color:var(--g);margin-top:10px;line-height:1.7;border-top:1px solid var(--bd);padding-top:10px;">⬡ <span class="pt">Cada notícia inclui análise de impacto específica para o investidor brasileiro — como o evento afeta sua carteira e qual ação tomar.</span><span class="en" style="display:none">Each story includes impact analysis specific to the Brazilian investor — how the event affects your portfolio and what action to take.</span></div>
+        <div style="font-size:.66rem;color:var(--g);margin-top:10px;line-height:1.7;border-top:1px solid var(--bd);padding-top:10px;">⬡ SELIC alta beneficia renda fixa: CDB 110% CDI rende ~15% bruto ao ano. Momento ideal para aumentar posição em pós-fixados enquanto aguarda clareza sobre trajetória de juros.</div>
       </div>
     </div>
     <p style="font-size:.62rem;color:var(--tx2);letter-spacing:2px;margin-top:16px;text-align:center;" class="rev">⬡ AMOSTRA · WUZO GERA 8+ NOTÍCIAS COM DADOS REAIS: POLYGON.IO + CRYPTOPANIC + YAHOO FINANCE · DISPONÍVEL NO APP</p>
@@ -906,12 +901,12 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
 <!-- CTA FINAL -->
 <section class="ctas">
   <span class="csym">⬡</span>
-  <h2 class="ch rev"><span class="pt">Seu dinheiro<em>merece atenção.</em></span><span class="en" style="display:none">Your money<em>deserves clarity.</em></span></h2>
-  <p class="cp rev"><span class="pt">Cada mês sem clareza financeira custa caro. O Wuzo te dá diagnóstico completo, estratégia personalizada e execução — em minutos, não meses.</span><span class="en" style="display:none">Every month without financial clarity costs you. Wuzo gives you a complete diagnosis, personalized strategy and execution — in minutes, not months.</span><span class="es" style="display:none">Cada mes sin claridad financiera te cuesta caro. Wuzo te da diagnóstico completo, estrategia personalizada y ejecución — en minutos, no meses.</span></p>
+  <h2 class="ch rev">Seu dinheiro<em>merece atenção.</em></h2>
+  <p class="cp rev">Cada mês sem clareza financeira custa caro. O Wuzo te dá diagnóstico completo, estratégia personalizada e execução — em minutos, não meses.</p>
   <div class="rev">
-    <a href="https://app.wuzo.com.br" class="btn-main" style="font-size:1rem;padding:18px 60px;"><span class="pt">🚀 COMEÇAR AGORA — É GRÁTIS</span><span class="en" style="display:none">🚀 START NOW — IT'S FREE</span><span class="es" style="display:none">🚀 EMPEZAR AHORA — ES GRATIS</span></a>
+    <a href="https://app.wuzo.com.br" class="btn-main" style="font-size:1rem;padding:18px 60px;">🚀 COMEÇAR AGORA — É GRÁTIS</a>
   </div>
-  <div class="cnote rev" style="margin-top:16px;"><span class="pt">SEM CARTÃO DE CRÉDITO · SEM CONTRATO · 100% ONLINE</span><span class="en" style="display:none">NO CREDIT CARD · NO CONTRACT · 100% ONLINE</span><span class="es" style="display:none">SIN TARJETA DE CRÉDITO · SIN CONTRATO · 100% EN LÍNEA</span></div>
+  <div class="cnote rev" style="margin-top:16px;">SEM CARTÃO DE CRÉDITO · SEM CONTRATO · 100% ONLINE</div>
 </section>
 
 <!-- FOOTER -->
@@ -929,44 +924,10 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
     <a href="#pricing">Planos</a>
     <a href="https://app.wuzo.com.br">Acessar App</a>
   </div>
-  <div class="fcopy">© 2026 WUZO · ALL RIGHTS RESERVED</div>
+  <div class="fcopy">© 2026 WUZO · TODOS OS DIREITOS RESERVADOS</div>
 </footer>
 
 <script>
-
-// ── LANGUAGE DETECTION & TOGGLE ───────────────────────────────────────────────
-(function(){
-  const params=new URLSearchParams(window.location.search);
-  const forceLang=params.get('lang');
-  const bl=navigator.language||'pt';
-  const isES=forceLang==='es'||((!forceLang)&&(bl.toLowerCase().startsWith('es')));
-  const isEN=forceLang==='en'||(!forceLang&&!bl.toLowerCase().startsWith('pt')&&!isES);
-  if(isEN){
-    document.documentElement.lang='en';
-    document.querySelectorAll('.pt').forEach(el=>el.style.display='none');
-    document.querySelectorAll('.en').forEach(el=>el.style.display='');
-  } else if(isES){
-    document.documentElement.lang='es';
-    document.querySelectorAll('.pt').forEach(el=>el.style.display='none');
-    document.querySelectorAll('.es').forEach(el=>el.style.display='');
-  }
-  window._wuzo_lang=isEN?'en':isES?'es':'pt';
-})();
-
-function setLang(l){
-  // Remove all lang classes then apply new
-  document.querySelectorAll('.pt,.en,.es').forEach(el=>el.style.display='none');
-  document.querySelectorAll('.'+l).forEach(el=>el.style.display='');
-  window._wuzo_lang=l;
-  // Update toggle colors
-  ['pt','en','es'].forEach(lg=>{
-    const el=document.getElementById('lt-'+lg);
-    if(el)el.style.color=lg===l?'var(--g)':'var(--tx2)';
-  });
-  // Persist
-  const u=new URL(window.location);u.searchParams.set('lang',l);history.replaceState({},'',u);
-}
-
 // ── CURSOR ────────────────────────────────────────────────────────────────────
 const c=document.getElementById('c'),cr=document.getElementById('cr');
 let mx=0,my=0,rx=0,ry=0;
@@ -976,8 +937,8 @@ document.addEventListener('mousemove',e=>{
   cr.style.borderColor='rgba(201,168,76,.5)';
 });
 document.querySelectorAll('a,.hstep,.mod,.testi,.les,.nb,.faq-q').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{cr.style.width='60px';cr.style.height='60px';cr.style.borderColor='rgba(201,168,76,.6)';});
-  el.addEventListener('mouseleave',()=>{cr.style.width='36px';cr.style.height='36px';cr.style.borderColor='rgba(201,168,76,.3)';});
+  el.addEventListener('mouseenter',()=>{cr.style.width='60px';cr.style.height='60px';});
+  el.addEventListener('mouseleave',()=>{cr.style.width='36px';cr.style.height='36px';});
 });
 (function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;cr.style.left=rx+'px';cr.style.top=ry+'px';requestAnimationFrame(loop);})();
 
@@ -989,18 +950,17 @@ const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.tar
 document.querySelectorAll('.rev').forEach(el=>obs.observe(el));
 
 // ── COUNTER ANIMATION ─────────────────────────────────────────────────────────
-const counterObs=new IntersectionObserver(entries=>{
+const cObs=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
     if(e.isIntersecting){
       const el=e.target,target=parseInt(el.dataset.target);
-      let cur=0;
-      const step=Math.ceil(target/20);
+      let cur=0;const step=Math.ceil(target/20);
       const t=setInterval(()=>{cur=Math.min(cur+step,target);el.textContent=cur;if(cur>=target)clearInterval(t);},60);
-      counterObs.unobserve(el);
+      cObs.unobserve(el);
     }
   });
 },{threshold:.5});
-document.querySelectorAll('.counter').forEach(el=>counterObs.observe(el));
+document.querySelectorAll('.counter').forEach(el=>cObs.observe(el));
 
 // ── FAQ ───────────────────────────────────────────────────────────────────────
 function toggleFaq(el){
@@ -1009,225 +969,157 @@ function toggleFaq(el){
   if(!isOpen)item.classList.add('open');
 }
 
-// ── LIVE PRICES — APIs com CORS nativo (sem proxy, sem cache) ────────────────
-// 1. Coinbase Public API  — CORS aberto, sem chave, dados frescos
-// 2. CoinCap API          — CORS aberto, sem chave, tempo real
-// 3. Blockchain.info      — CORS aberto, sem chave, fallback final
+// ── LIVE PRICES ───────────────────────────────────────────────────────────────
+function fmt_btc(v){return v>=1000?'$'+(v/1000).toFixed(1)+'K':'$'+v.toFixed(0);}
 
-function fmt_price(v, sym) {
-  if (sym === 'btc') return v >= 1000 ? (v/1000).toFixed(1)+'K' : v.toFixed(0);
-  if (v >= 1000) return (v/1000).toFixed(1)+'K';
-  if (v >= 100)  return v.toFixed(0);
-  return v.toFixed(2);
+function set_el(id,txt,up){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.textContent=txt;
+  el.className=el.className.replace(/up|dn/g,'').trim();
+  if(up!==null)el.classList.add(up?'up':'dn');
 }
 
-function set_price(id, text, change) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.textContent = text;
-  if (change !== null) {
-    el.className = el.className.replace(/\bup\b|\bdn\b/g,'').trim();
-    el.classList.add(change >= 0 ? 'up' : 'dn');
+function set_signal(sym,ch){
+  const sig=[...document.querySelectorAll('.sig')].find(s=>s.querySelector('.sig-name')?.textContent.trim()===sym)?.querySelector('.sig-val');
+  if(!sig)return;
+  const v=ch>1.5?'BUY':ch<-1.5?'SELL':'WATCH';
+  sig.textContent=v;
+  sig.className='sig-val '+(v==='BUY'?'buy':v==='SELL'?'sell':'watch');
+}
+
+async function fetch_prices(){
+  // BTC: CoinCap → Coinbase → Blockchain.info
+  let btc=null;
+  try{
+    const r=await fetch('https://api.coincap.io/v2/assets/bitcoin',{signal:AbortSignal.timeout(5000)});
+    const d=await r.json();
+    const p=parseFloat(d?.data?.priceUsd),ch=parseFloat(d?.data?.changePercent24Hr||0);
+    if(p>1000)btc={p,ch,src:'CoinCap'};
+  }catch{}
+  if(!btc){
+    try{
+      const r=await fetch('https://api.coinbase.com/v2/prices/BTC-USD/spot',{signal:AbortSignal.timeout(5000)});
+      const d=await r.json();
+      const p=parseFloat(d?.data?.amount);
+      if(p>1000)btc={p,ch:0,src:'Coinbase'};
+    }catch{}
   }
-}
-
-function set_signal(sym, change) {
-  const sig = [...document.querySelectorAll('.sig')]
-    .find(s => s.querySelector('.sig-name')?.textContent.trim() === sym)
-    ?.querySelector('.sig-val');
-  if (!sig) return;
-  const val = change > 1.5 ? 'BUY' : change < -1.5 ? 'SELL' : 'WATCH';
-  sig.textContent = val;
-  sig.className   = 'sig-val ' + (val === 'BUY' ? 'buy' : val === 'SELL' ? 'sell' : 'watch');
-}
-
-function set_live_badge(ok, source) {
-  let badge = document.getElementById('lp-live-badge');
-  if (!badge) {
-    const floater = document.querySelector('.fl.f3');
-    if (!floater) return;
-    badge = document.createElement('div');
-    badge.id = 'lp-live-badge';
-    badge.style.cssText = 'font-size:.44rem;letter-spacing:2px;margin-top:3px;';
-    floater.appendChild(badge);
+  if(!btc){
+    try{
+      const r=await fetch('https://blockchain.info/ticker',{signal:AbortSignal.timeout(5000)});
+      const d=await r.json();
+      const p=d?.USD?.last;
+      if(p>1000)btc={p,ch:0,src:'Blockchain'};
+    }catch{}
   }
-  badge.textContent = ok ? `● LIVE · ${source}` : '● OFFLINE';
-  badge.style.color = ok ? '#5dba88' : '#e05252';
-}
-
-// ── SOURCE 1: Coinbase (CORS nativo, mais rápido) ─────────────────────────────
-async function btc_coinbase() {
-  try {
-    // Spot price — sem variação 24h, usamos 2 chamadas
-    const [spot, day] = await Promise.all([
-      fetch('https://api.coinbase.com/v2/prices/BTC-USD/spot',       { signal: AbortSignal.timeout(4000) }),
-      fetch('https://api.coinbase.com/v2/prices/BTC-USD/buy',        { signal: AbortSignal.timeout(4000) }),
-    ]);
-    const s = await spot.json();
-    const price = parseFloat(s?.data?.amount);
-    if (!price || price < 1000) return null;
-    // Variação 24h via stats endpoint
-    const stats = await fetch('https://api.coinbase.com/v2/assets/spot?base=BTC', { signal: AbortSignal.timeout(3000) }).catch(()=>null);
-    let change = 0;
-    if (stats?.ok) {
-      const sd = await stats.json().catch(()=>null);
-      change = parseFloat(sd?.data?.percent_change_24h || 0);
+  if(btc){
+    const fmt=fmt_btc(btc.p);
+    set_el('lp-btc-floater',fmt,btc.ch>=0);
+    set_el('lp-btc-strip',fmt,btc.ch>=0);
+    set_signal('BTC',btc.ch);
+    // Fear & Greed approx
+    const fg=Math.min(100,Math.max(0,Math.round(50+btc.ch*3)));
+    const fgEl=document.getElementById('lp-fg-score');
+    if(fgEl)fgEl.textContent=fg+'/100';
+    // Badge
+    let badge=document.getElementById('lp-live-badge');
+    if(!badge){
+      const f3=document.querySelector('.fl.f3');
+      if(f3){badge=document.createElement('div');badge.id='lp-live-badge';badge.style.cssText='font-size:.62rem;letter-spacing:2px;margin-top:3px;';f3.appendChild(badge);}
     }
-    return { price, change, source: 'Coinbase' };
-  } catch { return null; }
-}
-
-// ── SOURCE 2: CoinCap (CORS nativo, dados em tempo real) ─────────────────────
-async function btc_coincap() {
-  try {
-    const r = await fetch('https://api.coincap.io/v2/assets/bitcoin', { signal: AbortSignal.timeout(4000) });
-    if (!r.ok) return null;
-    const d = await r.json();
-    const price  = parseFloat(d?.data?.priceUsd);
-    const change = parseFloat(d?.data?.changePercent24Hr || 0);
-    if (!price || price < 1000) return null;
-    return { price, change, source: 'CoinCap' };
-  } catch { return null; }
-}
-
-// ── SOURCE 3: Blockchain.info (CORS nativo, fallback final) ──────────────────
-async function btc_blockchain() {
-  try {
-    const r = await fetch('https://blockchain.info/ticker', { signal: AbortSignal.timeout(4000) });
-    if (!r.ok) return null;
-    const d = await r.json();
-    const price = d?.USD?.last;
-    if (!price || price < 1000) return null;
-    return { price, change: 0, source: 'Blockchain' };
-  } catch { return null; }
-}
-
-// ── ETH via CoinCap ───────────────────────────────────────────────────────────
-async function eth_coincap() {
-  try {
-    const r = await fetch('https://api.coincap.io/v2/assets/ethereum', { signal: AbortSignal.timeout(4000) });
-    if (!r.ok) return null;
-    const d = await r.json();
-    return { price: parseFloat(d?.data?.priceUsd), change: parseFloat(d?.data?.changePercent24Hr || 0) };
-  } catch { return null; }
-}
-
-// ── SOL via CoinCap ───────────────────────────────────────────────────────────
-async function sol_coincap() {
-  try {
-    const r = await fetch('https://api.coincap.io/v2/assets/solana', { signal: AbortSignal.timeout(4000) });
-    if (!r.ok) return null;
-    const d = await r.json();
-    return { price: parseFloat(d?.data?.priceUsd), change: parseFloat(d?.data?.changePercent24Hr || 0) };
-  } catch { return null; }
-}
-
-// ── USD/BRL via exchangerate-api (CORS nativo) ────────────────────────────────
-async function usd_brl() {
-  try {
-    const r = await fetch('https://open.er-api.com/v6/latest/USD', { signal: AbortSignal.timeout(4000) });
-    if (!r.ok) return null;
-    const d = await r.json();
-    return d?.rates?.BRL ? parseFloat(d.rates.BRL) : null;
-  } catch { return null; }
-}
-
-// ── UPDATE PRINCIPAL ──────────────────────────────────────────────────────────
-async function update_live_prices() {
-  // BTC: tenta as 3 fontes em cascata até uma responder
-  let btc = await btc_coincap();              // mais rápido e confiável
-  if (!btc?.price) btc = await btc_coinbase();
-  if (!btc?.price) btc = await btc_blockchain();
-
-  if (btc?.price) {
-    const fmt = '$' + fmt_price(btc.price, 'btc');
-    set_price('lp-btc-floater', fmt, btc.change);
-    set_price('lp-btc-strip',   fmt, btc.change);
-    set_signal('BTC', btc.change);
-    set_live_badge(true, btc.source);
-
-    // Atualiza mock do dashboard com preço real
-    const aiLine = document.querySelector('.dai');
-    if (aiLine && btc.price) {
-      aiLine.innerHTML = aiLine.innerHTML.replace(
-        /\$[\d.,]+K?(?= de BTC| BTC)/g,
-        '$' + fmt_price(btc.price, 'btc')
-      );
-    }
-  } else {
-    set_live_badge(false, '');
+    if(badge){badge.textContent='● LIVE · '+btc.src;badge.style.color='#5dba88';}
   }
-
-  // ETH e SOL em paralelo
-  const [eth, sol] = await Promise.all([eth_coincap(), sol_coincap()]);
-  if (eth?.price) set_signal('ETH', eth.change);
-  if (sol?.price) set_signal('SOL', sol.change);
-
   // USD/BRL
-  const brl = await usd_brl();
-  if (brl) set_price('lp-usd-strip', 'R$' + brl.toFixed(2), null);
+  try{
+    const r=await fetch('https://open.er-api.com/v6/latest/USD',{signal:AbortSignal.timeout(5000)});
+    const d=await r.json();
+    const brl=d?.rates?.BRL;
+    if(brl)set_el('lp-usd-strip','R$'+parseFloat(brl).toFixed(2),null);
+  }catch{}
+  // ETH + SOL signals
+  try{
+    const coins=[['ethereum','ETH'],['solana','SOL']];
+    for(const[id,sym]of coins){
+      const r=await fetch('https://api.coincap.io/v2/assets/'+id,{signal:AbortSignal.timeout(5000)});
+      const d=await r.json();
+      set_signal(sym,parseFloat(d?.data?.changePercent24Hr||0));
+    }
+  }catch{}
+}
 
-  // Atualiza ticker BTC com preço real
-  if (btc?.price) {
-    document.querySelectorAll('.ti').forEach(ti => {
-      if (ti.textContent.includes('BTC ·') || ti.textContent.includes('BTC·')) {
-        const arrow = (btc.change || 0) >= 0 ? ' ↑' : ' ↓';
-        ti.querySelector('span').nextSibling && (
-          ti.innerHTML = ti.innerHTML.replace(
-            /BTC[^·]*/,
-            `BTC $${fmt_price(btc.price,'btc')}${arrow} · `
-          )
-        );
-      }
-    });
+// ── LANGUAGE ──────────────────────────────────────────────────────────────────
+const LANGS={
+  en:{
+    how:'How it works',mods:'Modules',ai:'AI Advisor',pricing:'Pricing',
+    cta:'START FREE',
+    h1:'Total clarity<em>over your money.</em>',
+    desc:'Wuzo analyzes bank statements, tracks debts, investments and goals — using <b>institutional-grade AI</b> to tell you exactly where your wealth is going. Complete diagnosis in seconds.',
+    btn1:'⚡ START NOW — FREE',btn2:'HOW IT WORKS →',
+    finalhd:'Your money<em>deserves clarity.</em>',
+    finalp:'Every month without financial clarity costs you. Wuzo gives complete diagnosis, personalized strategy and execution — in minutes, not months.',
+    finalbtn:'🚀 START NOW — FREE',
+    note:'NO CREDIT CARD · NO CONTRACT · 100% ONLINE',
+  },
+  es:{
+    how:'Cómo funciona',mods:'Módulos',ai:'Asesor IA',pricing:'Planes',
+    cta:'EMPEZAR GRATIS',
+    h1:'Claridad total<em>sobre tu dinero.</em>',
+    desc:'Wuzo analiza extractos, controla deudas, inversiones y metas — usando <b>inteligencia artificial de nivel institucional</b> para decirte exactamente a dónde va tu patrimonio. Diagnóstico en segundos.',
+    btn1:'⚡ EMPEZAR AHORA — GRATIS',btn2:'VER CÓMO FUNCIONA →',
+    finalhd:'Tu dinero<em>merece atención.</em>',
+    finalp:'Cada mes sin claridad financiera te cuesta caro. Wuzo te da diagnóstico completo, estrategia personalizada y ejecución — en minutos, no meses.',
+    finalbtn:'🚀 EMPEZAR AHORA — ES GRATIS',
+    note:'SIN TARJETA DE CRÉDITO · SIN CONTRATO · 100% EN LÍNEA',
   }
+};
+
+function setLang(l){
+  const d=LANGS[l];
+  // Reset to PT
+  document.querySelector('.navitems a[href="#how"]').textContent=d?d.how:'Como funciona';
+  document.querySelector('.navitems a[href="#mods"]').textContent=d?d.mods:'Módulos';
+  const aiLink=document.querySelector('.navitems a[href="#ai"]');
+  if(aiLink)aiLink.textContent=d?d.ai:'Consultor IA';
+  document.querySelector('.navitems a[href="#pricing"]').textContent=d?d.pricing:'Planos';
+  document.querySelector('.ncta').textContent=d?d.cta:'COMEÇAR GRÁTIS';
+  document.querySelector('h1').innerHTML=d?d.h1:'Clareza total<em>sobre seu dinheiro.</em>';
+  const hdesc=document.querySelector('.hdesc');
+  if(hdesc)hdesc.innerHTML=d?d.desc:'O Wuzo analisa extratos, monitora dívidas, investimentos e metas — e usa <b>inteligência artificial de nível institucional</b> para te dizer exatamente onde seu patrimônio vai e o que fazer para mudar isso. Diagnóstico completo em segundos.';
+  const btns=document.querySelectorAll('.btn-main,.btn-line');
+  if(btns[0])btns[0].textContent=d?d.btn1:'⚡ COMEÇAR AGORA — GRÁTIS';
+  if(btns[1])btns[1].textContent=d?d.btn2:'VER COMO FUNCIONA →';
+  const ch=document.querySelector('.ch');
+  if(ch)ch.innerHTML=d?d.finalhd:'Seu dinheiro<em>merece atenção.</em>';
+  const cp=document.querySelector('.cp');
+  if(cp)cp.textContent=d?d.finalp:'Cada mês sem clareza financeira custa caro. O Wuzo te dá diagnóstico completo, estratégia personalizada e execução — em minutos, não meses.';
+  const ctaBtns=document.querySelectorAll('.ctas .btn-main');
+  if(ctaBtns[0])ctaBtns[0].textContent=d?d.finalbtn:'🚀 COMEÇAR AGORA — É GRÁTIS';
+  const cnote=document.querySelector('.cnote');
+  if(cnote)cnote.textContent=d?d.note:'SEM CARTÃO DE CRÉDITO · SEM CONTRATO · 100% ONLINE';
+  // Toggle buttons
+  ['pt','en','es'].forEach(lg=>{
+    const btn=document.getElementById('btn-'+lg);
+    if(btn)btn.className='lang-btn'+(lg===l||(!d&&lg==='pt')?' active':'');
+  });
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  // Loading state
-  ['lp-btc-floater','lp-btc-strip'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) { el.textContent = '...'; el.style.opacity = '.5'; }
-  });
-
-
-  // Init lang toggle colors
-  const _l=window._wuzo_lang||'pt';
-  ['pt','en','es'].forEach(lg=>{
-    const el=document.getElementById('lt-'+lg);
-    if(el)el.style.color=lg===_l?'var(--g)':'var(--tx2)';
-  });
-  // Dashboard month dinâmico
+document.addEventListener('DOMContentLoaded',()=>{
+  // Detect lang
+  const p=new URLSearchParams(window.location.search).get('lang');
+  const bl=(navigator.language||'pt').toLowerCase();
+  const l=p||(bl.startsWith('es')?'es':bl.startsWith('pt')?'pt':'en');
+  if(l!=='pt')setLang(l);
+  else{['pt','en','es'].forEach(lg=>{const b=document.getElementById('btn-'+lg);if(b)b.className='lang-btn'+(lg==='pt'?' active':'');});}
+  // Live prices
+  fetch_prices();
+  setInterval(fetch_prices,30000);
+  // Dynamic month
   const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-  const monthsPt=['JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO'];
   const now=new Date();
   const dm=document.getElementById('lp-dash-month');
-  if(dm)dm.textContent=(window._wuzo_lang==='en'?months:monthsPt)[now.getMonth()]+' '+now.getFullYear();
-  // Fear & Greed dinâmico
-  fetch('https://api.coincap.io/v2/assets/bitcoin',{signal:AbortSignal.timeout(4000)})
-    .then(r=>r.json()).then(d=>{
-      const ch=parseFloat(d?.data?.changePercent24Hr||0);
-      const fg=Math.min(100,Math.max(0,Math.round(50+ch*3)));
-      const el=document.getElementById('lp-fg-score');
-      if(el)el.textContent=fg+'/100';
-      const btcTitle=document.getElementById('news-btc-title');
-      if(btcTitle){
-        const p=parseFloat(d?.data?.priceUsd);
-        if(p){const fmt='$'+(p>=1000?(p/1000).toFixed(1)+'K':p.toFixed(0));btcTitle.textContent='BTC '+fmt+' ('+(ch>=0?'+':'')+ch.toFixed(2)+'%) '+(ch>=0?'↑':'↓');}
-      }
-    }).catch(()=>{});
-
-  // Busca imediata
-  update_live_prices().then(() => {
-    ['lp-btc-floater','lp-btc-strip','lp-usd-strip'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.style.opacity = '1';
-    });
-  });
-
-  // Refresh a cada 30 segundos
-  setInterval(update_live_prices, 30_000);
+  if(dm)dm.textContent=months[now.getMonth()]+' '+now.getFullYear();
 });
 </script>
 </body>
