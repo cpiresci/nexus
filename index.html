@@ -651,7 +651,7 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
           <div style="font-size:.54rem;color:var(--tx2);letter-spacing:2px;">GANÂNCIA · FEAR & GREED</div>
         </div>
       </div>
-      <div style="color:#fff;font-family:'Libre Baskerville',serif;font-style:italic;font-size:.95rem;line-height:1.7;">Bitcoin consolida acima de $84K após dados de inflação dos EUA abaixo do esperado. Ibovespa opera lateralmente aguardando COPOM. Dólar em queda frente ao real após superávit comercial recorde.</div>
+      <div style="color:#fff;font-family:'Libre Baskerville',serif;font-style:italic;font-size:.95rem;line-height:1.7;"><span id="lp-mood-text">Preços ao vivo via CoinCap + Coinbase (cripto) e Polygon.io (ações). Notícias via Polygon News API + CryptoPanic. Análise gerada pelo agente Market Intelligence em tempo real.</span></div>
     </div>
 
     <!-- Signal Row -->
@@ -670,17 +670,17 @@ footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-con
     <div class="ins-grid rev">
       <div class="ins-card">
         <div class="ins-label">CoinDesk · CRYPTO · BTC</div>
-        <div class="ins-title">Bitcoin: preço ao vivo atualizado em tempo real via CoinCap + Coinbase</div>
-        <div class="ins-summary">Wuzo Market Intelligence busca preços reais a cada 30 segundos via CoinCap API e Coinbase — sem cache, sem proxy. Variação 24h alimenta os sinais BUY/SELL/WATCH automaticamente.</div>
+        <div class="ins-title" id="lp-news-btc-title">BTC · Carregando preço ao vivo...</div>
+        <div class="ins-summary">Preço ao vivo sem proxy ou cache. Variação 24h atualiza os sinais BUY/SELL/WATCH automaticamente. Wuzo monitora BTC, ETH, SOL, BNB e XRP em tempo real via CoinCap + Coinbase + Blockchain.info.</div>
         <span class="ins-tag pos">POSITIVO</span><span class="ins-tag pos">⬆ ALTO</span>
         <div style="font-size:.66rem;color:var(--g);margin-top:10px;line-height:1.7;border-top:1px solid var(--bd);padding-top:10px;">⬡ Corte de juros nos EUA favorece ativos de risco. BTC historicamente sobe 30–60% nos 6 meses após primeiro corte do ciclo — momento de acumular posição gradual.</div>
       </div>
       <div class="ins-card">
-        <div class="ins-label">Bloomberg · BOLSA BR · PETR4</div>
-        <div class="ins-title">Petrobras anuncia dividendos extraordinários de R$0,89 por ação</div>
-        <div class="ins-summary">Conselho aprovou distribuição extraordinária após resultado trimestral acima das expectativas. Dividend yield total de 2025 chega a 14,2% — entre os maiores do IBOV.</div>
-        <span class="ins-tag pos">POSITIVO</span><span class="ins-tag neu">➡ MEDIO</span>
-        <div style="font-size:.66rem;color:var(--g);margin-top:10px;line-height:1.7;border-top:1px solid var(--bd);padding-top:10px;">⬡ Para investidor de renda passiva com horizonte longo, PETR4 oferece yield acima do CDI líquido no momento — mas risco político da empresa estatal deve estar no cálculo.</div>
+        <div class="ins-label">Polygon News · BOLSA BR · IBOV</div>
+        <div class="ins-title">Ibovespa e ações BR: análise ao vivo com dados reais</div>
+        <div class="ins-summary">O agente Market Intelligence monitora PETR4, VALE3, BBAS3 e IBOV com dados da Polygon News API. Cada notícia recebe score de impacto e ação recomendada para o investidor brasileiro.</div>
+        <span class="ins-tag neu">NEUTRO</span><span class="ins-tag neu">➡ MEDIO</span>
+        <div style="font-size:.78rem;color:var(--g);margin-top:10px;line-height:1.7;border-top:1px solid var(--bd);padding-top:10px;">⬡ SELIC em 14,75% a.a. — Tesouro IPCA+ 2029 rende acima da inflação com garantia soberana. Análise completa disponível no app.</div>
       </div>
       <div class="ins-card">
         <div class="ins-label">Reuters · MACRO BR · SELIC</div>
@@ -1029,6 +1029,19 @@ async function fetch_prices(){
       if(f3){badge=document.createElement('div');badge.id='lp-live-badge';badge.style.cssText='font-size:.62rem;letter-spacing:2px;margin-top:3px;';f3.appendChild(badge);}
     }
     if(badge){badge.textContent='● LIVE · '+btc.src;badge.style.color='#5dba88';}
+    // Update mood text
+    const moodTxt=document.getElementById('lp-mood-text');
+    if(moodTxt){
+      const arr=btc.ch>=0?'↑':'↓';
+      const chStr=(btc.ch>=0?'+':'')+btc.ch.toFixed(2)+'%';
+      moodTxt.textContent='BTC '+fmt_btc(btc.p)+' ('+chStr+') '+arr+' · Dados ao vivo via '+btc.src+' · USD/BRL e sinais atualizados a cada 30s pelo agente Market Intelligence.';
+    }
+    // Update BTC news title
+    const newsBtc=document.getElementById('lp-news-btc-title');
+    if(newsBtc){
+      const arr=btc.ch>=0?'↑':'↓';
+      newsBtc.textContent='BTC '+fmt_btc(btc.p)+' ('+( btc.ch>=0?'+':'')+btc.ch.toFixed(2)+'%) '+arr+' · Preço ao vivo via '+btc.src;
+    }
   }
   // USD/BRL
   try{
