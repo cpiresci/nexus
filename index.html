@@ -1127,3 +1127,25 @@ document.addEventListener('DOMContentLoaded',()=>{
   else{['pt','en','es'].forEach(lg=>{const b=document.getElementById('btn-'+lg);if(b)b.className='lang-btn'+(lg==='pt'?' active':'');});}
   // Live prices
   fetch_prices();
+  // Scroll reveal
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');}});
+  },{threshold:0.08});
+  document.querySelectorAll('.rev').forEach(el=>obs.observe(el));
+  // Nav solid on scroll
+  const nav=document.querySelector('nav');
+  window.addEventListener('scroll',()=>{nav.classList.toggle('solid',window.scrollY>60);},{ passive:true });
+  // Cursor
+  const c=document.getElementById('c'),cr=document.getElementById('cr');
+  document.addEventListener('mousemove',e=>{c.style.left=e.clientX+'px';c.style.top=e.clientY+'px';cr.style.left=e.clientX+'px';cr.style.top=e.clientY+'px';});
+  document.querySelectorAll('a,button,.mod,.hstep,.testi,.faq-q').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{cr.style.width='60px';cr.style.height='60px';cr.style.borderColor='rgba(201,168,76,.6)';});
+    el.addEventListener('mouseleave',()=>{cr.style.width='36px';cr.style.height='36px';cr.style.borderColor='rgba(201,168,76,.3)';});
+  });
+  // Dashboard month
+  const dm=document.getElementById('lp-dash-month');
+  if(dm){const mn=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];const now=new Date();dm.textContent=mn[now.getMonth()]+' '+now.getFullYear();}
+});
+</script>
+</body>
+</html>
