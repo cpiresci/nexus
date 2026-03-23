@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#020617">
+    <title>Wuzo Core | Painel de Operações</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono&display=swap');
+        
+        body { 
+            background-color: #020617; 
+            color: #f8fafc; 
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        .glass { 
+            background: rgba(15, 23, 42, 0.7); 
+            backdrop-filter: blur(15px); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+        }
+
+        .agent-card {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.9));
+            border-left: 4px solid #fbbf24;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .scanner-line {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, #fbbf24, transparent);
+            animation: scan 2s infinite linear;
+            opacity: 0.5;
+        }
+
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            50% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+    </style>
+</head>
+<body class="min-h-screen pb-28 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black">
+
+    <!-- Header -->
+    <header class="p-6 glass sticky top-0 z-50 flex justify-between items-center border-b border-white/10">
+        <div class="flex items-center gap-3">
+            <a href="index.html" class="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center text-slate-400 hover:text-white transition border border-white/5">
+                <i class="bi bi-house-door"></i>
+            </a>
+            <div>
+                <h1 class="font-black text-lg tracking-tighter uppercase italic">Wuzo <span class="text-yellow-500">Core</span></h1>
+                <p class="text-[8px] font-bold text-slate-500 tracking-[0.3em] uppercase mono">Neural Shell v5.2</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="text-[9px] text-emerald-500 font-bold mono uppercase">Sync: Active</span>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto p-6 space-y-8">
+        <!-- Input de Comando -->
+        <section class="bg-slate-900 border border-white/10 rounded-3xl p-5 shadow-2xl relative">
+            <div class="flex items-center gap-2 mb-3 opacity-50">
+                <i class="bi bi-terminal text-yellow-500 text-xs"></i>
+                <span class="text-[9px] font-black uppercase tracking-widest mono">Orquestrador Neural</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <input type="text" id="userInput" placeholder="Digite seu comando..." class="bg-transparent w-full border-none focus:ring-0 text-white font-medium text-lg outline-none">
+                <button onclick="startWuzo()" class="bg-yellow-500 w-12 h-12 rounded-2xl flex items-center justify-center text-slate-950 hover:bg-yellow-400 transition active:scale-95">
+                    <i class="bi bi-lightning-charge-fill text-xl"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Monitor de Agentes -->
+        <div id="monitor" class="hidden space-y-4">
+            <div class="flex justify-between items-end px-1">
+                <h3 class="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em]">Neural Processing</h3>
+                <span id="loadText" class="text-xs font-bold text-yellow-500 mono">0%</span>
+            </div>
+            <div id="stack" class="space-y-3"></div>
+        </div>
+    </main>
+
+    <!-- Barra de Navegação -->
+    <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-sm glass rounded-[2.5rem] p-2 flex justify-around items-center z-50 border border-white/10 shadow-2xl">
+        <button class="p-4 text-yellow-500 bg-yellow-500/10 rounded-full"><i class="bi bi-cpu-fill text-xl"></i></button>
+        <button onclick="window.location.href='https://wuzo-core.onrender.com'" class="p-4 text-slate-500 hover:text-white transition"><i class="bi bi-box-arrow-up-right text-xl"></i></button>
+        <button class="p-4 text-slate-500 hover:text-white transition"><i class="bi bi-person-circle text-xl"></i></button>
+    </nav>
+
+    <script>
+        const agents = [
+            { id: 1, name: "LEGAL_AI", task: "Varredura de Editais", icon: "bi-shield-check" },
+            { id: 2, name: "DEBT_SCAN", task: "Rastreio Financeiro", icon: "bi-search" },
+            { id: 3, name: "VALUE_IA", task: "Cálculo de Equity", icon: "bi-graph-up-arrow" },
+            { id: 4, name: "FINAL_REP", task: "Relatório de Veredito", icon: "bi-file-earmark-text" }
+        ];
+
+        async function startWuzo() {
+            const val = document.getElementById('userInput').value;
+            if(!val) return;
+
+            document.getElementById('monitor').classList.remove('hidden');
+            const stack = document.getElementById('stack');
+            stack.innerHTML = '';
+
+            for(let i=0; i < agents.length; i++) {
+                await new Promise(r => setTimeout(r, 600));
+                const card = document.createElement('div');
+                card.className = 'glass p-4 rounded-2xl agent-card relative overflow-hidden animate-in slide-in-from-right-4';
+                card.innerHTML = `
+                    <div class="scanner-line"></div>
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-yellow-500">
+                                <i class="bi ${agents[i].icon}"></i>
+                            </div>
+                            <div>
+                                <p class="text-[9px] font-black text-yellow-500 mono">AGENT_0${agents[i].id}</p>
+                                <p class="text-[11px] font-bold text-white uppercase">${agents[i].task}</p>
+                            </div>
+                        </div>
+                        <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                    </div>
+                `;
+                stack.appendChild(card);
+                document.getElementById('loadText').innerText = Math.round(((i + 1) / agents.length) * 100) + '%';
+            }
+        }
+    </script>
+</body>
+</html>
+
