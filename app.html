@@ -1,699 +1,207 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Wuzo Core">
-<meta name="theme-color" content="#020617">
-<link rel="manifest" id="pwa-manifest">
-<script>
-// Inline PWA Manifest - Upgraded to Gold Theme
-const manifest = {
-  name: "Wuzo Core OS",
-  short_name: "Wuzo",
-  description: "Institutional-grade Financial AI",
-  start_url: ".",
-  display: "standalone",
-  background_color: "#020617",
-  theme_color: "#020617",
-  orientation: "portrait",
-  icons: [
-    {
-      src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%230f172a'/%3E%3Cpolygon points='96,20 164,58 164,134 96,172 28,134 28,58' fill='none' stroke='%23eab308' stroke-width='6'/%3E%3Ctext x='96' y='108' text-anchor='middle' font-family='monospace' font-size='48' font-weight='bold' fill='%23eab308'%3EW%3C/text%3E%3C/svg%3E",
-      sizes: "192x192",
-      type: "image/svg+xml"
-    },
-    {
-      src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230f172a'/%3E%3Cpolygon points='256,40 440,148 440,364 256,472 72,364 72,148' fill='none' stroke='%23eab308' stroke-width='12'/%3E%3Ctext x='256' y='300' text-anchor='middle' font-family='monospace' font-size='140' font-weight='bold' fill='%23eab308'%3EW%3C/text%3E%3C/svg%3E",
-      sizes: "512x512",
-      type: "image/svg+xml"
-    }
-  ]
-};
-const blob = new Blob([JSON.stringify(manifest)], {type: "application/json"});
-const url = URL.createObjectURL(blob);
-document.getElementById("pwa-manifest").href = url;
-</script>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Wuzo Core OS | Advanced</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-<style>
-/* =========================================
-   WUZO CORE OS - ULTRA PREMIUM STYLES
-   ========================================= */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0; -webkit-tap-highlight-color: transparent;}
-:root{
-  --bg: #020617; 
-  --bg2: rgba(15, 23, 42, 0.65); 
-  --bg3: rgba(30, 41, 59, 0.8); 
-  --bg4: #334155;
-  --gold: #eab308; 
-  --gold-glow: rgba(234, 179, 8, 0.4); 
-  --gold-dim: rgba(234, 179, 8, 0.1);
-  --emerald: #10b981; --emerald-glow: rgba(16, 185, 129, 0.4);
-  --red: #ef4444; 
-  --slate: #94a3b8; 
-  --white: #f8fafc;
-  --border: rgba(255, 255, 255, 0.06); 
-  --border-gold: rgba(234, 179, 8, 0.25);
-  --glass-blur: blur(16px);
-}
-html,body{height:100%;background:var(--bg);color:var(--white);font-family:'Space Grotesk',sans-serif;overflow:hidden; scroll-behavior: smooth;}
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:2px}
-::-webkit-scrollbar-thumb:hover{background:var(--gold)}
+import React, { useState, useEffect } from 'react';
+import { 
+  Zap, Crown, Lock, Check, CreditCard, 
+  Cpu, MessageSquare, ShieldCheck, ArrowRight, X
+} from 'lucide-react';
 
-/* Immersive Cyberpunk Background */
-.grid-bg{position:fixed;inset:0;background-image:linear-gradient(rgba(234, 179, 8, 0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(234, 179, 8, 0.02) 1px,transparent 1px);background-size:48px 48px;pointer-events:none; z-index: 0;}
-.scanlines {position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.1)); background-size: 100% 4px; pointer-events: none; z-index: 999; opacity: 0.3;}
-.orb1{position:fixed;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(234, 179, 8, 0.08) 0%,transparent 70%);top:-200px;right:-150px;pointer-events:none; filter: blur(40px);}
-.orb2{position:fixed;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(16, 185, 129, 0.05) 0%,transparent 70%);bottom:-100px;left:-100px;pointer-events:none; filter: blur(40px);}
+export default function App() {
+  // --- Estados de Subscrição (O motor do dinheiro) ---
+  const [userPlan, setUserPlan] = useState('Free'); // 'Free' ou 'Premium'
+  const [isAiActive, setIsAiActive] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [usageCount, setUsageCount] = useState(0);
+  const MAX_FREE_MESSAGES = 3;
 
-/* Core Layout */
-.app{display:flex;height:100vh;position:relative; z-index: 1;}
-
-/* Sidebar - Glassmorphism */
-.sidebar{width:64px;background:var(--bg2);backdrop-filter:var(--glass-blur); -webkit-backdrop-filter:var(--glass-blur); border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:20px 0;gap:12px;z-index:10;flex-shrink:0; box-shadow: 5px 0 25px rgba(0,0,0,0.5);}
-.sidebar-logo{width:40px;height:40px;background:linear-gradient(135deg, #ca8a04, var(--gold));border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 0 20px var(--gold-glow); border: 1px solid rgba(255,255,255,0.2);}
-.sb-btn{width:40px;height:40px;border-radius:12px;border:1px solid transparent;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);color:var(--slate);}
-.sb-btn:hover{background:var(--gold-dim);color:var(--white); transform: scale(1.05);}
-.sb-btn.active{background:var(--gold-dim);border-color:var(--border-gold);color:var(--gold); box-shadow: inset 0 0 10px var(--gold-glow);}
-
-/* Main Container */
-.main{flex:1;display:flex;flex-direction:column;overflow:hidden; position: relative;}
-
-/* Premium Header */
-.header{padding:16px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(2, 6, 23, 0.7);backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px); z-index:5;flex-shrink:0;}
-.header-left{display:flex;align-items:center;gap:12px;}
-.header-title{font-size:0.65rem;letter-spacing:5px;text-transform:uppercase;color:var(--slate);font-family:'JetBrains Mono',monospace; font-weight: 700; text-shadow: 0 0 10px rgba(148, 163, 184, 0.3);}
-.status-dot{width:8px;height:8px;border-radius:50%;background:var(--emerald);animation:pulse 2s infinite; box-shadow: 0 0 10px var(--emerald-glow);}
-@keyframes pulse{0%,100%{opacity:1; transform:scale(1)}50%{opacity:0.5; transform:scale(0.8)}}
-.header-right{display:flex;align-items:center;gap:8px;}
-.badge{font-size:0.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:6px;font-family:'JetBrains Mono',monospace; backdrop-filter: blur(10px);}
-.badge-free{background:rgba(148,163,184,0.05);color:var(--slate);border:1px solid var(--border)}
-.badge-active{background:rgba(16,185,129,0.1);color:var(--emerald);border:1px solid rgba(16,185,129,0.3); box-shadow: 0 0 15px rgba(16,185,129,0.15);}
-
-/* Content Area */
-.content{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:20px;padding-bottom:100px;}
-
-/* Market Strip - Financial Terminal Vibe */
-.market-strip{display:flex;gap:12px;}
-.market-item{flex:1;background:linear-gradient(145deg, var(--bg2), rgba(2, 6, 23, 0.9));border:1px solid var(--border);border-radius:12px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between; backdrop-filter: var(--glass-blur); transition: transform 0.3s; position: relative; overflow: hidden;}
-.market-item::before{content:''; position: absolute; top: 0; left: 0; width: 2px; height: 100%; background: var(--gold); opacity: 0.5;}
-.market-item:hover{transform: translateY(-2px); border-color: var(--border-gold);}
-.market-sym{font-size:0.65rem;font-weight:700;letter-spacing:2px;color:var(--slate);font-family:'JetBrains Mono',monospace;}
-.market-price{font-size:0.9rem;font-weight:700;font-family:'JetBrains Mono',monospace; text-shadow: 0 0 15px rgba(255,255,255,0.1);}
-.market-change{font-size:0.65rem;font-weight:600;font-family:'JetBrains Mono',monospace;margin-top:4px;}
-.up{color:var(--emerald); text-shadow: 0 0 10px var(--emerald-glow);}.dn{color:var(--red); text-shadow: 0 0 10px rgba(239, 68, 68, 0.4);}
-
-/* Ultra Command Bar */
-.command-bar{background:linear-gradient(180deg, var(--bg2), rgba(2, 6, 23, 0.95));border:1px solid var(--border-gold);border-radius:16px;padding:20px;position:relative;overflow:hidden;box-shadow:0 10px 40px rgba(234, 179, 8, 0.05); backdrop-filter: var(--glass-blur);}
-.command-bar::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent); animation: scanline 3s linear infinite;}
-@keyframes scanline { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
-.command-label{font-size:0.6rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--gold);font-family:'JetBrains Mono',monospace;margin-bottom:12px;display:flex;align-items:center;gap:8px; text-shadow: 0 0 8px var(--gold-glow);}
-.command-input-wrap{display:flex;align-items:center;gap:12px;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:12px 16px;transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);}
-.command-input-wrap:focus-within{border-color:var(--gold); box-shadow: inset 0 2px 10px rgba(0,0,0,0.5), 0 0 15px var(--gold-dim);}
-.command-input{flex:1;background:transparent;border:none;outline:none;color:var(--white);font-family:'Space Grotesk',sans-serif;font-size:0.95rem; font-weight: 500;}
-.command-input::placeholder{color:var(--bg4);}
-.cmd-btn{width:38px;height:38px;border-radius:10px;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;flex-shrink:0; background:linear-gradient(135deg, #ca8a04, var(--gold));color:#020617; box-shadow: 0 4px 15px var(--gold-glow);}
-.cmd-btn:hover{transform: scale(1.05); filter: brightness(1.1);}
-.cmd-btn:active{transform: scale(0.95);}
-.suggestions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
-.suggestion{font-size:0.65rem;font-weight:600;padding:6px 12px;border-radius:20px;background:var(--bg);border:1px solid var(--border);color:var(--slate);cursor:pointer;transition:all 0.3s;font-family:'JetBrains Mono',monospace;}
-.suggestion:hover{background:var(--gold-dim);color:var(--gold); border-color: var(--border-gold); transform: translateY(-1px);}
-
-/* Titles */
-.section-title{font-size:0.6rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--slate);font-family:'JetBrains Mono',monospace;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
-
-/* Agent Grid - Neural Network Feel */
-.workflow{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px; backdrop-filter: var(--glass-blur);}
-.agents-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
-.agent-card{background:linear-gradient(145deg, var(--bg3), var(--bg));border:1px solid var(--border);border-radius:12px;padding:14px;transition:all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden;}
-.agent-card::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(45deg, transparent, rgba(255,255,255,0.03), transparent); transform: translateX(-100%); transition: 0.5s;}
-.agent-card.active{border-color:var(--border-gold); background:var(--gold-dim); box-shadow: 0 0 20px rgba(234, 179, 8, 0.15); transform: translateY(-2px);}
-.agent-card.active::after{transform: translateX(100%);}
-.agent-card.done{border-color:rgba(16,185,129,0.4); background:rgba(16,185,129,0.05);}
-.agent-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-.agent-ico{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center; border: 1px solid rgba(255,255,255,0.05);}
-.agent-name{font-size:0.6rem;font-weight:700;letter-spacing:1px;color:var(--white);font-family:'JetBrains Mono',monospace;margin-bottom:8px;}
-.agent-bar{height:3px;background:var(--bg);border-radius:2px;overflow:hidden;margin-bottom:6px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);}
-.agent-bar-fill{height:100%;border-radius:2px;transition:width 0.4s ease; box-shadow: 0 0 8px currentColor;}
-.agent-status{font-size:0.55rem;font-weight:600;color:var(--bg4);font-family:'JetBrains Mono',monospace; text-transform: uppercase;}
-.agent-status.active{color:var(--gold); text-shadow: 0 0 5px var(--gold-glow);}
-.agent-status.done{color:var(--emerald); text-shadow: 0 0 5px var(--emerald-glow);}
-
-/* Modules - App Grid */
-.modules-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
-.module-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px 12px;cursor:pointer;transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);display:flex;flex-direction:column;gap:10px; backdrop-filter: var(--glass-blur);}
-.module-card:hover{transform:translateY(-4px);border-color:var(--border-gold); background: rgba(30, 41, 59, 0.9); box-shadow: 0 10px 20px rgba(0,0,0,0.3);}
-.module-card.selected{border-color:var(--gold);box-shadow:0 0 20px var(--gold-dim); background: linear-gradient(180deg, var(--bg3), var(--gold-dim));}
-.module-ico{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center; box-shadow: inset 0 0 10px rgba(255,255,255,0.05);}
-.module-label{font-size:0.75rem;font-weight:700;color:var(--white);}
-.module-desc{font-size:0.6rem;color:var(--slate);line-height:1.5; font-weight: 400;}
-
-/* Response Stream (Chat) */
-.response-area{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px;display:flex;flex-direction:column;min-height:200px; backdrop-filter: var(--glass-blur);}
-.messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:16px;max-height:300px; scroll-behavior: smooth;}
-.message{display:flex;gap:12px;align-items:flex-start; animation: slideUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; opacity: 0; transform: translateY(10px);}
-@keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
-.message.user{flex-direction:row-reverse}
-.msg-av{width:32px;height:32px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:800;letter-spacing:1px; font-family:'JetBrains Mono',monospace;}
-.msg-av.ai{background:linear-gradient(135deg, #ca8a04, var(--gold));color:#020617; box-shadow: 0 0 15px var(--gold-glow);}
-.msg-av.user{background:var(--bg);color:var(--slate);border:1px solid var(--border)}
-.msg-bubble{max-width:80%;padding:14px 18px;border-radius:12px;font-size:0.85rem;line-height:1.7;color:var(--white); font-weight: 500;}
-.msg-bubble.ai{background:var(--bg);border:1px solid var(--border);border-top-left-radius:4px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);}
-.msg-bubble.user{background:var(--gold-dim);border:1px solid var(--border-gold);border-top-right-radius:4px; color: var(--gold);}
-.typing{display:flex;gap:5px;align-items:center;padding:8px 4px;}
-.tdot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:td 1.4s infinite ease-in-out;}
-.tdot:nth-child(2){animation-delay:0.2s}.tdot:nth-child(3){animation-delay:0.4s}
-@keyframes td{0%,80%,100%{transform:scale(0);opacity:0.3}40%{transform:scale(1);opacity:1; box-shadow: 0 0 10px var(--gold-glow);}}
-.empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--bg4);padding:30px 0;}
-.empty-text{font-size:0.7rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;}
-
-/* Mobile Navigation */
-.mobile-nav{display:none;background:rgba(2, 6, 23, 0.85);backdrop-filter:blur(20px); border-top:1px solid var(--border);padding:8px 16px;gap:8px; z-index: 50;}
-.mnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px;border-radius:10px;border:none;background:transparent;cursor:pointer;transition:all 0.3s;color:var(--slate);}
-.mnav-btn.active{color:var(--gold);background:var(--gold-dim); box-shadow: inset 0 0 10px rgba(234, 179, 8, 0.1);}
-.mnav-label{font-size:0.55rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;}
-
-/* Media Queries */
-@media(max-width:850px){
-  .agents-grid{grid-template-columns:repeat(2,1fr)}
-  .modules-grid{grid-template-columns:repeat(3,1fr)}
-}
-@media(max-width:768px){
-  .sidebar{display:none}
-  .header{padding: 12px 16px;}
-  .modules-grid{grid-template-columns:repeat(2,1fr)}
-  .market-strip{flex-wrap:wrap; display: grid; grid-template-columns: repeat(2, 1fr);}
-  .market-item:last-child { grid-column: span 2; }
-  .mobile-nav{display:flex}
-  .content{padding: 16px; padding-bottom: 90px;}
-}
-
-/* Install Banner */
-.install-banner{display:none;position:fixed;bottom:80px;left:16px;right:16px;background:linear-gradient(135deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));backdrop-filter: blur(10px); border:1px solid var(--border-gold);border-radius:16px;padding:16px 20px;align-items:center;justify-content:space-between;z-index:100;box-shadow:0 15px 40px rgba(0,0,0,0.6), 0 0 20px var(--gold-dim);}
-.install-text{font-size:0.8rem;font-weight:700;color:var(--gold);font-family:'JetBrains Mono',monospace;letter-spacing:1px; display: flex; align-items: center; gap: 8px;}
-.install-sub{font-size:0.65rem;color:var(--white);margin-top:4px; font-weight: 500;}
-.install-btn{background:linear-gradient(135deg, #ca8a04, var(--gold));color:#020617;border:none;border-radius:8px;padding:10px 18px;font-size:0.7rem;font-weight:700;font-family:'JetBrains Mono',monospace;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:all 0.2s; box-shadow: 0 4px 15px rgba(234, 179, 8, 0.3);}
-.install-btn:hover{transform: scale(1.05);}
-.install-close{background:transparent;border:none;color:var(--slate);cursor:pointer;padding:6px;margin-left:12px; transition: color 0.2s;}
-.install-close:hover{color: var(--white);}
-
-/* Animations */
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.fade-in{animation:fadeIn 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards}
-@keyframes spin{to{transform:rotate(360deg)}}
-.spin{animation:spin 1.2s cubic-bezier(0.5, 0.1, 0.5, 0.9) infinite}
-</style>
-</head>
-<body>
-<div class="grid-bg"></div>
-<div class="scanlines"></div>
-<div class="orb1"></div><div class="orb2"></div>
-
-<div class="app" id="app">
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <i data-lucide="hexagon" style="width:20px;height:20px;color:#020617; fill: currentColor;"></i>
-    </div>
-    <button class="sb-btn active" id="sb-home" onclick="setView('home')" title="Core Interface">
-      <i data-lucide="command" style="width:18px;height:18px"></i>
-    </button>
-    <button class="sb-btn" id="sb-chat" onclick="setView('chat')" title="Neural Chat">
-      <i data-lucide="brain" style="width:18px;height:18px"></i>
-    </button>
-    <button class="sb-btn" id="sb-modules" onclick="setView('modules')" title="System Modules">
-      <i data-lucide="layout-dashboard" style="width:18px;height:18px"></i>
-    </button>
-  </aside>
-
-  <main class="main">
-    <header class="header">
-      <div class="header-left">
-        <div class="status-dot"></div>
-        <span class="header-title">Wuzo <span style="color:var(--gold)">Core OS</span> · v5.2</span>
-      </div>
-      <div class="header-right">
-        <span class="badge badge-active"><i data-lucide="zap" style="width:10px;height:10px;display:inline-block;vertical-align:middle;margin-right:4px;"></i>8 Agents Sync</span>
-        <span class="badge badge-free" style="border-color: var(--border-gold); color: var(--gold);">Pro Trial</span>
-      </div>
-    </header>
-
-    <div class="content" id="content">
-
-      <div class="market-strip fade-in" id="market-strip" style="animation-delay: 0.1s;">
-        <div class="market-item">
-          <div><div class="market-sym">BTC/USD</div><div class="market-change up" id="btc-ch">Syncing...</div></div>
-          <div class="market-price up" id="btc-p">---</div>
-        </div>
-        <div class="market-item">
-          <div><div class="market-sym">ETH/USD</div><div class="market-change up" id="eth-ch">Syncing...</div></div>
-          <div class="market-price up" id="eth-p">---</div>
-        </div>
-        <div class="market-item">
-          <div><div class="market-sym">SOL/USD</div><div class="market-change up" id="sol-ch">Syncing...</div></div>
-          <div class="market-price up" id="sol-p">---</div>
-        </div>
-      </div>
-
-      <div class="command-bar fade-in" style="animation-delay: 0.2s;">
-        <div class="command-label">
-          <i data-lucide="sparkles" style="width:12px;height:12px"></i>
-          Neural Orchestrator · Awaiting Directive
-        </div>
-        <div class="command-input-wrap">
-          <i data-lucide="terminal-square" style="width:18px;height:18px;color:var(--gold);flex-shrink:0"></i>
-          <input class="command-input" id="cmd-input" placeholder="Initialize financial analysis, track assets, or audit smart contracts..." onkeydown="if(event.key==='Enter')sendMsg()">
-          <button class="cmd-btn cmd-send" onclick="sendMsg()">
-            <i data-lucide="arrow-right" style="width:16px;height:16px; stroke-width: 3;"></i>
-          </button>
-        </div>
-        <div class="suggestions" id="suggestions">
-          <button class="suggestion" onclick="sendMsg('Execute comprehensive financial audit')">Execute Audit</button>
-          <button class="suggestion" onclick="sendMsg('Analyze BTC algorithmic momentum')">BTC Momentum</button>
-          <button class="suggestion" onclick="sendMsg('Run debt restructure protocol')">Debt Protocol</button>
-          <button class="suggestion" onclick="sendMsg('Deploy investment diversification logic')">Diversify Portfolio</button>
-        </div>
-      </div>
-
-      <div class="workflow fade-in" id="workflow" style="display:none">
-        <div class="section-title">
-          <i data-lucide="cpu" style="width:14px;height:14px; color: var(--gold);"></i>
-          Neural Processing · Parallel Execution
-        </div>
-        <div class="agents-grid" id="agents-grid"></div>
-      </div>
-
-      <div class="response-area fade-in" id="response-area" style="display:none">
-        <div class="section-title">
-          <i data-lucide="radio" style="width:14px;height:14px; color: var(--gold);"></i>
-          Wuzo Intelligence Stream
-        </div>
-        <div class="messages" id="messages">
-          <div class="empty-state">
-            <i data-lucide="fingerprint" style="width:36px;height:36px;opacity:0.3; color: var(--gold);"></i>
-            <span class="empty-text">System Idle</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="fade-in" id="modules-section" style="animation-delay: 0.3s;">
-        <div class="section-title">
-          <i data-lucide="layers" style="width:14px;height:14px; color: var(--gold);"></i>
-          Core Modules · Select to Deploy
-        </div>
-        <div class="modules-grid" id="modules-grid"></div>
-      </div>
-
-    </div>
-
-    <nav class="mobile-nav">
-      <button class="mnav-btn active" id="mn-home" onclick="setView('home')">
-        <i data-lucide="command" style="width:18px;height:18px"></i>
-        <span class="mnav-label">Home</span>
-      </button>
-      <button class="mnav-btn" id="mn-chat" onclick="setView('chat')">
-        <i data-lucide="brain" style="width:18px;height:18px"></i>
-        <span class="mnav-label">Stream</span>
-      </button>
-      <button class="mnav-btn" id="mn-modules" onclick="setView('modules')">
-        <i data-lucide="layout-dashboard" style="width:18px;height:18px"></i>
-        <span class="mnav-label">Hub</span>
-      </button>
-    </nav>
-  </main>
-</div>
-
-<script>
-// Upgraded Agents Palette matching the Cyberpunk theme
-const AGENTS = [
-  {id:"analyst", name:"Data Analyst", color:"#eab308", icon:"brain"},
-  {id:"market",  name:"Market Sync",  color:"#10b981", icon:"trending-up"},
-  {id:"budget",  name:"Ledger Audit", color:"#8b5cf6", icon:"wallet"},
-  {id:"invest",  name:"Equity Calc",  color:"#f59e0b", icon:"bar-chart-3"},
-  {id:"debt",    name:"Liability",    color:"#ef4444", icon:"credit-card"},
-  {id:"goals",   name:"Target Lock",  color:"#06b6d4", icon:"target"},
-  {id:"academy", name:"Deep Learn",   color:"#84cc16", icon:"graduation-cap"},
-  {id:"data",    name:"Osint Eng",    color:"#f97316", icon:"database"},
-];
-
-const MODULES = [
-  {id:"ai",       label:"Wuzo Brain",     icon:"brain",          color:"#eab308", desc:"Core AI orchestrator"},
-  {id:"market",   label:"Live Market",    icon:"activity",       color:"#10b981", desc:"Real-time orderbook"},
-  {id:"finances", label:"Cash Flow",      icon:"wallet",         color:"#8b5cf6", desc:"Liquidity tracking"},
-  {id:"invest",   label:"Portfolio",      icon:"pie-chart",      color:"#f59e0b", desc:"Asset allocation"},
-  {id:"debts",    label:"Liabilities",    icon:"credit-card",    color:"#ef4444", desc:"Debt restructure"},
-  {id:"goals",    label:"Objectives",     icon:"target",         color:"#06b6d4", desc:"Milestone builder"},
-  {id:"academy",  label:"Knowledge base", icon:"book-open",      color:"#84cc16", desc:"Financial theory"},
-  {id:"dashboard",label:"Command Center", icon:"layout-dashboard",color:"#f97316", desc:"Global overview"},
-  {id:"crypto",   label:"DeFi Web3",      icon:"bitcoin",        color:"#f59e0b", desc:"On-chain metrics"},
-  {id:"security", label:"Vault Sec",      icon:"shield-check",   color:"#64748b", desc:"Zero-trust protocol"},
-];
-
-let currentView = "home";
-let activeModule = null;
-let agentStates = AGENTS.map(a => ({...a, status:"idle", progress:0}));
-
-// Render Integration Placeholder
-const BACKEND_API = "https://wuzo-core.onrender.com/api/v1";
-
-function initModules() {
-  const grid = document.getElementById("modules-grid");
-  grid.innerHTML = MODULES.map(m => `
-    <div class="module-card ${activeModule===m.id?'selected':''}" id="mod-${m.id}" onclick="activateModule('${m.id}','${m.label}')">
-      <div class="module-ico" style="background:${m.color}15; color:${m.color}; border: 1px solid ${m.color}30;">
-        <i data-lucide="${m.icon}" style="width:18px;height:18px;"></i>
-      </div>
-      <div>
-        <div class="module-label">${m.label}</div>
-        <div class="module-desc">${m.desc}</div>
-      </div>
-    </div>
-  `).join("");
-  lucide.createIcons();
-}
-
-function initAgents() {
-  const grid = document.getElementById("agents-grid");
-  grid.innerHTML = agentStates.map(a => `
-    <div class="agent-card ${a.status}" id="ag-${a.id}">
-      <div class="agent-top">
-        <div class="agent-ico" style="background:${a.color}15; color:${a.color}; border: 1px solid ${a.color}30;">
-          <i data-lucide="${a.icon}" style="width:12px;height:12px;"></i>
-        </div>
-        <span id="ag-status-icon-${a.id}"></span>
-      </div>
-      <div class="agent-name">${a.name.toUpperCase()}</div>
-      <div class="agent-bar"><div class="agent-bar-fill" id="ag-bar-${a.id}" style="width:0%;background:${a.color}"></div></div>
-      <div class="agent-status ${a.status}" id="ag-status-${a.id}">standby</div>
-    </div>
-  `).join("");
-  lucide.createIcons();
-}
-
-function resetAgents() {
-  agentStates = AGENTS.map(a => ({...a, status:"idle", progress:0}));
-  AGENTS.forEach(a => {
-    const card = document.getElementById(`ag-${a.id}`);
-    if(card){card.className="agent-card"}
-    const bar = document.getElementById(`ag-bar-${a.id}`);
-    if(bar){bar.style.width="0%"}
-    const st = document.getElementById(`ag-status-${a.id}`);
-    if(st){st.textContent="standby";st.className="agent-status"}
-    const ico = document.getElementById(`ag-status-icon-${a.id}`);
-    if(ico){ico.innerHTML=""}
-  });
-}
-
-async function runAgents() {
-  const relevant = AGENTS.slice(0,4); // Simulating 4 active agents
-  for(const agent of relevant) {
-    const card = document.getElementById(`ag-${agent.id}`);
-    const bar = document.getElementById(`ag-bar-${agent.id}`);
-    const st = document.getElementById(`ag-status-${agent.id}`);
-    const ico = document.getElementById(`ag-status-icon-${agent.id}`);
-    
-    if(card) card.className = "agent-card active";
-    if(st){st.textContent="executing...";st.className="agent-status active"}
-    if(ico) ico.innerHTML = `<i data-lucide="loader-2" style="width:10px;height:10px;color:${agent.color}" class="spin"></i>`;
-    lucide.createIcons();
-    
-    // Smooth progress bar logic
-    for(let p=0;p<=100;p+=10){
-      await sleep(40);
-      if(bar) bar.style.width = p+"%";
-    }
-    
-    if(card) card.className = "agent-card done";
-    if(st){st.textContent="verified";st.className="agent-status done"}
-    if(ico) ico.innerHTML = `<i data-lucide="check-circle-2" style="width:12px;height:12px;color:var(--emerald)"></i>`;
-    lucide.createIcons();
-  }
-}
-
-function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
-
-function addMessage(role, text) {
-  const msgs = document.getElementById("messages");
-  const empty = msgs.querySelector(".empty-state");
-  if(empty) empty.remove();
-
-  const div = document.createElement("div");
-  div.className = `message ${role}`;
-  // Formata texto para suportar negrito
-  const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-  
-  div.innerHTML = `
-    <div class="msg-av ${role}">${role==="ai"?"WZ":"US"}</div>
-    <div class="msg-bubble ${role}">${formattedText}</div>
-  `;
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-function addTyping() {
-  const msgs = document.getElementById("messages");
-  const div = document.createElement("div");
-  div.className = "message ai";
-  div.id = "typing-indicator";
-  div.innerHTML = `
-    <div class="msg-av ai">WZ</div>
-    <div class="msg-bubble ai" style="padding: 12px 18px;">
-      <div class="typing">
-        <div class="tdot"></div><div class="tdot"></div><div class="tdot"></div>
-      </div>
-    </div>
-  `;
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-function removeTyping() {
-  const t = document.getElementById("typing-indicator");
-  if(t) t.remove();
-}
-
-async function sendMsg(text) {
-  const input = document.getElementById("cmd-input");
-  const msg = text || input.value.trim();
-  if(!msg) return;
-  input.value = "";
-
-  document.getElementById("suggestions").style.display = "none";
-  document.getElementById("workflow").style.display = "block";
-  document.getElementById("response-area").style.display = "flex";
-
-  setView("chat");
-  addMessage("user", msg);
-  addTyping();
-  resetAgents();
-
-  // Parallel Execution: Visual Loading + (Future: Render Fetch)
-  await Promise.all([
-    runAgents(),
-    sleep(2000) // Simulating network latency
-  ]);
-
-  removeTyping();
-
-  // Institutional Grade Responses
-  const responses = {
-    default: "Core processing complete. Based on the multispectral data analysis across 8 neural layers, I recommend structuring a high-liquidity emergency fund (3 months OpEx minimum) before scaling risk assets. Portfolio exposure remains within acceptable standard deviation parameters.",
-    btc: "Deploying algorithmic analysis on BTC. Current on-chain metrics indicate strong accumulation in cold wallets. **Recommendation:** Maintain current spot position. Set dynamic limit alerts near key resistance zones. Do not increase leverage at this volatility index.",
-    debt: "Liability scan verified. To optimize your equity curve, execute the **Avalanche Protocol**: target the highest APR revolving credit facilities first. I can draft a fully automated liquidation schedule to accelerate principal reduction by 24%.",
-    invest: "Asset Allocation Model updated. For optimal risk-adjusted returns (Sharpe Ratio), I suggest: 55% ETF Indexing (SP500), 30% Strategic Equities, 15% Digital Assets (BTC/ETH only). Rebalancing threshold set to 5% quarterly deviation.",
-    goal: "Objective locked into the matrix. Based on current cash flow telemetry, allocating R$ 1,200/month to compounding yield vehicles will achieve your target within 14.2 months. Auto-tracking initiated.",
-  };
-
-  const key = msg.toLowerCase().includes("btc") || msg.toLowerCase().includes("bitcoin") ? "btc"
-    : msg.toLowerCase().includes("debt") ? "debt"
-    : msg.toLowerCase().includes("invest") || msg.toLowerCase().includes("diversify") ? "invest"
-    : msg.toLowerCase().includes("goal") ? "goal"
-    : "default";
-
-  // Aqui você pode plugar seu fetch pro render:
-  // fetch(`${BACKEND_API}/analyze`, { method: 'POST', body: JSON.stringify({query: msg}) })
-  
-  addMessage("ai", responses[key] || responses.default);
-}
-
-function activateModule(id, label) {
-  activeModule = id;
-  document.querySelectorAll(".module-card").forEach(c => c.classList.remove("selected"));
-  const card = document.getElementById(`mod-${id}`);
-  if(card) card.classList.add("selected");
-  sendMsg(`Initialize ${label} subsystem. Requesting full technical breakdown.`);
-}
-
-function setView(view) {
-  currentView = view;
-  ["home","chat","modules"].forEach(v => {
-    const sb = document.getElementById(`sb-${v}`);
-    const mn = document.getElementById(`mn-${v}`);
-    if(sb) sb.className = `sb-btn ${v===view?"active":""}`;
-    if(mn) mn.className = `mnav-btn ${v===view?"active":""}`;
-  });
-
-  const workflow = document.getElementById("workflow");
-  const responseArea = document.getElementById("response-area");
-  const modulesSection = document.getElementById("modules-section");
-  const cmdBar = document.querySelector(".command-bar");
-
-  if(view === "home") {
-    if(cmdBar) cmdBar.style.display = "block";
-    modulesSection.style.display = "block";
-  } else if(view === "chat") {
-    if(cmdBar) cmdBar.style.display = "block";
-    modulesSection.style.display = "none";
-    if(workflow.style.display !== "none") workflow.style.display = "block";
-    if(responseArea.style.display !== "none") responseArea.style.display = "flex";
-  } else if(view === "modules") {
-    if(cmdBar) cmdBar.style.display = "none";
-    modulesSection.style.display = "block";
-    workflow.style.display = "none";
-    responseArea.style.display = "none";
-  }
-  lucide.createIcons();
-}
-
-// Ultra-accurate Market Fetch with NumberFormatting
-async function fetchPrices() {
-  const map = {bitcoin:"BTC", ethereum:"ETH", solana:"SOL"};
-  const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 2 });
-  
-  try {
-    const r = await fetch("https://api.coincap.io/v2/assets?ids=bitcoin,ethereum,solana", {signal: AbortSignal.timeout(8000)});
-    const d = await r.json();
-    if(d && d.data) {
-      d.data.forEach(asset => {
-        const sym = map[asset.id];
-        if(!sym) return;
-        const price = parseFloat(asset.priceUsd);
-        const change = parseFloat(asset.changePercent24Hr);
-        const up = change >= 0;
-        const s = sym.toLowerCase();
-        const pEl = document.getElementById(`${s}-p`);
-        const cEl = document.getElementById(`${s}-ch`);
-        
-        // Add subtle flash effect on update
-        if(pEl) {
-            pEl.textContent = currencyFormatter.format(price);
-            pEl.className = `market-price ${up?"up":"dn"}`;
-            pEl.style.opacity = "0.5"; setTimeout(() => pEl.style.opacity = "1", 200);
-        }
-        if(cEl) {
-            cEl.innerHTML = `<i data-lucide="${up ? 'trending-up' : 'trending-down'}" style="width:10px;height:10px;display:inline-block;vertical-align:middle;margin-right:2px;"></i>${Math.abs(change).toFixed(2)}%`;
-            cEl.className = `market-change ${up?"up":"dn"}`;
-        }
-      });
-      lucide.createIcons();
+  // --- Lógica de Negócio ---
+  const handleToggleModule = () => {
+    if (userPlan === 'Free') {
+      setShowUpgradeModal(true); // Se for grátis, não deixa ligar e vende o plano
       return;
     }
-  } catch(e){ console.warn("Primary oracle failed, attempting fallback..."); }
-  
-  // Fallback: CoinGecko
-  try {
-    const r = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true", {signal: AbortSignal.timeout(8000)});
-    const d = await r.json();
-    const coins = {BTC: d.bitcoin, ETH: d.ethereum, SOL: d.solana};
-    Object.entries(coins).forEach(([sym, data]) => {
-      if(!data) return;
-      const price = data.usd;
-      const change = data.usd_24h_change;
-      const up = change >= 0;
-      const s = sym.toLowerCase();
-      const pEl = document.getElementById(`${s}-p`);
-      const cEl = document.getElementById(`${s}-ch`);
-      if(pEl) { pEl.textContent = currencyFormatter.format(price); pEl.className = `market-price ${up?"up":"dn"}`; }
-      if(cEl) { cEl.innerHTML = `<i data-lucide="${up ? 'trending-up' : 'trending-down'}" style="width:10px;height:10px;display:inline-block;vertical-align:middle;margin-right:2px;"></i>${Math.abs(change).toFixed(2)}%`; cEl.className = `market-change ${up?"up":"dn"}`; }
-    });
-    lucide.createIcons();
-  } catch(e){ console.error("Oracle sync failed."); }
+    setIsAiActive(!isAiActive);
+  };
+
+  const handleSendMessage = () => {
+    if (userPlan === 'Free' && usageCount >= MAX_FREE_MESSAGES) {
+      setShowUpgradeModal(true);
+      return;
+    }
+    setUsageCount(prev => prev + 1);
+    // Aqui chamaria a função do Render que fizemos anteriormente
+    console.log("Chamando API do Render com dados do utilizador...");
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans">
+      
+      {/* Barra de Status de Monetização */}
+      <nav className="border-b border-slate-800 p-4 flex justify-between items-center bg-slate-900/50 backdrop-blur-md sticky top-0 z-50">
+        <div className="flex items-center gap-2 font-bold text-xl">
+          <div className="bg-blue-600 p-1.5 rounded-lg"><Cpu size={20}/></div>
+          <span>AI-SaaS <span className="text-blue-500 text-sm">Consultant</span></span>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <div className="hidden md:block text-right">
+            <p className="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Plano Atual</p>
+            <p className={`text-sm font-bold ${userPlan === 'Premium' ? 'text-amber-400' : 'text-slate-300'}`}>
+              {userPlan === 'Premium' ? 'PRO ENTERPRISE' : 'CONTA LIMITADA'}
+            </p>
+          </div>
+          {userPlan === 'Free' && (
+            <button 
+              onClick={() => setShowUpgradeModal(true)}
+              className="bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-2 rounded-full text-xs font-black flex items-center gap-2 transition-all transform hover:scale-105"
+            >
+              <Crown size={14} /> UPGRADE
+            </button>
+          )}
+        </div>
+      </nav>
+
+      <main className="max-w-6xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        {/* Lado Esquerdo: Gestão de Módulos Pagos */}
+        <div className="lg:col-span-4 space-y-6">
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+            {userPlan === 'Free' && (
+              <div className="absolute top-2 right-2">
+                <div className="bg-slate-800/80 backdrop-blur-sm p-2 rounded-full text-amber-500 border border-amber-500/20">
+                  <Lock size={16} />
+                </div>
+              </div>
+            )}
+            
+            <h3 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-6">Módulos de Inteligência</h3>
+            
+            <div className={`space-y-6 ${userPlan === 'Free' ? 'opacity-50' : 'opacity-100'}`}>
+              <div className="flex items-start gap-4">
+                <div className="p-3 bg-blue-500/10 rounded-2xl text-blue-500 border border-blue-500/20">
+                  <Zap size={24} />
+                </div>
+                <div>
+                  <h4 className="font-bold text-lg">AI Consultor Pro</h4>
+                  <p className="text-xs text-slate-400">Acesso a agentes especialistas no Render.</p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-4 bg-slate-950 rounded-2xl border border-slate-800">
+                <span className="text-sm font-semibold">Status do Módulo</span>
+                <button 
+                  onClick={handleToggleModule}
+                  className={`relative w-12 h-6 rounded-full transition-colors ${isAiActive ? 'bg-green-500' : 'bg-slate-700'}`}
+                >
+                  <div className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition-transform ${isAiActive ? 'translate-x-6' : ''}`} />
+                </button>
+              </div>
+            </div>
+
+            {userPlan === 'Free' && (
+              <button 
+                onClick={() => setShowUpgradeModal(true)}
+                className="w-full mt-6 py-4 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-600/30 rounded-2xl text-blue-400 font-bold transition-all text-sm"
+              >
+                Desbloquear Agentes de Elite
+              </button>
+            )}
+          </div>
+
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6">
+            <h3 className="text-xs font-bold text-slate-500 uppercase mb-4">Uso da Cota</h3>
+            <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+              <div 
+                className="bg-blue-500 h-full transition-all duration-500" 
+                style={{ width: `${(usageCount / MAX_FREE_MESSAGES) * 100}%` }}
+              ></div>
+            </div>
+            <p className="text-[10px] text-slate-500 mt-2 flex justify-between">
+              <span>{usageCount} de {userPlan === 'Free' ? MAX_FREE_MESSAGES : '∞'} mensagens</span>
+              <span>{userPlan === 'Free' ? 'Plano Grátis' : 'Plano Pro'}</span>
+            </p>
+          </div>
+        </div>
+
+        {/* Lado Direito: Consumo do Produto */}
+        <div className="lg:col-span-8 flex flex-col h-[700px] bg-slate-900 rounded-3xl border border-slate-800 shadow-inner overflow-hidden">
+          <div className="flex-1 p-8 overflow-y-auto">
+             {/* Aqui iria a lista de mensagens do chat que fizemos anteriormente */}
+             <div className="text-center space-y-4 py-20">
+                <div className="w-16 h-16 bg-slate-800 rounded-full mx-auto flex items-center justify-center text-slate-500">
+                  <MessageSquare size={32} />
+                </div>
+                <h3 className="text-xl font-bold">Pronto para processar?</h3>
+                <p className="text-slate-400 text-sm max-w-xs mx-auto">
+                  Ative o AI Consultor para ligar o seu frontend à inteligência avançada hospedada no Render.
+                </p>
+             </div>
+          </div>
+
+          <div className="p-6 bg-slate-950/50 border-t border-slate-800">
+             <div className="flex gap-4">
+                <input 
+                  type="text" 
+                  disabled={!isAiActive}
+                  placeholder={isAiActive ? "Pergunte algo ao agente..." : "Ative o módulo AI para perguntar"}
+                  className="flex-1 bg-slate-900 border border-slate-700 rounded-2xl p-4 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                />
+                <button 
+                  onClick={handleSendMessage}
+                  className="bg-blue-600 p-4 px-8 rounded-2xl font-bold hover:bg-blue-500 transition-all shadow-lg shadow-blue-900/40"
+                >
+                  Enviar
+                </button>
+             </div>
+          </div>
+        </div>
+      </main>
+
+      {/* MODAL DE VENDA (Onde o dinheiro entra) */}
+      {showUpgradeModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onClick={() => setShowUpgradeModal(false)}></div>
+          
+          <div className="relative bg-slate-900 border border-slate-700 w-full max-w-xl rounded-[40px] overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300">
+            <button onClick={() => setShowUpgradeModal(false)} className="absolute top-6 right-6 text-slate-500 hover:text-white"><X /></button>
+            
+            <div className="p-8 md:p-12 text-center">
+              <div className="w-20 h-20 bg-amber-500 rounded-3xl mx-auto mb-6 flex items-center justify-center text-slate-950 shadow-lg shadow-amber-500/20 rotate-6 transform hover:rotate-0 transition-transform">
+                <Crown size={40} />
+              </div>
+              
+              <h2 className="text-3xl font-black mb-2 italic">DESBLOQUEIE O PRO</h2>
+              <p className="text-slate-400 mb-8">Obtenha acesso ilimitado à inteligência de elite dos nossos agentes no Render.</p>
+              
+              <div className="space-y-4 mb-8 text-left max-w-sm mx-auto">
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="bg-green-500/20 text-green-500 p-1 rounded-full"><Check size={12}/></div>
+                  <span>Consultas ilimitadas aos Agentes</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="bg-green-500/20 text-green-500 p-1 rounded-full"><Check size={12}/></div>
+                  <span>Respostas 5x mais rápidas</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  <div className="bg-green-500/20 text-green-500 p-1 rounded-full"><Check size={12}/></div>
+                  <span>Suporte prioritário via API</span>
+                </div>
+              </div>
+
+              <button 
+                onClick={() => { setUserPlan('Premium'); setShowUpgradeModal(false); setIsAiActive(true); }}
+                className="w-full py-5 bg-gradient-to-r from-amber-500 to-orange-600 text-slate-950 font-black rounded-3xl shadow-xl shadow-orange-500/20 hover:scale-[1.02] transition-all flex items-center justify-center gap-3 uppercase tracking-tighter"
+              >
+                Ativar Plano Premium - 19.99€/mês <ArrowRight size={20} />
+              </button>
+              
+              <p className="text-[10px] text-slate-600 mt-6 uppercase font-bold tracking-widest flex items-center justify-center gap-2">
+                <ShieldCheck size={12} /> Pagamento Seguro via Stripe & PayPal
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
 }
-
-function init() {
-  initModules();
-  initAgents();
-  lucide.createIcons();
-  fetchPrices();
-  setInterval(fetchPrices, 45000); // 45s refresh for HFT feel
-  const ms = document.getElementById("modules-section");
-  if(ms) ms.style.display = "block";
-  setTimeout(() => lucide.createIcons(), 100);
-}
-
-if(document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", init);
-} else {
-  setTimeout(init, 0);
-}
-</script>
-
-<div class="install-banner" id="install-banner">
-  <div>
-    <div class="install-text"><i data-lucide="hexagon" style="width:14px;height:14px; fill:var(--gold);"></i> System Deployment</div>
-    <div class="install-sub">Install Wuzo Core natively for zero-latency operations</div>
-  </div>
-  <div style="display:flex;align-items:center;gap:12px">
-    <button class="install-btn" onclick="installPWA()">Deploy App</button>
-    <button class="install-close" onclick="document.getElementById('install-banner').style.display='none'"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
-  </div>
-</div>
-
-<script>
-// Service Worker
-if('serviceWorker' in navigator) {
-  const swCode = `
-    const CACHE = 'wuzo-core-v2-gold';
-    const ASSETS = ['/'];
-    self.addEventListener('install', e => {
-      e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
-    });
-    self.addEventListener('fetch', e => {
-      e.respondWith(
-        caches.match(e.request).then(r => r || fetch(e.request).catch(() => r))
-      );
-    });
-  `;
-  const blob = new Blob([swCode], {type: 'application/javascript'});
-  const swUrl = URL.createObjectURL(blob);
-  navigator.serviceWorker.register(swUrl).catch(() => {});
-}
-
-// Install prompt logic
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', e => {
-  e.preventDefault();
-  deferredPrompt = e;
-  // Delaying the banner slightly for better UX
-  setTimeout(showInstallBanner, 3000);
-});
-
-function showInstallBanner() {
-  const banner = document.getElementById('install-banner');
-  if(banner) {
-    banner.style.display = 'flex';
-    banner.classList.add('fade-in');
-    lucide.createIcons();
-  }
-}
-
-function installPWA() {
-  if(deferredPrompt) {
-    deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(() => {
-      deferredPrompt = null;
-      const banner = document.getElementById('install-banner');
-      if(banner) banner.style.display = 'none';
-    });
-  }
-}
-</script>
-</body>
-</html>
-
 
