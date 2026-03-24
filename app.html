@@ -308,8 +308,8 @@ html,body{height:100%;background:var(--bg);color:var(--white);font-family:'Space
 
 <script>
 // ======================== CONFIGURATION ========================
-// Substitua pela URL do seu backend no Render (ex: https://wuzo-backend.onrender.com)
-const BACKEND_URL = "https://wuzo-backend.onrender.com";
+// 🔧 ALTERE ESTA URL PARA A DO SEU BACKEND NO RENDER (ex: https://wuzo-backend.onrender.com)
+const BACKEND_URL = "https://seu-backend.onrender.com";
 
 // ======================== GLOBAL STATE ========================
 let currentView = "home";
@@ -453,7 +453,7 @@ function removeTyping() {
   if(t) t.remove();
 }
 
-// ======================== API COMMUNICATION (no login) ========================
+// ======================== API COMMUNICATION ========================
 async function callAPI(message) {
   const url = new URL(BACKEND_URL);
   url.searchParams.append("api", "chat");
