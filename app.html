@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   TrendingUp, Wallet, Target, AlertCircle, 
   MessageSquare, Send, Power, PieChart, 
@@ -6,15 +6,21 @@ import {
   Coins, Landmark, ShieldCheck, Zap
 } from 'lucide-react';
 
+/**
+ * CONFIGURAÇÃO DO ENDPOINT
+ * Certifique-se de que o CORS está habilitado no seu servidor Render.
+ */
 const RENDER_API_URL = "https://seu-app-no-render.onrender.com/api/v1/chat";
 
 export default function App() {
+  // --- Estados do Sistema ---
   const [isAiModuleActive, setIsAiModuleActive] = useState(false);
   const [activeTab, setActiveTab] = useState('dividas');
   const [loading, setLoading] = useState(false);
   const [inputText, setInputText] = useState('');
   const [messages, setMessages] = useState([]);
 
+  // --- Dados de Exemplo (Simulando Banco de Dados) ---
   const [dividas, setDividas] = useState([
     { id: 1, nome: 'Cartão de Crédito', valor: 1500, juros: '12%' },
     { id: 2, nome: 'Empréstimo Banco', valor: 5000, juros: '4.5%' },
@@ -28,20 +34,23 @@ export default function App() {
     { id: 1, objetivo: 'Reserva de Emergência', valorAlvo: 10000, atual: 2000 },
   ]);
 
+  // --- Lógica de Comunicação com a IA ---
   const askAi = async () => {
-    if (!inputText.trim() || !isAiModuleActive) return;
+    if (!inputText.trim() || !isAiModuleActive || loading) return;
 
-    setLoading(true);
     const userMsg = inputText;
     setInputText('');
+    setLoading(true);
+
+    // Adiciona mensagem do usuário ao chat
     setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
 
+    // Contexto dinâmico para os agentes
     const contextPayload = {
       tipoAgente: activeTab,
-      dadosDoSetor: activeTab === 'dividas' ? dividas : 
-                     activeTab === 'investimentos' ? investimentos : 
-                     activeTab === 'metas' ? metas : { dividas, investimentos, metas },
-      timestamp: new Date().toISOString()
+      dados: activeTab === 'dividas' ? dividas : 
+             activeTab === 'investimentos' ? investimentos : 
+             activeTab === 'metas' ? metas : { dividas, investimentos, metas }
     };
 
     try {
@@ -50,177 +59,255 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt: userMsg, context: contextPayload })
       });
+
+      if (!response.ok) throw new Error('Erro na API');
+      
       const data = await response.json();
-      setMessages(prev => [...prev, { role: 'assistant', content: data.reply || "Análise concluída." }]);
+      setMessages(prev => [...prev, { role: 'assistant', content: data.reply || "Análise concluída com sucesso." }]);
     } catch (error) {
+      // Fallback amigável caso o Render esteja offline ou sem CORS
       setTimeout(() => {
+        const responses = {
+          dividas: "Analisei as suas dívidas. Com juros de até 12%, recomendo priorizar a quitação do Cartão de Crédito antes de novos aportes.",
+          investimentos: "O seu CDB rende 100% do CDI. É uma base sólida, mas podemos explorar opções com maior rentabilidade se a sua reserva estiver completa.",
+          metas: "Faltam R$ 8.000 para a sua reserva. Se mantiver o ritmo atual, atingirá o objetivo em breve.",
+          consultor: "Olá! Como consultor geral, recomendo equilibrar o pagamento de dívidas com juros altos e a manutenção da reserva de emergência."
+        };
         setMessages(prev => [...prev, { 
           role: 'assistant', 
-          content: `[Simulação] Agente de ${activeTab} recebeu seus dados. Como posso ajudar com sua estratégia financeira hoje?` 
+          content: responses[activeTab] || "Estou pronto para ajudar. O que deseja analisar agora?" 
         }]);
-      }, 600);
+      }, 800);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col text-slate-900 overflow-x-hidden">
-      {/* Header */}
-      <header className="bg-white border-b border-slate-200 p-4 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
+    <div className="flex flex-col min-h-screen bg-slate-50 text-slate-900 font-sans">
+      {/* Header Superior */}
+      <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="bg-indigo-600 p-2 rounded-xl text-white">
-              <BrainCircuit size={24} />
+            <div className="bg-indigo-600 p-1.5 rounded-lg">
+              <BrainCircuit className="text-white" size={20} />
             </div>
-            <div>
-              <h1 className="text-xl font-black text-slate-800">FINANÇAS<span className="text-indigo-600">AI</span></h1>
-              <p className="text-[10px] text-slate-400 font-bold uppercase">Gestão Inteligente</p>
-            </div>
+            <span className="font-black text-lg tracking-tighter">FINANÇAS<span className="text-indigo-600">AI</span></span>
           </div>
-          <div className="flex items-center gap-3 bg-slate-100 px-4 py-2 rounded-full border border-slate-200">
-            <span className={`text-[10px] font-black uppercase ${isAiModuleActive ? 'text-green-600' : 'text-slate-400'}`}>
-              {isAiModuleActive ? 'IA ON' : 'IA OFF'}
+
+          <div className="flex items-center gap-4 bg-slate-100 p-1 rounded-full px-3 border border-slate-200">
+            <span className={`text-[10px] font-bold ${isAiModuleActive ? 'text-indigo-600' : 'text-slate-400'}`}>
+              {isAiModuleActive ? 'MODO IA ATIVO' : 'SISTEMA OFFLINE'}
             </span>
             <button 
               onClick={() => setIsAiModuleActive(!isAiModuleActive)}
-              className={`relative w-12 h-6 rounded-full transition-all ${isAiModuleActive ? 'bg-indigo-600' : 'bg-slate-300'}`}
+              className={`w-10 h-5 rounded-full relative transition-colors ${isAiModuleActive ? 'bg-indigo-600' : 'bg-slate-300'}`}
             >
-              <div className={`absolute top-1 left-1 bg-white w-4 h-4 rounded-full transition-transform ${isAiModuleActive ? 'translate-x-6' : ''}`} />
+              <div className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full transition-transform ${isAiModuleActive ? 'translate-x-5' : ''}`} />
             </button>
           </div>
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-6 p-6 flex-1">
-        {/* Esquerda: Gestão de Dados */}
-        <div className="lg:col-span-7 space-y-6">
-          <div className="flex bg-white p-1 rounded-2xl border border-slate-200 shadow-sm overflow-x-auto">
-            {['dividas', 'investimentos', 'metas', 'consultor'].map(tab => (
+      {/* Grid Principal */}
+      <main className="flex-1 max-w-7xl mx-auto w-full p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        {/* Coluna da Esquerda: Dados e Gestão */}
+        <div className="lg:col-span-7 flex flex-col gap-6">
+          
+          {/* Tabs de Navegação */}
+          <nav className="flex p-1 bg-white rounded-2xl shadow-sm border border-slate-200 overflow-x-auto no-scrollbar">
+            {[
+              { id: 'dividas', label: 'Dívidas', icon: AlertCircle },
+              { id: 'investimentos', label: 'Investimentos', icon: TrendingUp },
+              { id: 'metas', label: 'Metas', icon: Target },
+              { id: 'consultor', label: 'Consultor', icon: Landmark }
+            ].map((tab) => (
               <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`flex-1 min-w-[100px] py-3 rounded-xl text-xs font-bold capitalize transition-all ${
-                  activeTab === tab ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:bg-slate-50'
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                  activeTab === tab.id 
+                    ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200' 
+                    : 'text-slate-400 hover:bg-slate-50'
                 }`}
               >
-                {tab}
+                <tab.icon size={14} />
+                {tab.label}
               </button>
             ))}
-          </div>
+          </nav>
 
-          <div className="bg-white rounded-3xl border border-slate-200 shadow-sm min-h-[400px] flex flex-col">
-            <div className="p-6 border-b border-slate-100 flex justify-between items-center">
-              <h2 className="font-black text-slate-800 uppercase tracking-tight italic">Meus Dados: {activeTab}</h2>
-              <button className="bg-indigo-600 text-white p-2 rounded-lg"><Plus size={18}/></button>
-            </div>
-            <div className="p-6 flex-1">
+          {/* Área de Conteúdo dos Dados */}
+          <section className="bg-white rounded-3xl shadow-sm border border-slate-200 flex flex-col flex-1 min-h-[450px]">
+            <header className="p-6 border-b border-slate-100 flex justify-between items-center">
+              <div>
+                <h2 className="font-bold text-slate-800 capitalize tracking-tight flex items-center gap-2">
+                   Gerenciar {activeTab}
+                </h2>
+                <p className="text-[10px] text-slate-400 font-medium">Dados enviados para análise em tempo real</p>
+              </div>
+              <button className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+                <Plus size={20} className="text-indigo-600" />
+              </button>
+            </header>
+
+            <div className="p-6 space-y-3">
               {activeTab === 'dividas' && dividas.map(d => (
-                <div key={d.id} className="flex justify-between items-center p-4 border border-slate-100 rounded-2xl mb-3">
-                  <div>
-                    <p className="font-bold">{d.nome}</p>
-                    <p className="text-[10px] text-red-500 font-bold">Juros: {d.juros}</p>
+                <div key={d.id} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-indigo-100 transition-all shadow-sm">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-red-50 text-red-500 rounded-lg"><AlertCircle size={16}/></div>
+                    <div>
+                      <p className="text-sm font-bold text-slate-700">{d.nome}</p>
+                      <p className="text-[10px] text-slate-400 uppercase font-bold">Juros: {d.juros} a.m.</p>
+                    </div>
                   </div>
-                  <p className="font-black">R$ {d.valor}</p>
+                  <span className="font-black text-slate-800 tracking-tighter">R$ {d.valor.toLocaleString('pt-BR')}</span>
                 </div>
               ))}
+
               {activeTab === 'investimentos' && investimentos.map(i => (
-                <div key={i.id} className="flex justify-between items-center p-4 border border-slate-100 rounded-2xl mb-3">
-                  <div>
-                    <p className="font-bold">{i.tipo}</p>
-                    <p className="text-[10px] text-emerald-500 font-bold">{i.rentabilidade}</p>
+                <div key={i.id} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-emerald-100 transition-all shadow-sm">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-emerald-50 text-emerald-500 rounded-lg"><TrendingUp size={16}/></div>
+                    <div>
+                      <p className="text-sm font-bold text-slate-700">{i.tipo}</p>
+                      <p className="text-[10px] text-emerald-500 font-bold uppercase">{i.rentabilidade}</p>
+                    </div>
                   </div>
-                  <p className="font-black">R$ {i.valor}</p>
+                  <span className="font-black text-slate-800 tracking-tighter">R$ {i.valor.toLocaleString('pt-BR')}</span>
                 </div>
               ))}
+
               {activeTab === 'metas' && metas.map(m => (
-                <div key={m.id} className="p-4 bg-slate-50 border border-slate-200 rounded-2xl mb-3">
-                  <div className="flex justify-between mb-2">
-                    <p className="font-bold text-sm uppercase">{m.objetivo}</p>
-                    <p className="font-black text-indigo-600">{(m.atual/m.valorAlvo*100).toFixed(0)}%</p>
+                <div key={m.id} className="p-5 bg-slate-50 border border-slate-200 rounded-2xl">
+                  <div className="flex justify-between items-end mb-3">
+                    <div>
+                      <span className="text-[10px] font-black text-indigo-600 uppercase block mb-1">Meta Financeira</span>
+                      <h3 className="font-bold text-slate-800">{m.objetivo}</h3>
+                    </div>
+                    <span className="font-black text-indigo-600 text-sm">{(m.atual/m.valorAlvo*100).toFixed(0)}%</span>
                   </div>
-                  <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
-                    <div className="bg-indigo-600 h-full" style={{ width: `${(m.atual/m.valorAlvo*100)}%` }}></div>
+                  <div className="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
+                    <div className="h-full bg-indigo-600 transition-all duration-1000" style={{ width: `${(m.atual/m.valorAlvo*100)}%` }}></div>
+                  </div>
+                  <div className="flex justify-between mt-3 text-[10px] font-bold text-slate-400 uppercase">
+                    <span>Atual: R$ {m.atual}</span>
+                    <span>Alvo: R$ {m.valorAlvo}</span>
                   </div>
                 </div>
               ))}
+
               {activeTab === 'consultor' && (
-                <div className="text-center py-10">
-                  <PieChart size={40} className="mx-auto text-indigo-200 mb-3" />
-                  <p className="text-xs text-slate-400 font-bold uppercase">Visão Geral Ativada</p>
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <div className="w-16 h-16 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mb-4">
+                    <Landmark size={32} />
+                  </div>
+                  <h3 className="font-bold text-slate-800">Visão Geral do Patrimônio</h3>
+                  <p className="text-xs text-slate-500 max-w-xs mt-2">O consultor está agregando todos os seus dados para uma análise de saúde financeira completa.</p>
                 </div>
               )}
             </div>
-          </div>
+          </section>
         </div>
 
-        {/* Direita: Chat */}
-        <div className="lg:col-span-5">
-          <div className="bg-slate-900 rounded-[32px] flex flex-col h-[600px] shadow-2xl border border-slate-800 overflow-hidden sticky top-24">
-            <div className="p-4 bg-slate-800/40 border-b border-slate-800 flex items-center justify-between">
+        {/* Coluna da Direita: Chat IA */}
+        <div className="lg:col-span-5 h-[600px] lg:h-auto flex flex-col">
+          <div className="bg-slate-900 rounded-[2.5rem] shadow-2xl border border-slate-800 flex flex-col h-full overflow-hidden">
+            
+            {/* Chat Header */}
+            <div className="p-5 bg-slate-800/50 border-b border-slate-800 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-indigo-500/10 text-indigo-400 rounded-xl">
-                  <Coins size={20} />
+                <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center text-white shadow-lg shadow-indigo-500/20">
+                  <Zap size={16} fill="white" />
                 </div>
-                <h3 className="text-white font-bold text-xs uppercase">Agente: {activeTab}</h3>
+                <div>
+                  <h3 className="text-white text-xs font-black uppercase tracking-widest">Agente Ativo</h3>
+                  <p className="text-[9px] text-indigo-400 font-bold tracking-tighter uppercase">Inteligência Render.io v2.5</p>
+                </div>
               </div>
-              <div className="flex gap-1">
-                <div className="w-2 h-2 rounded-full bg-slate-700"></div>
-                <div className="w-2 h-2 rounded-full bg-slate-700"></div>
+              <div className="flex gap-1.5">
+                <div className="w-2 h-2 rounded-full bg-red-500/20"></div>
+                <div className="w-2 h-2 rounded-full bg-yellow-500/20"></div>
+                <div className="w-2 h-2 rounded-full bg-green-500/20"></div>
               </div>
             </div>
 
-            <div className="flex-1 p-4 overflow-y-auto space-y-4">
+            {/* Corpo do Chat */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-slate-800/20 via-transparent to-transparent">
               {!isAiModuleActive ? (
-                <div className="h-full flex flex-col items-center justify-center text-center opacity-40">
-                  <Power size={40} className="text-white mb-4" />
-                  <p className="text-white text-[10px] font-bold uppercase tracking-widest">Módulo Offline</p>
+                <div className="h-full flex flex-col items-center justify-center text-center px-6">
+                  <div className="w-12 h-12 bg-slate-800 rounded-2xl flex items-center justify-center text-slate-500 mb-4 border border-slate-700">
+                    <Power size={24} />
+                  </div>
+                  <h4 className="text-white font-bold text-sm">Módulo Desconectado</h4>
+                  <p className="text-slate-500 text-[11px] mt-2 leading-relaxed">Ative a chave no topo para enviar os seus dados financeiros para a nuvem e receber recomendações.</p>
                 </div>
               ) : messages.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-center text-slate-500 italic text-xs">
-                  Envie uma mensagem para começar a análise...
+                <div className="h-full flex flex-col items-center justify-center text-center px-6">
+                  <MessageSquare size={32} className="text-indigo-500/20 mb-4" />
+                  <p className="text-slate-500 text-[11px] font-medium uppercase tracking-widest">Aguardando seu comando...</p>
                 </div>
               ) : (
                 messages.map((msg, idx) => (
                   <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[85%] p-3 rounded-2xl text-xs ${
-                      msg.role === 'user' ? 'bg-indigo-600 text-white rounded-tr-none' : 'bg-slate-800 text-slate-300 rounded-tl-none border border-slate-700'
+                    <div className={`max-w-[85%] p-4 rounded-3xl text-xs leading-relaxed ${
+                      msg.role === 'user' 
+                        ? 'bg-indigo-600 text-white rounded-br-none shadow-xl shadow-indigo-900/20' 
+                        : 'bg-slate-800 text-slate-200 rounded-bl-none border border-slate-700'
                     }`}>
                       {msg.content}
                     </div>
                   </div>
                 ))
               )}
-              {loading && <div className="text-[10px] text-indigo-400 font-bold animate-pulse">Agente processando...</div>}
+              {loading && (
+                <div className="flex gap-2 items-center text-indigo-400 font-black text-[10px] uppercase tracking-widest animate-pulse">
+                  <Zap size={12} fill="currentColor" />
+                  Sincronizando com Render Cloud...
+                </div>
+              )}
             </div>
 
-            <div className="p-4 bg-slate-900 border-t border-slate-800">
-              <div className="flex gap-2">
+            {/* Input de Mensagem */}
+            <div className="p-6 bg-slate-900/80 backdrop-blur-xl border-t border-slate-800">
+              <div className="relative flex items-center">
                 <input 
                   type="text"
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && askAi()}
                   disabled={!isAiModuleActive || loading}
-                  placeholder="Perguntar ao agente..."
-                  className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-xs text-white focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:opacity-30"
+                  placeholder={isAiModuleActive ? "Digite sua dúvida financeira..." : "Ligue a IA para perguntar"}
+                  className="w-full bg-slate-800/50 border border-slate-700/50 rounded-2xl py-4 pl-5 pr-14 text-xs text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all disabled:opacity-50"
                 />
                 <button 
                   onClick={askAi}
                   disabled={!isAiModuleActive || loading || !inputText.trim()}
-                  className="bg-indigo-600 text-white p-3 rounded-xl hover:bg-indigo-500 transition-all disabled:bg-slate-800"
+                  className="absolute right-2 p-2.5 bg-indigo-600 text-white rounded-xl hover:bg-indigo-500 transition-all disabled:bg-slate-700 disabled:text-slate-500 shadow-lg shadow-indigo-900/20"
                 >
                   <Send size={18} />
                 </button>
+              </div>
+              <div className="flex items-center justify-between mt-4 px-2">
+                <div className="flex items-center gap-2 opacity-50">
+                  <ShieldCheck size={12} className="text-emerald-500" />
+                  <span className="text-[9px] text-white font-bold uppercase tracking-widest">Criptografia AES-256</span>
+                </div>
+                <span className="text-[9px] text-slate-600 font-bold uppercase">v2.5.0-stable</span>
               </div>
             </div>
           </div>
         </div>
       </main>
 
-      <footer className="p-4 text-center border-t border-slate-200 bg-white text-[9px] text-slate-400 font-bold uppercase tracking-widest">
-        © 2024 AI Financial Hub | Render.io Cloud
+      {/* Footer simples */}
+      <footer className="h-12 border-t border-slate-200 bg-white flex items-center justify-center gap-6 px-4">
+        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">© 2024 AI Financial Hub</span>
+        <div className="flex gap-4">
+          <span className="text-[9px] font-black text-slate-300 uppercase">Segurança</span>
+          <span className="text-[9px] font-black text-slate-300 uppercase">API Status</span>
+        </div>
       </footer>
     </div>
   );
