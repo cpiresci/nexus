@@ -155,23 +155,6 @@ html,body{height:100%;background:var(--bg);color:var(--white);font-family:'Space
 .mnav-btn.active{color:var(--blue);background:rgba(59,130,246,0.08)}
 .mnav-label{font-size:0.5rem;letter-spacing:1px;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
 
-/* Login overlay */
-.login-overlay{
-  position:fixed;top:0;left:0;right:0;bottom:0;
-  background:rgba(2,6,23,0.95);backdrop-filter:blur(12px);
-  z-index:1000;display:flex;align-items:center;justify-content:center;
-  flex-direction:column;gap:20px;
-}
-.login-card{
-  background:var(--bg2);border:1px solid var(--border2);
-  border-radius:24px;padding:32px;width:90%;max-width:360px;
-  box-shadow:0 20px 40px rgba(0,0,0,0.4);
-}
-.login-card h2{font-size:1rem;letter-spacing:3px;margin-bottom:20px;text-align:center}
-.login-input{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:12px;width:100%;margin-bottom:16px;color:white;font-family:monospace}
-.login-btn{background:var(--blue);color:white;border:none;border-radius:12px;padding:12px;width:100%;font-weight:700;letter-spacing:2px;cursor:pointer}
-.login-error{color:#ef4444;font-size:0.7rem;margin-top:8px;text-align:center}
-
 /* Responsive */
 @media(max-width:768px){
   .sidebar{display:none}
@@ -323,26 +306,14 @@ html,body{height:100%;background:var(--bg);color:var(--white);font-family:'Space
   </main>
 </div>
 
-<!-- Login Overlay (initially hidden) -->
-<div id="login-overlay" class="login-overlay" style="display:none">
-  <div class="login-card">
-    <h2>⬡ WUZO LOGIN</h2>
-    <input type="email" id="login-email" class="login-input" placeholder="Email" autocomplete="email">
-    <input type="password" id="login-password" class="login-input" placeholder="Password" autocomplete="current-password">
-    <button class="login-btn" onclick="doLogin()">CONNECT</button>
-    <div id="login-error" class="login-error"></div>
-  </div>
-</div>
-
 <script>
 // ======================== CONFIGURATION ========================
-const BACKEND_URL = "https://wuzo-backend.onrender.com"; // ← ALTERE PARA A URL DO SEU BACKEND NO RENDER
+// Substitua pela URL do seu backend no Render (ex: https://wuzo-backend.onrender.com)
+const BACKEND_URL = "https://wuzo-backend.onrender.com";
 
 // ======================== GLOBAL STATE ========================
 let currentView = "home";
 let activeModule = null;
-let authToken = null;           // token de autenticação
-let userName = null;
 
 // ======================== AGENTS DATA ========================
 const AGENTS = [
@@ -482,51 +453,23 @@ function removeTyping() {
   if(t) t.remove();
 }
 
-// ======================== API COMMUNICATION ========================
-async function callAPI(endpoint, params = {}) {
+// ======================== API COMMUNICATION (no login) ========================
+async function callAPI(message) {
   const url = new URL(BACKEND_URL);
-  url.searchParams.append("api", endpoint);
-  for (const [k, v] of Object.entries(params)) {
-    if (v !== undefined && v !== null) url.searchParams.append(k, v);
-  }
-  if (authToken) url.searchParams.append("token", authToken);
-  const res = await fetch(url.toString());
-  const data = await res.json();
-  if (data.error) throw new Error(data.error);
-  return data;
-}
-
-async function doLogin() {
-  const email = document.getElementById("login-email").value.trim();
-  const password = document.getElementById("login-password").value;
-  const errorDiv = document.getElementById("login-error");
-  if (!email || !password) {
-    errorDiv.textContent = "Please fill both fields";
-    return;
-  }
+  url.searchParams.append("api", "chat");
+  url.searchParams.append("message", message);
   try {
-    const data = await callAPI("login", { email, password });
-    if (data.ok && data.token) {
-      authToken = data.token;
-      userName = data.user || email;
-      // Store token in URL for deep linking
-      const url = new URL(window.location.href);
-      url.searchParams.set("t", authToken);
-      window.history.replaceState({}, "", url);
-      document.getElementById("login-overlay").style.display = "none";
-      // Update header with user info (optional)
-      document.getElementById("plan-badge").innerHTML = data.plan === "pro" ? "PRO" : "Free";
-      // Trigger a welcome message
-      sendMsg("Hello");
-    } else {
-      errorDiv.textContent = data.error || "Login failed";
-    }
+    const res = await fetch(url.toString());
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    return data.response || "No response from AI.";
   } catch (err) {
-    errorDiv.textContent = "Connection error: " + err.message;
+    console.error(err);
+    return "⚠️ Connection error: " + err.message;
   }
 }
 
-// ======================== MAIN SEND FUNCTION (CHAT) ========================
+// ======================== MAIN SEND FUNCTION ========================
 async function sendMsg(text) {
   const input = document.getElementById("cmd-input");
   const msg = text || input.value.trim();
@@ -548,21 +491,16 @@ async function sendMsg(text) {
   resetAgents();
   const agentPromise = runAgents();
 
-  try {
-    // Call backend AI
-    const data = await callAPI("chat", { message: msg });
-    // Wait for agents to finish (visual)
-    await agentPromise;
-    removeTyping();
-    addMessage("ai", data.response || "No response from AI.");
-  } catch (err) {
-    console.error(err);
-    removeTyping();
-    addMessage("ai", "⚠️ Connection error: " + err.message);
-  } finally {
-    // Restore suggestions if desired
-    document.getElementById("suggestions").style.display = "flex";
-  }
+  // Call backend AI
+  const responseText = await callAPI(msg);
+
+  // Wait for agents to finish (visual)
+  await agentPromise;
+  removeTyping();
+  addMessage("ai", responseText);
+
+  // Restore suggestions
+  document.getElementById("suggestions").style.display = "flex";
 }
 
 // ======================== MODULE ACTIVATION ========================
@@ -609,7 +547,7 @@ function setView(view) {
   lucide.createIcons();
 }
 
-// ======================== MARKET DATA (unchanged) ========================
+// ======================== MARKET DATA ========================
 async function fetchPrices() {
   const map = {bitcoin:"BTC", ethereum:"ETH", solana:"SOL"};
   try {
@@ -654,24 +592,6 @@ async function fetchPrices() {
   } catch(e){}
 }
 
-// ======================== AUTHENTICATION CHECK ========================
-function checkAuth() {
-  // Check URL token first
-  const urlParams = new URLSearchParams(window.location.search);
-  const token = urlParams.get("t");
-  if (token) {
-    authToken = token;
-    // Optionally, you could call a /verify endpoint to get user info
-    // For now, we hide login and assume token is valid
-    document.getElementById("login-overlay").style.display = "none";
-    // Update plan badge if we have info (could be from localstorage)
-    return true;
-  }
-  // No token, show login overlay
-  document.getElementById("login-overlay").style.display = "flex";
-  return false;
-}
-
 // ======================== INITIALIZATION ========================
 function init() {
   initModules();
@@ -679,19 +599,9 @@ function init() {
   lucide.createIcons();
   fetchPrices();
   setInterval(fetchPrices, 60000);
-  // Start with modules visible
   const ms = document.getElementById("modules-section");
   if(ms) ms.style.display = "block";
-
-  // Authentication
-  checkAuth();
-
-  // If already logged in, optionally send a welcome message
-  if (authToken) {
-    // You could call a /me endpoint to get user details and update badge
-    // For now, just update agent count display
-    document.getElementById("agent-count").innerHTML = "8 agents online";
-  }
+  document.getElementById("agent-count").innerHTML = "8 agents online";
 }
 
 // ======================== PWA INSTALL ========================
