@@ -1,137 +1,658 @@
 <!DOCTYPE html>
-<html lang="pt-pt">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#020617">
-    <title>Wuzo Core | Operações</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=JetBrains+Mono&display=swap');
-        body { background-color: #020617; color: #f8fafc; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
-        .mono { font-family: 'JetBrains Mono', monospace; }
-        .glass { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .agent-card { background: linear-gradient(145deg, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.9)); border-left: 4px solid #fbbf24; transition: all 0.4s ease; }
-        .scanner-line { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, #fbbf24, transparent); animation: scan 2s infinite linear; opacity: 0.5; }
-        @keyframes scan { 0% { top: 0%; opacity: 0; } 50% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
-        .btn-active { transform: scale(0.95); opacity: 0.8; }
-    </style>
-</head>
-<body class="min-h-screen pb-28 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black">
+<meta charset="UTF-8">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Wuzo">
+<meta name="theme-color" content="#020617">
+<link rel="manifest" id="pwa-manifest">
+<script>
+// Inline PWA Manifest
+const manifest = {
+  name: "Wuzo Core OS",
+  short_name: "Wuzo",
+  description: "Institutional-grade Financial AI",
+  start_url: ".",
+  display: "standalone",
+  background_color: "#020617",
+  theme_color: "#020617",
+  orientation: "portrait",
+  icons: [
+    {
+      src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%230f172a'/%3E%3Cpolygon points='96,20 164,58 164,134 96,172 28,134 28,58' fill='none' stroke='%233b82f6' stroke-width='6'/%3E%3Ctext x='96' y='108' text-anchor='middle' font-family='monospace' font-size='48' font-weight='bold' fill='%233b82f6'%3EW%3C/text%3E%3C/svg%3E",
+      sizes: "192x192",
+      type: "image/svg+xml"
+    },
+    {
+      src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%230f172a'/%3E%3Cpolygon points='256,40 440,148 440,364 256,472 72,364 72,148' fill='none' stroke='%233b82f6' stroke-width='12'/%3E%3Ctext x='256' y='300' text-anchor='middle' font-family='monospace' font-size='140' font-weight='bold' fill='%233b82f6'%3EW%3C/text%3E%3C/svg%3E",
+      sizes: "512x512",
+      type: "image/svg+xml"
+    }
+  ]
+};
+const blob = new Blob([JSON.stringify(manifest)], {type: "application/json"});
+const url = URL.createObjectURL(blob);
+document.getElementById("pwa-manifest").href = url;
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Wuzo Core OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#020617;--bg2:#0f172a;--bg3:#1e293b;--bg4:#334155;
+  --blue:#3b82f6;--blue2:#1d4ed8;--emerald:#10b981;
+  --slate:#94a3b8;--white:#f1f5f9;
+  --border:rgba(148,163,184,0.08);--border2:rgba(59,130,246,0.2);
+}
+html,body{height:100%;background:var(--bg);color:var(--white);font-family:'Space Grotesk',sans-serif;overflow:hidden}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:2px}
 
-    <header class="p-6 glass sticky top-0 z-50 flex justify-between items-center border-b border-white/10">
-        <div class="flex items-center gap-3">
-            <a href="index.html" class="w-10 h-10 bg-slate-800 rounded-xl flex items-center justify-center text-slate-400 hover:text-white transition border border-white/5">
-                <i class="bi bi-house-door"></i>
-            </a>
-            <div>
-                <h1 class="font-black text-lg tracking-tighter uppercase italic">Wuzo <span class="text-yellow-500">Core</span></h1>
-                <p class="text-[8px] font-bold text-slate-500 tracking-[0.3em] uppercase mono">Neural Shell v5.2</p>
-            </div>
-        </div>
-        <div class="flex items-center gap-2 bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/20">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span class="text-[9px] text-emerald-500 font-bold mono uppercase">Sync: Active</span>
-        </div>
+/* Background */
+.grid-bg{position:fixed;inset:0;background-image:linear-gradient(rgba(59,130,246,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,0.03) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+.orb1{position:fixed;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(59,130,246,0.07) 0%,transparent 70%);top:-150px;right:-100px;pointer-events:none}
+.orb2{position:fixed;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,0.04) 0%,transparent 70%);bottom:-100px;left:-50px;pointer-events:none}
+
+/* Layout */
+.app{display:flex;height:100vh;position:relative}
+
+/* Sidebar */
+.sidebar{width:60px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;padding:14px 0;gap:6px;z-index:10;flex-shrink:0}
+.sidebar-logo{width:36px;height:36px;background:linear-gradient(135deg,var(--blue),var(--blue2));border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;box-shadow:0 0 20px rgba(59,130,246,0.3)}
+.sb-btn{width:36px;height:36px;border-radius:10px;border:1px solid transparent;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;color:var(--slate)}
+.sb-btn:hover,.sb-btn.active{background:rgba(59,130,246,0.1);border-color:var(--border2);color:var(--blue)}
+
+/* Main */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* Header */
+.header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:rgba(2,6,23,0.85);backdrop-filter:blur(20px);z-index:5;flex-shrink:0}
+.header-left{display:flex;align-items:center;gap:10px}
+.header-title{font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--slate);font-family:'JetBrains Mono',monospace}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--emerald);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.header-right{display:flex;align-items:center;gap:6px}
+.badge{font-size:0.52rem;letter-spacing:2px;text-transform:uppercase;padding:3px 8px;border-radius:4px;font-family:'JetBrains Mono',monospace}
+.badge-free{background:rgba(148,163,184,0.1);color:var(--slate);border:1px solid var(--border)}
+.badge-active{background:rgba(16,185,129,0.1);color:var(--emerald);border:1px solid rgba(16,185,129,0.2)}
+
+/* Content */
+.content{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px;padding-bottom:80px}
+
+/* Market strip */
+.market-strip{display:flex;gap:8px}
+.market-item{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between}
+.market-sym{font-size:0.6rem;letter-spacing:2px;color:var(--slate);font-family:'JetBrains Mono',monospace}
+.market-price{font-size:0.8rem;font-weight:600;font-family:'JetBrains Mono',monospace}
+.market-change{font-size:0.6rem;font-family:'JetBrains Mono',monospace;margin-top:2px}
+.up{color:var(--emerald)}.dn{color:#ef4444}
+
+/* Command bar */
+.command-bar{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:16px;position:relative;overflow:hidden;box-shadow:0 0 30px rgba(59,130,246,0.1)}
+.command-bar::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--blue),transparent)}
+.command-label{font-size:0.55rem;letter-spacing:3px;text-transform:uppercase;color:var(--blue);font-family:'JetBrains Mono',monospace;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.command-input-wrap{display:flex;align-items:center;gap:10px;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 14px;transition:border-color 0.2s}
+.command-input-wrap:focus-within{border-color:var(--blue2)}
+.command-input{flex:1;background:transparent;border:none;outline:none;color:var(--white);font-family:'Space Grotesk',sans-serif;font-size:0.85rem}
+.command-input::placeholder{color:var(--bg4)}
+.cmd-btn{width:32px;height:32px;border-radius:8px;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;flex-shrink:0}
+.cmd-send{background:var(--blue);color:white}.cmd-send:hover{background:var(--blue2)}
+.suggestions{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.suggestion{font-size:0.65rem;padding:5px 10px;border-radius:20px;background:rgba(59,130,246,0.06);border:1px solid var(--border2);color:var(--slate);cursor:pointer;transition:all 0.2s;font-family:'JetBrains Mono',monospace}
+.suggestion:hover{background:rgba(59,130,246,0.15);color:var(--white)}
+
+/* Section title */
+.section-title{font-size:0.55rem;letter-spacing:3px;text-transform:uppercase;color:var(--slate);font-family:'JetBrains Mono',monospace;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+
+/* Agents */
+.workflow{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px}
+.agents-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.agent-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px;transition:all 0.3s}
+.agent-card.active{border-color:rgba(59,130,246,0.3);background:rgba(59,130,246,0.05)}
+.agent-card.done{border-color:rgba(16,185,129,0.25)}
+.agent-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.agent-ico{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center}
+.agent-name{font-size:0.55rem;letter-spacing:1px;color:var(--slate);font-family:'JetBrains Mono',monospace;margin-bottom:5px}
+.agent-bar{height:2px;background:var(--bg4);border-radius:1px;overflow:hidden;margin-bottom:4px}
+.agent-bar-fill{height:100%;border-radius:1px;transition:width 0.4s ease}
+.agent-status{font-size:0.5rem;color:var(--bg4);font-family:'JetBrains Mono',monospace}
+.agent-status.active{color:var(--blue)}.agent-status.done{color:var(--emerald)}
+
+/* Modules */
+.modules-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.module-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 10px;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;gap:8px}
+.module-card:hover{transform:translateY(-2px);border-color:rgba(59,130,246,0.2)}
+.module-card.selected{border-color:var(--border2);box-shadow:0 0 16px rgba(59,130,246,0.1)}
+.module-ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+.module-label{font-size:0.72rem;font-weight:600;color:var(--white)}
+.module-desc{font-size:0.58rem;color:var(--slate);line-height:1.4}
+
+/* Chat */
+.response-area{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:16px;display:flex;flex-direction:column;min-height:180px}
+.messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;max-height:220px}
+.message{display:flex;gap:10px;align-items:flex-start}
+.message.user{flex-direction:row-reverse}
+.msg-av{width:28px;height:28px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.55rem;font-weight:700;letter-spacing:1px}
+.msg-av.ai{background:linear-gradient(135deg,var(--blue),var(--blue2));color:white}
+.msg-av.user{background:var(--bg3);color:var(--slate);border:1px solid var(--border)}
+.msg-bubble{max-width:78%;padding:10px 14px;border-radius:10px;font-size:0.78rem;line-height:1.6;color:var(--white)}
+.msg-bubble.ai{background:var(--bg3);border:1px solid var(--border);border-top-left-radius:3px}
+.msg-bubble.user{background:rgba(59,130,246,0.12);border:1px solid var(--border2);border-top-right-radius:3px}
+.typing{display:flex;gap:4px;align-items:center;padding:6px 0}
+.tdot{width:6px;height:6px;border-radius:50%;background:var(--blue);animation:td 1.2s infinite}
+.tdot:nth-child(2){animation-delay:0.2s}.tdot:nth-child(3){animation-delay:0.4s}
+@keyframes td{0%,60%,100%{transform:translateY(0);opacity:0.4}30%{transform:translateY(-5px);opacity:1}}
+.empty-state{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--bg4);padding:20px 0}
+.empty-text{font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+
+/* Mobile nav */
+.mobile-nav{display:none;background:var(--bg2);border-top:1px solid var(--border);padding:6px 12px;gap:4px}
+.mnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 4px;border-radius:8px;border:none;background:transparent;cursor:pointer;transition:all 0.2s;color:var(--slate)}
+.mnav-btn.active{color:var(--blue);background:rgba(59,130,246,0.08)}
+.mnav-label{font-size:0.5rem;letter-spacing:1px;text-transform:uppercase;font-family:'JetBrains Mono',monospace}
+
+/* Responsive */
+@media(max-width:768px){
+  .sidebar{display:none}
+  .agents-grid{grid-template-columns:repeat(2,1fr)}
+  .modules-grid{grid-template-columns:repeat(2,1fr)}
+  .market-strip{flex-wrap:wrap}
+  .mobile-nav{display:flex}
+}
+
+
+/* Install banner */
+.install-banner{display:none;position:fixed;bottom:70px;left:12px;right:12px;background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--border2);border-radius:12px;padding:12px 16px;align-items:center;justify-content:space-between;z-index:100;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+.install-text{font-size:0.72rem;color:var(--white);font-family:'JetBrains Mono',monospace;letter-spacing:1px}
+.install-sub{font-size:0.6rem;color:var(--slate);margin-top:2px}
+.install-btn{background:var(--blue);color:white;border:none;border-radius:8px;padding:8px 14px;font-size:0.65rem;font-family:'JetBrains Mono',monospace;letter-spacing:1px;cursor:pointer;text-transform:uppercase;transition:background 0.2s}
+.install-btn:hover{background:var(--blue2)}
+.install-close{background:transparent;border:none;color:var(--slate);cursor:pointer;padding:4px;margin-left:8px}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn 0.35s ease forwards}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spin{animation:spin 1s linear infinite}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+<div class="orb1"></div><div class="orb2"></div>
+
+<div class="app" id="app">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <i data-lucide="hexagon" style="width:18px;height:18px;color:white"></i>
+    </div>
+    <button class="sb-btn active" id="sb-home" onclick="setView('home')" title="Home">
+      <i data-lucide="command" style="width:16px;height:16px"></i>
+    </button>
+    <button class="sb-btn" id="sb-chat" onclick="setView('chat')" title="Chat">
+      <i data-lucide="brain" style="width:16px;height:16px"></i>
+    </button>
+    <button class="sb-btn" id="sb-modules" onclick="setView('modules')" title="Modules">
+      <i data-lucide="layout-dashboard" style="width:16px;height:16px"></i>
+    </button>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <div class="status-dot"></div>
+        <span class="header-title">Wuzo Core OS · v5.2</span>
+      </div>
+      <div class="header-right">
+        <span class="badge badge-active">8 agents online</span>
+        <span class="badge badge-free">Free</span>
+      </div>
     </header>
 
-    <main class="max-w-md mx-auto p-6 space-y-8">
-        <section class="bg-slate-900 border border-white/10 rounded-3xl p-5 shadow-2xl relative">
-            <div class="flex items-center gap-2 mb-3 opacity-50">
-                <i class="bi bi-terminal text-yellow-500 text-xs"></i>
-                <span class="text-[9px] font-black uppercase tracking-widest mono">Orquestrador Neural</span>
-            </div>
-            <div class="flex items-center gap-3">
-                <input type="text" id="userInput" placeholder="Digite seu comando..." class="bg-transparent w-full border-none focus:ring-0 text-white font-medium text-lg outline-none">
-                <button id="execBtn" onclick="startWuzo()" class="bg-yellow-500 w-12 h-12 rounded-2xl flex items-center justify-center text-slate-950 hover:bg-yellow-400 transition shadow-lg shadow-yellow-500/20">
-                    <i class="bi bi-lightning-charge-fill text-xl"></i>
-                </button>
-            </div>
-        </section>
+    <!-- Content -->
+    <div class="content" id="content">
 
-        <div id="monitor" class="hidden space-y-4">
-            <div class="flex justify-between items-end px-1">
-                <h3 class="text-[10px] font-black uppercase text-slate-500 tracking-[0.2em]">Neural Processing</h3>
-                <span id="loadText" class="text-xs font-bold text-yellow-500 mono">0%</span>
-            </div>
-            <div id="stack" class="space-y-3"></div>
-            
-            <!-- Botão de Acesso Real que aparece após a análise -->
-            <div id="finalAction" class="hidden pt-4 animate-bounce">
-                <button onclick="redirectToApp()" class="w-full bg-white text-slate-950 font-black py-4 rounded-2xl uppercase tracking-tighter flex items-center justify-center gap-3 shadow-xl">
-                    Abrir Painel de Controle <i class="bi bi-arrow-right-short text-2xl"></i>
-                </button>
-            </div>
+      <!-- Market strip -->
+      <div class="market-strip fade-in" id="market-strip">
+        <div class="market-item">
+          <div><div class="market-sym">BTC</div><div class="market-change up" id="btc-ch">+0.00%</div></div>
+          <div class="market-price up" id="btc-p">$---</div>
         </div>
-    </main>
+        <div class="market-item">
+          <div><div class="market-sym">ETH</div><div class="market-change up" id="eth-ch">+0.00%</div></div>
+          <div class="market-price up" id="eth-p">$---</div>
+        </div>
+        <div class="market-item">
+          <div><div class="market-sym">SOL</div><div class="market-change up" id="sol-ch">+0.00%</div></div>
+          <div class="market-price up" id="sol-p">$---</div>
+        </div>
+      </div>
 
-    <nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-sm glass rounded-[2.5rem] p-2 flex justify-around items-center z-50 border border-white/10 shadow-2xl">
-        <button class="p-4 text-yellow-500 bg-yellow-500/10 rounded-full"><i class="bi bi-cpu-fill text-xl"></i></button>
-        <button onclick="redirectToApp()" class="p-4 text-slate-500 hover:text-white transition"><i class="bi bi-box-arrow-up-right text-xl"></i></button>
-        <button class="p-4 text-slate-500 hover:text-white transition"><i class="bi bi-person-circle text-xl"></i></button>
+      <!-- Command bar -->
+      <div class="command-bar fade-in">
+        <div class="command-label">
+          <i data-lucide="sparkles" style="width:11px;height:11px"></i>
+          ORCHESTRATOR · WHAT DO YOU WANT TO RESOLVE TODAY?
+        </div>
+        <div class="command-input-wrap">
+          <i data-lucide="command" style="width:14px;height:14px;color:var(--slate);flex-shrink:0"></i>
+          <input class="command-input" id="cmd-input" placeholder="Ask anything about your finances..." onkeydown="if(event.key==='Enter')sendMsg()">
+          <button class="cmd-btn cmd-send" onclick="sendMsg()">
+            <i data-lucide="send" style="width:13px;height:13px"></i>
+          </button>
+        </div>
+        <div class="suggestions" id="suggestions">
+          <button class="suggestion" onclick="sendMsg('Analyze my financial health')">Analyze my financial health</button>
+          <button class="suggestion" onclick="sendMsg('What is Bitcoin doing today?')">What's Bitcoin doing today?</button>
+          <button class="suggestion" onclick="sendMsg('Help me pay off my debts faster')">Help me pay off debts</button>
+          <button class="suggestion" onclick="sendMsg('Create an investment strategy')">Investment strategy</button>
+          <button class="suggestion" onclick="sendMsg('Set a savings goal for me')">Set a savings goal</button>
+        </div>
+      </div>
+
+      <!-- Agent workflow (hidden initially) -->
+      <div class="workflow fade-in" id="workflow" style="display:none">
+        <div class="section-title">
+          <i data-lucide="activity" style="width:11px;height:11px"></i>
+          AGENT WORKFLOW · PARALLEL PROCESSING
+        </div>
+        <div class="agents-grid" id="agents-grid"></div>
+      </div>
+
+      <!-- Messages (hidden initially) -->
+      <div class="response-area fade-in" id="response-area" style="display:none">
+        <div class="section-title">
+          <i data-lucide="eye" style="width:11px;height:11px"></i>
+          RESPONSE STREAM
+        </div>
+        <div class="messages" id="messages">
+          <div class="empty-state">
+            <i data-lucide="brain" style="width:28px;height:28px;opacity:0.2"></i>
+            <span class="empty-text">Awaiting command</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modules grid -->
+      <div class="fade-in" id="modules-section">
+        <div class="section-title">
+          <i data-lucide="zap" style="width:11px;height:11px"></i>
+          10 MODULES · SELECT TO ACTIVATE
+        </div>
+        <div class="modules-grid" id="modules-grid"></div>
+      </div>
+
+    </div>
+
+    <!-- Mobile nav -->
+    <nav class="mobile-nav">
+      <button class="mnav-btn active" id="mn-home" onclick="setView('home')">
+        <i data-lucide="command" style="width:16px;height:16px"></i>
+        <span class="mnav-label">Home</span>
+      </button>
+      <button class="mnav-btn" id="mn-chat" onclick="setView('chat')">
+        <i data-lucide="brain" style="width:16px;height:16px"></i>
+        <span class="mnav-label">Chat</span>
+      </button>
+      <button class="mnav-btn" id="mn-modules" onclick="setView('modules')">
+        <i data-lucide="layout-dashboard" style="width:16px;height:16px"></i>
+        <span class="mnav-label">Modules</span>
+      </button>
     </nav>
+  </main>
+</div>
 
-    <script>
-        // URL DO SEU APP NO RENDER
-        const APP_RENDER_URL = "https://wuzo-core.onrender.com"; 
+<script>
+const AGENTS = [
+  {id:"analyst", name:"Analyst",    color:"#3b82f6", icon:"brain"},
+  {id:"market",  name:"Market",     color:"#10b981", icon:"trending-up"},
+  {id:"budget",  name:"Budget",     color:"#8b5cf6", icon:"wallet"},
+  {id:"invest",  name:"Investor",   color:"#f59e0b", icon:"bar-chart-3"},
+  {id:"debt",    name:"Debt",       color:"#ef4444", icon:"credit-card"},
+  {id:"goals",   name:"Goals",      color:"#06b6d4", icon:"target"},
+  {id:"academy", name:"Academy",    color:"#84cc16", icon:"graduation-cap"},
+  {id:"data",    name:"Data",       color:"#f97316", icon:"layout-dashboard"},
+];
 
-        const agents = [
-            { id: 1, name: "LEGAL_AI", task: "Varredura de Editais", icon: "bi-shield-check" },
-            { id: 2, name: "DEBIT_SCAN", task: "Rastreio Financeiro", icon: "bi-search" },
-            { id: 3, name: "VALUE_IA", task: "Cálculo de Equity", icon: "bi-graph-up-arrow" },
-            { id: 4, name: "FINAL_REP", task: "Relatório de Veredito", icon: "bi-file-earmark-text" }
-        ];
+const MODULES = [
+  {id:"ai",       label:"AI Consultant",  icon:"brain",          color:"#3b82f6", desc:"24/7 financial advisor"},
+  {id:"market",   label:"Market",         icon:"trending-up",    color:"#10b981", desc:"Live BTC · ETH · SOL"},
+  {id:"finances", label:"Finances",       icon:"wallet",         color:"#8b5cf6", desc:"Track transactions"},
+  {id:"invest",   label:"Investments",    icon:"bar-chart-3",    color:"#f59e0b", desc:"Portfolio performance"},
+  {id:"debts",    label:"Debts",          icon:"credit-card",    color:"#ef4444", desc:"Payoff strategies"},
+  {id:"goals",    label:"Goals",          icon:"target",         color:"#06b6d4", desc:"Build your future"},
+  {id:"academy",  label:"Academy",        icon:"graduation-cap", color:"#84cc16", desc:"Learn & grow"},
+  {id:"dashboard",label:"Dashboard",      icon:"layout-dashboard",color:"#f97316", desc:"Full picture"},
+  {id:"crypto",   label:"Crypto",         icon:"bitcoin",        color:"#f59e0b", desc:"Portfolio tracking"},
+  {id:"security", label:"Security",       icon:"shield",         color:"#64748b", desc:"Protect your data"},
+];
 
-        async function startWuzo() {
-            const val = document.getElementById('userInput').value;
-            if(!val) return;
+let currentView = "home";
+let activeModule = null;
+let agentStates = AGENTS.map(a => ({...a, status:"idle", progress:0}));
 
-            document.getElementById('execBtn').classList.add('btn-active');
-            document.getElementById('monitor').classList.remove('hidden');
-            const stack = document.getElementById('stack');
-            stack.innerHTML = '';
+// Init modules grid
+function initModules() {
+  const grid = document.getElementById("modules-grid");
+  grid.innerHTML = MODULES.map(m => `
+    <div class="module-card ${activeModule===m.id?'selected':''}" id="mod-${m.id}" onclick="activateModule('${m.id}','${m.label}')">
+      <div class="module-ico" style="background:${m.color}18">
+        <i data-lucide="${m.icon}" style="width:16px;height:16px;color:${m.color}"></i>
+      </div>
+      <div>
+        <div class="module-label">${m.label}</div>
+        <div class="module-desc">${m.desc}</div>
+      </div>
+    </div>
+  `).join("");
+  lucide.createIcons();
+}
 
-            for(let i=0; i < agents.length; i++) {
-                await new Promise(r => setTimeout(r, 600));
-                const card = document.createElement('div');
-                card.className = 'glass p-4 rounded-2xl agent-card relative overflow-hidden';
-                card.innerHTML = `
-                    <div class="scanner-line"></div>
-                    <div class="flex justify-between items-center">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-yellow-500">
-                                <i class="bi ${agents[i].icon}"></i>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-yellow-500 mono">AGENT_0${agents[i].id}</p>
-                                <p class="text-[11px] font-bold text-white uppercase">${agents[i].task}</p>
-                            </div>
-                        </div>
-                        <div class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                    </div>
-                `;
-                stack.appendChild(card);
-                document.getElementById('loadText').innerText = Math.round(((i + 1) / agents.length) * 100) + '%';
-            }
+// Init agents grid
+function initAgents() {
+  const grid = document.getElementById("agents-grid");
+  grid.innerHTML = agentStates.map(a => `
+    <div class="agent-card ${a.status}" id="ag-${a.id}">
+      <div class="agent-top">
+        <div class="agent-ico" style="background:${a.color}18">
+          <i data-lucide="${a.icon}" style="width:11px;height:11px;color:${a.color}"></i>
+        </div>
+        <span id="ag-status-icon-${a.id}"></span>
+      </div>
+      <div class="agent-name">${a.name.toUpperCase()}</div>
+      <div class="agent-bar"><div class="agent-bar-fill" id="ag-bar-${a.id}" style="width:0%;background:${a.color}"></div></div>
+      <div class="agent-status ${a.status}" id="ag-status-${a.id}">standby</div>
+    </div>
+  `).join("");
+  lucide.createIcons();
+}
 
-            // Exibe o botão final ou redireciona automaticamente
-            document.getElementById('finalAction').classList.remove('hidden');
-            
-            // Opcional: Redirecionar automaticamente após 1 segundo da conclusão
-            setTimeout(() => {
-                redirectToApp(val);
-            }, 1500);
-        }
+function resetAgents() {
+  agentStates = AGENTS.map(a => ({...a, status:"idle", progress:0}));
+  AGENTS.forEach(a => {
+    const card = document.getElementById(`ag-${a.id}`);
+    if(card){card.className="agent-card"}
+    const bar = document.getElementById(`ag-bar-${a.id}`);
+    if(bar){bar.style.width="0%"}
+    const st = document.getElementById(`ag-status-${a.id}`);
+    if(st){st.textContent="standby";st.className="agent-status"}
+    const ico = document.getElementById(`ag-status-icon-${a.id}`);
+    if(ico){ico.innerHTML=""}
+  });
+}
 
-        function redirectToApp(query = "") {
-            // Envia o comando do usuário via URL para o Render
-            const finalUrl = query ? `${APP_RENDER_URL}?query=${encodeURIComponent(query)}` : APP_RENDER_URL;
-            window.location.href = finalUrl;
-        }
-    </script>
+async function runAgents() {
+  const relevant = AGENTS.slice(0,4);
+  for(const agent of relevant) {
+    const card = document.getElementById(`ag-${agent.id}`);
+    const bar = document.getElementById(`ag-bar-${agent.id}`);
+    const st = document.getElementById(`ag-status-${agent.id}`);
+    const ico = document.getElementById(`ag-status-icon-${agent.id}`);
+    if(card) card.className = "agent-card active";
+    if(st){st.textContent="processing...";st.className="agent-status active"}
+    if(ico) ico.innerHTML = `<i data-lucide="loader-2" style="width:9px;height:9px;color:${agent.color}" class="spin"></i>`;
+    lucide.createIcons();
+    for(let p=0;p<=100;p+=25){
+      await sleep(100);
+      if(bar) bar.style.width = p+"%";
+    }
+    if(card) card.className = "agent-card done";
+    if(st){st.textContent="complete";st.className="agent-status done"}
+    if(ico) ico.innerHTML = `<i data-lucide="check-circle" style="width:9px;height:9px;color:#10b981"></i>`;
+    lucide.createIcons();
+  }
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+
+function addMessage(role, text) {
+  const msgs = document.getElementById("messages");
+  // Remove empty state
+  const empty = msgs.querySelector(".empty-state");
+  if(empty) empty.remove();
+
+  const div = document.createElement("div");
+  div.className = `message ${role} fade-in`;
+  div.innerHTML = `
+    <div class="msg-av ${role}">${role==="ai"?"WZ":"ME"}</div>
+    <div class="msg-bubble ${role}">${text}</div>
+  `;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function addTyping() {
+  const msgs = document.getElementById("messages");
+  const div = document.createElement("div");
+  div.className = "message ai fade-in";
+  div.id = "typing-indicator";
+  div.innerHTML = `
+    <div class="msg-av ai">WZ</div>
+    <div class="msg-bubble ai">
+      <div class="typing">
+        <div class="tdot"></div><div class="tdot"></div><div class="tdot"></div>
+      </div>
+    </div>
+  `;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById("typing-indicator");
+  if(t) t.remove();
+}
+
+async function sendMsg(text) {
+  const input = document.getElementById("cmd-input");
+  const msg = text || input.value.trim();
+  if(!msg) return;
+  input.value = "";
+
+  // Hide suggestions
+  document.getElementById("suggestions").style.display = "none";
+
+  // Show workflow + response
+  document.getElementById("workflow").style.display = "block";
+  document.getElementById("response-area").style.display = "flex";
+
+  setView("chat");
+  addMessage("user", msg);
+  addTyping();
+  resetAgents();
+
+  // Run agents + mock response
+  await Promise.all([
+    runAgents(),
+    sleep(2500)
+  ]);
+
+  removeTyping();
+
+  const responses = {
+    default: "I've analyzed your financial profile across all 8 agents. Based on the data processed, here's my recommendation: focus on building a 3-month emergency fund first, then allocate 20% of income to investments. Your current crypto exposure looks healthy given market conditions.",
+    btc: "Bitcoin is currently showing bullish momentum. Based on on-chain metrics and sentiment analysis, BTC is trading within a consolidation phase. My recommendation: hold current positions and watch the $85k resistance level for the next move.",
+    debt: "I've analyzed your debt structure. The optimal payoff strategy is the Avalanche method — targeting highest interest debt first. This saves the most money long-term. Start with credit card debt before tackling other obligations.",
+    invest: "Your investment strategy should be diversified across 3 layers: 60% index funds (SPY/VOO), 25% individual stocks in sectors you understand, and 15% in crypto (BTC/ETH only for stability). Rebalance quarterly.",
+    goal: "I've set up a smart savings goal for you. Based on your income patterns, you can save R$800/month comfortably. With compound interest, you'll reach your goal in approximately 18 months. I'll track progress automatically.",
+  };
+
+  const key = msg.toLowerCase().includes("bitcoin")||msg.toLowerCase().includes("btc") ? "btc"
+    : msg.toLowerCase().includes("debt") ? "debt"
+    : msg.toLowerCase().includes("invest") ? "invest"
+    : msg.toLowerCase().includes("goal") ? "goal"
+    : "default";
+
+  addMessage("ai", responses[key] || responses.default);
+}
+
+function activateModule(id, label) {
+  activeModule = id;
+  document.querySelectorAll(".module-card").forEach(c => c.classList.remove("selected"));
+  const card = document.getElementById(`mod-${id}`);
+  if(card) card.classList.add("selected");
+  sendMsg(`Activate ${label} module — show me what I can do here`);
+}
+
+function setView(view) {
+  currentView = view;
+  // Update sidebar buttons
+  ["home","chat","modules"].forEach(v => {
+    const sb = document.getElementById(`sb-${v}`);
+    const mn = document.getElementById(`mn-${v}`);
+    if(sb) sb.className = `sb-btn ${v===view?"active":""}`;
+    if(mn) mn.className = `mnav-btn ${v===view?"active":""}`;
+  });
+
+  const workflow = document.getElementById("workflow");
+  const responseArea = document.getElementById("response-area");
+  const modulesSection = document.getElementById("modules-section");
+  const cmdBar = document.querySelector(".command-bar");
+
+  if(view === "home") {
+    if(cmdBar) cmdBar.style.display = "block";
+    modulesSection.style.display = "block";
+  } else if(view === "chat") {
+    if(cmdBar) cmdBar.style.display = "block";
+    modulesSection.style.display = "none";
+    if(workflow.style.display !== "none") workflow.style.display = "block";
+    if(responseArea.style.display !== "none") responseArea.style.display = "flex";
+  } else if(view === "modules") {
+    if(cmdBar) cmdBar.style.display = "none";
+    modulesSection.style.display = "block";
+    workflow.style.display = "none";
+    responseArea.style.display = "none";
+  }
+
+  lucide.createIcons();
+}
+
+// Fetch market prices
+async function fetchPrices() {
+  const map = {bitcoin:"BTC", ethereum:"ETH", solana:"SOL"};
+  try {
+    const r = await fetch("https://api.coincap.io/v2/assets?ids=bitcoin,ethereum,solana", {signal: AbortSignal.timeout(6000)});
+    const d = await r.json();
+    if(d && d.data) {
+      d.data.forEach(asset => {
+        const sym = map[asset.id];
+        if(!sym) return;
+        const price = parseFloat(asset.priceUsd);
+        const change = parseFloat(asset.changePercent24Hr);
+        const up = change >= 0;
+        const fmt = n => "$"+n.toLocaleString("en-US",{maximumFractionDigits:0});
+        const fmtC = n => `${n>0?"+":""}${n.toFixed(2)}%`;
+        const s = sym.toLowerCase();
+        const pEl = document.getElementById(`${s}-p`);
+        const cEl = document.getElementById(`${s}-ch`);
+        if(pEl){pEl.textContent=fmt(price);pEl.className=`market-price ${up?"up":"dn"}`}
+        if(cEl){cEl.textContent=fmtC(change);cEl.className=`market-change ${up?"up":"dn"}`}
+      });
+      return;
+    }
+  } catch(e){}
+  // Fallback: CoinGecko
+  try {
+    const r = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true", {signal: AbortSignal.timeout(6000)});
+    const d = await r.json();
+    const coins = {BTC: d.bitcoin, ETH: d.ethereum, SOL: d.solana};
+    Object.entries(coins).forEach(([sym, data]) => {
+      if(!data) return;
+      const price = data.usd;
+      const change = data.usd_24h_change;
+      const up = change >= 0;
+      const fmt = n => "$"+n.toLocaleString("en-US",{maximumFractionDigits:0});
+      const fmtC = n => `${n>0?"+":""}${n.toFixed(2)}%`;
+      const s = sym.toLowerCase();
+      const pEl = document.getElementById(`${s}-p`);
+      const cEl = document.getElementById(`${s}-ch`);
+      if(pEl){pEl.textContent=fmt(price);pEl.className=`market-price ${up?"up":"dn"}`}
+      if(cEl){cEl.textContent=fmtC(change);cEl.className=`market-change ${up?"up":"dn"}`}
+    });
+  } catch(e){}
+}
+
+// Init
+function init() {
+  initModules();
+  initAgents();
+  lucide.createIcons();
+  fetchPrices();
+  setInterval(fetchPrices, 60000);
+  // Garantir módulos visíveis
+  const ms = document.getElementById("modules-section");
+  if(ms) ms.style.display = "block";
+  // Re-render icons após módulos
+  setTimeout(() => lucide.createIcons(), 100);
+}
+
+if(document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", init);
+} else {
+  setTimeout(init, 0);
+}
+</script>
+
+<!-- PWA Install Banner -->
+<div class="install-banner" id="install-banner">
+  <div>
+    <div class="install-text">⬡ Install Wuzo</div>
+    <div class="install-sub">Add to home screen for native experience</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px">
+    <button class="install-btn" onclick="installPWA()">Install</button>
+    <button class="install-close" onclick="document.getElementById('install-banner').style.display='none'">✕</button>
+  </div>
+</div>
+
+<script>
+// Service Worker — offline support
+if('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE = 'wuzo-core-v1';
+    const ASSETS = ['/'];
+    self.addEventListener('install', e => {
+      e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));
+    });
+    self.addEventListener('fetch', e => {
+      e.respondWith(
+        caches.match(e.request).then(r => r || fetch(e.request).catch(() => r))
+      );
+    });
+  `;
+  const blob = new Blob([swCode], {type: 'application/javascript'});
+  const swUrl = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).catch(() => {});
+}
+
+// Install prompt
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallBanner();
+});
+
+function showInstallBanner() {
+  const banner = document.getElementById('install-banner');
+  if(banner) banner.style.display = 'flex';
+}
+
+function installPWA() {
+  if(deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+      deferredPrompt = null;
+      const banner = document.getElementById('install-banner');
+      if(banner) banner.style.display = 'none';
+    });
+  }
+}
+</script>
 </body>
 </html>
-
