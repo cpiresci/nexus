@@ -2,1150 +2,902 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wuzo — Institutional-grade financial AI. Free to start.</title>
-<meta name="description" content="Wuzo analisa extratos, controla dívidas, investimentos e metas com IA de nível institucional. 10 módulos integrados, Market Insights em tempo real, Consultor IA 24/7. Comece grátis.">
-<meta property="og:title" content="Wuzo — Super App Financeiro com IA">
-<meta property="og:description" content="Diagnóstico financeiro completo em segundos. IA que conhece sua situação real.">
-<meta name="theme-color" content="#050503">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>WUZO — Consultor Financeiro IA</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+/* ── RESET + VARS ──────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --g:#e8c97a;--g2:#f5dfa0;--g3:rgba(201,168,76,.12);--g4:rgba(201,168,76,.06);
-  --bg:#020201;--bg2:#080806;--bg3:#0e0e0a;--bg4:#141410;
-  --tx:#f0ece2;--tx2:#c4bca8;--tx3:#8a8070;
-  --bd:rgba(232,201,122,.15);--bd2:rgba(232,201,122,.30);--bd3:rgba(232,201,122,.45);
-  --red:#e05252;--grn:#5dba88;
+  --bg:#030302;
+  --card:#0d0c0a;
+  --card2:#131108;
+  --g:#e8c97a; --g2:#f5dfa0; --gd:#8a6a2c; --gdd:#3a2810;
+  --bd:rgba(201,168,76,.14); --bd2:rgba(201,168,76,.3);
+  --tx:#ede8dc; --dm:#c0b89e; --dm2:#5a4828;
+  --wh:#faf6ee; --rd:#e05252; --gr:#4aaf78;
+  --r:10px; --r2:6px;
 }
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--tx);-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-family:'IBM Plex Mono',monospace;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;z-index:9997;pointer-events:none;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");opacity:.8;}
-/* CURSOR */
-#c{position:fixed;width:7px;height:7px;background:var(--g);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);mix-blend-mode:difference;transition:transform .1s;}
-#cr{position:fixed;width:36px;height:36px;border:1px solid rgba(201,168,76,.3);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .2s,height .2s,border-color .2s,opacity .2s;}
-body:hover #cr{opacity:1;}
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:22px 72px;display:flex;align-items:center;justify-content:space-between;transition:all .4s;}
-nav.solid{background:rgba(5,5,3,.97);backdrop-filter:blur(40px);border-bottom:1px solid var(--bd);padding:14px 72px;}
-.nlogo{display:flex;align-items:center;gap:14px;text-decoration:none;}
-.nmark{width:34px;height:34px;border:1px solid var(--g);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--g);position:relative;transition:all .3s;}
-.nmark::after{content:'';position:absolute;inset:-5px;border:1px solid rgba(201,168,76,.12);transition:inset .3s;}
-.nlogo:hover .nmark{background:var(--g);color:#000;}
-.nlogo:hover .nmark::after{inset:-9px;}
-.nname{font-family:'Bebas Neue',sans-serif;font-size:1.45rem;letter-spacing:8px;color:#fff;}
-.nlinks{display:flex;align-items:center;gap:44px;}
-.navitems{display:flex;align-items:center;gap:40px;}
-.navitems a{font-size:.6rem;color:var(--tx2);text-decoration:none;letter-spacing:3px;text-transform:uppercase;transition:color .25s;position:relative;}
-.navitems a::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:var(--g);transform:scaleX(0);transition:transform .3s;}
-.navitems a:hover{color:var(--g);}
-.navitems a:hover::after{transform:scaleX(1);}
-.ncta{font-family:'Bebas Neue',sans-serif;font-size:.88rem;color:#000!important;background:var(--g);padding:10px 26px;letter-spacing:3px;text-decoration:none;transition:all .3s;position:relative;overflow:hidden;}
-.ncta::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,.15);transform:translateX(-100%);transition:transform .4s;}
-.ncta:hover{background:var(--g2);box-shadow:0 0 40px rgba(201,168,76,.28);}
-.ncta:hover::before{transform:translateX(100%);}
-/* HERO */
-.hero{min-height:100vh;display:flex;align-items:center;padding:100px 72px 80px;position:relative;overflow:hidden;}
-.hero-bg{position:absolute;inset:0;pointer-events:none;
-  background:
-    linear-gradient(180deg,transparent 55%,var(--bg) 100%),
-    radial-gradient(ellipse 70% 70% at 75% 45%,rgba(201,168,76,.05) 0%,transparent 65%),
-    radial-gradient(ellipse 40% 50% at 10% 80%,rgba(201,168,76,.025) 0%,transparent 60%);}
-.hero-grid{position:absolute;inset:0;pointer-events:none;
+html,body{background:var(--bg);color:var(--tx);font-family:'Outfit',sans-serif;min-height:100vh;}
+body{
   background-image:
-    linear-gradient(rgba(201,168,76,.018) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(201,168,76,.018) 1px,transparent 1px);
-  background-size:60px 60px;}
-.hero-inner{max-width:1320px;margin:0 auto;width:100%;display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center;position:relative;z-index:1;}
-.h-eye{display:inline-flex;align-items:center;gap:10px;font-size:.58rem;color:var(--g);letter-spacing:5px;text-transform:uppercase;margin-bottom:24px;opacity:0;animation:up .7s .1s ease forwards;}
-.edot{width:5px;height:5px;border-radius:50%;background:var(--g);animation:blink 2s infinite;}
-@keyframes blink{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.2;transform:scale(.4);}}
-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(4.2rem,7.5vw,8rem);line-height:.9;color:#fff;margin-bottom:10px;opacity:0;animation:up .8s .2s ease forwards;letter-spacing:2px;}
-h1 em{font-family:'Libre Baskerville',serif;font-style:italic;font-weight:400;color:var(--g);font-size:clamp(3.4rem,6.5vw,7rem);display:block;letter-spacing:0;}
-.hdesc{font-size:.86rem;color:var(--tx2);line-height:2.1;max-width:540px;margin:26px 0 40px;opacity:0;animation:up .8s .3s ease forwards;}
-.hdesc b{color:var(--tx);}
-.hctas{display:flex;gap:12px;flex-wrap:wrap;opacity:0;animation:up .8s .4s ease forwards;}
-.btn-main{font-family:'Bebas Neue',sans-serif;font-size:.92rem;color:#000;background:var(--g);padding:14px 44px;letter-spacing:3px;text-decoration:none;position:relative;overflow:hidden;transition:all .3s;display:inline-block;}
-.btn-main::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transform:translateX(-100%);transition:transform .5s;}
-.btn-main:hover{background:var(--g2);box-shadow:0 6px 44px rgba(201,168,76,.32);}
-.btn-main:hover::after{transform:translateX(100%);}
-.btn-line{font-size:.6rem;color:var(--g);border:1px solid var(--bd2);padding:14px 30px;letter-spacing:3px;text-decoration:none;transition:all .3s;display:inline-block;}
-.btn-line:hover{background:var(--g4);border-color:var(--g);}
-.hproof{display:flex;gap:24px;margin-top:32px;padding-top:24px;border-top:1px solid var(--bd);opacity:0;animation:up .8s .5s ease forwards;flex-wrap:wrap;}
-.pn{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;color:var(--g);display:block;line-height:1;}
-.pl{font-size:.68rem;color:#c4bca8;letter-spacing:2px;margin-top:4px;display:block;}
-/* HERO VISUAL */
-.hero-right{opacity:0;animation:up .9s .5s ease forwards;position:relative;}
-.dash{background:var(--bg2);border:1px solid var(--bd);position:relative;overflow:hidden;}
-.dash::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--g) 50%,transparent);}
-.dtop{padding:12px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;background:rgba(201,168,76,.02);}
-.dtl{display:flex;align-items:center;gap:10px;}
-.wdots{display:flex;gap:5px;}
-.wd{width:7px;height:7px;border-radius:50%;}
-.w1{background:#ff5f57;}.w2{background:#febc2e;}.w3{background:#28c840;}
-.dtt{font-family:'Bebas Neue',sans-serif;font-size:.82rem;letter-spacing:4px;color:#fff;}
-.dtb{font-size:.58rem;color:var(--g);border:1px solid var(--bd);padding:3px 9px;letter-spacing:2px;}
-.dbody{padding:16px;}
-.drow{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:8px;}
-.dk{background:var(--bg3);border:1px solid var(--bd);padding:9px 11px;}
-.dkl{font-size:.5rem;color:var(--tx2);letter-spacing:2px;margin-bottom:4px;}
-.dkv{font-family:'Bebas Neue',sans-serif;font-size:1rem;}
-.dkv.g{color:var(--grn);}.dkv.r{color:var(--red);}.dkv.o{color:var(--g);}
-.drow2{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:8px;}
-.dm{background:var(--bg3);border:1px solid var(--bd);padding:8px 11px;}
-.dml{font-size:.48rem;color:var(--tx2);letter-spacing:1px;margin-bottom:3px;}
-.dmv{font-family:'Bebas Neue',sans-serif;font-size:.78rem;color:#fff;}
-.dai{background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.18);border-left:3px solid var(--g);padding:10px 13px;font-size:.68rem;color:var(--tx);line-height:1.7;}
-.dai b{color:var(--g);}
-/* market mini strip */
-.mstrip{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:8px;}
-.msi{background:var(--bg3);border:1px solid var(--bd);padding:7px 10px;display:flex;justify-content:space-between;align-items:center;}
-.msin{font-size:.52rem;color:var(--tx2);letter-spacing:1px;}
-.msiv{font-family:'Bebas Neue',sans-serif;font-size:.75rem;}
-.msiv.up{color:var(--grn);}.msiv.dn{color:var(--red);}
-/* floaters */
-.fl{position:absolute;background:var(--bg3);border:1px solid var(--bd2);padding:9px 13px;font-size:.6rem;white-space:nowrap;box-shadow:0 10px 44px rgba(0,0,0,.65);animation:flt 3.5s ease-in-out infinite;}
-.f1{top:-16px;right:-14px;}.f2{bottom:80px;left:-22px;animation-delay:-1.8s;}.f3{top:40%;right:-20px;animation-delay:-0.9s;}
-.fll{font-size:.5rem;color:var(--tx2);letter-spacing:1px;margin-bottom:3px;}
-.flv{font-family:'Bebas Neue',sans-serif;font-size:.92rem;color:var(--g);}
-.flv.up::after{content:' ↑';color:var(--grn);}
-.flv.dn::after{content:' ↓';color:var(--red);}
-@keyframes flt{0%,100%{transform:translateY(0);}50%{transform:translateY(-9px);}}
-/* TICKER */
-.ticker-wrap{border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);background:var(--bg2);padding:13px 0;overflow:hidden;position:relative;}
-.ticker-wrap::before,.ticker-wrap::after{content:'';position:absolute;top:0;bottom:0;width:120px;z-index:2;}
-.ticker-wrap::before{left:0;background:linear-gradient(90deg,var(--bg2),transparent);}
-.ticker-wrap::after{right:0;background:linear-gradient(-90deg,var(--bg2),transparent);}
-.ticker{display:flex;width:max-content;animation:tick 40s linear infinite;}
-.ticker:hover{animation-play-state:paused;}
-.ti{font-size:.6rem;letter-spacing:3px;color:var(--tx2);padding:0 26px;border-right:1px solid var(--bd);white-space:nowrap;text-transform:uppercase;}
-.ti span{color:var(--g);margin-right:7px;}
-.ti.hot{color:#f0ece2;}
-.ti.hot span{color:var(--g2);}
-@keyframes tick{from{transform:translateX(0);}to{transform:translateX(-50%);}}
-/* SECTIONS */
-.sec{padding:120px 72px;max-width:1320px;margin:0 auto;}
-.stag{display:flex;align-items:center;gap:12px;font-size:.58rem;color:var(--g);letter-spacing:5px;text-transform:uppercase;margin-bottom:18px;}
-.stag::before{content:'';width:24px;height:1px;background:var(--g);}
-.sh2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.6rem,4.8vw,4.5rem);color:#fff;line-height:.92;margin-bottom:18px;letter-spacing:1px;}
-.sh2 em{font-family:'Libre Baskerville',serif;font-style:italic;font-weight:400;color:var(--g);letter-spacing:0;}
-.sp{font-size:.84rem;color:var(--tx2);max-width:540px;line-height:2.1;margin-bottom:60px;}
-/* HOW */
-.how-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--bd);}
-.hstep{padding:44px 32px;border-right:1px solid var(--bd);position:relative;overflow:hidden;cursor:default;transition:background .4s;}
-.hstep:last-child{border-right:none;}
-.hstep:hover{background:var(--bg2);}
-.hstep::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--g),transparent);transform:scaleX(0);transform-origin:left;transition:transform .5s;}
-.hstep:hover::after{transform:scaleX(1);}
-.hsn{font-family:'Bebas Neue',sans-serif;font-size:5rem;color:rgba(201,168,76,.04);line-height:1;margin-bottom:18px;}
-.hsi{font-size:1.8rem;margin-bottom:13px;display:block;}
-.hst{font-family:'Bebas Neue',sans-serif;font-size:.95rem;color:#fff;letter-spacing:3px;margin-bottom:11px;}
-.hsd{font-size:.74rem;color:var(--tx2);line-height:1.9;}
-/* MODULES */
-.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);}
-.mod{background:var(--bg2);padding:40px 34px;position:relative;overflow:hidden;cursor:default;transition:background .4s;}
-.mod:hover{background:var(--bg3);}
-.mod::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--g),transparent);transform:scaleX(0);transform-origin:left;transition:transform .5s;}
-.mod:hover::before{transform:scaleX(1);}
-.mod.highlight{background:rgba(201,168,76,.03);border-color:rgba(201,168,76,.18);}
-.mn{font-family:'Libre Baskerville',serif;font-style:italic;font-size:5rem;color:rgba(201,168,76,.04);line-height:1;position:absolute;top:10px;right:18px;}
-.mi{font-size:2rem;margin-bottom:16px;display:block;}
-.mt{font-family:'Bebas Neue',sans-serif;font-size:1rem;color:#fff;letter-spacing:4px;margin-bottom:11px;}
-.md{font-size:.76rem;color:var(--tx2);line-height:1.95;margin-bottom:14px;}
-.mchips{display:flex;gap:5px;flex-wrap:wrap;}
-.chip{font-size:.54rem;letter-spacing:1px;border:1px solid var(--bd);color:var(--tx2);padding:3px 8px;transition:all .3s;}
-.mod:hover .chip{border-color:rgba(201,168,76,.18);}
-.chip.gd{border-color:rgba(201,168,76,.28);color:var(--g);}
-.chip.new{border-color:rgba(93,186,136,.25);color:var(--grn);}
-/* AI SECTION */
-.ai-bg{background:var(--bg2);border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);padding:120px 72px;}
-.ai-in{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center;}
-.aichat{background:var(--bg3);border:1px solid var(--bd);position:relative;}
-.aichat::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--g),transparent);}
-.chh{padding:13px 17px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;background:rgba(201,168,76,.02);}
-.chhl{display:flex;align-items:center;gap:10px;}
-.chav{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,rgba(201,168,76,.4),rgba(201,168,76,.1));border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:.75rem;}
-.chn{font-family:'Bebas Neue',sans-serif;font-size:.82rem;letter-spacing:3px;color:#fff;}
-.chs{font-size:.52rem;color:var(--grn);letter-spacing:2px;}
-.chb{padding:18px;display:flex;flex-direction:column;gap:11px;}
-.msg{padding:10px 14px;font-size:.73rem;line-height:1.75;max-width:90%;}
-.msg.ai{background:rgba(232,201,122,.09);border:1px solid rgba(232,201,122,.22);color:#f0ece2;}
-.msg.us{align-self:flex-end;background:var(--bg4);border:1px solid var(--bd);color:#d8d4c8;}
-.msg b{color:var(--g);}
-.mblink{display:flex;gap:4px;align-items:center;padding:10px 14px;background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.1);max-width:56px;opacity:0;animation:pop .5s 3.5s ease forwards;}
-@keyframes pop{to{opacity:1;}}
-.bd{width:5px;height:5px;border-radius:50%;background:var(--g);opacity:.3;animation:bdk 1.4s infinite;}
-.bd:nth-child(2){animation-delay:.2s;}.bd:nth-child(3){animation-delay:.4s;}
-@keyframes bdk{0%,60%,100%{opacity:.3;transform:none;}30%{opacity:1;transform:translateY(-3px);}}
-.aifacts{margin-top:40px;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd);border:1px solid var(--bd);}
-.af{background:var(--bg3);padding:22px 26px;}
-.afn{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;color:var(--g);display:block;line-height:1;margin-bottom:4px;}
-.afl{font-size:.58rem;color:var(--tx2);letter-spacing:2px;}
-/* MARKET INSIGHTS */
-.insights-bg{padding:120px 72px;border-top:1px solid var(--bd);}
-.ins-wrap{max-width:1320px;margin:0 auto;}
-.ins-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--bd);border:1px solid var(--bd);margin-bottom:20px;}
-.ins-card{background:var(--bg2);padding:26px 28px;}
-.ins-card:first-child{background:rgba(201,168,76,.03);}
-.ins-label{font-size:.54rem;color:var(--tx2);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;}
-.ins-title{font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:#fff;letter-spacing:2px;margin-bottom:8px;line-height:1.3;}
-.ins-summary{font-size:.72rem;color:var(--tx2);line-height:1.85;margin-bottom:12px;}
-.ins-tag{display:inline-block;font-size:.52rem;letter-spacing:1.5px;padding:2px 8px;border:1px solid;margin-right:5px;}
-.ins-tag.pos{border-color:rgba(93,186,136,.3);color:var(--grn);}
-.ins-tag.neg{border-color:rgba(224,82,82,.3);color:var(--red);}
-.ins-tag.neu{border-color:var(--bd);color:var(--tx2);}
-.mood-bar{display:flex;gap:8px;align-items:center;margin-top:14px;}
-.mood-pill{font-family:'Bebas Neue',sans-serif;font-size:.75rem;letter-spacing:2px;padding:4px 12px;border:1px solid;}
-.mood-pill.bull{border-color:rgba(93,186,136,.4);color:var(--grn);background:rgba(93,186,136,.05);}
-.mood-pill.bear{border-color:rgba(224,82,82,.4);color:var(--red);background:rgba(224,82,82,.05);}
-.mood-pill.neu{border-color:var(--bd);color:var(--tx2);}
-.signal-row{display:grid;grid-template-columns:repeat(8,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);}
-.sig{background:var(--bg2);padding:14px;text-align:center;}
-.sig-name{font-size:.70rem;color:#c4bca8;letter-spacing:2px;margin-bottom:6px;}
-.sig-val{font-family:'Bebas Neue',sans-serif;font-size:.85rem;letter-spacing:1px;}
-.sig-val.buy{color:var(--g);}
-.sig-val.sell{color:var(--red);}
-.sig-val.watch{color:var(--tx2);}
-/* ACADEMY */
-.acadgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
-.les{background:var(--bg2);border:1px solid var(--bd);padding:26px 22px;position:relative;cursor:default;transition:all .4s;overflow:hidden;}
-.les:hover{background:var(--bg3);border-color:rgba(201,168,76,.22);transform:translateY(-2px);}
-.lcat{font-size:.53rem;letter-spacing:3px;color:var(--g);border:1px solid rgba(201,168,76,.22);padding:3px 8px;display:inline-block;margin-bottom:13px;}
-.llvl{position:absolute;top:14px;right:14px;font-size:.5rem;letter-spacing:2px;padding:3px 7px;border:1px solid var(--bd);color:var(--tx2);}
-.llvl.adv{border-color:rgba(201,168,76,.3);color:var(--g);}
-.llvl.int{border-color:rgba(93,186,136,.25);color:var(--grn);}
-.lt{font-family:'Bebas Neue',sans-serif;font-size:.92rem;color:#fff;letter-spacing:2px;margin-bottom:9px;line-height:1.3;}
-.ld{font-size:.71rem;color:var(--tx2);line-height:1.8;margin-bottom:11px;}
-.ldur{font-size:.68rem;color:#b8b09e;letter-spacing:2px;}
-.ldur span{color:var(--g);}
-/* NUMBERS */
-.nums{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);}
-.nb{background:var(--bg2);padding:44px 32px;text-align:center;transition:background .3s;position:relative;overflow:hidden;}
-.nb:hover{background:var(--bg3);}
-.nb::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,var(--g),transparent);opacity:0;transition:opacity .3s;}
-.nb:hover::after{opacity:1;}
-.nbn{font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--g);display:block;line-height:1;margin-bottom:6px;}
-.nbl{font-size:.6rem;color:var(--tx2);letter-spacing:2px;}
-/* REFERRAL */
-.ref-section{padding:80px 72px;border-top:1px solid var(--bd);background:var(--bg2);}
-.ref-wrap{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
-.ref-card{background:var(--bg3);border:1px solid var(--bd2);padding:32px;position:relative;overflow:hidden;}
-.ref-card::after{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--g),transparent);}
-.ref-steps{display:flex;flex-direction:column;gap:16px;margin-top:20px;}
-.ref-step{display:flex;gap:16px;align-items:flex-start;}
-.ref-num{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--g);min-width:32px;line-height:1;}
-.ref-txt{font-size:.76rem;color:var(--tx2);line-height:1.75;}
-.ref-txt b{color:var(--tx);}
-/* TESTIMONIALS */
-.trow{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--bd);}
-.testi{background:var(--bg2);padding:34px 28px;transition:background .3s;cursor:default;}
-.testi:hover{background:var(--bg3);}
-.tq{font-family:'Libre Baskerville',serif;font-style:italic;font-size:3.6rem;color:rgba(201,168,76,.07);line-height:1;margin-bottom:10px;}
-.ts{font-size:.68rem;color:var(--g);letter-spacing:4px;margin-bottom:11px;}
-.tt{font-size:.78rem;color:var(--tx2);line-height:1.95;margin-bottom:18px;font-style:italic;}
-.tt b{color:var(--g);font-style:normal;}
-.tw{display:flex;align-items:center;gap:11px;}
-.tav{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--g3),transparent);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:.82rem;color:var(--g);}
-.tnm{font-family:'Bebas Neue',sans-serif;font-size:.78rem;letter-spacing:2px;color:#fff;}
-.trl{font-size:.56rem;color:var(--tx2);letter-spacing:1px;margin-top:2px;}
-/* PRICING */
-.pwrap{display:grid;grid-template-columns:1fr 1.1fr;border:1px solid var(--bd);max-width:920px;}
-.plan{background:var(--bg2);padding:52px 48px;position:relative;}
-.plan.pro{background:var(--bg3);border-left:1px solid rgba(201,168,76,.26);overflow:hidden;}
-.plan.pro::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--g),var(--g2));}
-.plan.pro::after{content:'';position:absolute;top:-80px;right:-80px;width:280px;height:280px;background:radial-gradient(circle,rgba(201,168,76,.07) 0%,transparent 70%);pointer-events:none;}
-.ppill{font-family:'Bebas Neue',sans-serif;font-size:.7rem;letter-spacing:3px;display:inline-block;padding:4px 13px;margin-bottom:16px;}
-.ppill.fr{border:1px solid var(--bd);color:var(--tx2);}
-.ppill.pr{background:var(--g);color:#000;}
-.pname{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;letter-spacing:6px;color:#fff;margin-bottom:12px;}
-.pprice{font-family:'Bebas Neue',sans-serif;font-size:4rem;color:var(--g);line-height:1;display:flex;align-items:flex-start;gap:5px;}
-.pprice sup{font-size:1.5rem;margin-top:11px;}
-.pper{font-size:.58rem;color:var(--tx2);letter-spacing:2px;margin:5px 0 36px;}
-.plist{list-style:none;margin-bottom:40px;}
-.plist li{font-size:.75rem;color:var(--tx2);padding:9px 0;border-bottom:1px solid rgba(255,255,255,.03);display:flex;gap:11px;align-items:flex-start;line-height:1.5;}
-.plist li.on{color:#f0ece2;}
-.ck{color:var(--g);flex-shrink:0;margin-top:1px;}
-.cx{color:var(--tx3);flex-shrink:0;}
-.pbtn{display:block;font-family:'Bebas Neue',sans-serif;font-size:.83rem;letter-spacing:4px;text-decoration:none;text-align:center;padding:17px;transition:all .3s;}
-.pbtn.gld{background:var(--g);color:#000;}
-.pbtn.gld:hover{background:var(--g2);box-shadow:0 0 44px rgba(201,168,76,.32);}
-.pbtn.gh{border:1px solid var(--bd);color:var(--g);}
-.pbtn.gh:hover{border-color:var(--g);background:var(--g4);}
-.pnote{font-size:.58rem;color:var(--tx2);text-align:center;margin-top:11px;letter-spacing:1px;}
-/* FAQ */
-.faq-wrap{max-width:760px;}
-.faq-item{border-bottom:1px solid var(--bd);overflow:hidden;}
-.faq-q{padding:22px 0;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:.82rem;color:var(--tx);letter-spacing:1px;transition:color .2s;}
-.faq-q:hover{color:var(--g);}
-.faq-icon{font-size:1.2rem;color:var(--g);transition:transform .3s;flex-shrink:0;margin-left:20px;font-family:'Bebas Neue',sans-serif;font-size:.9rem;}
-.faq-a{font-size:.76rem;color:var(--tx2);line-height:1.9;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s;}
-.faq-item.open .faq-a{max-height:300px;padding-bottom:20px;}
-.faq-item.open .faq-icon{transform:rotate(45deg);}
-/* CTA FINAL */
-.ctas{text-align:center;padding:180px 72px;position:relative;overflow:hidden;border-top:1px solid var(--bd);}
-.ctas::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:1200px;height:700px;background:radial-gradient(ellipse,rgba(201,168,76,.06) 0%,transparent 62%);pointer-events:none;}
-.ctas::after{content:'';position:absolute;inset:0;background-image:repeating-linear-gradient(-45deg,transparent,transparent 50px,rgba(201,168,76,.008) 50px,rgba(201,168,76,.008) 51px);pointer-events:none;}
-.csym{font-family:'Libre Baskerville',serif;font-style:italic;font-size:5rem;color:rgba(201,168,76,.12);display:block;margin-bottom:32px;animation:spin 25s linear infinite;position:relative;z-index:1;}
-@keyframes spin{from{transform:rotate(0);}to{transform:rotate(360deg);}}
-.ch{font-family:'Bebas Neue',sans-serif;font-size:clamp(3rem,6vw,6.5rem);color:#fff;line-height:.9;margin-bottom:18px;letter-spacing:2px;position:relative;z-index:1;}
-.ch em{font-family:'Libre Baskerville',serif;font-style:italic;font-weight:400;color:var(--g);font-size:clamp(2.6rem,5.5vw,6rem);display:block;letter-spacing:0;}
-.cp{font-size:.84rem;color:var(--tx2);max-width:460px;margin:0 auto 48px;line-height:2.1;position:relative;z-index:1;}
-.cnote{font-size:.58rem;color:var(--tx3);letter-spacing:3px;margin-top:18px;position:relative;z-index:1;}
-/* FOOTER */
-footer{padding:44px 72px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;}
-.flinks{display:flex;gap:28px;flex-wrap:wrap;}
-.flinks a{font-size:.58rem;color:var(--tx2);text-decoration:none;letter-spacing:2px;transition:color .25s;}
-.flinks a:hover{color:var(--g);}
-.fcopy{font-size:.58rem;color:var(--tx3);letter-spacing:2px;}
-/* ANIMATIONS */
-@keyframes up{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:none;}}
-.rev{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease;}
-.rev.in{opacity:1;transform:none;}
-.d1{transition-delay:.08s;}.d2{transition-delay:.16s;}.d3{transition-delay:.24s;}.d4{transition-delay:.32s;}
-/* AGENT BADGES */
-.mod .md b { font-size:.62rem; letter-spacing:1px; }
-
-/* AGENTS RESPONSIVE */
-@media(max-width:1024px){
-  [class*="agents-grid"],[style*="repeat(4,1fr)"]{grid-template-columns:repeat(2,1fr)!important;}
+    radial-gradient(ellipse 80% 50% at 0% 10%,rgba(201,168,76,.055) 0%,transparent 55%),
+    radial-gradient(ellipse 60% 60% at 100% 90%,rgba(201,168,76,.04) 0%,transparent 55%);
 }
-@media(max-width:640px){
-  .hero{padding:70px 20px 50px!important;}
-  h1{font-size:clamp(3rem,12vw,5rem)!important;}
-  .hproof{gap:14px!important;}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:var(--gd);border-radius:2px;}
+
+/* ── LAYOUT ──────────────────────────────────── */
+.shell{max-width:680px;margin:0 auto;padding:20px 14px 80px;}
+
+/* ── HEADER ──────────────────────────────────── */
+.hdr{display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:14px;border-bottom:1px solid var(--bd);margin-bottom:20px;}
+.logo{
+  font-size:1.6rem;font-weight:900;letter-spacing:8px;
+  background:linear-gradient(135deg,#7a5a1c,#f5ead0 35%,#c9a84c 55%,#f5ead0 75%,#7a5a1c);
+  background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shimmer 4s linear infinite;
+}
+@keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+.logo-sub{font-family:'JetBrains Mono',monospace;font-size:.42rem;letter-spacing:3px;color:var(--dm2);margin-top:2px;}
+.hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.credit-badge{
+  background:rgba(201,168,76,.08);border:1px solid var(--bd);
+  border-radius:20px;padding:5px 12px;
+  font-size:.68rem;font-weight:700;letter-spacing:1px;color:var(--g);
+  font-family:'JetBrains Mono',monospace;
+}
+.status-dot{display:flex;align-items:center;gap:5px;font-size:.6rem;color:var(--gr);letter-spacing:1px;}
+.status-dot::before{content:'';width:6px;height:6px;background:var(--gr);border-radius:50%;
+  box-shadow:0 0 6px var(--gr);animation:blink 2s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+/* ── CARD ────────────────────────────────────── */
+.card{
+  background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));
+  border:1px solid var(--bd);border-radius:var(--r);
+  padding:18px 16px;margin-bottom:14px;position:relative;overflow:hidden;
+}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,168,76,.28),transparent);}
+
+/* ── TEXTAREA ────────────────────────────────── */
+.inp-lbl{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:2px;
+  color:var(--dm2);text-transform:uppercase;margin-bottom:5px;}
+textarea{
+  width:100%;background:rgba(0,0,0,.35);border:1px solid var(--bd);
+  border-radius:var(--r2);color:var(--tx);font-family:'Outfit',sans-serif;
+  font-size:.92rem;padding:12px 14px;resize:vertical;min-height:100px;outline:none;
+  line-height:1.7;transition:border-color .2s,box-shadow .2s;
+}
+textarea:focus{border-color:rgba(201,168,76,.4);box-shadow:0 0 0 3px rgba(201,168,76,.07);}
+textarea::placeholder{color:var(--dm2);}
+
+/* ── BUTTONS ─────────────────────────────────── */
+.btn-row{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:15px 20px;border-radius:50px;border:none;cursor:pointer;
+  font-family:'Outfit',sans-serif;font-weight:800;font-size:.85rem;letter-spacing:1px;
+  transition:all .2s;text-decoration:none;
+}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important;}
+
+/* Botão FREE — azul como JUSAII */
+.btn-free{
+  background:linear-gradient(135deg,#1a3a8a,#2255cc);
+  color:#fff;
+  box-shadow:0 4px 20px rgba(34,85,204,.3);
+}
+.btn-free:hover:not(:disabled){
+  background:linear-gradient(135deg,#1e44a0,#2a60e0);
+  transform:translateY(-1px);box-shadow:0 6px 24px rgba(34,85,204,.45);
 }
 
-
-/* LANG TOGGLE */
-.lang-toggle{display:flex;gap:6px;align-items:center;margin-left:10px;}
-.lang-btn{cursor:pointer;color:var(--tx2);background:none;border:none;font-family:'IBM Plex Mono',monospace;font-size:.72rem;letter-spacing:2px;padding:2px 4px;transition:color .2s;}
-.lang-btn.active,.lang-btn:hover{color:var(--g);}
-
-/* COUNTER */
-.counter{display:inline-block;}
-/* RESPONSIVE */
-@media(max-width:1024px){
-  nav,nav.solid{padding:14px 24px;}
-  .navitems{display:none;}
-  .hero,.ai-bg,.ctas,.insights-bg,.ref-section{padding-left:24px;padding-right:24px;}
-  .sec{padding:80px 24px;}
-  .hero-inner,.ai-in,.ref-wrap{grid-template-columns:1fr;}
-  .hero-right{display:none;}
-  .mgrid{grid-template-columns:1fr 1fr;}
-  .how-grid{grid-template-columns:1fr 1fr;}
-  .hstep:nth-child(2){border-right:none;}
-  .hstep:nth-child(3){border-top:1px solid var(--bd);}
-  .acadgrid{grid-template-columns:1fr 1fr;}
-  .nums{grid-template-columns:repeat(3,1fr);}
-  .trow{grid-template-columns:1fr;}
-  .pwrap{grid-template-columns:1fr;max-width:480px;}
-  .plan.pro{border-left:none;border-top:1px solid rgba(201,168,76,.26);}
-  footer{flex-direction:column;text-align:center;padding:30px 24px;}
-  .flinks{justify-content:center;}
-  .ins-grid{grid-template-columns:1fr;}
-  .signal-row{grid-template-columns:repeat(4,1fr);}
+/* Botão PREMIUM — dourado */
+.btn-premium{
+  background:linear-gradient(135deg,#b8860b,#e8c97a,#f5dfa0,#e8c97a,#8a6a2c);
+  background-size:200% auto;color:#0d0900;
+  animation:shimmer 3s linear infinite;
+  box-shadow:0 4px 20px rgba(201,168,76,.3);
 }
-@media(max-width:640px){
-  .mgrid,.how-grid{grid-template-columns:1fr;}
-  .hstep{border-right:none!important;border-top:1px solid var(--bd)!important;}
-  .hstep:first-child{border-top:none!important;}
-  .acadgrid{grid-template-columns:1fr;}
-  .nums{grid-template-columns:1fr 1fr;}
-  .signal-row{grid-template-columns:repeat(2,1fr);}
+.btn-premium:hover:not(:disabled){
+  transform:translateY(-1px);box-shadow:0 6px 28px rgba(201,168,76,.5);
 }
+
+/* Botão COMPRAR — verde */
+.btn-buy{
+  background:linear-gradient(135deg,#1a7a3a,#22a04d);
+  color:#fff;
+  box-shadow:0 4px 20px rgba(34,160,77,.25);
+}
+.btn-buy:hover:not(:disabled){
+  background:linear-gradient(135deg,#1e8a42,#27b556);
+  transform:translateY(-1px);box-shadow:0 6px 24px rgba(34,160,77,.4);
+}
+
+/* ── AGENT GRID ──────────────────────────────── */
+.agent-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0;}
+@media(max-width:420px){.agent-grid{grid-template-columns:repeat(2,1fr);}}
+.ac{
+  background:rgba(0,0,0,.4);border:1px solid rgba(40,28,10,.7);
+  border-radius:8px;padding:10px 5px;text-align:center;
+  transition:border-color .3s,box-shadow .3s;
+}
+.ac.thinking{border-color:var(--g);animation:pg 1.3s ease-in-out infinite;}
+.ac.done{border-color:var(--gr);}
+.ac.error{border-color:var(--rd);}
+@keyframes pg{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,.4);}50%{box-shadow:0 0 10px rgba(201,168,76,.2);}}
+.ac-em{font-size:1.2rem;line-height:1;}
+.ac-nm{font-size:.5rem;color:#c0b89e;letter-spacing:.5px;margin-top:4px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;}
+.ac-st{font-size:.55rem;font-weight:700;margin-top:4px;color:rgba(40,28,10,.9);}
+.ac.thinking .ac-st{color:var(--g);}
+.ac.done .ac-st{color:var(--gr);}
+.ac.error .ac-st{color:var(--rd);}
+
+/* ── PROGRESS ────────────────────────────────── */
+.prog{background:rgba(201,168,76,.07);border-radius:3px;height:4px;overflow:hidden;margin:8px 0;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gdd),var(--g),var(--g2));
+  border-radius:3px;transition:width .4s;width:0%;}
+
+/* ── LOG ─────────────────────────────────────── */
+.log{background:rgba(0,0,0,.5);border:1px solid var(--bd);border-radius:var(--r2);
+  padding:8px 12px;max-height:90px;overflow-y:auto;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--dm);margin:8px 0;}
+.ll{padding:1px 0;border-bottom:1px solid rgba(201,168,76,.04);}
+.ll:last-child{border:none;color:var(--g);}
+.ll.ok{color:var(--gr);}
+.ll.er{color:var(--rd);}
+
+/* ── FREE RESULT ─────────────────────────────── */
+#sec-free{display:none;}
+.verdict-card{
+  background:linear-gradient(135deg,#0a1225,#0d1830);
+  border:1px solid rgba(100,150,255,.2);border-radius:var(--r);
+  border-left:3px solid #4488ff;padding:18px 16px;margin-bottom:14px;
+}
+.verdict-title{color:#6aabff;font-size:1rem;font-weight:800;
+  display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.verdict-body{font-size:.88rem;line-height:1.9;color:#d0ddf5;}
+.verdict-body strong,.verdict-body b{color:#a0c4ff;}
+.vline{height:1px;background:rgba(100,150,255,.15);margin:10px 0;}
+
+/* ── PREVIEW CARD (parcial com blur) ─────────── */
+.preview-wrap{position:relative;overflow:hidden;border-radius:var(--r);}
+.preview-content{
+  background:linear-gradient(135deg,#0a1225,#0d1830);
+  border:1px solid rgba(100,150,255,.2);border-radius:var(--r);
+  border-left:3px solid #4488ff;padding:18px 16px;
+  font-size:.88rem;line-height:1.9;color:#d0ddf5;
+  max-height:240px;overflow:hidden;
+}
+.preview-content h3{color:#6aabff;margin-bottom:8px;}
+.preview-blur{
+  position:absolute;bottom:0;left:0;right:0;height:120px;
+  background:linear-gradient(to bottom,transparent,rgba(3,3,2,.97));
+  display:flex;align-items:flex-end;padding-bottom:0;
+}
+/* ── LOCK CARD ───────────────────────────────── */
+.lock-card{
+  background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.02));
+  border:1px solid var(--bd2);border-radius:var(--r);
+  padding:22px 18px;text-align:center;margin-top:-4px;
+}
+.lock-icon{font-size:1.8rem;margin-bottom:8px;}
+.lock-title{color:var(--g);font-size:1rem;font-weight:800;margin-bottom:4px;}
+.lock-sub{color:var(--dm);font-size:.8rem;margin-bottom:16px;}
+
+/* ── FULL REPORT ─────────────────────────────── */
+#sec-full{display:none;}
+.report-card{
+  background:rgba(201,168,76,.015);border:1px solid var(--bd);
+  border-radius:var(--r);padding:22px 18px;margin-bottom:14px;
+}
+.report-card h1,.report-card h2{
+  font-family:'Outfit',sans-serif;color:var(--g);
+  border-bottom:1px solid var(--bd);padding-bottom:5px;margin:16px 0 8px;font-size:1rem;
+}
+.report-card h3{font-size:.9rem;color:var(--wh);margin:12px 0 5px;}
+.report-card p{margin-bottom:10px;font-size:.9rem;line-height:1.9;}
+.report-card strong,.report-card b{color:var(--g2);}
+.report-card ul,.report-card ol{padding-left:18px;margin-bottom:10px;}
+.report-card li{margin-bottom:3px;font-size:.88rem;line-height:1.8;}
+.report-card table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.8rem;}
+.report-card th{background:rgba(201,168,76,.07);color:var(--g);padding:6px 8px;
+  text-align:left;border:1px solid var(--bd);font-size:.6rem;letter-spacing:1px;text-transform:uppercase;}
+.report-card td{padding:5px 8px;border:1px solid rgba(201,168,76,.07);}
+.report-card tr:nth-child(even) td{background:rgba(201,168,76,.01);}
+.report-card blockquote{border-left:2px solid var(--g);padding-left:12px;
+  color:var(--dm);margin:10px 0;font-style:italic;}
+.report-card code{background:rgba(201,168,76,.08);padding:2px 5px;
+  border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:.82em;}
+
+/* markdown raw fix */
+.report-card p:has(> strong:first-child){margin-bottom:4px;}
+
+/* ── AGENT ANALYSIS BLOCKS ───────────────────── */
+.agent-block{
+  background:linear-gradient(135deg,#0a1225,#0d1830);
+  border:1px solid rgba(100,150,255,.15);border-radius:var(--r);
+  border-left:3px solid #4488ff;padding:16px;margin-bottom:10px;
+}
+.agent-block-title{color:#6aabff;font-size:.85rem;font-weight:700;
+  display:flex;align-items:center;gap:6px;margin-bottom:10px;}
+.agent-block-body{font-size:.84rem;line-height:1.85;color:#d0ddf5;}
+.agent-block-body strong,.agent-block-body b{color:#a0c4ff;}
+
+/* ── DOWNLOAD ROW ────────────────────────────── */
+.dl-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.dl-btn{flex:1;min-width:120px;text-align:center;padding:10px;border-radius:50px;
+  font-weight:700;font-size:.65rem;letter-spacing:1px;text-transform:uppercase;
+  text-decoration:none;border:1px solid var(--bd);color:var(--g);
+  background:rgba(201,168,76,.05);transition:all .2s;}
+.dl-btn:hover{border-color:var(--g);background:rgba(201,168,76,.1);}
+
+/* ── PILL ────────────────────────────────────── */
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;
+  font-size:.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+.pill-run{background:rgba(201,168,76,.1);color:var(--g);}
+.pill-done{background:rgba(74,175,120,.1);color:var(--gr);}
+
+/* ── ALERT ───────────────────────────────────── */
+.alert{padding:10px 14px;border-radius:var(--r2);border-left:3px solid;
+  margin:8px 0;font-size:.82rem;display:none;}
+.alert-info{border-color:var(--g);background:rgba(201,168,76,.05);color:var(--g2);}
+.alert-err {border-color:var(--rd);background:rgba(224,82,82,.05);color:#f5a0a0;}
+.alert-ok  {border-color:var(--gr);background:rgba(74,175,120,.05);color:#a0f5c0;}
+
+/* ── SPINNER ─────────────────────────────────── */
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(201,168,76,.3);
+  border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
+<div class="shell">
 
-<div id="c"></div>
-<div id="cr"></div>
-
-<!-- NAV -->
-<nav id="nav">
-  <a class="nlogo" href="#">
-    <div class="nmark">W</div>
-    <span class="nname">WUZO</span>
-  </a>
-  <div class="nlinks">
-    <span class="navitems">
-      <a href="#how">Como funciona</a>
-      <a href="#mods">Módulos</a>
-      <a href="#insights">Market Insights</a>
-      <a href="#ai">Consultor IA</a>
-      <a href="#academy">Academy</a>
-      <a href="#pricing">Planos</a>
-    </span>
-    <a href="https://app.wuzo.com.br" class="ncta">COMEÇAR GRÁTIS</a>
-    <div class="lang-toggle">
-      <button class="lang-btn active" id="btn-pt" onclick="setLang('pt')">PT</button>
-      <span style="color:var(--tx3)">·</span>
-      <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
-      <span style="color:var(--tx3)">·</span>
-      <button class="lang-btn" id="btn-es" onclick="setLang('es')">ES</button>
-    </div>
+<!-- HEADER -->
+<div class="hdr">
+  <div>
+    <div class="logo">WUZO</div>
+    <div class="logo-sub">FINANCIAL INTELLIGENCE · MULTI-AGENT IA</div>
   </div>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-bg"></div>
-  <div class="hero-grid"></div>
-  <div class="hero-inner">
-    <div>
-      <div class="h-eye"><span class="edot"></span>Super App Financeiro · IA Nível Institucional</div>
-      <h1>Clareza total<em>sobre seu dinheiro.</em></h1>
-      <p class="hdesc">O Wuzo analisa extratos, monitora dívidas, investimentos e metas — e usa <b>inteligência artificial de nível institucional</b> para te dizer exatamente onde seu patrimônio vai e o que fazer para mudar isso. Diagnóstico completo em segundos.</p>
-      <div class="hctas">
-        <a href="https://app.wuzo.com.br" class="btn-main">⚡ COMEÇAR AGORA — GRÁTIS</a>
-        <a href="#how" class="btn-line">VER COMO FUNCIONA →</a>
-      </div>
-      <div class="hproof">
-        <div><span class="pn">10</span><span class="pl">MÓDULOS INTEGRADOS</span></div>
-        <div><span class="pn">70B+</span><span class="pl">PARÂMETROS DE IA</span></div>
-        <div><span class="pn">R$0</span><span class="pl">PARA COMEÇAR</span></div>
-        <div><span class="pn">24/7</span><span class="pl">CONSULTOR IA</span></div>
-        <div><span class="pn">8</span><span class="pl">AGENTES ESPECIALIZADOS</span></div>
-      </div>
-    </div>
-    <div class="hero-right">
-      <div class="fl f1"><div class="fll">SCORE FINANCEIRO</div><div class="flv up">8.2/10</div></div>
-      <div class="fl f2"><div class="fll">META: RESERVA</div><div class="flv">68% atingida</div></div>
-      <div class="fl f3"><div class="fll">BTC HOJE</div><div class="flv up" id="lp-btc-floater">—</div></div>
-      <div class="dash">
-        <div class="dtop">
-          <div class="dtl">
-            <div class="wdots"><div class="wd w1"></div><div class="wd w2"></div><div class="wd w3"></div></div>
-            <span class="dtt">WUZO</span>
-          </div>
-          <span class="dtb" id="lp-dash-month">MAR 2026</span>
-        </div>
-        <div class="dbody">
-          <div class="drow">
-            <div class="dk"><div class="dkl">ENTRADAS</div><div class="dkv g">R$9.800</div></div>
-            <div class="dk"><div class="dkl">SAÍDAS</div><div class="dkv r">R$7.150</div></div>
-            <div class="dk"><div class="dkl">SALDO</div><div class="dkv o">R$2.650</div></div>
-            <div class="dk"><div class="dkl">AI SCORE</div><div class="dkv o">8.2/10</div></div>
-          </div>
-          <div class="drow2">
-            <div class="dk"><div class="dkl">CARTEIRA</div><div class="dkv o">R$48K</div></div>
-            <div class="dk"><div class="dkl">DÍVIDAS</div><div class="dkv r">R$3.2K</div></div>
-            <div class="dk"><div class="dkl">META CASA</div><div class="dkv o">42%</div></div>
-            <div class="dk"><div class="dkl">INSIGHTS</div><div class="dkv g">20/dia</div></div>
-          </div>
-          <div class="mstrip">
-            <div class="msi"><span class="msin">BTC</span><span class="msiv" id="lp-btc-strip">—</span></div>
-            <div class="msi"><span class="msin">IBOV</span><span class="msiv" id="lp-ibov-strip">131K</span></div>
-            <div class="msi"><span class="msin">USD</span><span class="msiv" id="lp-usd-strip">—</span></div>
-            <div class="msi"><span class="msin">SELIC</span><span class="msiv">14.75%</span></div>
-          </div>
-          <div class="dai" style="margin-top:8px;"><b>⬡ Wuzo AI:</b> Gastos com alimentação 31% da renda — R$400/mês acima do ideal. Redução elimina dívida em 8 meses e libera R$4.800/ano para carteira.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- TICKER -->
-<div class="ticker-wrap">
-  <div class="ticker">
-    <div class="ti hot"><span>⬡</span>Análise de Extrato PDF · CSV · Texto</div>
-    <div class="ti"><span>⬡</span>Score Financeiro IA 0–10</div>
-    <div class="ti"><span>⬡</span>Estratégia de Quitação de Dívidas</div>
-    <div class="ti"><span>⬡</span>Carteira de Investimentos Inteligente</div>
-    <div class="ti"><span>⬡</span>Metas de Vida com IA</div>
-    <div class="ti hot"><span>⬡</span>Consultor IA 24/7 · Contexto Real</div>
-    <div class="ti"><span>⬡</span>20 Notícias de Mercado por Dia</div>
-    <div class="ti"><span>⬡</span>BTC · ETH · SOL · BNB · XRP · IBOV · SPY</div>
-    <div class="ti"><span>⬡</span>Academy · 12 Lições · 3 Níveis</div>
-    <div class="ti"><span>⬡</span>Diagnóstico Narrativo 700+ Palavras</div>
-    <div class="ti hot"><span>⬡</span>Índice Medo & Ganância Diário</div>
-    <div class="ti"><span>⬡</span>8 Agentes IA Especializados · CFA · CFP · Atuarial</div>
-    <div class="ti"><span>⬡</span>Alertas Inteligentes Automáticos</div>
-    <div class="ti"><span>⬡</span>Referral · +3 Análises por Indicação</div>
-    <div class="ti hot"><span>⬡</span>Análise de Extrato PDF · CSV · Texto</div>
-    <div class="ti"><span>⬡</span>Score Financeiro IA 0–10</div>
-    <div class="ti"><span>⬡</span>Estratégia de Quitação de Dívidas</div>
-    <div class="ti"><span>⬡</span>Carteira de Investimentos Inteligente</div>
-    <div class="ti"><span>⬡</span>Metas de Vida com IA</div>
-    <div class="ti hot"><span>⬡</span>Consultor IA 24/7 · Contexto Real</div>
-    <div class="ti"><span>⬡</span>20 Notícias de Mercado por Dia</div>
-    <div class="ti"><span>⬡</span>BTC · ETH · SOL · BNB · XRP · IBOV · SPY</div>
-    <div class="ti"><span>⬡</span>Academy · 12 Lições · 3 Níveis</div>
-    <div class="ti"><span>⬡</span>Diagnóstico Narrativo 700+ Palavras</div>
-    <div class="ti hot"><span>⬡</span>Índice Medo & Ganância Diário</div>
-    <div class="ti"><span>⬡</span>8 Agentes IA Especializados · CFA · CFP · Atuarial</div>
-    <div class="ti"><span>⬡</span>Alertas Inteligentes Automáticos</div>
-    <div class="ti"><span>⬡</span>Referral · +3 Análises por Indicação</div>
+  <div class="hdr-right">
+    <div class="credit-badge">⭐ PREMIUM: <span id="cred-num">0</span></div>
+    <div class="status-dot">MOTOR ONLINE</div>
   </div>
 </div>
 
-<!-- HOW IT WORKS -->
-<section id="how" class="sec">
-  <div class="stag rev">Como funciona</div>
-  <h2 class="sh2 rev">Em 4 passos, <em>clareza financeira total.</em></h2>
-  <p class="sp rev">De zero a diagnóstico completo com plano de ação em menos de 5 minutos. Sem planilhas. Sem consultor caro. Só você e a IA.</p>
-  <div class="how-grid">
-    <div class="hstep rev">
-      <div class="hsn">01</div><span class="hsi">📤</span>
-      <div class="hst">Importe seu extrato</div>
-      <div class="hsd">Upload de PDF bancário, CSV ou cole o texto direto. Bradesco, Itaú, Nubank, Inter, Santander, C6, BTG — qualquer banco, qualquer formato.</div>
-    </div>
-    <div class="hstep rev d1">
-      <div class="hsn">02</div><span class="hsi">🤖</span>
-      <div class="hst">IA analisa em segundos</div>
-      <div class="hsd">IA categoriza cada transação, calcula taxa de poupança, detecta padrões comportamentais e gera score financeiro 0–10 com diagnóstico narrativo de 700+ palavras.</div>
-    </div>
-    <div class="hstep rev d2">
-      <div class="hsn">03</div><span class="hsi">📊</span>
-      <div class="hst">Diagnóstico completo</div>
-      <div class="hsd">Dashboard integrado com métricas detalhadas, alertas inteligentes, comparação histórica mês a mês e análise comportamental profunda — perfil, risco e tendência.</div>
-    </div>
-    <div class="hstep rev d3">
-      <div class="hsn">04</div><span class="hsi">🚀</span>
-      <div class="hst">Execute o plano</div>
-      <div class="hsd">5 ações concretas priorizadas por impacto em R$. Acompanhe a evolução mês a mês com histórico completo e veja os resultados na prática.</div>
-    </div>
+<!-- INPUT CARD -->
+<div class="card" id="card-input">
+  <div class="inp-lbl">Descreva sua situação financeira</div>
+  <textarea id="txt-input"
+    placeholder="Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado."></textarea>
+
+  <div class="btn-row">
+    <button class="btn btn-free" id="btn-free" onclick="handleFree()">
+      ⚡ ANÁLISE GRATUITA
+    </button>
+    <button class="btn btn-premium" id="btn-premium" onclick="handlePremium()">
+      ⭐ RELATÓRIO PREMIUM (16 ESP.)
+    </button>
+    <button class="btn btn-buy" id="btn-buy" onclick="handleBuy()">
+      🛒 COMPRAR (R$ 19,90)
+    </button>
   </div>
-</section>
+  <div class="alert alert-err" id="inp-alert"></div>
+</div>
 
-
-<!-- AGENTS SECTION -->
-<section style="padding:0 72px 100px;max-width:1320px;margin:0 auto;">
-  <div class="stag rev">Inteligência Especializada</div>
-  <h2 class="sh2 rev">8 agentes de IA.<em> Um para cada missão.</em></h2>
-  <p class="sp rev">Cada módulo usa um agente com identidade, especialização e temperatura calibrada para aquele trabalho específico — não um chatbot genérico respondendo a tudo.</p>
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--bd);border:1px solid var(--bd);" class="rev">
-    <div style="background:var(--bg2);padding:28px 24px;transition:background .3s;" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background='var(--bg2)'">
-      <div style="font-size:.52rem;color:var(--g);letter-spacing:3px;margin-bottom:10px;border:1px solid rgba(201,168,76,.2);padding:2px 7px;display:inline-block;">FINANÇAS</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:.88rem;color:#fff;letter-spacing:2px;margin-bottom:7px;">Finance Analyzer</div>
-      <div style="font-size:.7rem;color:var(--tx2);line-height:1.8;margin-bottom:8px;">CFP + Behavioral Economist. Narrative diagnosis 900+ words: behavioral profile, spending X-ray with benchmarks, risk matrix, 30/60/90 day plan.</div>
-      <div style="font-size:.52rem;color:var(--tx2);letter-spacing:1px;">temp: 0.3 · max: 4096 tokens</div>
-    </div>
-    <div style="background:var(--bg2);padding:28px 24px;transition:background .3s;" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background='var(--bg2)'">
-      <div style="font-size:.52rem;color:var(--g);letter-spacing:3px;margin-bottom:10px;border:1px solid rgba(201,168,76,.2);padding:2px 7px;display:inline-block;">INVESTIMENTOS</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:.88rem;color:#fff;letter-spacing:2px;margin-bottom:7px;">Portfolio Manager</div>
-      <div style="font-size:.7rem;color:var(--tx2);line-height:1.8;margin-bottom:8px;">CFA Level 3 + CNPI-P. Sharpe ratio, HHI concentration, 3-scenario stress test in currency, alpha vs CDI/IBOV/S&P500/BTC, surgical rebalancing with IR cost, Top 5 positions with ticker/entry/stop/target.</div>
-      <div style="font-size:.52rem;color:var(--tx2);letter-spacing:1px;">temp: 0.2 · max: 4096 tokens</div>
-    </div>
-    <div style="background:var(--bg2);padding:28px 24px;transition:background .3s;" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background='var(--bg2)'">
-      <div style="font-size:.52rem;color:var(--g);letter-spacing:3px;margin-bottom:10px;border:1px solid rgba(201,168,76,.2);padding:2px 7px;display:inline-block;">DÍVIDAS</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:.88rem;color:#fff;letter-spacing:2px;margin-bottom:7px;">Debt Strategist</div>
-      <div style="font-size:.7rem;color:var(--tx2);line-height:1.8;margin-bottom:8px;">Actuarial background. Avalanche + Snowball + Consolidation with full 12-month amortization table, total interest saved, exact payoff date, credit score recovery roadmap, and full creditor negotiation script.</div>
-      <div style="font-size:.52rem;color:var(--tx2);letter-spacing:1px;">temp: 0.1 · max: 4096 tokens</div>
-    </div>
-    <div style="background:var(--bg2);padding:28px 24px;transition:background .3s;" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background='var(--bg2)'">
-      <div style="font-size:.52rem;color:var(--g);letter-spacing:3px;margin-bottom:10px;border:1px solid rgba(201,168,76,.2);padding:2px 7px;display:inline-block;">METAS</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:.88rem;color:#fff;letter-spacing:2px;margin-bottom:7px;">Goals Planner</div>
-      <div style="font-size:.7rem;color:var(--tx2);line-height:1.8;margin-bottom:8px;">CFP specialist. FV=PV×(1+i)ⁿ+PMT×... for 3 real scenarios with explicit calculations, 12-month projection table with magic moment and break-even month, acceleration strategies with $100/$500/$1000 impact.</div>
-      <div style="font-size:.52rem;color:var(--tx2);letter-spacing:1px;">temp: 0.2 · max: 4096 tokens</div>
-    </div>
-    <div style="background:var(--bg2);padding:28px 24px;transition:background .3s;" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background='var(--bg2)'">
-      <div style="font-size:.52rem;color:var(--g);letter-spacing:3px;margin-bottom:10px;border:1px solid rgba(201,168,76,.2);padding:2px 7px;display:inline-block;">MARKET INSIGHTS</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:.88rem;color:#fff;letter-spacing:2px;margin-bottom:7px;">Market Intelligence</div>
-      <div style="font-size:.7rem;color:var(--tx2);line-height:1.8;margin-bottom:8px;">Live real data: Yahoo Finance + Polygon.io (prices), Polygon News + CryptoPanic (headlines). Generates 20 stories with impact score, sector signal (BUY/SELL/WATCH) and specific investor action. Cache refreshes every 30 min.</div>
-      <div style="font-size:.52rem;color:var(--tx2);letter-spacing:1px;">temp: 0.1 · max: 4096 tokens</div>
-    </div>
-    <div style="background:var(--bg2);padding:28px 24px;transition:background .3s;" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background='var(--bg2)'">
-      <div style="font-size:.52rem;color:var(--g);letter-spacing:3px;margin-bottom:10px;border:1px solid rgba(201,168,76,.2);padding:2px 7px;display:inline-block;">ACADEMY</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:.88rem;color:#fff;letter-spacing:2px;margin-bottom:7px;">Academy Educator</div>
-      <div style="font-size:.7rem;color:var(--tx2);line-height:1.8;margin-bottom:8px;">Nate Silver depth + Howard Marks insight. Articles 1100+ words with mandatory compound interest tables for 3 income profiles, 6-option comparison table, 5 mistakes with currency cost, and 5-step action plan.</div>
-      <div style="font-size:.52rem;color:var(--tx2);letter-spacing:1px;">temp: 0.4 · max: 4096 tokens</div>
-    </div>
-    <div style="background:rgba(201,168,76,.03);border-left:2px solid rgba(201,168,76,.3);padding:28px 24px;transition:background .3s;" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background='rgba(201,168,76,.03)'">
-      <div style="font-size:.52rem;color:var(--g);letter-spacing:3px;margin-bottom:10px;border:1px solid rgba(201,168,76,.2);padding:2px 7px;display:inline-block;">CONSULTOR IA</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:.88rem;color:#fff;letter-spacing:2px;margin-bottom:7px;">AI Advisor</div>
-      <div style="font-size:.7rem;color:var(--tx2);line-height:1.8;margin-bottom:8px;">CFP + CFA + ICF coach. Real user context (balance, debts, goals, investments) in every response. Names cognitive biases, shows compound interest math inline, ends with ACTION FOR TODAY with specific platform and amount. Min 300 words per response.</div>
-      <div style="font-size:.52rem;color:var(--tx2);letter-spacing:1px;">temp: 0.35 · max: 4096 tokens</div>
-    </div>
-    <div style="background:var(--bg2);padding:28px 24px;transition:background .3s;" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background='var(--bg2)'">
-      <div style="font-size:.52rem;color:var(--g);letter-spacing:3px;margin-bottom:10px;border:1px solid rgba(201,168,76,.2);padding:2px 7px;display:inline-block;">FINANÇAS JSON</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:.88rem;color:#fff;letter-spacing:2px;margin-bottom:7px;">Finance Parser</div>
-      <div style="font-size:.7rem;color:var(--tx2);line-height:1.8;margin-bottom:8px;">Pure structured extraction. Temp 0.05 — maximum precision. 5+ severity-rated alerts (CRITICAL/HIGH/MEDIUM), 5 ROI-ranked tips with annual currency impact, behavioral bias detection in comportamento field.</div>
-      <div style="font-size:.52rem;color:var(--tx2);letter-spacing:1px;">temp: 0.05 · max: 3000 tokens</div>
-    </div>
+<!-- PIPELINE SECTION -->
+<div class="card" id="sec-pipeline" style="display:none;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+    <span style="font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;color:var(--dm2);">AGENTES EM EXECUÇÃO</span>
+    <span class="pill pill-run" id="pip-pill">RUNNING</span>
   </div>
-</section>
+  <div class="agent-grid" id="agent-grid"></div>
+  <div class="prog"><div class="prog-fill" id="prog-fill"></div></div>
+  <div class="log" id="log-feed"><div class="ll">⬡ Iniciando...</div></div>
+</div>
 
-<!-- MODULES -->
-<section id="mods" style="padding:0 72px 120px;max-width:1320px;margin:0 auto;">
-  <div class="stag rev">Módulos do App</div>
-  <h2 class="sh2 rev">10 módulos integrados. <em>1 super app.</em></h2>
-  <p class="sp rev">Cada módulo usa IA especializada para cobrir o que realmente importa na sua vida financeira — do diagnóstico ao plano de ação.</p>
-  <div class="mgrid">
-    <div class="mod rev">
-      <div class="mn">01</div><span class="mi">💰</span>
-      <div class="mt">Finanças</div>
-      <div class="md"><b style="color:var(--g)">2 agentes IA especializados:</b> <em>Parser</em> extrai transações, calcula score 0–10 e gera alertas em JSON; <em>Finance Analyzer</em> (CFP + Behavioral Economist) writes 900+ word narrative diagnosis — behavioral profile with cognitive bias identification, spending X-ray with category benchmarks, health metrics, risk matrix, and 30/60/90 day automation plan.</div>
-      <div class="mchips"><span class="chip">PDF · CSV · Texto</span><span class="chip">Histórico mensal</span><span class="chip gd">Score IA 0–10</span><span class="chip gd">Diagnóstico 900+ palavras</span><span class="chip new">Perfil comportamental</span></div>
-    </div>
-    <div class="mod rev d1">
-      <div class="mn">02</div><span class="mi">📈</span>
-      <div class="mt">Investimentos</div>
-      <div class="md"><b style="color:var(--g)">Agente: WUZO Portfolio Manager</b> (CFA Level 3 + CNPI-P). Analisa 5 seções: diagnóstico com HHI de concentração, stress test 3 cenários em R$, benchmark vs CDI/IBOV/S&P500 com cálculo de alpha, rebalanceamento cirúrgico com custo de IR, e Top 5 ações com ticker, stop loss e target.</div>
-      <div class="mchips"><span class="chip">11 tipos de ativo</span><span class="chip">Alocação %</span><span class="chip gd">Análise 5 seções IA</span><span class="chip gd">Benchmark real</span></div>
-    </div>
-    <div class="mod rev d2">
-      <div class="mn">03</div><span class="mi">💳</span>
-      <div class="mt">Dívidas</div>
-      <div class="md"><b style="color:var(--g)">Agente: WUZO Debt Strategist</b> (formação atuarial). 3 planos com matemática exata: <em>Avalanche</em> (menor custo total), <em>Snowball</em> (quick wins motivacionais) e <em>Consolidação</em> — tabela mês a mês 12 meses, juros economizados, data de quitação e impacto no score Serasa.</div>
-      <div class="mchips"><span class="chip">6 categorias</span><span class="chip">3 planos IA</span><span class="chip gd">Cronograma 12 meses</span><span class="chip new">Impacto score Serasa</span></div>
-    </div>
-    <div class="mod rev">
-      <div class="mn">04</div><span class="mi">🎯</span>
-      <div class="mt">Metas de Vida</div>
-      <div class="md"><b style="color:var(--g)">Agente: WUZO Goals Planner</b> (CFP). Usa fórmula FV = PV×(1+i)ⁿ + PMT×... para 3 cenários reais: conservador (CDI 0,87%/mês), moderado (IPCA+6%) e agressivo (IBOV 1,5%/mês). Tabela 12 meses com <em>magic moment</em> (juro supera o aporte) e plano de aceleração.</div>
-      <div class="mchips"><span class="chip">9 categorias</span><span class="chip">3 cenários de risco</span><span class="chip gd">Marco mensal IA</span><span class="chip new">Gatilho de alerta</span></div>
-    </div>
-    <div class="mod rev d1">
-      <div class="mn">05</div><span class="mi">📡</span>
-      <div class="mt">Market Insights</div>
-      <div class="md">20 notícias financeiras diárias com cobertura de cripto (BTC, ETH, SOL, BNB, XRP), bolsa BR (IBOV, PETR4, VALE3), bolsa EUA (S&P500, NASDAQ, NVDA), macro Brasil (SELIC, câmbio) e commodities. Índice Medo & Ganância + 8 sinais de ativos. Cache refresh a cada 30 min.</div>
-      <div class="mchips"><span class="chip">20 notícias/dia</span><span class="chip">8 sinais de ativos</span><span class="chip gd">Medo & Ganância</span><span class="chip new">Filtro por setor</span></div>
-    </div>
-    <div class="mod rev d2">
-      <div class="mn">06</div><span class="mi">🎓</span>
-      <div class="mt">Academy</div>
-      <div class="md">12+ aulas geradas por IA — do básico ao avançado. Juros compostos, alocação de ativos, DeFi, Solana, yield farming, otimização fiscal, PGBL/VGBL, holding familiar. Cada lição com exemplos do cenário atual e exportação em PDF.</div>
-      <div class="mchips"><span class="chip">12+ aulas</span><span class="chip">3 níveis</span><span class="chip gd">Gerada por IA</span><span class="chip gd">Exclusivo PRO</span></div>
-    </div>
-    <div class="mod highlight rev">
-      <div class="mn">+</div><span class="mi">⬡</span>
-      <div class="mt">Dashboard Integrado</div>
-      <div class="md">Painel central que agrega dados de todos os módulos em tempo real. Alertas inteligentes automáticos, métricas-chave, progresso das metas, total investido e passivo. Visão 360° do patrimônio com gráficos históricos mês a mês.</div>
-      <div class="mchips"><span class="chip">Dados em tempo real</span><span class="chip gd">Alertas automáticos</span><span class="chip">Gráfico histórico</span></div>
-    </div>
-    <div class="mod rev d1">
-      <div class="mn">+</div><span class="mi">🤖</span>
-      <div class="mt">Consultor IA 24/7</div>
-      <div class="md">Chat especialista com contexto real do usuário: histórico financeiro, dívidas, metas e investimentos alimentam cada resposta. CDI, PGBL, FGTS, consórcio, FIIs — qualquer dúvida, qualquer hora. Memória persistente de até 50 mensagens salvas no banco de dados.</div>
-      <div class="mchips"><span class="chip">Contexto real</span><span class="chip">Memória persistente</span><span class="chip gd">Nível CFA + CFP</span><span class="chip gd">Ilimitado PRO</span></div>
-    </div>
-    <div class="mod rev d2">
-      <div class="mn">+</div><span class="mi">📥</span>
-      <div class="mt">Relatórios PDF PRO</div>
-      <div class="md">Exporte qualquer análise como PDF profissional. Diagnóstico mensal, estratégia de dívidas, análise de carteira, plano de metas, briefing de mercado. Design com cabeçalho, tabelas e score visual — pronto para apresentar ao contador.</div>
-      <div class="mchips"><span class="chip">Todos os módulos</span><span class="chip">Design profissional</span><span class="chip gd">Ilimitado PRO</span></div>
-    </div>
+<!-- FREE RESULT SECTION -->
+<div id="sec-free">
+
+  <!-- Veredito -->
+  <div class="verdict-card" id="verdict-box">
+    <div class="verdict-title">⚖️ Veredito do Consultor IA</div>
+    <div class="vline"></div>
+    <div class="verdict-body" id="verdict-body"></div>
   </div>
-</section>
 
-<!-- MARKET INSIGHTS -->
-<section id="insights" class="insights-bg">
-  <div class="ins-wrap">
-    <div class="stag rev">Market Insights</div>
-    <h2 class="sh2 rev">20 notícias diárias.<em> Mercado em tempo real.</em></h2>
-    <p class="sp rev">Briefing financeiro completo gerado por IA — cripto, bolsa, macro Brasil e EUA. Com sinais de ativos, índice Medo & Ganância e ação recomendada para o investidor brasileiro hoje.</p>
-
-    <!-- Mood Header -->
-    <div style="background:var(--bg2);border:1px solid var(--bd);border-left:2px solid var(--g);padding:24px 28px;margin-bottom:1px;" class="rev">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:12px;">
-        <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;">
-          <span class="mood-pill bull">🌍 BULLISH</span>
-          <span class="mood-pill bull">₿ BULLISH</span>
-          <span class="mood-pill neu">🇧🇷 NEUTRAL</span>
-        </div>
-        <div style="text-align:right;">
-          <div style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--g);letter-spacing:2px;" id="lp-fg-score">—/100</div>
-          <div style="font-size:.54rem;color:var(--tx2);letter-spacing:2px;">GANÂNCIA · FEAR & GREED</div>
-        </div>
-      </div>
-      <div style="color:#fff;font-family:'Libre Baskerville',serif;font-style:italic;font-size:.95rem;line-height:1.7;"><span id="lp-mood-text">Preços ao vivo via CoinCap + Coinbase (cripto) e Polygon.io (ações). Notícias via Polygon News API + CryptoPanic. Análise gerada pelo agente Market Intelligence em tempo real.</span></div>
-    </div>
-
-    <!-- Signal Row -->
-    <div class="signal-row rev" style="margin-bottom:20px;">
-      <div class="sig"><div class="sig-name">BTC</div><div class="sig-val buy">BUY</div></div>
-      <div class="sig"><div class="sig-name">ETH</div><div class="sig-val buy">WATCH</div></div>
-      <div class="sig"><div class="sig-name">SOL</div><div class="sig-val buy">BUY</div></div>
-      <div class="sig"><div class="sig-name">IBOV</div><div class="sig-val watch">WATCH</div></div>
-      <div class="sig"><div class="sig-name">SP500</div><div class="sig-val buy">BUY</div></div>
-      <div class="sig"><div class="sig-name">GOLD</div><div class="sig-val buy">BUY</div></div>
-      <div class="sig"><div class="sig-name">OIL</div><div class="sig-val sell">SELL</div></div>
-      <div class="sig"><div class="sig-name">USD/BRL</div><div class="sig-val watch">WATCH</div></div>
-    </div>
-
-    <!-- 3 sample news -->
-    <div class="ins-grid rev">
-      <div class="ins-card">
-        <div class="ins-label">CoinDesk · CRYPTO · BTC</div>
-        <div class="ins-title" id="lp-news-btc-title">BTC · Carregando preço ao vivo...</div>
-        <div class="ins-summary">Preço ao vivo sem proxy ou cache. Variação 24h atualiza os sinais BUY/SELL/WATCH automaticamente. Wuzo monitora BTC, ETH, SOL, BNB e XRP em tempo real via CoinCap + Coinbase + Blockchain.info.</div>
-        <span class="ins-tag pos">POSITIVO</span><span class="ins-tag pos">⬆ ALTO</span>
-        <div style="font-size:.66rem;color:var(--g);margin-top:10px;line-height:1.7;border-top:1px solid var(--bd);padding-top:10px;">⬡ Corte de juros nos EUA favorece ativos de risco. BTC historicamente sobe 30–60% nos 6 meses após primeiro corte do ciclo — momento de acumular posição gradual.</div>
-      </div>
-      <div class="ins-card">
-        <div class="ins-label">Polygon News · BOLSA BR · IBOV</div>
-        <div class="ins-title">Ibovespa e ações BR: análise ao vivo com dados reais</div>
-        <div class="ins-summary">O agente Market Intelligence monitora PETR4, VALE3, BBAS3 e IBOV com dados da Polygon News API. Cada notícia recebe score de impacto e ação recomendada para o investidor brasileiro.</div>
-        <span class="ins-tag neu">NEUTRO</span><span class="ins-tag neu">➡ MEDIO</span>
-        <div style="font-size:.78rem;color:var(--g);margin-top:10px;line-height:1.7;border-top:1px solid var(--bd);padding-top:10px;">⬡ SELIC em 14,75% a.a. — Tesouro IPCA+ 2029 rende acima da inflação com garantia soberana. Análise completa disponível no app.</div>
-      </div>
-      <div class="ins-card">
-        <div class="ins-label">Reuters · MACRO BR · SELIC</div>
-        <div class="ins-title">SELIC em 14,75% a.a. — análise de impacto para renda fixa e variável</div>
-        <div class="ins-summary">Wuzo analisa o impacto da SELIC atual em CDBs, Tesouro IPCA+ e ações. Dados via Polygon.io e CryptoPanic atualizados diariamente pelo agente Market Intelligence.</div>
-        <span class="ins-tag neu">NEUTRO</span><span class="ins-tag neu">➡ MEDIO</span>
-        <div style="font-size:.66rem;color:var(--g);margin-top:10px;line-height:1.7;border-top:1px solid var(--bd);padding-top:10px;">⬡ SELIC alta beneficia renda fixa: CDB 110% CDI rende ~15% bruto ao ano. Momento ideal para aumentar posição em pós-fixados enquanto aguarda clareza sobre trajetória de juros.</div>
-      </div>
-    </div>
-    <p style="font-size:.62rem;color:var(--tx2);letter-spacing:2px;margin-top:16px;text-align:center;" class="rev">⬡ AMOSTRA · WUZO GERA 20 NOTÍCIAS COM DADOS REAIS: POLYGON.IO + CRYPTOPANIC + YAHOO FINANCE · DISPONÍVEL NO APP</p>
+  <!-- Preview de 1 especialista com blur -->
+  <div class="preview-wrap">
+    <div class="preview-content" id="preview-body"></div>
+    <div class="preview-blur"></div>
   </div>
-</section>
 
-<!-- AI CONSULTANT -->
-<section id="ai" class="ai-bg">
-  <div class="ai-in">
-    <div>
-      <div class="stag rev">Consultor IA</div>
-      <h2 class="sh2 rev">Não é um chatbot.<br><em>É seu CFO pessoal.</em></h2>
-      <p class="sp rev" style="margin-bottom:0;">O <b style="color:var(--tx)">WUZO AI Advisor</b> combina CFA + CFP + coach ICF com contexto real sobre suas finanças.<br><br>Cada resposta usa seu histórico completo, dívidas, metas e investimentos. Calcula <b style="color:var(--tx)">FV = PV×(1+i)ⁿ</b> inline, identifica vieses cognitivos (loss aversion, hyperbolic discounting) e termina sempre com <b style="color:var(--tx)">AÇÃO PARA HOJE</b> com app, valor e horário específicos.</p>
-      <div class="aifacts rev" style="margin-top:40px;">
-        <div class="af"><span class="afn">8</span><span class="afl">AGENTES ESPECIALIZADOS</span></div>
-        <div class="af"><span class="afn">70B+</span><span class="afl">PARÂMETROS IA</span></div>
-        <div class="af"><span class="afn">24/7</span><span class="afl">DISPONÍVEL</span></div>
-        <div class="af"><span class="afn">50</span><span class="afl">MSGS PERSISTENTES</span></div>
-      </div>
+  <!-- Lock card -->
+  <div class="lock-card">
+    <div class="lock-icon">🔒</div>
+    <div class="lock-title">Desbloqueie o relatório completo</div>
+    <div class="lock-sub">Veja a análise dos 16 especialistas + downloads em MD, TXT e HTML</div>
+    <div class="btn-row" style="margin-top:0;">
+      <button class="btn btn-premium" onclick="handlePremium()">⭐ Usar Crédito Premium</button>
+      <button class="btn btn-buy" onclick="handleBuy()">🛒 Comprar — R$ 19,90</button>
     </div>
-    <div class="aichat rev">
-      <div class="chh">
-        <div class="chhl">
-          <div class="chav">⬡</div>
-          <div><div class="chn">WUZO AI ADVISOR</div><div class="chs">● Online agora</div></div>
-        </div>
-        <div style="font-size:.52rem;color:var(--tx2);letter-spacing:2px;">llama-3.3-70b · 70B</div>
-      </div>
-      <div class="chb">
-        <div class="msg us">Vale a pena pagar meu financiamento antes ou investir o dinheiro extra?</div>
-        <div class="msg ai">Analisei seu perfil: financiamento a <b>9,5% a.a.</b> e CDB disponível a <b>12,8% a.a.</b> (109% CDI).<br><br>Custo efetivo após benefício fiscal: <b>7,2% a.a.</b> CDB líquido (IR 15%): <b>10,9% a.a.</b><br><br><b>Matematicamente: investir é superior</b> — diferença de 3,7% a.a. sobre R$85k = R$3.145/ano a seu favor.</div>
-        <div class="msg us">E se eu quitar mesmo assim por tranquilidade emocional?</div>
-        <div class="msg ai">Válido — segurança emocional tem valor real e mensurável. O custo é <b>R$262/mês</b>.<br><br><b>Alternativa híbrida:</b> mantenha o dinheiro em CDB com liquidez diária. Você tem acesso imediato E o dinheiro rende mais do que o juro do financiamento. Melhor dos dois mundos.</div>
-        <div class="mblink"><div class="bd"></div><div class="bd"></div><div class="bd"></div></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ACADEMY -->
-<section id="academy" class="sec">
-  <div class="stag rev">Wuzo Academy</div>
-  <h2 class="sh2 rev">Aprenda finanças com <em>IA como professor.</em></h2>
-  <p class="sp rev">Aulas geradas por IA com exemplos do cenário atual. Do básico ao avançado — juros compostos, Bitcoin 2026, DeFi, Factor Investing, otimização fiscal, estratégias com opções. 12 lições, 3 níveis. Exclusivo PRO.</p>
-  <div class="acadgrid">
-    <div class="les rev"><span class="lcat">MENTALIDADE</span><span class="llvl">INICIANTE</span><div class="lt">Plano de Liberdade Financeira</div><div class="ld">Os 4 pilares da independência: ativos, renda passiva, alavancagem e tempo.</div><div class="ldur">⏱ <span>8 min</span></div></div>
-    <div class="les rev d1"><span class="lcat">INVESTIMENTOS</span><span class="llvl">INICIANTE</span><div class="lt">Juros Compostos: A 8ª Maravilha</div><div class="ld">R$500/mês → R$1,2M em 30 anos. A matemática que transforma disciplina em riqueza.</div><div class="ldur">⏱ <span>6 min</span></div></div>
-    <div class="les rev d2"><span class="lcat">MENTALIDADE</span><span class="llvl">INICIANTE</span><div class="lt">Armadilhas Comportamentais</div><div class="ld">12 vieses cognitivos que destroem patrimônio — e como neutralizá-los.</div><div class="ldur">⏱ <span>7 min</span></div></div>
-    <div class="les rev"><span class="lcat">DÍVIDAS</span><span class="llvl int">INTERMEDIÁRIO</span><div class="lt">Protocolo de Quitação Total</div><div class="ld">O método híbrido avalanche + bola de neve que elimina dívidas 40% mais rápido.</div><div class="ldur">⏱ <span>9 min</span></div></div>
-    <div class="les rev d1"><span class="lcat">RIQUEZA</span><span class="llvl int">INTERMEDIÁRIO</span><div class="lt">Alocação de Ativos Mestre</div><div class="ld">A alocação usada pelos 1% mais ricos: renda fixa, variável, real assets e reserva.</div><div class="ldur">⏱ <span>10 min</span></div></div>
-    <div class="les rev d2"><span class="lcat">IMÓVEIS</span><span class="llvl int">INTERMEDIÁRIO</span><div class="lt">FIIs vs Imóvel Físico</div><div class="ld">Liquidez, rendimento, alavancagem e IR comparados com números reais.</div><div class="ldur">⏱ <span>11 min</span></div></div>
-    <div class="les rev"><span class="lcat">CRIPTO</span><span class="llvl adv">AVANÇADO</span><div class="lt">Estratégia Solana 2026</div><div class="ld">Protocolos DeFi líderes, gestão de risco em on-chain e alocação segura.</div><div class="ldur">⏱ <span>12 min</span></div></div>
-    <div class="les rev d1"><span class="lcat">CRIPTO</span><span class="llvl adv">AVANÇADO</span><div class="lt">DeFi Yield Farming</div><div class="ld">Pools de liquidez, perda impermanente, APY vs APR. Renda passiva com risco calculado.</div><div class="ldur">⏱ <span>14 min</span></div></div>
-    <div class="les rev d2"><span class="lcat">IMPOSTOS</span><span class="llvl adv">AVANÇADO</span><div class="lt">Otimização Fiscal Global</div><div class="ld">PGBL, holding familiar, residência fiscal e diferimento de IR. 100% legal.</div><div class="ldur">⏱ <span>15 min</span></div></div>
-    <div class="les rev"><span class="lcat">CRIPTO</span><span class="llvl adv">AVANÇADO</span><div class="lt">Bitcoin Thesis 2026</div><div class="ld">Caso macro para BTC como ouro digital: escassez, halvings, adoção institucional e modelos de preço.</div><div class="ldur">⏱ <span>10 min</span></div></div>
-    <div class="les rev d1"><span class="lcat">RIQUEZA</span><span class="llvl adv">AVANÇADO</span><div class="lt">Estratégias com Opções para Renda</div><div class="ld">Covered calls e puts para gerar renda mensal sobre a carteira existente. Risco controlado.</div><div class="ldur">⏱ <span>13 min</span></div></div>
-    <div class="les rev d2"><span class="lcat">INVESTIMENTOS</span><span class="llvl adv">AVANÇADO</span><div class="lt">Factor Investing e Smart Beta</div><div class="ld">Value, momentum, quality e low-vol — como bater o mercado com ETFs comprovadamente.</div><div class="ldur">⏱ <span>12 min</span></div></div>
-  </div>
-  <p style="font-size:.62rem;color:var(--tx2);letter-spacing:2px;margin-top:18px;text-align:center;" class="rev">⬡ ACADEMY COMPLETA DISPONÍVEL NO PLANO PRO · ACESSO IMEDIATO APÓS ASSINAR</p>
-</section>
-
-<!-- NUMBERS -->
-<div style="padding:0 72px;max-width:1320px;margin:0 auto;" class="rev">
-  <div class="nums">
-    <div class="nb"><span class="nbn counter" data-target="10">0</span><span class="nbl">MÓDULOS INTEGRADOS</span></div>
-    <div class="nb"><span class="nbn">8</span><span class="nbl">AGENTES ESPECIALIZADOS</span></div>
-    <div class="nb"><span class="nbn counter" data-target="10">0</span><span class="nbl">NOTÍCIAS/DIA</span></div>
-    <div class="nb"><span class="nbn counter" data-target="5">0</span><span class="nbl">ANÁLISES GRÁTIS/MÊS</span></div>
-    <div class="nb"><span class="nbn counter" data-target="3">0</span><span class="nbl">IDIOMAS SUPORTADOS</span></div>
   </div>
 </div>
 
-<!-- REFERRAL -->
-<section class="ref-section">
-  <div class="ref-wrap">
-    <div>
-      <div class="stag rev">Programa de Indicação</div>
-      <h2 class="sh2 rev">Indique amigos.<em> Ganhe análises.</em></h2>
-      <p class="sp rev" style="margin-bottom:0;">Cada amigo que se cadastrar com seu código te dá <b style="color:var(--tx)">+3 análises de bônus</b>. Quem se cadastrou ganha <b style="color:var(--tx)">+2 análises</b> de presente. Sem limite de indicações.</p>
-    </div>
-    <div class="ref-card rev">
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:.7rem;letter-spacing:4px;color:var(--g);margin-bottom:16px;">COMO FUNCIONA</div>
-      <div class="ref-steps">
-        <div class="ref-step">
-          <div class="ref-num">01</div>
-          <div class="ref-txt">Crie sua conta grátis e acesse seu <b>código único</b> na página Conta</div>
-        </div>
-        <div class="ref-step">
-          <div class="ref-num">02</div>
-          <div class="ref-txt">Compartilhe o link com amigos, família ou redes sociais</div>
-        </div>
-        <div class="ref-step">
-          <div class="ref-num">03</div>
-          <div class="ref-txt">Amigo se cadastra com seu código → você ganha <b>+3 análises</b>, ele ganha <b>+2</b></div>
-        </div>
-        <div class="ref-step">
-          <div class="ref-num">∞</div>
-          <div class="ref-txt">Sem limite — cada indicação conta. Quanto mais indicar, mais análises.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- FULL REPORT SECTION -->
+<div id="sec-full">
+  <div class="report-card" id="full-report-box"></div>
 
-<!-- TESTIMONIALS -->
-<section class="sec" style="padding-top:100px;padding-bottom:80px;">
-  <div class="stag rev">Resultados reais</div>
-  <h2 class="sh2 rev">O que nossos usuários <em>conquistaram.</em></h2>
-  <p class="sp rev">Pessoas que usaram o Wuzo para transformar sua relação com o dinheiro.</p>
-  <div class="trow">
-    <div class="testi rev">
-      <div class="ts">★★★★★</div><div class="tq">"</div>
-      <div class="tt">Em 2 semanas descobri que gastava <b>R$1.200/mês sem perceber</b> em assinaturas e delivery. O diagnóstico da IA foi cirúrgico — mostrou exatamente onde o dinheiro sumia com valores reais do meu extrato.</div>
-      <div class="tw"><div class="tav">MR</div><div><div class="tnm">MARCOS R.</div><div class="trl">ANALISTA DE SISTEMAS · SÃO PAULO</div></div></div>
-    </div>
-    <div class="testi rev d1">
-      <div class="ts">★★★★★</div><div class="tq">"</div>
-      <div class="tt">Tinha <b>3 dívidas diferentes</b> e não sabia por onde começar. O módulo criou o plano avalanche específico para minha situação — agora tenho data certa para me livrar de tudo: <b>18 meses</b>.</div>
-      <div class="tw"><div class="tav">CF</div><div><div class="tnm">CARLA F.</div><div class="trl">PROFESSORA · BELO HORIZONTE</div></div></div>
-    </div>
-    <div class="testi rev d2">
-      <div class="ts">★★★★★</div><div class="tq">"</div>
-      <div class="tt">O Consultor IA me explicou a diferença entre <b>PGBL e VGBL</b> considerando minha faixa de IR com números reais. Nenhum gerente de banco tinha feito isso em anos de relacionamento.</div>
-      <div class="tw"><div class="tav">PL</div><div><div class="tnm">PEDRO L.</div><div class="trl">MÉDICO · PORTO ALEGRE</div></div></div>
-    </div>
-  </div>
-</section>
+  <!-- Análises por agente -->
+  <div id="agent-blocks-box"></div>
 
-<!-- PRICING -->
-<section id="pricing" class="sec" style="padding-top:60px;">
-  <div class="stag rev">Planos</div>
-  <h2 class="sh2 rev">Comece grátis. <em>Escale com o PRO.</em></h2>
-  <p class="sp rev">O Free já entrega valor real com 5 análises mensais. O PRO remove todos os limites e desbloqueia o poder completo da IA em todos os módulos.</p>
-  <div class="pwrap rev">
-    <div class="plan">
-      <div class="ppill fr">FREE</div>
-      <div class="pname">WUZO FREE</div>
-      <div class="pprice"><sup>R$</sup>0</div>
-      <div class="pper">PARA SEMPRE GRÁTIS</div>
-      <ul class="plist">
-        <li class="on"><span class="ck">✓</span>5 análises de extrato por mês</li>
-        <li class="on"><span class="ck">✓</span>Dashboard integrado completo</li>
-        <li class="on"><span class="ck">✓</span>Controle de dívidas + estratégia IA</li>
-        <li class="on"><span class="ck">✓</span>Carteira de investimentos</li>
-        <li class="on"><span class="ck">✓</span>Metas de vida (até 3 ativas)</li>
-        <li class="on"><span class="ck">✓</span>Consultor IA (5 perguntas/mês)</li>
-        <li class="on"><span class="ck">✓</span>+2 análises bônus por indicação recebida</li>
-        <li><span class="cx">✕</span>Market Insights diário (20 notícias)</li>
-        <li><span class="cx">✕</span>Academy — 12+ aulas PRO</li>
-        <li><span class="cx">✕</span>Diagnóstico narrativo 900+ palavras (PRO)</li>
-        <li><span class="cx">✕</span>Relatórios PDF ilimitados</li>
-      </ul>
-      <a href="https://app.wuzo.com.br" class="pbtn gh">COMEÇAR GRÁTIS</a>
-    </div>
-    <div class="plan pro">
-      <div class="ppill pr">MAIS POPULAR</div>
-      <div class="pname">WUZO PRO</div>
-      <div class="pprice"><sup>$</sup>6</div>
-      <div class="pper">POR MÊS · CANCELE QUANDO QUISER</div>
-      <ul class="plist">
-        <li class="on"><span class="ck">✓</span><b>Análises de extrato ilimitadas</b></li>
-        <li class="on"><span class="ck">✓</span><b>Diagnóstico narrativo 900+ palavras</b></li>
-        <li class="on"><span class="ck">✓</span>Dashboard + todos os módulos PRO</li>
-        <li class="on"><span class="ck">✓</span>Dívidas — 3 planos IA + cronograma</li>
-        <li class="on"><span class="ck">✓</span>Investimentos — análise 6 partes</li>
-        <li class="on"><span class="ck">✓</span><b>Consultor IA ilimitado · CFA nível</b></li>
-        <li class="on"><span class="ck">✓</span><b>Market Insights · 20 notícias/dia</b></li>
-        <li class="on"><span class="ck">✓</span><b>Academy completa · 12+ aulas PRO</b></li>
-        <li class="on"><span class="ck">✓</span>Metas ilimitadas + plano 3 cenários</li>
-        <li class="on"><span class="ck">✓</span>Relatórios PDF profissionais ilimitados</li>
-        <li class="on"><span class="ck">✓</span>Suporte prioritário</li>
-      </ul>
-      <a href="https://app.wuzo.com.br" class="pbtn gld">⚡ QUERO O WUZO PRO</a>
-      <div class="pnote">Cancele a qualquer hora · Sem contrato · Sem pegadinha</div>
-    </div>
+  <!-- Downloads -->
+  <div class="dl-row" id="dl-row">
+    <a class="dl-btn" id="dl-md"   href="#" download="relatorio_wuzo.md">⬇ .MD</a>
+    <a class="dl-btn" id="dl-txt"  href="#" download="relatorio_wuzo.txt">⬇ .TXT</a>
+    <a class="dl-btn" id="dl-html" href="#" download="relatorio_wuzo.html">⬇ .HTML</a>
   </div>
-</section>
+</div>
 
-<!-- FAQ -->
-<section class="sec" style="padding-top:60px;padding-bottom:100px;">
-  <div class="stag rev">Dúvidas frequentes</div>
-  <h2 class="sh2 rev">Perguntas <em>respondidas.</em></h2>
-  <div class="faq-wrap rev">
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">Meus dados bancários ficam salvos no Wuzo? <span class="faq-icon">+</span></div>
-      <div class="faq-a">Não armazenamos credenciais bancárias. Você importa apenas o extrato (PDF, CSV ou texto) — o Wuzo analisa o conteúdo e armazena somente as transações categorizadas e os resultados da análise em banco de dados PostgreSQL criptografado. Seus dados financeiros nunca são compartilhados com terceiros.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">Que bancos e formatos são aceitos? <span class="faq-icon">+</span></div>
-      <div class="faq-a">Qualquer banco brasileiro — Itaú, Bradesco, Nubank, Inter, Santander, C6, BTG, Caixa e outros. Formatos aceitos: PDF, CSV, TXT ou texto colado diretamente. Se você consegue ver o extrato, consegue importar.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">O Market Insights usa dados reais ou a IA inventa? <span class="faq-icon">+</span></div>
-      <div class="faq-a">O Market Insights usa dados reais: preços de cripto via Yahoo Finance (BTC, ETH, SOL, BNB, XRP), ações via Polygon.io (TSLA, AAPL, SPY) e notícias via Polygon News API + CryptoPanic. A IA gera 20 notícias com análise real — cache renovado automaticamente a cada 30 minutos.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">Posso cancelar o PRO a qualquer momento? <span class="faq-icon">+</span></div>
-      <div class="faq-a">Sim, sem burocracia. O cancelamento pode ser feito a qualquer hora pelo Stripe. Você mantém acesso PRO até o fim do período pago. Não há fidelidade mínima nem taxa de cancelamento.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">O Consultor IA realmente conhece minha situação financeira? <span class="faq-icon">+</span></div>
-      <div class="faq-a">Sim. Antes de responder, o sistema alimenta a IA com seu contexto real: histórico de extratos, saldo, score, dívidas, investimentos e metas ativas. As respostas não são genéricas — são baseadas nos seus dados reais com valores em R$.</div>
-    </div>
-    <div class="faq-item">
-      <div class="faq-q" onclick="toggleFaq(this)">O app funciona em português, espanhol e inglês? <span class="faq-icon">+</span></div>
-      <div class="faq-a">A interface do Wuzo está em inglês. A IA responde automaticamente no idioma que você usa para escrever — português, inglês, espanhol ou qualquer outro. Basta digitar no seu idioma.</div>
-    </div>
-  </div>
-</section>
+</div><!-- /shell -->
 
-<!-- CTA FINAL -->
-<section class="ctas">
-  <span class="csym">⬡</span>
-  <h2 class="ch rev">Seu dinheiro<em>merece atenção.</em></h2>
-  <p class="cp rev">Cada mês sem clareza financeira custa caro. O Wuzo te dá diagnóstico completo, estratégia personalizada e execução — em minutos, não meses.</p>
-  <div class="rev">
-    <a href="https://app.wuzo.com.br" class="btn-main" style="font-size:1rem;padding:18px 60px;">🚀 COMEÇAR AGORA — É GRÁTIS</a>
-  </div>
-  <div class="cnote rev" style="margin-top:16px;">SEM CARTÃO DE CRÉDITO · SEM CONTRATO · 100% ONLINE</div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <a class="nlogo" href="#" style="text-decoration:none;">
-    <div class="nmark">W</div>
-    <span class="nname" style="font-size:1.1rem;">WUZO</span>
-  </a>
-  <div class="flinks">
-    <a href="#how">Como funciona</a>
-    <a href="#mods">Módulos</a>
-    <a href="#insights">Market Insights</a>
-    <a href="#ai">Consultor IA</a>
-    <a href="#academy">Academy</a>
-    <a href="#pricing">Planos</a>
-    <a href="https://app.wuzo.com.br">Acessar App</a>
-  </div>
-  <div class="fcopy">© 2026 WUZO · TODOS OS DIREITOS RESERVADOS</div>
-</footer>
+<!-- Marked.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 
 <script>
-// ── CURSOR ────────────────────────────────────────────────────────────────────
-const c=document.getElementById('c'),cr=document.getElementById('cr');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{
-  mx=e.clientX;my=e.clientY;
-  c.style.left=mx+'px';c.style.top=my+'px';
-  cr.style.borderColor='rgba(201,168,76,.5)';
-});
-document.querySelectorAll('a,.hstep,.mod,.testi,.les,.nb,.faq-q').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{cr.style.width='60px';cr.style.height='60px';});
-  el.addEventListener('mouseleave',()=>{cr.style.width='36px';cr.style.height='36px';});
-});
-(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;cr.style.left=rx+'px';cr.style.top=ry+'px';requestAnimationFrame(loop);})();
+// ════════════════════════════════════════════════════════
+// CONFIG — lida com app.wuzo.com.br rodando no Render
+// As env vars já estão no Render: SAMBANOVA_API_KEY,
+// GEMINI_API_KEY, CEREBRAS_API_KEY, OPENAI_API_KEY
+// O Streamlit (app.py) serve como backend via query params
+// ════════════════════════════════════════════════════════
 
-// ── NAV SCROLL ────────────────────────────────────────────────────────────────
-window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('solid',scrollY>50);});
+// URL base do backend Render (app.wuzo.com.br / Streamlit)
+// O HTML chama o endpoint /agent/run do FastAPI (api.py)
+// OU chama direto o LLM se tiver chave local
+const BACKEND_URL  = "https://app.wuzo.com.br"; // ajuste se mudar
+const STRIPE_URL   = ""; // URL do Stripe checkout — preenchida via /credits/purchase
 
-// ── REVEAL ON SCROLL ──────────────────────────────────────────────────────────
-const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in');});},{threshold:.08});
-document.querySelectorAll('.rev').forEach(el=>obs.observe(el));
+// Chave local (fallback se não tiver backend)
+// Deixar vazio para usar sempre o backend
+const LOCAL_LLM_KEY      = localStorage.getItem("wuzo_llm_key") || "";
+const LOCAL_LLM_PROVIDER = localStorage.getItem("wuzo_llm_prov") || "sambanova";
 
-// ── COUNTER ANIMATION ─────────────────────────────────────────────────────────
-const cObs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      const el=e.target,target=parseInt(el.dataset.target);
-      let cur=0;const step=Math.ceil(target/20);
-      const t=setInterval(()=>{cur=Math.min(cur+step,target);el.textContent=cur;if(cur>=target)clearInterval(t);},60);
-      cObs.unobserve(el);
-    }
-  });
-},{threshold:.5});
-document.querySelectorAll('.counter').forEach(el=>cObs.observe(el));
-
-// ── FAQ ───────────────────────────────────────────────────────────────────────
-function toggleFaq(el){
-  const item=el.parentElement,isOpen=item.classList.contains('open');
-  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
-  if(!isOpen)item.classList.add('open');
+// Token de sessão (pego da URL ou localStorage)
+function getToken(){
+  const p = new URLSearchParams(location.search);
+  const t = p.get("token") || p.get("t") || localStorage.getItem("wuzo_token") || "";
+  if (t) localStorage.setItem("wuzo_token", t);
+  return t;
 }
 
-// ── LIVE PRICES ───────────────────────────────────────────────────────────────
-function fmt_btc(v){return v>=1000?'$'+(v/1000).toFixed(1)+'K':'$'+v.toFixed(0);}
+// ════════════════════════════════════════════════════════
+// 16 AGENTES
+// ════════════════════════════════════════════════════════
+const AGENTS = [
+  {id:"noticias_realtime",       em:"📡", nm:"Notícias"},
+  {id:"macroeconomia",           em:"🌐", nm:"Macro"},
+  {id:"sentimento_mercado",      em:"🧠", nm:"Sentimento"},
+  {id:"criptomoedas",            em:"₿",  nm:"Cripto"},
+  {id:"acoes_equity",            em:"📈", nm:"Ações"},
+  {id:"derivativos",             em:"🔄", nm:"Derivativos"},
+  {id:"rwa",                     em:"🏭", nm:"RWA"},
+  {id:"renda_fixa",              em:"💵", nm:"Renda Fixa"},
+  {id:"imoveis_fiis",            em:"🏢", nm:"FIIs"},
+  {id:"quitacao_dividas",        em:"💳", nm:"Dívidas"},
+  {id:"credito_financiamento",   em:"🏦", nm:"Crédito"},
+  {id:"planejamento_tributario", em:"📋", nm:"Tributário"},
+  {id:"compliance_risco",        em:"🛡️", nm:"Compliance"},
+  {id:"auditor_dados",           em:"🔍", nm:"Auditor"},
+  {id:"consultor_senior",        em:"👔", nm:"Consultor"},
+  {id:"redator_relatorios",      em:"✍️", nm:"Redator"},
+];
 
-function set_el(id,txt,up){
+// ════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════
+let agentOutputs = {};
+let freeMode = false;
+
+// ════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════
+document.addEventListener("DOMContentLoaded", () => {
+  buildGrid();
+  loadCredits();
+  // Pega token da URL
+  getToken();
+});
+
+// ════════════════════════════════════════════════════════
+// CREDITS
+// ════════════════════════════════════════════════════════
+async function loadCredits(){
+  const tok = getToken();
+  if(!tok){ document.getElementById("cred-num").textContent = "0"; return; }
+  try{
+    const r = await fetch(BACKEND_URL+"/credits/balance",{
+      headers:{"Authorization":"Bearer "+tok}
+    });
+    if(r.ok){
+      const d = await r.json();
+      const n = d.unlimited ? "∞" : (d.credits||0);
+      document.getElementById("cred-num").textContent = n;
+      // Se tem crédito, deixa o btn-premium destaque
+      if(d.credits > 0 || d.unlimited){
+        document.getElementById("btn-buy").style.opacity = ".5";
+      }
+    }
+  }catch{}
+}
+
+// ════════════════════════════════════════════════════════
+// LLM CALL — usa backend ou chave local
+// ════════════════════════════════════════════════════════
+async function llm(system, user, tokens=600){
+  // 1. Tenta backend FastAPI /agent/run
+  const tok = getToken();
+  if(tok){
+    try{
+      const r = await fetch(BACKEND_URL+"/agent/run",{
+        method:"POST",
+        headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
+        body: JSON.stringify({system, user, max_tokens: tokens})
+      });
+      if(r.ok){ const d=await r.json(); return d.result||d.content||""; }
+    }catch{}
+  }
+
+  // 2. Tenta chave local direta
+  if(LOCAL_LLM_KEY){
+    return await llmDirect(system, user, tokens);
+  }
+
+  // 3. Usa APIs do Render via endpoint público do Streamlit
+  // O app.py expõe /agent via query param ?agent_run=1
+  try{
+    const r = await fetch(BACKEND_URL+`/?agent_run=1`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({system, user, max_tokens: tokens})
+    });
+    if(r.ok){ const d=await r.json(); return d.result||""; }
+  }catch{}
+
+  return "⚠ Sem conexão com o backend. Configure a API key local.";
+}
+
+async function llmDirect(system, user, tokens){
+  const PROVIDERS = {
+    sambanova:{url:"https://api.sambanova.ai/v1/chat/completions",  model:"Meta-Llama-3.3-70B-Instruct"},
+    openai:   {url:"https://api.openai.com/v1/chat/completions",    model:"gpt-4o-mini"},
+    groq:     {url:"https://api.groq.com/openai/v1/chat/completions",model:"llama-3.3-70b-versatile"},
+    gemini:   {url:"https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",model:"gemini-2.0-flash"},
+    cerebras: {url:"https://api.cerebras.ai/v1/chat/completions",   model:"llama3.1-8b"},
+  };
+  const ep = PROVIDERS[LOCAL_LLM_PROVIDER] || PROVIDERS.groq;
+  try{
+    const r = await fetch(ep.url,{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+LOCAL_LLM_KEY},
+      body:JSON.stringify({model:ep.model,max_tokens:tokens,temperature:.3,
+        messages:[{role:"system",content:system},{role:"user",content:user}]
+      })
+    });
+    if(!r.ok) return "❌ HTTP "+r.status;
+    const d = await r.json();
+    return d.choices?.[0]?.message?.content?.trim()||"";
+  }catch(e){ return "❌ "+e.message; }
+}
+
+// ════════════════════════════════════════════════════════
+// AGENT GRID
+// ════════════════════════════════════════════════════════
+function buildGrid(){
+  const g = document.getElementById("agent-grid");
+  g.innerHTML="";
+  AGENTS.forEach(a=>{
+    const d=document.createElement("div");
+    d.className="ac"; d.id="ac-"+a.id;
+    d.innerHTML=`<div class="ac-em">${a.em}</div><div class="ac-nm">${a.nm}</div><div class="ac-st">○</div>`;
+    g.appendChild(d);
+  });
+}
+
+function setAc(id,st){
+  const c=document.getElementById("ac-"+id); if(!c)return;
+  const ic={idle:"○",thinking:"◉",done:"✓",error:"✗"};
+  c.className="ac "+st;
+  c.querySelector(".ac-st").textContent=ic[st]||"○";
+  const done=Object.values(agentOutputs).filter(Boolean).length;
+  document.getElementById("prog-fill").style.width=Math.round(done/AGENTS.length*100)+"%";
+}
+
+function log(msg,cls=""){
+  const f=document.getElementById("log-feed");
+  const d=document.createElement("div");
+  d.className="ll "+cls;
+  d.textContent="["+new Date().toLocaleTimeString("pt-BR")+"] "+msg;
+  f.appendChild(d); f.scrollTop=f.scrollHeight;
+}
+
+// ════════════════════════════════════════════════════════
+// FREE ANALYSIS
+// ════════════════════════════════════════════════════════
+async function handleFree(){
+  const txt = document.getElementById("txt-input").value.trim();
+  if(!txt){ showAlert("inp-alert","alert-info","✍️ Descreva sua situação financeira."); return; }
+
+  hideAlert("inp-alert");
+  freeMode = true;
+  agentOutputs = {};
+  resetGrid();
+  document.getElementById("sec-pipeline").style.display="block";
+  document.getElementById("sec-free").style.display="none";
+  document.getElementById("sec-full").style.display="none";
+  setBtns(true);
+
+  log("⬡ Análise gratuita iniciada...");
+
+  const now = new Date().toLocaleDateString("pt-BR",{day:"2-digit",month:"long",year:"numeric"});
+
+  // ── 1. Veredito rápido (Consultor Sênior) ──────────────
+  setAc("consultor_senior","thinking");
+  log("👔 Consultor Sênior: analisando veredito...");
+
+  const veredito = await llm(
+    "Você é um Consultor Financeiro Sênior com 20 anos de experiência. "+
+    "Analise a situação do usuário e responda em formato estruturado em português. "+
+    "Seja objetivo e direto. Use dados concretos.",
+    `DATA: ${now}\nSITUAÇÃO DO USUÁRIO:\n${txt}\n\n`+
+    `Responda EXATAMENTE neste formato (sem markdown, sem asteriscos, texto limpo):\n`+
+    `VEREDITO: [Favorável/Desfavorável/Atenção Necessária]\n`+
+    `SAÚDE FINANCEIRA: [0-100]%\n`+
+    `URGÊNCIA: [Alta/Média/Baixa]\n`+
+    `ÁREAS CRÍTICAS:\n1. [área]\n2. [área]\n3. [área]\n`+
+    `FUNDAMENTO: [2-3 frases explicando o diagnóstico principal]\n`+
+    `SÍNTESE: [2 frases sobre o que foi identificado]\n`+
+    `RISCOS:\n1. [risco com impacto]\n2. [risco]\n3. [risco]\n`+
+    `PRÓXIMOS PASSOS:\n1. [ação concreta]\n2. [ação]\n3. [ação]`,
+    500
+  );
+  agentOutputs["consultor_senior"] = veredito;
+  setAc("consultor_senior","done");
+  log("✓ Consultor Sênior concluído","ok");
+
+  // ── 2. Preview de 1 especialista (Macroeconomia) ───────
+  setAc("macroeconomia","thinking");
+  log("🌐 Macroeconomia: iniciando análise...");
+
+  const macroPreview = await llm(
+    "Você é um economista-chefe especializado em Brasil. Responda em português com análise técnica.",
+    `DATA: ${now}\nSITUAÇÃO DO USUÁRIO: ${txt}\n\n`+
+    `ANÁLISE MACROECONÔMICA DETALHADA:\n`+
+    `Considerando Selic atual, IPCA, câmbio e cenário de juros globais, analise:\n`+
+    `1. Como o cenário macro impacta especificamente esta situação\n`+
+    `2. Oportunidades em renda fixa no contexto atual\n`+
+    `3. Timing ideal para os investimentos descritos\n`+
+    `Seja técnico, use números reais de 2024-2025, mínimo 200 palavras.`,
+    400
+  );
+  agentOutputs["macroeconomia"] = macroPreview;
+  setAc("macroeconomia","done");
+  log("✓ Macroeconomia concluída","ok");
+
+  // ── Finaliza ───────────────────────────────────────────
+  finishPipeline();
+  renderFreeResult(veredito, macroPreview);
+  setBtns(false);
+}
+
+function renderFreeResult(veredito, preview){
+  // Renderiza veredito
+  const vBody = document.getElementById("verdict-body");
+  // Formata o texto estruturado em HTML
+  vBody.innerHTML = veredito
+    .replace(/^(VEREDITO|SAÚDE FINANCEIRA|URGÊNCIA|ÁREAS CRÍTICAS|FUNDAMENTO|SÍNTESE|RISCOS|PRÓXIMOS PASSOS):/gm,
+      m=>`<div style="color:var(--g);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;margin-top:10px;margin-bottom:2px;">${m}</div>`)
+    .replace(/\n/g,"<br>");
+
+  // Renderiza preview parcial
+  const pBody = document.getElementById("preview-body");
+  pBody.innerHTML = `<h3>📋 Análise — Macroeconomia</h3>`+
+    (typeof marked!=="undefined" ? marked.parse(preview) : preview.replace(/\n/g,"<br>"));
+
+  document.getElementById("sec-free").style.display="block";
+  document.getElementById("sec-free").scrollIntoView({behavior:"smooth"});
+}
+
+// ════════════════════════════════════════════════════════
+// PREMIUM — 16 AGENTES
+// ════════════════════════════════════════════════════════
+async function handlePremium(){
+  // Verifica crédito
+  const tok = getToken();
+  if(tok){
+    try{
+      const r=await fetch(BACKEND_URL+"/credits/balance",{headers:{"Authorization":"Bearer "+tok}});
+      if(r.ok){
+        const d=await r.json();
+        if(!d.unlimited && (d.credits||0)<1){
+          showAlert("inp-alert","alert-err","⭐ Créditos insuficientes. Compre 1 crédito por R$ 19,90.");
+          return;
+        }
+      }
+    }catch{}
+  }
+
+  const txt = document.getElementById("txt-input").value.trim();
+  if(!txt){ showAlert("inp-alert","alert-info","✍️ Descreva sua situação financeira."); return; }
+
+  hideAlert("inp-alert");
+  freeMode = false;
+  agentOutputs = {};
+  resetGrid();
+  document.getElementById("sec-pipeline").style.display="block";
+  document.getElementById("sec-free").style.display="none";
+  document.getElementById("sec-full").style.display="none";
+  setBtns(true);
+
+  const now = new Date().toLocaleDateString("pt-BR",{day:"2-digit",month:"long",year:"numeric"});
+
+  async function ag(id,sys,usr,tokens=500){
+    setAc(id,"thinking");
+    log(`${AGENTS.find(a=>a.id===id)?.em||"⬡"} ${id}...`);
+    const out = await llm(sys,usr,tokens);
+    agentOutputs[id] = out;
+    setAc(id, out.startsWith("❌")||out.startsWith("⚠")?"error":"done");
+    log(`✓ ${id}`,"ok");
+    return out;
+  }
+
+  // ── RAMO B — paralelo ──────────────────────────────────
+  log("▶ Ramo B: Contexto Macro");
+  await Promise.all([
+    ag("noticias_realtime",
+      "Analista de inteligência de mercado financeiro. Responda em português. Máx 250 palavras.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nPrincipais eventos macro recentes impactando investidores BR. Ativos mais afetados. Oportunidades e alertas.`),
+    ag("macroeconomia",
+      "Economista-chefe Brasil/EUA. Responda em português. Máx 280 palavras.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nSelic,IPCA,câmbio,Fed. Cenário macro atual BR. Projeções 6 meses. Impacto para esta situação específica.`),
+    ag("sentimento_mercado",
+      "Analista de sentimento de mercado. Responda em português. Máx 220 palavras.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nSentimento dominante (bullish/bearish/neutro). Fear&Greed. Indicadores contrários. Recomendação de posicionamento.`),
+  ]);
+
+  // ── RAMO A — paralelo ──────────────────────────────────
+  log("▶ Ramo A: Mercado");
+  const macro = (agentOutputs["macroeconomia"]||"").slice(0,200);
+  await Promise.all([
+    ag("criptomoedas",
+      "Analista sênior de criptoativos. Responda em português. Máx 250 palavras.",
+      `DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nBTC,ETH,SOL. Oportunidades com preço-alvo. Riscos. % alocação sugerida para este perfil.`),
+    ag("acoes_equity",
+      "Analista de equity B3 e NYSE. Responda em português. Máx 260 palavras.",
+      `DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nSetores promissores. Ações-destaque com tickers BR e EUA. Riscos. Estratégia para este perfil.`),
+    ag("derivativos",
+      "Especialista em derivativos e hedge. Responda em português. Máx 200 palavras.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nDerivativos para proteção desta carteira. Estratégias de opções adequadas ao perfil. Riscos de alavancagem.`),
+    ag("rwa",
+      "Especialista em RWA tokenizados. Responda em português. Máx 200 palavras.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nOportunidades RWA para este perfil. Plataformas BR relevantes. Riscos regulatórios e de liquidez.`),
+    ag("renda_fixa",
+      "Especialista renda fixa BR. Responda em português. Máx 260 palavras.",
+      `DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nTesouro,CDB,LCI,LCA,CRI. Produtos mais adequados. Duration recomendada. IPCA+ vs prefixado vs CDI agora.`),
+    ag("imoveis_fiis",
+      "Especialista FIIs e imóveis. Responda em português. Máx 220 palavras.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nSegmentos FII mais atrativos. Melhores DY/VP. FII vs imóvel direto para este perfil.`),
+  ]);
+
+  // ── RAMO C — paralelo ──────────────────────────────────
+  log("▶ Ramo C: Finanças Pessoais");
+  await Promise.all([
+    ag("quitacao_dividas",
+      "Especialista em quitação de dívidas. Responda em português. Máx 230 palavras.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nPriorização de dívidas. Método avalanche vs bola de neve para esta situação. Liberação de fluxo mensal.`),
+    ag("credito_financiamento",
+      "Especialista em crédito e financiamentos. Responda em português. Máx 220 palavras.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nCapacidade atual de crédito. Oportunidades de refinanciamento. Estratégias para melhorar score. Crédito imobiliário vs investimento.`),
+    ag("planejamento_tributario",
+      "Especialista IR e tributário PF Brasil. Responda em português. Máx 220 palavras.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nEficiência tributária. Deduções IR disponíveis. PGBL vs VGBL para esta renda. Alertas de obrigações fiscais.`),
+  ]);
+
+  // ── GUARDIÕES — paralelo ───────────────────────────────
+  log("▶ Guardiões: Compliance + Auditor");
+  const allOut = Object.entries(agentOutputs).map(([k,v])=>`[${k}]:${v.slice(0,150)}`).join("\n");
+  await Promise.all([
+    ag("compliance_risco",
+      "Diretor de Compliance e Gestão de Riscos. Responda em português. Máx 200 palavras.",
+      `ANÁLISES:\n${allOut.slice(0,1800)}\nUSUÁRIO:${txt}\n\nFlags de risco identificados. Inconsistências entre análises. Ajustes obrigatórios.`),
+    ag("auditor_dados",
+      "Auditor de Dados e Qualidade. Responda em português. Máx 160 palavras.",
+      `ANÁLISES:\n${allOut.slice(0,1800)}\n\nConsistência dos dados. Contradições. Confiabilidade geral (Alta/Média/Baixa) com justificativa.`),
+  ]);
+
+  // ── CONSULTOR SÊNIOR ───────────────────────────────────
+  log("▶ Consultor Sênior: veredito consolidado");
+  const comp = (agentOutputs["compliance_risco"]||"").slice(0,300);
+  await ag("consultor_senior",
+    "Consultor Financeiro Sênior responsável pelo veredito final. Responda em português.",
+    `DATA:${now}\nUSUÁRIO:${txt}\n\nANÁLISES DOS 13 ESPECIALISTAS:\n${allOut.slice(0,2500)}\n\nCOMPLIANCE:${comp}\n\n`+
+    `Emita:\n1. Veredito consolidado (diagnóstico final da situação)\n`+
+    `2. Alocação de portfólio recomendada em % (soma=100%)\n`+
+    `3. Top 3 prioridades para os próximos 30 dias com valores específicos\n`+
+    `4. Nível de risco global: Conservador/Moderado/Arrojado\n`+
+    `5. Projeção patrimônio em 12 meses se seguir as recomendações`,
+    650);
+
+  // ── REDATOR ────────────────────────────────────────────
+  log("▶ Redator: gerando relatório completo...");
+  const vfinal = (agentOutputs["consultor_senior"]||"").slice(0,500);
+  const fullReport = await ag("redator_relatorios",
+    "Redator-sênior de relatórios financeiros. Produza relatório em Markdown. Responda em português. Mínimo 900 palavras.",
+    `DATA:${now}\nUSUÁRIO:${txt}\n\nVEREDITO DO CONSULTOR:\n${vfinal}\n\nANÁLISES:\n${allOut.slice(0,2800)}\n\n`+
+    `Produza relatório com estas seções (use ## para headers, **negrito** para destaques, tabelas Markdown):\n`+
+    `## 📊 Sumário Executivo\n`+
+    `## 🌐 Panorama Macroeconômico\n`+
+    `## 📈 Análise de Mercado e Oportunidades\n`+
+    `## 💼 Portfólio Recomendado\n`+
+    `## 💳 Gestão de Dívidas e Crédito\n`+
+    `## 📋 Planejamento Tributário\n`+
+    `## ⚠️ Riscos e Alertas\n`+
+    `## 🎯 Plano de Ação — Próximos 30 Dias\n\n`+
+    `Inclua números concretos, percentuais, benchmarks (CDI, IPCA, Selic) e tabelas comparativas.`,
+    1800);
+
+  // Consome crédito
+  await consumeCredit();
+
+  finishPipeline();
+  renderFullReport(fullReport);
+}
+
+async function consumeCredit(){
+  const tok = getToken();
+  if(!tok) return;
+  // O crédito é consumido automaticamente pelo backend ao chamar /reports/generate
+  // ou podemos chamar explicitamente:
+  try{
+    await fetch(BACKEND_URL+"/credits/consume",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok}
+    });
+  }catch{}
+  await loadCredits();
+}
+
+function renderFullReport(md){
+  const box = document.getElementById("full-report-box");
+  box.innerHTML = typeof marked!=="undefined" ? marked.parse(md) : md.replace(/\n/g,"<br>");
+
+  // Blocos individuais dos agentes
+  const blocksBox = document.getElementById("agent-blocks-box");
+  blocksBox.innerHTML = "";
+  const skip = new Set(["consultor_senior","redator_relatorios","compliance_risco","auditor_dados"]);
+  AGENTS.filter(a=>!skip.has(a.id) && agentOutputs[a.id]).forEach(a=>{
+    const div = document.createElement("div");
+    div.className = "agent-block";
+    const body = agentOutputs[a.id]||"";
+    div.innerHTML = `<div class="agent-block-title">${a.em} Análise — ${a.nm}</div>`+
+      `<div class="agent-block-body">${
+        typeof marked!=="undefined"
+          ? marked.parse(body)
+          : body.replace(/\*\*(.*?)\*\*/g,"<b>$1</b>").replace(/\n/g,"<br>")
+      }</div>`;
+    blocksBox.appendChild(div);
+  });
+
+  // Downloads
+  const ds = new Date().toISOString().slice(0,10).replace(/-/g,"");
+  const bMd   = new Blob([md],{type:"text/markdown"});
+  const bTxt  = new Blob([md],{type:"text/plain"});
+  const htmlContent = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<title>Relatório WUZO</title>
+<style>body{font-family:Georgia,serif;max-width:820px;margin:40px auto;padding:0 20px;line-height:1.85;color:#1a1a1a;background:#fafaf8;}
+h1,h2{color:#7a5200;border-bottom:1px solid #e0d0a0;padding-bottom:6px;margin:22px 0 10px;}
+h3{color:#3a3a3a;margin:16px 0 6px;}table{border-collapse:collapse;width:100%;margin:14px 0;}
+th{background:#f9f0dc;padding:8px 12px;text-align:left;border:1px solid #ddd;font-size:.85em;}
+td{padding:7px 12px;border:1px solid #eee;}tr:nth-child(even) td{background:#fafafa;}
+blockquote{border-left:3px solid #c9a84c;padding-left:14px;color:#666;margin:12px 0;}
+code{background:#f5f0e0;padding:2px 6px;border-radius:3px;font-family:monospace;font-size:.9em;}</style>
+</head><body><h1>WUZO — Relatório Financeiro</h1>
+<p style="color:#888;font-size:.85em;">Gerado em ${new Date().toLocaleDateString("pt-BR")} — 16 Agentes Especialistas</p>
+${typeof marked!=="undefined" ? marked.parse(md) : md.replace(/\n/g,"<br>")}
+</body></html>`;
+  const bHtml = new Blob([htmlContent],{type:"text/html"});
+
+  document.getElementById("dl-md").href   = URL.createObjectURL(bMd);
+  document.getElementById("dl-txt").href  = URL.createObjectURL(bTxt);
+  document.getElementById("dl-html").href = URL.createObjectURL(bHtml);
+  document.getElementById("dl-md").download   = `relatorio_wuzo_${ds}.md`;
+  document.getElementById("dl-txt").download  = `relatorio_wuzo_${ds}.txt`;
+  document.getElementById("dl-html").download = `relatorio_wuzo_${ds}.html`;
+
+  document.getElementById("sec-full").style.display = "block";
+  document.getElementById("sec-full").scrollIntoView({behavior:"smooth"});
+}
+
+// ════════════════════════════════════════════════════════
+// BUY
+// ════════════════════════════════════════════════════════
+async function handleBuy(){
+  const tok = getToken();
+  if(tok){
+    try{
+      const r = await fetch(BACKEND_URL+"/credits/purchase",{
+        method:"POST",
+        headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
+        body:JSON.stringify({quantity:1})
+      });
+      if(r.ok){
+        const d = await r.json();
+        if(d.checkout_url){ window.open(d.checkout_url,"_blank"); return; }
+      }
+    }catch{}
+  }
+  // Fallback: abre o Streamlit que tem o checkout
+  window.open(BACKEND_URL+"/?show_upgrade=1","_blank");
+}
+
+// ════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════
+function resetGrid(){
+  agentOutputs={};
+  AGENTS.forEach(a=>setAc(a.id,"idle"));
+  document.getElementById("prog-fill").style.width="0%";
+  document.getElementById("log-feed").innerHTML='<div class="ll">⬡ Iniciando...</div>';
+  document.getElementById("pip-pill").textContent="RUNNING";
+  document.getElementById("pip-pill").className="pill pill-run";
+}
+
+function finishPipeline(){
+  AGENTS.forEach(a=>{ if(!agentOutputs[a.id]) setAc(a.id,"done"); });
+  document.getElementById("prog-fill").style.width="100%";
+  document.getElementById("pip-pill").textContent="CONCLUÍDO";
+  document.getElementById("pip-pill").className="pill pill-done";
+  log("✅ Concluído.","ok");
+}
+
+function setBtns(loading){
+  ["btn-free","btn-premium","btn-buy"].forEach(id=>{
+    document.getElementById(id).disabled = loading;
+  });
+  if(loading){
+    document.getElementById("btn-free").innerHTML='<div class="spin"></div> Analisando...';
+    document.getElementById("btn-premium").innerHTML='<div class="spin"></div> Orquestrando 16 agentes...';
+  } else {
+    document.getElementById("btn-free").innerHTML='⚡ ANÁLISE GRATUITA';
+    document.getElementById("btn-premium").innerHTML='⭐ RELATÓRIO PREMIUM (16 ESP.)';
+  }
+}
+
+function showAlert(id,cls,msg){
   const el=document.getElementById(id);
-  if(!el)return;
-  el.textContent=txt;
-  el.className=el.className.replace(/up|dn/g,'').trim();
-  if(up!==null)el.classList.add(up?'up':'dn');
+  el.className="alert "+cls; el.textContent=msg; el.style.display="block";
 }
+function hideAlert(id){ document.getElementById(id).style.display="none"; }
 
-function set_signal(sym,ch){
-  const sig=[...document.querySelectorAll('.sig')].find(s=>s.querySelector('.sig-name')?.textContent.trim()===sym)?.querySelector('.sig-val');
-  if(!sig)return;
-  const v=ch>1.5?'BUY':ch<-1.5?'SELL':'WATCH';
-  sig.textContent=v;
-  sig.className='sig-val '+(v==='BUY'?'buy':v==='SELL'?'sell':'watch');
-}
-
-async function fetch_prices(){
-  // BTC: CoinCap → Coinbase → Blockchain.info
-  let btc=null;
-  try{
-    const r=await fetch('https://api.coincap.io/v2/assets/bitcoin',{signal:AbortSignal.timeout(5000)});
-    const d=await r.json();
-    const p=parseFloat(d?.data?.priceUsd),ch=parseFloat(d?.data?.changePercent24Hr||0);
-    if(p>1000)btc={p,ch,src:'CoinCap'};
-  }catch{}
-  if(!btc){
-    try{
-      const r=await fetch('https://api.coinbase.com/v2/prices/BTC-USD/spot',{signal:AbortSignal.timeout(5000)});
-      const d=await r.json();
-      const p=parseFloat(d?.data?.amount);
-      if(p>1000)btc={p,ch:0,src:'Coinbase'};
-    }catch{}
-  }
-  if(!btc){
-    try{
-      const r=await fetch('https://blockchain.info/ticker',{signal:AbortSignal.timeout(5000)});
-      const d=await r.json();
-      const p=d?.USD?.last;
-      if(p>1000)btc={p,ch:0,src:'Blockchain'};
-    }catch{}
-  }
-  if(btc){
-    const fmt=fmt_btc(btc.p);
-    set_el('lp-btc-floater',fmt,btc.ch>=0);
-    set_el('lp-btc-strip',fmt,btc.ch>=0);
-    set_signal('BTC',btc.ch);
-    // Fear & Greed approx
-    const fg=Math.min(100,Math.max(0,Math.round(50+btc.ch*3)));
-    const fgEl=document.getElementById('lp-fg-score');
-    if(fgEl)fgEl.textContent=fg+'/100';
-    // Badge
-    let badge=document.getElementById('lp-live-badge');
-    if(!badge){
-      const f3=document.querySelector('.fl.f3');
-      if(f3){badge=document.createElement('div');badge.id='lp-live-badge';badge.style.cssText='font-size:.62rem;letter-spacing:2px;margin-top:3px;';f3.appendChild(badge);}
-    }
-    if(badge){badge.textContent='● LIVE · '+btc.src;badge.style.color='#5dba88';}
-    // Update mood text
-    const moodTxt=document.getElementById('lp-mood-text');
-    if(moodTxt){
-      const arr=btc.ch>=0?'↑':'↓';
-      const chStr=(btc.ch>=0?'+':'')+btc.ch.toFixed(2)+'%';
-      moodTxt.textContent='BTC '+fmt_btc(btc.p)+' ('+chStr+') '+arr+' · Dados ao vivo via '+btc.src+' · USD/BRL e sinais atualizados a cada 30s pelo agente Market Intelligence.';
-    }
-    // Update BTC news title
-    const newsBtc=document.getElementById('lp-news-btc-title');
-    if(newsBtc){
-      const arr=btc.ch>=0?'↑':'↓';
-      newsBtc.textContent='BTC '+fmt_btc(btc.p)+' ('+( btc.ch>=0?'+':'')+btc.ch.toFixed(2)+'%) '+arr+' · Preço ao vivo via '+btc.src;
-    }
-  }
-  // USD/BRL
-  try{
-    const r=await fetch('https://open.er-api.com/v6/latest/USD',{signal:AbortSignal.timeout(5000)});
-    const d=await r.json();
-    const brl=d?.rates?.BRL;
-    if(brl)set_el('lp-usd-strip','R$'+parseFloat(brl).toFixed(2),null);
-  }catch{}
-  // ETH + SOL signals
-  try{
-    const coins=[['ethereum','ETH'],['solana','SOL']];
-    for(const[id,sym]of coins){
-      const r=await fetch('https://api.coincap.io/v2/assets/'+id,{signal:AbortSignal.timeout(5000)});
-      const d=await r.json();
-      set_signal(sym,parseFloat(d?.data?.changePercent24Hr||0));
-    }
-  }catch{}
-}
-
-// ── LANGUAGE ──────────────────────────────────────────────────────────────────
-const LANGS={
-  en:{
-    how:'How it works',mods:'Modules',ai:'AI Advisor',pricing:'Pricing',
-    cta:'START FREE',
-    h1:'Total clarity<em>over your money.</em>',
-    desc:'Wuzo analyzes bank statements, tracks debts, investments and goals — using <b>institutional-grade AI</b> to tell you exactly where your wealth is going. Complete diagnosis in seconds.',
-    btn1:'⚡ START NOW — FREE',btn2:'HOW IT WORKS →',
-    finalhd:'Your money<em>deserves clarity.</em>',
-    finalp:'Every month without financial clarity costs you. Wuzo gives complete diagnosis, personalized strategy and execution — in minutes, not months.',
-    finalbtn:'🚀 START NOW — FREE',
-    note:'NO CREDIT CARD · NO CONTRACT · 100% ONLINE',
-  },
-  es:{
-    how:'Cómo funciona',mods:'Módulos',ai:'Asesor IA',pricing:'Planes',
-    cta:'EMPEZAR GRATIS',
-    h1:'Claridad total<em>sobre tu dinero.</em>',
-    desc:'Wuzo analiza extractos, controla deudas, inversiones y metas — usando <b>inteligencia artificial de nivel institucional</b> para decirte exactamente a dónde va tu patrimonio. Diagnóstico en segundos.',
-    btn1:'⚡ EMPEZAR AHORA — GRATIS',btn2:'VER CÓMO FUNCIONA →',
-    finalhd:'Tu dinero<em>merece atención.</em>',
-    finalp:'Cada mes sin claridad financiera te cuesta caro. Wuzo te da diagnóstico completo, estrategia personalizada y ejecución — en minutos, no meses.',
-    finalbtn:'🚀 EMPEZAR AHORA — ES GRATIS',
-    note:'SIN TARJETA DE CRÉDITO · SIN CONTRATO · 100% EN LÍNEA',
-  }
+// ════════════════════════════════════════════════════════
+// SETUP LOCAL KEY (para debug — abre console e rode:
+//   window.setLocalKey("gsk_xxx", "groq")
+// ════════════════════════════════════════════════════════
+window.setLocalKey = (key, provider="groq") => {
+  localStorage.setItem("wuzo_llm_key", key);
+  localStorage.setItem("wuzo_llm_prov", provider);
+  location.reload();
 };
-
-function setLang(l){
-  const d=LANGS[l];
-  // Reset to PT
-  document.querySelector('.navitems a[href="#how"]').textContent=d?d.how:'Como funciona';
-  document.querySelector('.navitems a[href="#mods"]').textContent=d?d.mods:'Módulos';
-  const aiLink=document.querySelector('.navitems a[href="#ai"]');
-  if(aiLink)aiLink.textContent=d?d.ai:'Consultor IA';
-  document.querySelector('.navitems a[href="#pricing"]').textContent=d?d.pricing:'Planos';
-  document.querySelector('.ncta').textContent=d?d.cta:'COMEÇAR GRÁTIS';
-  document.querySelector('h1').innerHTML=d?d.h1:'Clareza total<em>sobre seu dinheiro.</em>';
-  const hdesc=document.querySelector('.hdesc');
-  if(hdesc)hdesc.innerHTML=d?d.desc:'O Wuzo analisa extratos, monitora dívidas, investimentos e metas — e usa <b>inteligência artificial de nível institucional</b> para te dizer exatamente onde seu patrimônio vai e o que fazer para mudar isso. Diagnóstico completo em segundos.';
-  const btns=document.querySelectorAll('.btn-main,.btn-line');
-  if(btns[0])btns[0].textContent=d?d.btn1:'⚡ COMEÇAR AGORA — GRÁTIS';
-  if(btns[1])btns[1].textContent=d?d.btn2:'VER COMO FUNCIONA →';
-  const ch=document.querySelector('.ch');
-  if(ch)ch.innerHTML=d?d.finalhd:'Seu dinheiro<em>merece atenção.</em>';
-  const cp=document.querySelector('.cp');
-  if(cp)cp.textContent=d?d.finalp:'Cada mês sem clareza financeira custa caro. O Wuzo te dá diagnóstico completo, estratégia personalizada e execução — em minutos, não meses.';
-  const ctaBtns=document.querySelectorAll('.ctas .btn-main');
-  if(ctaBtns[0])ctaBtns[0].textContent=d?d.finalbtn:'🚀 COMEÇAR AGORA — É GRÁTIS';
-  const cnote=document.querySelector('.cnote');
-  if(cnote)cnote.textContent=d?d.note:'SEM CARTÃO DE CRÉDITO · SEM CONTRATO · 100% ONLINE';
-  // Toggle buttons
-  ['pt','en','es'].forEach(lg=>{
-    const btn=document.getElementById('btn-'+lg);
-    if(btn)btn.className='lang-btn'+(lg===l||(!d&&lg==='pt')?' active':'');
-  });
-}
-
-// ── INIT ──────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded',()=>{
-  // Detect lang
-  const p=new URLSearchParams(window.location.search).get('lang');
-  const bl=(navigator.language||'pt').toLowerCase();
-  const l=p||(bl.startsWith('es')?'es':bl.startsWith('pt')?'pt':'en');
-  if(l!=='pt')setLang(l);
-  else{['pt','en','es'].forEach(lg=>{const b=document.getElementById('btn-'+lg);if(b)b.className='lang-btn'+(lg==='pt'?' active':'');});}
-  // Live prices
-  fetch_prices();
-  // Scroll reveal
-  const obs=new IntersectionObserver(entries=>{
-    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');}});
-  },{threshold:0.08});
-  document.querySelectorAll('.rev').forEach(el=>obs.observe(el));
-  // Nav solid on scroll
-  const nav=document.querySelector('nav');
-  window.addEventListener('scroll',()=>{nav.classList.toggle('solid',window.scrollY>60);},{ passive:true });
-  // Cursor
-  const c=document.getElementById('c'),cr=document.getElementById('cr');
-  document.addEventListener('mousemove',e=>{c.style.left=e.clientX+'px';c.style.top=e.clientY+'px';cr.style.left=e.clientX+'px';cr.style.top=e.clientY+'px';});
-  document.querySelectorAll('a,button,.mod,.hstep,.testi,.faq-q').forEach(el=>{
-    el.addEventListener('mouseenter',()=>{cr.style.width='60px';cr.style.height='60px';cr.style.borderColor='rgba(201,168,76,.6)';});
-    el.addEventListener('mouseleave',()=>{cr.style.width='36px';cr.style.height='36px';cr.style.borderColor='rgba(201,168,76,.3)';});
-  });
-  // Dashboard month
-  const dm=document.getElementById('lp-dash-month');
-  if(dm){const mn=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];const now=new Date();dm.textContent=mn[now.getMonth()]+' '+now.getFullYear();}
-});
+window.setToken = (tok) => {
+  localStorage.setItem("wuzo_token", tok);
+  location.reload();
+};
 </script>
 </body>
 </html>
