@@ -69,15 +69,14 @@ body{
 textarea{
   width:100%;background:rgba(0,0,0,.35);border:1px solid var(--bd);
   border-radius:var(--r2);color:var(--tx);font-family:'Outfit',sans-serif;
-  font-size:.92rem;padding:14px 16px;resize:vertical;min-height:110px;outline:none;
-  line-height:1.8;transition:border-color .2s,box-shadow .2s;
-  margin-bottom:4px;
+  font-size:.92rem;padding:12px 14px;resize:vertical;min-height:100px;outline:none;
+  line-height:1.7;transition:border-color .2s,box-shadow .2s;
 }
 textarea:focus{border-color:rgba(201,168,76,.4);box-shadow:0 0 0 3px rgba(201,168,76,.07);}
 textarea::placeholder{color:var(--dm2);}
 
 /* ── BUTTONS ─────────────────────────────────── */
-.btn-row{display:flex;flex-direction:column;gap:12px;margin-top:22px;padding-top:6px;}
+.btn-row{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
 .btn{
   display:flex;align-items:center;justify-content:center;gap:8px;
   width:100%;padding:15px 20px;border-radius:50px;border:none;cursor:pointer;
@@ -156,33 +155,26 @@ textarea::placeholder{color:var(--dm2);}
 /* ── FREE RESULT ─────────────────────────────── */
 #sec-free{display:none;}
 .verdict-card{
-  background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.01));
-  border:1px solid var(--bd2);border-radius:var(--r);
-  border-left:3px solid var(--g);padding:18px 16px;margin-bottom:14px;
-  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#0a1225,#0d1830);
+  border:1px solid rgba(100,150,255,.2);border-radius:var(--r);
+  border-left:3px solid #4488ff;padding:18px 16px;margin-bottom:14px;
 }
-.verdict-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent);
-}
-.verdict-title{color:var(--g);font-size:1rem;font-weight:800;
-  display:flex;align-items:center;gap:8px;margin-bottom:12px;
-  font-family:'Outfit',sans-serif;letter-spacing:.5px;}
-.verdict-body{font-size:.88rem;line-height:1.95;color:var(--tx);}
-.verdict-body strong,.verdict-body b{color:var(--g2);}
-.vline{height:1px;background:rgba(201,168,76,.15);margin:10px 0;}
+.verdict-title{color:#6aabff;font-size:1rem;font-weight:800;
+  display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.verdict-body{font-size:.88rem;line-height:1.9;color:#d0ddf5;}
+.verdict-body strong,.verdict-body b{color:#a0c4ff;}
+.vline{height:1px;background:rgba(100,150,255,.15);margin:10px 0;}
 
 /* ── PREVIEW CARD (parcial com blur) ─────────── */
 .preview-wrap{position:relative;overflow:hidden;border-radius:var(--r);}
 .preview-content{
-  background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));
-  border:1px solid var(--bd);border-radius:var(--r);
-  border-left:3px solid var(--g);padding:18px 16px;
-  font-size:.88rem;line-height:1.9;color:var(--tx);
+  background:linear-gradient(135deg,#0a1225,#0d1830);
+  border:1px solid rgba(100,150,255,.2);border-radius:var(--r);
+  border-left:3px solid #4488ff;padding:18px 16px;
+  font-size:.88rem;line-height:1.9;color:#d0ddf5;
   max-height:240px;overflow:hidden;
 }
-.preview-content h3{color:var(--g);margin-bottom:8px;font-family:'Outfit',sans-serif;}
-.preview-content strong,.preview-content b{color:var(--g2);}
+.preview-content h3{color:#6aabff;margin-bottom:8px;}
 .preview-blur{
   position:absolute;bottom:0;left:0;right:0;height:120px;
   background:linear-gradient(to bottom,transparent,rgba(3,3,2,.97));
@@ -228,25 +220,14 @@ textarea::placeholder{color:var(--dm2);}
 
 /* ── AGENT ANALYSIS BLOCKS ───────────────────── */
 .agent-block{
-  background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));
-  border:1px solid var(--bd);border-radius:var(--r);
-  border-left:3px solid var(--g);padding:16px;margin-bottom:10px;
-  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#0a1225,#0d1830);
+  border:1px solid rgba(100,150,255,.15);border-radius:var(--r);
+  border-left:3px solid #4488ff;padding:16px;margin-bottom:10px;
 }
-.agent-block::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(201,168,76,.25),transparent);
-}
-.agent-block-title{color:var(--g);font-size:.85rem;font-weight:700;
-  display:flex;align-items:center;gap:6px;margin-bottom:10px;
-  font-family:'Outfit',sans-serif;letter-spacing:.5px;}
-.agent-block-body{font-size:.84rem;line-height:1.9;color:var(--tx);}
-.agent-block-body strong,.agent-block-body b{color:var(--g2);}
-.agent-block-body h1,.agent-block-body h2,.agent-block-body h3{
-  color:var(--g);font-family:'Outfit',sans-serif;margin:10px 0 5px;font-size:.9rem;
-}
-.agent-block-body ul,.agent-block-body ol{padding-left:16px;margin:6px 0;}
-.agent-block-body li{margin-bottom:3px;}
+.agent-block-title{color:#6aabff;font-size:.85rem;font-weight:700;
+  display:flex;align-items:center;gap:6px;margin-bottom:10px;}
+.agent-block-body{font-size:.84rem;line-height:1.85;color:#d0ddf5;}
+.agent-block-body strong,.agent-block-body b{color:#a0c4ff;}
 
 /* ── DOWNLOAD ROW ────────────────────────────── */
 .dl-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
@@ -286,8 +267,7 @@ textarea::placeholder{color:var(--dm2);}
   </div>
   <div class="hdr-right">
     <div class="credit-badge">⭐ PREMIUM: <span id="cred-num">0</span></div>
-    <div class="status-dot" id="api-status">● Verificando...</div>
-    <div style="font-size:.45rem;color:var(--dm2);font-family:'JetBrains Mono',monospace;margin-top:2px;" id="api-url-display"></div>
+    <div class="status-dot">MOTOR ONLINE</div>
   </div>
 </div>
 
@@ -365,32 +345,6 @@ textarea::placeholder{color:var(--dm2);}
   </div>
 </div>
 
-<!-- SETUP TIP -->
-<div id="setup-tip" style="display:none;" class="card" style="margin-top:14px;">
-  <div class="inp-lbl" style="color:var(--rd);">⚠ BACKEND OFFLINE — SOLUÇÕES</div>
-  <div style="font-size:.82rem;line-height:1.9;margin-top:8px;color:var(--dm);">
-    <b style="color:var(--g);">Opção 1 — Groq gratuito (mais fácil):</b><br>
-    1. Crie conta em <a href="https://console.groq.com" target="_blank" style="color:var(--g);">console.groq.com</a><br>
-    2. Copie sua API Key<br>
-    3. Execute no console do browser (F12):<br>
-    <code style="background:rgba(0,0,0,.5);padding:6px 10px;border-radius:4px;display:block;margin:6px 0;font-size:.78rem;">window.setLocalKey("gsk_SUA_CHAVE_AQUI")</code>
-    <br>
-    <b style="color:var(--g);">Opção 2 — Backend Render (token de sessão):</b><br>
-    No Streamlit, abra o console e execute:<br>
-    <code style="background:rgba(0,0,0,.5);padding:6px 10px;border-radius:4px;display:block;margin:6px 0;font-size:.78rem;">window.setToken("token_da_sessao_streamlit")</code>
-  </div>
-</div>
-
-<script>
-// Mostra dica se backend offline após 8s
-setTimeout(()=>{
-  const el = document.getElementById("api-status");
-  if(el && el.innerHTML.includes("offline")){
-    document.getElementById("setup-tip").style.display="block";
-  }
-}, 8000);
-</script>
-
 </div><!-- /shell -->
 
 <!-- Marked.js -->
@@ -407,15 +361,7 @@ setTimeout(()=>{
 // URL base do backend Render (app.wuzo.com.br / Streamlit)
 // O HTML chama o endpoint /agent/run do FastAPI (api.py)
 // OU chama direto o LLM se tiver chave local
-// ═══════════════════════════════════════════════════════
-// URL DO AGENT API — segundo serviço no Render
-// Formato: https://wuzo-api.onrender.com
-// (ajuste se você nomeou diferente no Render)
-// ═══════════════════════════════════════════════════════
-const BACKEND_URL = "https://wuzo-api.onrender.com";
-
-// Sem Groq — usamos apenas o backend Render
-const GROQ_FALLBACK_KEY = "";
+const BACKEND_URL  = "https://wuzo-teste.onrender.com;// ajuste se mudar
 const STRIPE_URL   = ""; // URL do Stripe checkout — preenchida via /credits/purchase
 
 // Chave local (fallback se não tiver backend)
@@ -467,25 +413,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadCredits();
   // Pega token da URL
   getToken();
-  checkBackendHealth();
 });
-
-async function checkBackendHealth(){
-  try{
-    const r = await fetch(BACKEND_URL+"/health", {signal: AbortSignal.timeout(6000)});
-    if(r.ok){
-      const d = await r.json();
-      document.getElementById("api-status").innerHTML = 
-        `<span style="color:var(--gr)">● API OK · ${d.llm||"llm"}</span>`;
-      document.getElementById("api-url-display").textContent = BACKEND_URL;
-      return;
-    }
-  }catch{}
-  document.getElementById("api-status").innerHTML = 
-    GROQ_FALLBACK_KEY
-      ? '<span style="color:var(--g)">● Groq Local Ativo</span>'
-      : '<span style="color:var(--rd)">● Backend offline — <a href="#setup-tip" style="color:var(--g)">ver solução</a></span>';
-}
 
 // ════════════════════════════════════════════════════════
 // CREDITS
@@ -513,25 +441,36 @@ async function loadCredits(){
 // LLM CALL — usa backend ou chave local
 // ════════════════════════════════════════════════════════
 async function llm(system, user, tokens=600){
+  // 1. Tenta backend FastAPI /agent/run
   const tok = getToken();
-  const headers = {"Content-Type":"application/json"};
-  if(tok) headers["Authorization"] = "Bearer " + tok;
-
-  try{
-    const r = await fetch(BACKEND_URL + "/agent/run", {
-      method: "POST",
-      headers,
-      body: JSON.stringify({system, user, max_tokens: tokens}),
-      signal: AbortSignal.timeout(30000)
-    });
-    if(r.ok){
-      const d = await r.json();
-      return d.result || d.content || "❌ Resposta vazia";
-    }
-    return "❌ HTTP " + r.status + " — verifique o serviço no Render";
-  }catch(e){
-    return "❌ " + e.message;
+  if(tok){
+    try{
+      const r = await fetch(BACKEND_URL+"/agent/run",{
+        method:"POST",
+        headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
+        body: JSON.stringify({system, user, max_tokens: tokens})
+      });
+      if(r.ok){ const d=await r.json(); return d.result||d.content||""; }
+    }catch{}
   }
+
+  // 2. Tenta chave local direta
+  if(LOCAL_LLM_KEY){
+    return await llmDirect(system, user, tokens);
+  }
+
+  // 3. Usa APIs do Render via endpoint público do Streamlit
+  // O app.py expõe /agent via query param ?agent_run=1
+  try{
+    const r = await fetch(BACKEND_URL+`/?agent_run=1`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({system, user, max_tokens: tokens})
+    });
+    if(r.ok){ const d=await r.json(); return d.result||""; }
+  }catch{}
+
+  return "⚠ Sem conexão com o backend. Configure a API key local.";
 }
 
 async function llmDirect(system, user, tokens){
@@ -822,12 +761,13 @@ async function handlePremium(){
 
 async function consumeCredit(){
   const tok = getToken();
-  if(!tok){ await loadCredits(); return; }
+  if(!tok) return;
+  // O crédito é consumido automaticamente pelo backend ao chamar /reports/generate
+  // ou podemos chamar explicitamente:
   try{
     await fetch(BACKEND_URL+"/credits/consume",{
       method:"POST",
-      headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
-      signal: AbortSignal.timeout(8000)
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok}
     });
   }catch{}
   await loadCredits();
