@@ -10,9 +10,7 @@
 /* ── RESET + VARS ──────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#030302;
-  --card:#0d0c0a;
-  --card2:#131108;
+  --bg:#030302; --card:#0d0c0a; --card2:#131108;
   --g:#e8c97a; --g2:#f5dfa0; --gd:#8a6a2c; --gdd:#3a2810;
   --bd:rgba(201,168,76,.14); --bd2:rgba(201,168,76,.3);
   --tx:#ede8dc; --dm:#c0b89e; --dm2:#5a4828;
@@ -42,7 +40,7 @@ body{
 }
 @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
 .logo-sub{font-family:'JetBrains Mono',monospace;font-size:.42rem;letter-spacing:3px;color:var(--dm2);margin-top:2px;}
-.hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
 .credit-badge{
   background:rgba(201,168,76,.08);border:1px solid var(--bd);
   border-radius:20px;padding:5px 12px;
@@ -53,6 +51,20 @@ body{
 .status-dot::before{content:'';width:6px;height:6px;background:var(--gr);border-radius:50%;
   box-shadow:0 0 6px var(--gr);animation:blink 2s ease-in-out infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+/* ── AUTH BAR ─────────────────────────────────── */
+.auth-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
+.auth-btn{
+  padding:6px 14px;border-radius:20px;border:1px solid var(--bd);
+  font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:1.5px;
+  text-transform:uppercase;cursor:pointer;transition:all .2s;background:transparent;color:var(--dm);
+}
+.auth-btn:hover{border-color:var(--g);color:var(--g);}
+.auth-btn-primary{background:rgba(201,168,76,.1);border-color:var(--gd);color:var(--g);}
+.auth-btn-primary:hover{background:rgba(201,168,76,.18);border-color:var(--g);}
+.auth-btn-danger{border-color:rgba(224,82,82,.3);color:#e08080;}
+.auth-btn-danger:hover{border-color:var(--rd);color:var(--rd);}
+#user-info{font-size:.6rem;color:var(--dm);font-family:'JetBrains Mono',monospace;letter-spacing:.5px;}
 
 /* ── CARD ────────────────────────────────────── */
 .card{
@@ -70,8 +82,7 @@ textarea{
   width:100%;background:rgba(0,0,0,.35);border:1px solid var(--bd);
   border-radius:var(--r2);color:var(--tx);font-family:'Outfit',sans-serif;
   font-size:.92rem;padding:14px 16px;resize:vertical;min-height:110px;outline:none;
-  line-height:1.8;transition:border-color .2s,box-shadow .2s;
-  margin-bottom:4px;
+  line-height:1.8;transition:border-color .2s,box-shadow .2s;margin-bottom:4px;
 }
 textarea:focus{border-color:rgba(201,168,76,.4);box-shadow:0 0 0 3px rgba(201,168,76,.07);}
 textarea::placeholder{color:var(--dm2);}
@@ -85,55 +96,23 @@ textarea::placeholder{color:var(--dm2);}
   transition:all .2s;text-decoration:none;
 }
 .btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important;}
-
-/* Botão FREE — azul como JUSAII */
-.btn-free{
-  background:linear-gradient(135deg,#1a3a8a,#2255cc);
-  color:#fff;
-  box-shadow:0 4px 20px rgba(34,85,204,.3);
-}
-.btn-free:hover:not(:disabled){
-  background:linear-gradient(135deg,#1e44a0,#2a60e0);
-  transform:translateY(-1px);box-shadow:0 6px 24px rgba(34,85,204,.45);
-}
-
-/* Botão PREMIUM — dourado */
-.btn-premium{
-  background:linear-gradient(135deg,#b8860b,#e8c97a,#f5dfa0,#e8c97a,#8a6a2c);
-  background-size:200% auto;color:#0d0900;
-  animation:shimmer 3s linear infinite;
-  box-shadow:0 4px 20px rgba(201,168,76,.3);
-}
-.btn-premium:hover:not(:disabled){
-  transform:translateY(-1px);box-shadow:0 6px 28px rgba(201,168,76,.5);
-}
-
-/* Botão COMPRAR — verde */
-.btn-buy{
-  background:linear-gradient(135deg,#1a7a3a,#22a04d);
-  color:#fff;
-  box-shadow:0 4px 20px rgba(34,160,77,.25);
-}
-.btn-buy:hover:not(:disabled){
-  background:linear-gradient(135deg,#1e8a42,#27b556);
-  transform:translateY(-1px);box-shadow:0 6px 24px rgba(34,160,77,.4);
-}
+.btn-free{background:linear-gradient(135deg,#1a3a8a,#2255cc);color:#fff;box-shadow:0 4px 20px rgba(34,85,204,.3);}
+.btn-free:hover:not(:disabled){background:linear-gradient(135deg,#1e44a0,#2a60e0);transform:translateY(-1px);box-shadow:0 6px 24px rgba(34,85,204,.45);}
+.btn-premium{background:linear-gradient(135deg,#b8860b,#e8c97a,#f5dfa0,#e8c97a,#8a6a2c);background-size:200% auto;color:#0d0900;animation:shimmer 3s linear infinite;box-shadow:0 4px 20px rgba(201,168,76,.3);}
+.btn-premium:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 28px rgba(201,168,76,.5);}
+.btn-buy{background:linear-gradient(135deg,#1a7a3a,#22a04d);color:#fff;box-shadow:0 4px 20px rgba(34,160,77,.25);}
+.btn-buy:hover:not(:disabled){background:linear-gradient(135deg,#1e8a42,#27b556);transform:translateY(-1px);box-shadow:0 6px 24px rgba(34,160,77,.4);}
 
 /* ── AGENT GRID ──────────────────────────────── */
 .agent-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0;}
 @media(max-width:420px){.agent-grid{grid-template-columns:repeat(2,1fr);}}
-.ac{
-  background:rgba(0,0,0,.4);border:1px solid rgba(40,28,10,.7);
-  border-radius:8px;padding:10px 5px;text-align:center;
-  transition:border-color .3s,box-shadow .3s;
-}
+.ac{background:rgba(0,0,0,.4);border:1px solid rgba(40,28,10,.7);border-radius:8px;padding:10px 5px;text-align:center;transition:border-color .3s,box-shadow .3s;}
 .ac.thinking{border-color:var(--g);animation:pg 1.3s ease-in-out infinite;}
 .ac.done{border-color:var(--gr);}
 .ac.error{border-color:var(--rd);}
 @keyframes pg{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,.4);}50%{box-shadow:0 0 10px rgba(201,168,76,.2);}}
 .ac-em{font-size:1.2rem;line-height:1;}
-.ac-nm{font-size:.5rem;color:#c0b89e;letter-spacing:.5px;margin-top:4px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;}
+.ac-nm{font-size:.5rem;color:#c0b89e;letter-spacing:.5px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;}
 .ac-st{font-size:.55rem;font-weight:700;margin-top:4px;color:rgba(40,28,10,.9);}
 .ac.thinking .ac-st{color:var(--g);}
 .ac.done .ac-st{color:var(--gr);}
@@ -141,8 +120,7 @@ textarea::placeholder{color:var(--dm2);}
 
 /* ── PROGRESS ────────────────────────────────── */
 .prog{background:rgba(201,168,76,.07);border-radius:3px;height:4px;overflow:hidden;margin:8px 0;}
-.prog-fill{height:100%;background:linear-gradient(90deg,var(--gdd),var(--g),var(--g2));
-  border-radius:3px;transition:width .4s;width:0%;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gdd),var(--g),var(--g2));border-radius:3px;transition:width .4s;width:0%;}
 
 /* ── LOG ─────────────────────────────────────── */
 .log{background:rgba(0,0,0,.5);border:1px solid var(--bd);border-radius:var(--r2);
@@ -157,122 +135,124 @@ textarea::placeholder{color:var(--dm2);}
 #sec-free{display:none;}
 .verdict-card{
   background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.01));
-  border:1px solid var(--bd2);border-radius:var(--r);
-  border-left:3px solid var(--g);padding:18px 16px;margin-bottom:14px;
-  position:relative;overflow:hidden;
+  border:1px solid var(--bd2);border-radius:var(--r);border-left:3px solid var(--g);
+  padding:18px 16px;margin-bottom:14px;position:relative;overflow:hidden;
 }
-.verdict-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent);
-}
-.verdict-title{color:var(--g);font-size:1rem;font-weight:800;
-  display:flex;align-items:center;gap:8px;margin-bottom:12px;
-  font-family:'Outfit',sans-serif;letter-spacing:.5px;}
+.verdict-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent);}
+.verdict-title{color:var(--g);font-size:1rem;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:12px;font-family:'Outfit',sans-serif;letter-spacing:.5px;}
 .verdict-body{font-size:.88rem;line-height:1.95;color:var(--tx);}
 .verdict-body strong,.verdict-body b{color:var(--g2);}
 .vline{height:1px;background:rgba(201,168,76,.15);margin:10px 0;}
 
-/* ── PREVIEW CARD (parcial com blur) ─────────── */
+/* ── PREVIEW CARD ────────────────────────────── */
 .preview-wrap{position:relative;overflow:hidden;border-radius:var(--r);}
 .preview-content{
   background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));
-  border:1px solid var(--bd);border-radius:var(--r);
-  border-left:3px solid var(--g);padding:18px 16px;
-  font-size:.88rem;line-height:1.9;color:var(--tx);
-  max-height:240px;overflow:hidden;
+  border:1px solid var(--bd);border-radius:var(--r);border-left:3px solid var(--g);
+  padding:18px 16px;font-size:.88rem;line-height:1.9;color:var(--tx);max-height:240px;overflow:hidden;
 }
 .preview-content h3{color:var(--g);margin-bottom:8px;font-family:'Outfit',sans-serif;}
 .preview-content strong,.preview-content b{color:var(--g2);}
-.preview-blur{
-  position:absolute;bottom:0;left:0;right:0;height:120px;
-  background:linear-gradient(to bottom,transparent,rgba(3,3,2,.97));
-  display:flex;align-items:flex-end;padding-bottom:0;
-}
+.preview-blur{position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(to bottom,transparent,rgba(3,3,2,.97));display:flex;align-items:flex-end;padding-bottom:0;}
+
 /* ── LOCK CARD ───────────────────────────────── */
-.lock-card{
-  background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.02));
-  border:1px solid var(--bd2);border-radius:var(--r);
-  padding:22px 18px;text-align:center;margin-top:-4px;
-}
+.lock-card{background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.02));border:1px solid var(--bd2);border-radius:var(--r);padding:22px 18px;text-align:center;margin-top:-4px;}
 .lock-icon{font-size:1.8rem;margin-bottom:8px;}
 .lock-title{color:var(--g);font-size:1rem;font-weight:800;margin-bottom:4px;}
 .lock-sub{color:var(--dm);font-size:.8rem;margin-bottom:16px;}
 
 /* ── FULL REPORT ─────────────────────────────── */
 #sec-full{display:none;}
-.report-card{
-  background:rgba(201,168,76,.015);border:1px solid var(--bd);
-  border-radius:var(--r);padding:22px 18px;margin-bottom:14px;
-}
-.report-card h1,.report-card h2{
-  font-family:'Outfit',sans-serif;color:var(--g);
-  border-bottom:1px solid var(--bd);padding-bottom:5px;margin:16px 0 8px;font-size:1rem;
-}
+.report-card{background:rgba(201,168,76,.015);border:1px solid var(--bd);border-radius:var(--r);padding:22px 18px;margin-bottom:14px;}
+.report-card h1,.report-card h2{font-family:'Outfit',sans-serif;color:var(--g);border-bottom:1px solid var(--bd);padding-bottom:5px;margin:16px 0 8px;font-size:1rem;}
 .report-card h3{font-size:.9rem;color:var(--wh);margin:12px 0 5px;}
 .report-card p{margin-bottom:10px;font-size:.9rem;line-height:1.9;}
 .report-card strong,.report-card b{color:var(--g2);}
 .report-card ul,.report-card ol{padding-left:18px;margin-bottom:10px;}
 .report-card li{margin-bottom:3px;font-size:.88rem;line-height:1.8;}
 .report-card table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.8rem;}
-.report-card th{background:rgba(201,168,76,.07);color:var(--g);padding:6px 8px;
-  text-align:left;border:1px solid var(--bd);font-size:.6rem;letter-spacing:1px;text-transform:uppercase;}
+.report-card th{background:rgba(201,168,76,.07);color:var(--g);padding:6px 8px;text-align:left;border:1px solid var(--bd);font-size:.6rem;letter-spacing:1px;text-transform:uppercase;}
 .report-card td{padding:5px 8px;border:1px solid rgba(201,168,76,.07);}
 .report-card tr:nth-child(even) td{background:rgba(201,168,76,.01);}
-.report-card blockquote{border-left:2px solid var(--g);padding-left:12px;
-  color:var(--dm);margin:10px 0;font-style:italic;}
-.report-card code{background:rgba(201,168,76,.08);padding:2px 5px;
-  border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:.82em;}
+.report-card blockquote{border-left:2px solid var(--g);padding-left:12px;color:var(--dm);margin:10px 0;font-style:italic;}
+.report-card code{background:rgba(201,168,76,.08);padding:2px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:.82em;}
 
-/* markdown raw fix */
-.report-card p:has(> strong:first-child){margin-bottom:4px;}
-
-/* ── AGENT ANALYSIS BLOCKS ───────────────────── */
-.agent-block{
-  background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));
-  border:1px solid var(--bd);border-radius:var(--r);
-  border-left:3px solid var(--g);padding:16px;margin-bottom:10px;
-  position:relative;overflow:hidden;
-}
-.agent-block::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(201,168,76,.25),transparent);
-}
-.agent-block-title{color:var(--g);font-size:.85rem;font-weight:700;
-  display:flex;align-items:center;gap:6px;margin-bottom:10px;
-  font-family:'Outfit',sans-serif;letter-spacing:.5px;}
+/* ── AGENT BLOCKS ────────────────────────────── */
+.agent-block{background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));border:1px solid var(--bd);border-radius:var(--r);border-left:3px solid var(--g);padding:16px;margin-bottom:10px;position:relative;overflow:hidden;}
+.agent-block::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.25),transparent);}
+.agent-block-title{color:var(--g);font-size:.85rem;font-weight:700;display:flex;align-items:center;gap:6px;margin-bottom:10px;font-family:'Outfit',sans-serif;letter-spacing:.5px;}
 .agent-block-body{font-size:.84rem;line-height:1.9;color:var(--tx);}
 .agent-block-body strong,.agent-block-body b{color:var(--g2);}
-.agent-block-body h1,.agent-block-body h2,.agent-block-body h3{
-  color:var(--g);font-family:'Outfit',sans-serif;margin:10px 0 5px;font-size:.9rem;
-}
+.agent-block-body h1,.agent-block-body h2,.agent-block-body h3{color:var(--g);font-family:'Outfit',sans-serif;margin:10px 0 5px;font-size:.9rem;}
 .agent-block-body ul,.agent-block-body ol{padding-left:16px;margin:6px 0;}
 .agent-block-body li{margin-bottom:3px;}
 
 /* ── DOWNLOAD ROW ────────────────────────────── */
 .dl-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
-.dl-btn{flex:1;min-width:120px;text-align:center;padding:10px;border-radius:50px;
-  font-weight:700;font-size:.65rem;letter-spacing:1px;text-transform:uppercase;
-  text-decoration:none;border:1px solid var(--bd);color:var(--g);
-  background:rgba(201,168,76,.05);transition:all .2s;}
+.dl-btn{flex:1;min-width:120px;text-align:center;padding:10px;border-radius:50px;font-weight:700;font-size:.65rem;letter-spacing:1px;text-transform:uppercase;text-decoration:none;border:1px solid var(--bd);color:var(--g);background:rgba(201,168,76,.05);transition:all .2s;}
 .dl-btn:hover{border-color:var(--g);background:rgba(201,168,76,.1);}
 
 /* ── PILL ────────────────────────────────────── */
-.pill{display:inline-block;padding:3px 10px;border-radius:20px;
-  font-size:.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
 .pill-run{background:rgba(201,168,76,.1);color:var(--g);}
 .pill-done{background:rgba(74,175,120,.1);color:var(--gr);}
 
 /* ── ALERT ───────────────────────────────────── */
-.alert{padding:10px 14px;border-radius:var(--r2);border-left:3px solid;
-  margin:8px 0;font-size:.82rem;display:none;}
+.alert{padding:10px 14px;border-radius:var(--r2);border-left:3px solid;margin:8px 0;font-size:.82rem;display:none;}
 .alert-info{border-color:var(--g);background:rgba(201,168,76,.05);color:var(--g2);}
 .alert-err {border-color:var(--rd);background:rgba(224,82,82,.05);color:#f5a0a0;}
 .alert-ok  {border-color:var(--gr);background:rgba(74,175,120,.05);color:#a0f5c0;}
 
 /* ── SPINNER ─────────────────────────────────── */
-.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(201,168,76,.3);
-  border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite;}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(201,168,76,.3);border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* ═══════════════════════════════════════════════
+   MODAIS — Login / Register (padrão Jusaii)
+   ═══════════════════════════════════════════════ */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.82);
+  display:none;align-items:center;justify-content:center;z-index:1000;padding:16px;
+}
+.modal-overlay.open{display:flex;}
+.modal-box{
+  background:var(--card);border:1px solid var(--bd2);border-radius:14px;
+  padding:28px 24px;width:100%;max-width:360px;position:relative;
+}
+.modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--g),transparent);}
+.modal-title{
+  font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:800;color:var(--g);
+  letter-spacing:.5px;margin-bottom:20px;
+}
+.modal-inp{
+  width:100%;background:rgba(0,0,0,.4);border:1px solid var(--bd);border-radius:var(--r2);
+  color:var(--tx);font-family:'Outfit',sans-serif;font-size:.9rem;padding:12px 14px;
+  outline:none;transition:border-color .2s;margin-bottom:10px;
+}
+.modal-inp:focus{border-color:rgba(201,168,76,.5);}
+.modal-inp::placeholder{color:var(--dm2);}
+.modal-submit{
+  width:100%;padding:13px;border-radius:50px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,#b8860b,#e8c97a,#f5dfa0,#e8c97a,#8a6a2c);
+  background-size:200% auto;color:#0d0900;font-family:'Outfit',sans-serif;
+  font-weight:800;font-size:.85rem;letter-spacing:1px;margin-top:6px;
+  animation:shimmer 3s linear infinite;transition:box-shadow .2s;
+}
+.modal-submit:hover{box-shadow:0 4px 20px rgba(201,168,76,.4);}
+.modal-switch{
+  text-align:center;margin-top:14px;font-size:.75rem;color:var(--dm);
+}
+.modal-switch a{color:var(--g);cursor:pointer;text-decoration:underline;}
+.modal-err{
+  background:rgba(224,82,82,.08);border:1px solid rgba(224,82,82,.3);
+  border-radius:var(--r2);padding:8px 12px;font-size:.78rem;color:#f5a0a0;
+  margin-top:8px;display:none;
+}
+.modal-close{
+  position:absolute;top:14px;right:16px;background:none;border:none;
+  color:var(--dm);font-size:1.1rem;cursor:pointer;line-height:1;
+}
+.modal-close:hover{color:var(--g);}
 </style>
 </head>
 <body>
@@ -288,6 +268,20 @@ textarea::placeholder{color:var(--dm2);}
     <div class="credit-badge">⭐ PREMIUM: <span id="cred-num">0</span></div>
     <div class="status-dot" id="api-status">● Verificando...</div>
     <div style="font-size:.45rem;color:var(--dm2);font-family:'JetBrains Mono',monospace;margin-top:2px;" id="api-url-display"></div>
+
+    <!-- AUTH BAR — idêntico ao Jusaii -->
+    <div class="auth-bar" id="auth-bar">
+      <!-- Estado deslogado -->
+      <div id="auth-logged-out" style="display:flex;gap:6px;">
+        <button class="auth-btn" onclick="openModal('login')">Entrar</button>
+        <button class="auth-btn auth-btn-primary" onclick="openModal('register')">Registrar</button>
+      </div>
+      <!-- Estado logado -->
+      <div id="auth-logged-in" style="display:none;flex-direction:column;align-items:flex-end;gap:4px;">
+        <span id="user-info"></span>
+        <button class="auth-btn auth-btn-danger" onclick="logout()">Sair</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -324,21 +318,15 @@ textarea::placeholder{color:var(--dm2);}
 
 <!-- FREE RESULT SECTION -->
 <div id="sec-free">
-
-  <!-- Veredito -->
   <div class="verdict-card" id="verdict-box">
     <div class="verdict-title">⚖️ Veredito do Consultor IA</div>
     <div class="vline"></div>
     <div class="verdict-body" id="verdict-body"></div>
   </div>
-
-  <!-- Preview de 1 especialista com blur -->
   <div class="preview-wrap">
     <div class="preview-content" id="preview-body"></div>
     <div class="preview-blur"></div>
   </div>
-
-  <!-- Lock card -->
   <div class="lock-card">
     <div class="lock-icon">🔒</div>
     <div class="lock-title">Desbloqueie o relatório completo</div>
@@ -353,11 +341,7 @@ textarea::placeholder{color:var(--dm2);}
 <!-- FULL REPORT SECTION -->
 <div id="sec-full">
   <div class="report-card" id="full-report-box"></div>
-
-  <!-- Análises por agente -->
   <div id="agent-blocks-box"></div>
-
-  <!-- Downloads -->
   <div class="dl-row" id="dl-row">
     <a class="dl-btn" id="dl-md"   href="#" download="relatorio_wuzo.md">⬇ .MD</a>
     <a class="dl-btn" id="dl-txt"  href="#" download="relatorio_wuzo.txt">⬇ .TXT</a>
@@ -365,70 +349,196 @@ textarea::placeholder{color:var(--dm2);}
   </div>
 </div>
 
-<!-- SETUP TIP -->
-<div id="setup-tip" style="display:none;" class="card" style="margin-top:14px;">
-  <div class="inp-lbl" style="color:var(--rd);">⚠ BACKEND OFFLINE — SOLUÇÕES</div>
-  <div style="font-size:.82rem;line-height:1.9;margin-top:8px;color:var(--dm);">
-    <b style="color:var(--g);">Opção 1 — Groq gratuito (mais fácil):</b><br>
-    1. Crie conta em <a href="https://console.groq.com" target="_blank" style="color:var(--g);">console.groq.com</a><br>
-    2. Copie sua API Key<br>
-    3. Execute no console do browser (F12):<br>
-    <code style="background:rgba(0,0,0,.5);padding:6px 10px;border-radius:4px;display:block;margin:6px 0;font-size:.78rem;">window.setLocalKey("gsk_SUA_CHAVE_AQUI")</code>
-    <br>
-    <b style="color:var(--g);">Opção 2 — Backend Render (token de sessão):</b><br>
-    No Streamlit, abra o console e execute:<br>
-    <code style="background:rgba(0,0,0,.5);padding:6px 10px;border-radius:4px;display:block;margin:6px 0;font-size:.78rem;">window.setToken("token_da_sessao_streamlit")</code>
+</div><!-- /shell -->
+
+<!-- ═══════════════════════════════════════════════
+     MODAL LOGIN
+     ═══════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-login" onclick="handleOverlayClick(event,'login')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('login')">✕</button>
+    <div class="modal-title">⬡ Entrar no Wuzo</div>
+    <input class="modal-inp" type="email" id="login-email" placeholder="seu@email.com"
+      onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()">
+    <input class="modal-inp" type="password" id="login-pass" placeholder="Senha"
+      onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="modal-submit" onclick="doLogin()">ENTRAR</button>
+    <div class="modal-err" id="login-err"></div>
+    <div class="modal-switch">
+      Não tem conta? <a onclick="switchModal('login','register')">Criar conta</a>
+    </div>
   </div>
 </div>
 
-<script>
-// Mostra dica se backend offline após 8s
-setTimeout(()=>{
-  const el = document.getElementById("api-status");
-  if(el && el.innerHTML.includes("offline")){
-    document.getElementById("setup-tip").style.display="block";
-  }
-}, 8000);
-</script>
+<!-- ═══════════════════════════════════════════════
+     MODAL REGISTER
+     ═══════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-register" onclick="handleOverlayClick(event,'register')">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('register')">✕</button>
+    <div class="modal-title">⬡ Criar Conta</div>
+    <input class="modal-inp" type="email" id="reg-email" placeholder="seu@email.com"
+      onkeydown="if(event.key==='Enter')document.getElementById('reg-pass').focus()">
+    <input class="modal-inp" type="password" id="reg-pass" placeholder="Senha (mínimo 4 caracteres)"
+      onkeydown="if(event.key==='Enter')doRegister()">
+    <button class="modal-submit" onclick="doRegister()">CRIAR CONTA GRÁTIS</button>
+    <div class="modal-err" id="reg-err"></div>
+    <div class="modal-switch">
+      Já tem conta? <a onclick="switchModal('register','login')">Entrar</a>
+    </div>
+  </div>
+</div>
 
-</div><!-- /shell -->
-
-<!-- Marked.js -->
+<!-- Marked.js para renderizar markdown -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 
 <script>
 // ════════════════════════════════════════════════════════
-// CONFIG — lida com app.wuzo.com.br rodando no Render
-// As env vars já estão no Render: SAMBANOVA_API_KEY,
-// GEMINI_API_KEY, CEREBRAS_API_KEY, OPENAI_API_KEY
-// O Streamlit (app.py) serve como backend via query params
+// CONFIG
 // ════════════════════════════════════════════════════════
+const BACKEND_URL = "https://app.wuzo.com.br";  // Ajuste para o URL real do seu backend Flask
 
-// URL base do backend Render (app.wuzo.com.br / Streamlit)
-// O HTML chama o endpoint /agent/run do FastAPI (api.py)
-// OU chama direto o LLM se tiver chave local
-// ═══════════════════════════════════════════════════════
-// URL DO AGENT API — segundo serviço no Render
-// Formato: https://wuzo-api.onrender.com
-// (ajuste se você nomeou diferente no Render)
-// ═══════════════════════════════════════════════════════
-const BACKEND_URL = "https://wuzo-api.onrender.com";
-
-// Sem Groq — usamos apenas o backend Render
-const GROQ_FALLBACK_KEY = "";
-const STRIPE_URL   = ""; // URL do Stripe checkout — preenchida via /credits/purchase
-
-// Chave local (fallback se não tiver backend)
-// Deixar vazio para usar sempre o backend
-const LOCAL_LLM_KEY      = localStorage.getItem("wuzo_llm_key") || "";
-const LOCAL_LLM_PROVIDER = localStorage.getItem("wuzo_llm_prov") || "sambanova";
-
-// Token de sessão (pego da URL ou localStorage)
+// ════════════════════════════════════════════════════════
+// AUTH — Token via localStorage (padrão Jusaii)
+// ════════════════════════════════════════════════════════
 function getToken(){
+  // Prioridade: URL param (compatibilidade antiga Streamlit) → localStorage
   const p = new URLSearchParams(location.search);
-  const t = p.get("token") || p.get("t") || localStorage.getItem("wuzo_token") || "";
-  if (t) localStorage.setItem("wuzo_token", t);
-  return t;
+  const urlTok = p.get("token") || p.get("t") || "";
+  if(urlTok){ localStorage.setItem("wuzo_token", urlTok); return urlTok; }
+  return localStorage.getItem("wuzo_token") || "";
+}
+
+function setToken(tok){
+  localStorage.setItem("wuzo_token", tok);
+}
+
+function clearToken(){
+  localStorage.removeItem("wuzo_token");
+}
+
+// ── Modais ────────────────────────────────────────────
+function openModal(name){
+  document.getElementById("modal-"+name).classList.add("open");
+  const firstInput = document.querySelector("#modal-"+name+" .modal-inp");
+  if(firstInput) setTimeout(()=>firstInput.focus(), 80);
+}
+function closeModal(name){
+  document.getElementById("modal-"+name).classList.remove("open");
+  document.getElementById(name === "login" ? "login-err" : "reg-err").style.display = "none";
+}
+function switchModal(from, to){
+  closeModal(from);
+  openModal(to);
+}
+function handleOverlayClick(e, name){
+  if(e.target === e.currentTarget) closeModal(name);
+}
+
+function showModalErr(id, msg){
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = "block";
+}
+
+// ── Login ─────────────────────────────────────────────
+async function doLogin(){
+  const email = document.getElementById("login-email").value.trim();
+  const pass  = document.getElementById("login-pass").value.trim();
+  if(!email || !pass){ showModalErr("login-err","Preencha email e senha."); return; }
+
+  const btn = document.querySelector("#modal-login .modal-submit");
+  btn.textContent = "Entrando..."; btn.disabled = true;
+
+  try{
+    const r = await fetch(BACKEND_URL+"/api/auth/login",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({email, password:pass}),
+      signal: AbortSignal.timeout(10000),
+    });
+    const d = await r.json();
+    if(r.ok){
+      setToken(d.token);
+      closeModal("login");
+      updateUI();
+    } else {
+      showModalErr("login-err", d.error || "Erro ao entrar.");
+    }
+  }catch(e){
+    showModalErr("login-err","Sem conexão com o servidor.");
+  }finally{
+    btn.textContent = "ENTRAR"; btn.disabled = false;
+  }
+}
+
+// ── Register ──────────────────────────────────────────
+async function doRegister(){
+  const email = document.getElementById("reg-email").value.trim();
+  const pass  = document.getElementById("reg-pass").value.trim();
+  if(!email || !pass){ showModalErr("reg-err","Preencha email e senha."); return; }
+  if(pass.length < 4){ showModalErr("reg-err","Senha deve ter no mínimo 4 caracteres."); return; }
+
+  const btn = document.querySelector("#modal-register .modal-submit");
+  btn.textContent = "Criando conta..."; btn.disabled = true;
+
+  try{
+    const r = await fetch(BACKEND_URL+"/api/auth/register",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({email, password:pass}),
+      signal: AbortSignal.timeout(10000),
+    });
+    const d = await r.json();
+    if(r.ok){
+      setToken(d.token);
+      closeModal("register");
+      updateUI();
+    } else {
+      showModalErr("reg-err", d.error || "Erro ao criar conta.");
+    }
+  }catch(e){
+    showModalErr("reg-err","Sem conexão com o servidor.");
+  }finally{
+    btn.textContent = "CRIAR CONTA GRÁTIS"; btn.disabled = false;
+  }
+}
+
+// ── Logout ────────────────────────────────────────────
+function logout(){
+  clearToken();
+  updateUI();
+  document.getElementById("cred-num").textContent = "0";
+}
+
+// ── updateUI — mesma lógica do Jusaii ─────────────────
+async function updateUI(){
+  const tok = getToken();
+  if(!tok){
+    document.getElementById("auth-logged-out").style.display = "flex";
+    document.getElementById("auth-logged-in").style.display  = "none";
+    document.getElementById("cred-num").textContent = "0";
+    return;
+  }
+
+  try{
+    const r = await fetch(BACKEND_URL+"/api/auth/me",{
+      headers:{"Authorization":"Bearer "+tok},
+      signal: AbortSignal.timeout(8000),
+    });
+    if(!r.ok){ clearToken(); updateUI(); return; }
+
+    const d = await r.json();
+    document.getElementById("auth-logged-out").style.display = "none";
+    document.getElementById("auth-logged-in").style.display  = "flex";
+    document.getElementById("user-info").textContent = d.email;
+    document.getElementById("cred-num").textContent  = d.credits || "0";
+  }catch{
+    // Token pode estar ok mas backend offline — mantém como logado sem confirmar
+    document.getElementById("auth-logged-out").style.display = "none";
+    document.getElementById("auth-logged-in").style.display  = "flex";
+    document.getElementById("user-info").textContent = "...";
+  }
 }
 
 // ════════════════════════════════════════════════════════
@@ -453,38 +563,30 @@ const AGENTS = [
   {id:"redator_relatorios",      em:"✍️", nm:"Redator"},
 ];
 
-// ════════════════════════════════════════════════════════
-// STATE
-// ════════════════════════════════════════════════════════
 let agentOutputs = {};
-let freeMode = false;
 
 // ════════════════════════════════════════════════════════
 // INIT
 // ════════════════════════════════════════════════════════
 document.addEventListener("DOMContentLoaded", () => {
   buildGrid();
-  loadCredits();
-  // Pega token da URL
-  getToken();
+  updateUI();
   checkBackendHealth();
 });
 
 async function checkBackendHealth(){
   try{
-    const r = await fetch(BACKEND_URL+"/health", {signal: AbortSignal.timeout(6000)});
+    const r = await fetch(BACKEND_URL+"/health",{signal:AbortSignal.timeout(6000)});
     if(r.ok){
       const d = await r.json();
-      document.getElementById("api-status").innerHTML = 
+      document.getElementById("api-status").innerHTML =
         `<span style="color:var(--gr)">● API OK · ${d.llm||"llm"}</span>`;
       document.getElementById("api-url-display").textContent = BACKEND_URL;
       return;
     }
   }catch{}
-  document.getElementById("api-status").innerHTML = 
-    GROQ_FALLBACK_KEY
-      ? '<span style="color:var(--g)">● Groq Local Ativo</span>'
-      : '<span style="color:var(--rd)">● Backend offline — <a href="#setup-tip" style="color:var(--g)">ver solução</a></span>';
+  document.getElementById("api-status").innerHTML =
+    '<span style="color:var(--rd)">● Backend offline — verifique o deploy</span>';
 }
 
 // ════════════════════════════════════════════════════════
@@ -495,13 +597,12 @@ async function loadCredits(){
   if(!tok){ document.getElementById("cred-num").textContent = "0"; return; }
   try{
     const r = await fetch(BACKEND_URL+"/credits/balance",{
-      headers:{"Authorization":"Bearer "+tok}
+      headers:{"Authorization":"Bearer "+tok},
     });
     if(r.ok){
       const d = await r.json();
       const n = d.unlimited ? "∞" : (d.credits||0);
       document.getElementById("cred-num").textContent = n;
-      // Se tem crédito, deixa o btn-premium destaque
       if(d.credits > 0 || d.unlimited){
         document.getElementById("btn-buy").style.opacity = ".5";
       }
@@ -510,7 +611,7 @@ async function loadCredits(){
 }
 
 // ════════════════════════════════════════════════════════
-// LLM CALL — usa backend ou chave local
+// LLM CALL — chama o backend Flask /agent/run
 // ════════════════════════════════════════════════════════
 async function llm(system, user, tokens=600){
   const tok = getToken();
@@ -522,39 +623,20 @@ async function llm(system, user, tokens=600){
       method: "POST",
       headers,
       body: JSON.stringify({system, user, max_tokens: tokens}),
-      signal: AbortSignal.timeout(30000)
+      signal: AbortSignal.timeout(35000),
     });
     if(r.ok){
       const d = await r.json();
       return d.result || d.content || "❌ Resposta vazia";
     }
-    return "❌ HTTP " + r.status + " — verifique o serviço no Render";
+    // 401 → não logado
+    if(r.status === 401){
+      return "❌ Faça login para usar o consultor.";
+    }
+    return "❌ HTTP " + r.status + " — verifique o serviço";
   }catch(e){
     return "❌ " + e.message;
   }
-}
-
-async function llmDirect(system, user, tokens){
-  const PROVIDERS = {
-    sambanova:{url:"https://api.sambanova.ai/v1/chat/completions",  model:"Meta-Llama-3.3-70B-Instruct"},
-    openai:   {url:"https://api.openai.com/v1/chat/completions",    model:"gpt-4o-mini"},
-    groq:     {url:"https://api.groq.com/openai/v1/chat/completions",model:"llama-3.3-70b-versatile"},
-    gemini:   {url:"https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",model:"gemini-2.0-flash"},
-    cerebras: {url:"https://api.cerebras.ai/v1/chat/completions",   model:"llama3.1-8b"},
-  };
-  const ep = PROVIDERS[LOCAL_LLM_PROVIDER] || PROVIDERS.groq;
-  try{
-    const r = await fetch(ep.url,{
-      method:"POST",
-      headers:{"Content-Type":"application/json","Authorization":"Bearer "+LOCAL_LLM_KEY},
-      body:JSON.stringify({model:ep.model,max_tokens:tokens,temperature:.3,
-        messages:[{role:"system",content:system},{role:"user",content:user}]
-      })
-    });
-    if(!r.ok) return "❌ HTTP "+r.status;
-    const d = await r.json();
-    return d.choices?.[0]?.message?.content?.trim()||"";
-  }catch(e){ return "❌ "+e.message; }
 }
 
 // ════════════════════════════════════════════════════════
@@ -596,19 +678,16 @@ async function handleFree(){
   if(!txt){ showAlert("inp-alert","alert-info","✍️ Descreva sua situação financeira."); return; }
 
   hideAlert("inp-alert");
-  freeMode = true;
   agentOutputs = {};
   resetGrid();
   document.getElementById("sec-pipeline").style.display="block";
   document.getElementById("sec-free").style.display="none";
   document.getElementById("sec-full").style.display="none";
   setBtns(true);
-
   log("⬡ Análise gratuita iniciada...");
 
   const now = new Date().toLocaleDateString("pt-BR",{day:"2-digit",month:"long",year:"numeric"});
 
-  // ── 1. Veredito rápido (Consultor Sênior) ──────────────
   setAc("consultor_senior","thinking");
   log("👔 Consultor Sênior: analisando veredito...");
 
@@ -629,13 +708,11 @@ async function handleFree(){
     500
   );
   agentOutputs["consultor_senior"] = veredito;
-  setAc("consultor_senior","done");
+  setAc("consultor_senior", veredito.startsWith("❌")?"error":"done");
   log("✓ Consultor Sênior concluído","ok");
 
-  // ── 2. Preview de 1 especialista (Macroeconomia) ───────
   setAc("macroeconomia","thinking");
   log("🌐 Macroeconomia: iniciando análise...");
-
   const macroPreview = await llm(
     "Você é um economista-chefe especializado em Brasil. Responda em português com análise técnica.",
     `DATA: ${now}\nSITUAÇÃO DO USUÁRIO: ${txt}\n\n`+
@@ -651,22 +728,30 @@ async function handleFree(){
   setAc("macroeconomia","done");
   log("✓ Macroeconomia concluída","ok");
 
-  // ── Finaliza ───────────────────────────────────────────
+  // Registra uso gratuito se logado
+  const tok = getToken();
+  if(tok){
+    try{
+      await fetch(BACKEND_URL+"/credits/consume-free",{
+        method:"POST",
+        headers:{"Authorization":"Bearer "+tok},
+        signal: AbortSignal.timeout(5000),
+      });
+    }catch{}
+  }
+
   finishPipeline();
   renderFreeResult(veredito, macroPreview);
   setBtns(false);
 }
 
 function renderFreeResult(veredito, preview){
-  // Renderiza veredito
   const vBody = document.getElementById("verdict-body");
-  // Formata o texto estruturado em HTML
   vBody.innerHTML = veredito
     .replace(/^(VEREDITO|SAÚDE FINANCEIRA|URGÊNCIA|ÁREAS CRÍTICAS|FUNDAMENTO|SÍNTESE|RISCOS|PRÓXIMOS PASSOS):/gm,
       m=>`<div style="color:var(--g);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;margin-top:10px;margin-bottom:2px;">${m}</div>`)
     .replace(/\n/g,"<br>");
 
-  // Renderiza preview parcial
   const pBody = document.getElementById("preview-body");
   pBody.innerHTML = `<h3>📋 Análise — Macroeconomia</h3>`+
     (typeof marked!=="undefined" ? marked.parse(preview) : preview.replace(/\n/g,"<br>"));
@@ -679,26 +764,31 @@ function renderFreeResult(veredito, preview){
 // PREMIUM — 16 AGENTES
 // ════════════════════════════════════════════════════════
 async function handlePremium(){
-  // Verifica crédito
   const tok = getToken();
-  if(tok){
-    try{
-      const r=await fetch(BACKEND_URL+"/credits/balance",{headers:{"Authorization":"Bearer "+tok}});
-      if(r.ok){
-        const d=await r.json();
-        if(!d.unlimited && (d.credits||0)<1){
-          showAlert("inp-alert","alert-err","⭐ Créditos insuficientes. Compre 1 crédito por R$ 19,90.");
-          return;
-        }
-      }
-    }catch{}
+  if(!tok){
+    showAlert("inp-alert","alert-err","🔒 Faça login para usar o relatório premium.");
+    openModal("login");
+    return;
   }
+
+  // Verifica crédito
+  try{
+    const r=await fetch(BACKEND_URL+"/credits/balance",{
+      headers:{"Authorization":"Bearer "+tok},
+    });
+    if(r.ok){
+      const d=await r.json();
+      if(!d.unlimited && (d.credits||0)<1){
+        showAlert("inp-alert","alert-err","⭐ Créditos insuficientes. Compre 1 crédito por R$ 19,90.");
+        return;
+      }
+    }
+  }catch{}
 
   const txt = document.getElementById("txt-input").value.trim();
   if(!txt){ showAlert("inp-alert","alert-info","✍️ Descreva sua situação financeira."); return; }
 
   hideAlert("inp-alert");
-  freeMode = false;
   agentOutputs = {};
   resetGrid();
   document.getElementById("sec-pipeline").style.display="block";
@@ -718,71 +808,52 @@ async function handlePremium(){
     return out;
   }
 
-  // ── RAMO B — paralelo ──────────────────────────────────
   log("▶ Ramo B: Contexto Macro");
   await Promise.all([
-    ag("noticias_realtime",
-      "Analista de inteligência de mercado financeiro. Responda em português. Máx 250 palavras.",
+    ag("noticias_realtime","Analista de inteligência de mercado financeiro. Responda em português. Máx 250 palavras.",
       `DATA:${now}\nUSUÁRIO:${txt}\n\nPrincipais eventos macro recentes impactando investidores BR. Ativos mais afetados. Oportunidades e alertas.`),
-    ag("macroeconomia",
-      "Economista-chefe Brasil/EUA. Responda em português. Máx 280 palavras.",
+    ag("macroeconomia","Economista-chefe Brasil/EUA. Responda em português. Máx 280 palavras.",
       `DATA:${now}\nUSUÁRIO:${txt}\n\nSelic,IPCA,câmbio,Fed. Cenário macro atual BR. Projeções 6 meses. Impacto para esta situação específica.`),
-    ag("sentimento_mercado",
-      "Analista de sentimento de mercado. Responda em português. Máx 220 palavras.",
+    ag("sentimento_mercado","Analista de sentimento de mercado. Responda em português. Máx 220 palavras.",
       `DATA:${now}\nUSUÁRIO:${txt}\n\nSentimento dominante (bullish/bearish/neutro). Fear&Greed. Indicadores contrários. Recomendação de posicionamento.`),
   ]);
 
-  // ── RAMO A — paralelo ──────────────────────────────────
   log("▶ Ramo A: Mercado");
   const macro = (agentOutputs["macroeconomia"]||"").slice(0,200);
   await Promise.all([
-    ag("criptomoedas",
-      "Analista sênior de criptoativos. Responda em português. Máx 250 palavras.",
+    ag("criptomoedas","Analista sênior de criptoativos. Responda em português. Máx 250 palavras.",
       `DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nBTC,ETH,SOL. Oportunidades com preço-alvo. Riscos. % alocação sugerida para este perfil.`),
-    ag("acoes_equity",
-      "Analista de equity B3 e NYSE. Responda em português. Máx 260 palavras.",
+    ag("acoes_equity","Analista de equity B3 e NYSE. Responda em português. Máx 260 palavras.",
       `DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nSetores promissores. Ações-destaque com tickers BR e EUA. Riscos. Estratégia para este perfil.`),
-    ag("derivativos",
-      "Especialista em derivativos e hedge. Responda em português. Máx 200 palavras.",
+    ag("derivativos","Especialista em derivativos e hedge. Responda em português. Máx 200 palavras.",
       `DATA:${now}\nUSUÁRIO:${txt}\n\nDerivativos para proteção desta carteira. Estratégias de opções adequadas ao perfil. Riscos de alavancagem.`),
-    ag("rwa",
-      "Especialista em RWA tokenizados. Responda em português. Máx 200 palavras.",
+    ag("rwa","Especialista em RWA tokenizados. Responda em português. Máx 200 palavras.",
       `DATA:${now}\nUSUÁRIO:${txt}\n\nOportunidades RWA para este perfil. Plataformas BR relevantes. Riscos regulatórios e de liquidez.`),
-    ag("renda_fixa",
-      "Especialista renda fixa BR. Responda em português. Máx 260 palavras.",
+    ag("renda_fixa","Especialista renda fixa BR. Responda em português. Máx 260 palavras.",
       `DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nTesouro,CDB,LCI,LCA,CRI. Produtos mais adequados. Duration recomendada. IPCA+ vs prefixado vs CDI agora.`),
-    ag("imoveis_fiis",
-      "Especialista FIIs e imóveis. Responda em português. Máx 220 palavras.",
+    ag("imoveis_fiis","Especialista FIIs e imóveis. Responda em português. Máx 220 palavras.",
       `DATA:${now}\nUSUÁRIO:${txt}\n\nSegmentos FII mais atrativos. Melhores DY/VP. FII vs imóvel direto para este perfil.`),
   ]);
 
-  // ── RAMO C — paralelo ──────────────────────────────────
   log("▶ Ramo C: Finanças Pessoais");
   await Promise.all([
-    ag("quitacao_dividas",
-      "Especialista em quitação de dívidas. Responda em português. Máx 230 palavras.",
+    ag("quitacao_dividas","Especialista em quitação de dívidas. Responda em português. Máx 230 palavras.",
       `DATA:${now}\nUSUÁRIO:${txt}\n\nPriorização de dívidas. Método avalanche vs bola de neve para esta situação. Liberação de fluxo mensal.`),
-    ag("credito_financiamento",
-      "Especialista em crédito e financiamentos. Responda em português. Máx 220 palavras.",
+    ag("credito_financiamento","Especialista em crédito e financiamentos. Responda em português. Máx 220 palavras.",
       `DATA:${now}\nUSUÁRIO:${txt}\n\nCapacidade atual de crédito. Oportunidades de refinanciamento. Estratégias para melhorar score. Crédito imobiliário vs investimento.`),
-    ag("planejamento_tributario",
-      "Especialista IR e tributário PF Brasil. Responda em português. Máx 220 palavras.",
+    ag("planejamento_tributario","Especialista IR e tributário PF Brasil. Responda em português. Máx 220 palavras.",
       `DATA:${now}\nUSUÁRIO:${txt}\n\nEficiência tributária. Deduções IR disponíveis. PGBL vs VGBL para esta renda. Alertas de obrigações fiscais.`),
   ]);
 
-  // ── GUARDIÕES — paralelo ───────────────────────────────
   log("▶ Guardiões: Compliance + Auditor");
   const allOut = Object.entries(agentOutputs).map(([k,v])=>`[${k}]:${v.slice(0,150)}`).join("\n");
   await Promise.all([
-    ag("compliance_risco",
-      "Diretor de Compliance e Gestão de Riscos. Responda em português. Máx 200 palavras.",
+    ag("compliance_risco","Diretor de Compliance e Gestão de Riscos. Responda em português. Máx 200 palavras.",
       `ANÁLISES:\n${allOut.slice(0,1800)}\nUSUÁRIO:${txt}\n\nFlags de risco identificados. Inconsistências entre análises. Ajustes obrigatórios.`),
-    ag("auditor_dados",
-      "Auditor de Dados e Qualidade. Responda em português. Máx 160 palavras.",
+    ag("auditor_dados","Auditor de Dados e Qualidade. Responda em português. Máx 160 palavras.",
       `ANÁLISES:\n${allOut.slice(0,1800)}\n\nConsistência dos dados. Contradições. Confiabilidade geral (Alta/Média/Baixa) com justificativa.`),
   ]);
 
-  // ── CONSULTOR SÊNIOR ───────────────────────────────────
   log("▶ Consultor Sênior: veredito consolidado");
   const comp = (agentOutputs["compliance_risco"]||"").slice(0,300);
   await ag("consultor_senior",
@@ -795,7 +866,6 @@ async function handlePremium(){
     `5. Projeção patrimônio em 12 meses se seguir as recomendações`,
     650);
 
-  // ── REDATOR ────────────────────────────────────────────
   log("▶ Redator: gerando relatório completo...");
   const vfinal = (agentOutputs["consultor_senior"]||"").slice(0,500);
   const fullReport = await ag("redator_relatorios",
@@ -827,7 +897,7 @@ async function consumeCredit(){
     await fetch(BACKEND_URL+"/credits/consume",{
       method:"POST",
       headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
-      signal: AbortSignal.timeout(8000)
+      signal: AbortSignal.timeout(8000),
     });
   }catch{}
   await loadCredits();
@@ -837,7 +907,6 @@ function renderFullReport(md){
   const box = document.getElementById("full-report-box");
   box.innerHTML = typeof marked!=="undefined" ? marked.parse(md) : md.replace(/\n/g,"<br>");
 
-  // Blocos individuais dos agentes
   const blocksBox = document.getElementById("agent-blocks-box");
   blocksBox.innerHTML = "";
   const skip = new Set(["consultor_senior","redator_relatorios","compliance_risco","auditor_dados"]);
@@ -854,7 +923,6 @@ function renderFullReport(md){
     blocksBox.appendChild(div);
   });
 
-  // Downloads
   const ds = new Date().toISOString().slice(0,10).replace(/-/g,"");
   const bMd   = new Blob([md],{type:"text/markdown"});
   const bTxt  = new Blob([md],{type:"text/plain"});
@@ -864,9 +932,7 @@ function renderFullReport(md){
 h1,h2{color:#7a5200;border-bottom:1px solid #e0d0a0;padding-bottom:6px;margin:22px 0 10px;}
 h3{color:#3a3a3a;margin:16px 0 6px;}table{border-collapse:collapse;width:100%;margin:14px 0;}
 th{background:#f9f0dc;padding:8px 12px;text-align:left;border:1px solid #ddd;font-size:.85em;}
-td{padding:7px 12px;border:1px solid #eee;}tr:nth-child(even) td{background:#fafafa;}
-blockquote{border-left:3px solid #c9a84c;padding-left:14px;color:#666;margin:12px 0;}
-code{background:#f5f0e0;padding:2px 6px;border-radius:3px;font-family:monospace;font-size:.9em;}</style>
+td{padding:7px 12px;border:1px solid #eee;}tr:nth-child(even) td{background:#fafafa;}</style>
 </head><body><h1>WUZO — Relatório Financeiro</h1>
 <p style="color:#888;font-size:.85em;">Gerado em ${new Date().toLocaleDateString("pt-BR")} — 16 Agentes Especialistas</p>
 ${typeof marked!=="undefined" ? marked.parse(md) : md.replace(/\n/g,"<br>")}
@@ -882,6 +948,7 @@ ${typeof marked!=="undefined" ? marked.parse(md) : md.replace(/\n/g,"<br>")}
 
   document.getElementById("sec-full").style.display = "block";
   document.getElementById("sec-full").scrollIntoView({behavior:"smooth"});
+  setBtns(false);
 }
 
 // ════════════════════════════════════════════════════════
@@ -889,21 +956,25 @@ ${typeof marked!=="undefined" ? marked.parse(md) : md.replace(/\n/g,"<br>")}
 // ════════════════════════════════════════════════════════
 async function handleBuy(){
   const tok = getToken();
-  if(tok){
-    try{
-      const r = await fetch(BACKEND_URL+"/credits/purchase",{
-        method:"POST",
-        headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
-        body:JSON.stringify({quantity:1})
-      });
-      if(r.ok){
-        const d = await r.json();
-        if(d.checkout_url){ window.open(d.checkout_url,"_blank"); return; }
-      }
-    }catch{}
+  if(!tok){
+    openModal("login");
+    return;
   }
-  // Fallback: abre o Streamlit que tem o checkout
-  window.open(BACKEND_URL+"/?show_upgrade=1","_blank");
+  try{
+    const r = await fetch(BACKEND_URL+"/credits/purchase",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
+      body:JSON.stringify({quantity:1}),
+    });
+    if(r.ok){
+      const d = await r.json();
+      if(d.checkout_url){ window.open(d.checkout_url,"_blank"); return; }
+    }
+    const e = await r.json().catch(()=>({}));
+    alert(e.error || "Erro ao iniciar pagamento.");
+  }catch{
+    alert("Erro de conexão com o servidor.");
+  }
 }
 
 // ════════════════════════════════════════════════════════
@@ -945,18 +1016,15 @@ function showAlert(id,cls,msg){
 }
 function hideAlert(id){ document.getElementById(id).style.display="none"; }
 
-// ════════════════════════════════════════════════════════
-// SETUP LOCAL KEY (para debug — abre console e rode:
-//   window.setLocalKey("gsk_xxx", "groq")
-// ════════════════════════════════════════════════════════
+// Debug helpers
 window.setLocalKey = (key, provider="groq") => {
   localStorage.setItem("wuzo_llm_key", key);
   localStorage.setItem("wuzo_llm_prov", provider);
   location.reload();
 };
 window.setToken = (tok) => {
-  localStorage.setItem("wuzo_token", tok);
-  location.reload();
+  setToken(tok);
+  updateUI();
 };
 </script>
 </body>
