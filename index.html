@@ -7,7 +7,6 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
-/* ── RESET + VARS ──────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
   --bg:#030302; --card:#0d0c0a; --card2:#131108;
@@ -18,83 +17,53 @@
   --r:10px; --r2:6px;
 }
 html,body{background:var(--bg);color:var(--tx);font-family:'Outfit',sans-serif;min-height:100vh;}
-body{
-  background-image:
-    radial-gradient(ellipse 80% 50% at 0% 10%,rgba(201,168,76,.055) 0%,transparent 55%),
-    radial-gradient(ellipse 60% 60% at 100% 90%,rgba(201,168,76,.04) 0%,transparent 55%);
-}
+body{background-image:radial-gradient(ellipse 80% 50% at 0% 10%,rgba(201,168,76,.055) 0%,transparent 55%),radial-gradient(ellipse 60% 60% at 100% 90%,rgba(201,168,76,.04) 0%,transparent 55%);}
 ::-webkit-scrollbar{width:3px;height:3px;}
 ::-webkit-scrollbar-thumb{background:var(--gd);border-radius:2px;}
 
-/* ── LAYOUT ──────────────────────────────────── */
 .shell{max-width:680px;margin:0 auto;padding:20px 14px 80px;}
 
-/* ── HEADER ──────────────────────────────────── */
-.hdr{display:flex;align-items:center;justify-content:space-between;
-  padding-bottom:14px;border-bottom:1px solid var(--bd);margin-bottom:20px;}
-.logo{
-  font-size:1.6rem;font-weight:900;letter-spacing:8px;
-  background:linear-gradient(135deg,#7a5a1c,#f5ead0 35%,#c9a84c 55%,#f5ead0 75%,#7a5a1c);
-  background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  animation:shimmer 4s linear infinite;
-}
+/* HEADER */
+.hdr{display:flex;align-items:flex-start;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid var(--bd);margin-bottom:20px;gap:12px;flex-wrap:wrap;}
+.logo{font-size:1.6rem;font-weight:900;letter-spacing:8px;background:linear-gradient(135deg,#7a5a1c,#f5ead0 35%,#c9a84c 55%,#f5ead0 75%,#7a5a1c);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
 @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
 .logo-sub{font-family:'JetBrains Mono',monospace;font-size:.42rem;letter-spacing:3px;color:var(--dm2);margin-top:2px;}
 .hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
-.credit-badge{
-  background:rgba(201,168,76,.08);border:1px solid var(--bd);
-  border-radius:20px;padding:5px 12px;
-  font-size:.68rem;font-weight:700;letter-spacing:1px;color:var(--g);
-  font-family:'JetBrains Mono',monospace;
-}
-.status-dot{display:flex;align-items:center;gap:5px;font-size:.6rem;color:var(--gr);letter-spacing:1px;}
-.status-dot::before{content:'';width:6px;height:6px;background:var(--gr);border-radius:50%;
-  box-shadow:0 0 6px var(--gr);animation:blink 2s ease-in-out infinite;}
+.credit-badge{background:rgba(201,168,76,.08);border:1px solid var(--bd);border-radius:20px;padding:5px 12px;font-size:.68rem;font-weight:700;letter-spacing:1px;color:var(--g);font-family:'JetBrains Mono',monospace;}
+.status-dot{display:flex;align-items:center;gap:5px;font-size:.6rem;letter-spacing:1px;color:var(--gr);}
+.status-dot::before{content:'';width:6px;height:6px;background:currentColor;border-radius:50%;animation:blink 2s ease-in-out infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
 
-/* ── AUTH BAR ─────────────────────────────────── */
-.auth-bar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
-.auth-btn{
-  padding:6px 14px;border-radius:20px;border:1px solid var(--bd);
-  font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:1.5px;
-  text-transform:uppercase;cursor:pointer;transition:all .2s;background:transparent;color:var(--dm);
-}
+/* AUTH BAR */
+.auth-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
+.auth-btn{padding:6px 14px;border-radius:20px;border:1px solid var(--bd);font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;background:transparent;color:var(--dm);}
 .auth-btn:hover{border-color:var(--g);color:var(--g);}
-.auth-btn-primary{background:rgba(201,168,76,.1);border-color:var(--gd);color:var(--g);}
-.auth-btn-primary:hover{background:rgba(201,168,76,.18);border-color:var(--g);}
-.auth-btn-danger{border-color:rgba(224,82,82,.3);color:#e08080;}
-.auth-btn-danger:hover{border-color:var(--rd);color:var(--rd);}
-#user-info{font-size:.6rem;color:var(--dm);font-family:'JetBrains Mono',monospace;letter-spacing:.5px;}
+.auth-btn.primary{background:rgba(201,168,76,.1);border-color:var(--gd);color:var(--g);}
+.auth-btn.primary:hover{background:rgba(201,168,76,.2);}
+.auth-btn.danger{border-color:rgba(224,82,82,.3);color:#e08080;}
+.auth-btn.danger:hover{border-color:var(--rd);color:var(--rd);}
+#user-info{font-size:.6rem;color:var(--dm);font-family:'JetBrains Mono',monospace;letter-spacing:.5px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
-/* ── CARD ────────────────────────────────────── */
-.card{
-  background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));
-  border:1px solid var(--bd);border-radius:var(--r);
-  padding:18px 16px;margin-bottom:14px;position:relative;overflow:hidden;
-}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(201,168,76,.28),transparent);}
+/* WAKE-UP BANNER */
+#wake-banner{display:none;background:rgba(201,168,76,.06);border:1px solid var(--bd);border-radius:var(--r);padding:14px 16px;margin-bottom:14px;text-align:center;}
+#wake-banner .wt{font-size:.82rem;color:var(--g);margin-bottom:6px;}
+#wake-banner .ws{font-size:.72rem;color:var(--dm);}
+.wake-spin{display:inline-block;width:16px;height:16px;border:2px solid rgba(201,168,76,.3);border-top-color:var(--g);border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-/* ── TEXTAREA ────────────────────────────────── */
-.inp-lbl{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:2px;
-  color:var(--dm2);text-transform:uppercase;margin-bottom:5px;}
-textarea{
-  width:100%;background:rgba(0,0,0,.35);border:1px solid var(--bd);
-  border-radius:var(--r2);color:var(--tx);font-family:'Outfit',sans-serif;
-  font-size:.92rem;padding:14px 16px;resize:vertical;min-height:110px;outline:none;
-  line-height:1.8;transition:border-color .2s,box-shadow .2s;margin-bottom:4px;
-}
+/* CARD */
+.card{background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));border:1px solid var(--bd);border-radius:var(--r);padding:18px 16px;margin-bottom:14px;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.28),transparent);}
+
+/* TEXTAREA */
+.inp-lbl{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:2px;color:var(--dm2);text-transform:uppercase;margin-bottom:5px;}
+textarea{width:100%;background:rgba(0,0,0,.35);border:1px solid var(--bd);border-radius:var(--r2);color:var(--tx);font-family:'Outfit',sans-serif;font-size:.92rem;padding:14px 16px;resize:vertical;min-height:110px;outline:none;line-height:1.8;transition:border-color .2s,box-shadow .2s;margin-bottom:4px;}
 textarea:focus{border-color:rgba(201,168,76,.4);box-shadow:0 0 0 3px rgba(201,168,76,.07);}
 textarea::placeholder{color:var(--dm2);}
 
-/* ── BUTTONS ─────────────────────────────────── */
+/* BUTTONS */
 .btn-row{display:flex;flex-direction:column;gap:12px;margin-top:22px;padding-top:6px;}
-.btn{
-  display:flex;align-items:center;justify-content:center;gap:8px;
-  width:100%;padding:15px 20px;border-radius:50px;border:none;cursor:pointer;
-  font-family:'Outfit',sans-serif;font-weight:800;font-size:.85rem;letter-spacing:1px;
-  transition:all .2s;text-decoration:none;
-}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px 20px;border-radius:50px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:800;font-size:.85rem;letter-spacing:1px;transition:all .2s;text-decoration:none;}
 .btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important;}
 .btn-free{background:linear-gradient(135deg,#1a3a8a,#2255cc);color:#fff;box-shadow:0 4px 20px rgba(34,85,204,.3);}
 .btn-free:hover:not(:disabled){background:linear-gradient(135deg,#1e44a0,#2a60e0);transform:translateY(-1px);box-shadow:0 6px 24px rgba(34,85,204,.45);}
@@ -103,7 +72,7 @@ textarea::placeholder{color:var(--dm2);}
 .btn-buy{background:linear-gradient(135deg,#1a7a3a,#22a04d);color:#fff;box-shadow:0 4px 20px rgba(34,160,77,.25);}
 .btn-buy:hover:not(:disabled){background:linear-gradient(135deg,#1e8a42,#27b556);transform:translateY(-1px);box-shadow:0 6px 24px rgba(34,160,77,.4);}
 
-/* ── AGENT GRID ──────────────────────────────── */
+/* AGENT GRID */
 .agent-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0;}
 @media(max-width:420px){.agent-grid{grid-template-columns:repeat(2,1fr);}}
 .ac{background:rgba(0,0,0,.4);border:1px solid rgba(40,28,10,.7);border-radius:8px;padding:10px 5px;text-align:center;transition:border-color .3s,box-shadow .3s;}
@@ -113,55 +82,37 @@ textarea::placeholder{color:var(--dm2);}
 @keyframes pg{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,.4);}50%{box-shadow:0 0 10px rgba(201,168,76,.2);}}
 .ac-em{font-size:1.2rem;line-height:1;}
 .ac-nm{font-size:.5rem;color:#c0b89e;letter-spacing:.5px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;}
-.ac-st{font-size:.55rem;font-weight:700;margin-top:4px;color:rgba(40,28,10,.9);}
+.ac-st{font-size:.55rem;font-weight:700;margin-top:4px;}
 .ac.thinking .ac-st{color:var(--g);}
 .ac.done .ac-st{color:var(--gr);}
 .ac.error .ac-st{color:var(--rd);}
 
-/* ── PROGRESS ────────────────────────────────── */
 .prog{background:rgba(201,168,76,.07);border-radius:3px;height:4px;overflow:hidden;margin:8px 0;}
 .prog-fill{height:100%;background:linear-gradient(90deg,var(--gdd),var(--g),var(--g2));border-radius:3px;transition:width .4s;width:0%;}
 
-/* ── LOG ─────────────────────────────────────── */
-.log{background:rgba(0,0,0,.5);border:1px solid var(--bd);border-radius:var(--r2);
-  padding:8px 12px;max-height:90px;overflow-y:auto;
-  font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--dm);margin:8px 0;}
+.log{background:rgba(0,0,0,.5);border:1px solid var(--bd);border-radius:var(--r2);padding:8px 12px;max-height:90px;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--dm);margin:8px 0;}
 .ll{padding:1px 0;border-bottom:1px solid rgba(201,168,76,.04);}
 .ll:last-child{border:none;color:var(--g);}
 .ll.ok{color:var(--gr);}
 .ll.er{color:var(--rd);}
 
-/* ── FREE RESULT ─────────────────────────────── */
 #sec-free{display:none;}
-.verdict-card{
-  background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.01));
-  border:1px solid var(--bd2);border-radius:var(--r);border-left:3px solid var(--g);
-  padding:18px 16px;margin-bottom:14px;position:relative;overflow:hidden;
-}
+.verdict-card{background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.01));border:1px solid var(--bd2);border-radius:var(--r);border-left:3px solid var(--g);padding:18px 16px;margin-bottom:14px;position:relative;overflow:hidden;}
 .verdict-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent);}
 .verdict-title{color:var(--g);font-size:1rem;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:12px;font-family:'Outfit',sans-serif;letter-spacing:.5px;}
 .verdict-body{font-size:.88rem;line-height:1.95;color:var(--tx);}
 .verdict-body strong,.verdict-body b{color:var(--g2);}
 .vline{height:1px;background:rgba(201,168,76,.15);margin:10px 0;}
 
-/* ── PREVIEW CARD ────────────────────────────── */
 .preview-wrap{position:relative;overflow:hidden;border-radius:var(--r);}
-.preview-content{
-  background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));
-  border:1px solid var(--bd);border-radius:var(--r);border-left:3px solid var(--g);
-  padding:18px 16px;font-size:.88rem;line-height:1.9;color:var(--tx);max-height:240px;overflow:hidden;
-}
+.preview-content{background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));border:1px solid var(--bd);border-radius:var(--r);border-left:3px solid var(--g);padding:18px 16px;font-size:.88rem;line-height:1.9;color:var(--tx);max-height:240px;overflow:hidden;}
 .preview-content h3{color:var(--g);margin-bottom:8px;font-family:'Outfit',sans-serif;}
-.preview-content strong,.preview-content b{color:var(--g2);}
-.preview-blur{position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(to bottom,transparent,rgba(3,3,2,.97));display:flex;align-items:flex-end;padding-bottom:0;}
-
-/* ── LOCK CARD ───────────────────────────────── */
+.preview-blur{position:absolute;bottom:0;left:0;right:0;height:120px;background:linear-gradient(to bottom,transparent,rgba(3,3,2,.97));}
 .lock-card{background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.02));border:1px solid var(--bd2);border-radius:var(--r);padding:22px 18px;text-align:center;margin-top:-4px;}
 .lock-icon{font-size:1.8rem;margin-bottom:8px;}
 .lock-title{color:var(--g);font-size:1rem;font-weight:800;margin-bottom:4px;}
 .lock-sub{color:var(--dm);font-size:.8rem;margin-bottom:16px;}
 
-/* ── FULL REPORT ─────────────────────────────── */
 #sec-full{display:none;}
 .report-card{background:rgba(201,168,76,.015);border:1px solid var(--bd);border-radius:var(--r);padding:22px 18px;margin-bottom:14px;}
 .report-card h1,.report-card h2{font-family:'Outfit',sans-serif;color:var(--g);border-bottom:1px solid var(--bd);padding-bottom:5px;margin:16px 0 8px;font-size:1rem;}
@@ -176,82 +127,41 @@ textarea::placeholder{color:var(--dm2);}
 .report-card tr:nth-child(even) td{background:rgba(201,168,76,.01);}
 .report-card blockquote{border-left:2px solid var(--g);padding-left:12px;color:var(--dm);margin:10px 0;font-style:italic;}
 .report-card code{background:rgba(201,168,76,.08);padding:2px 5px;border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:.82em;}
-
-/* ── AGENT BLOCKS ────────────────────────────── */
 .agent-block{background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));border:1px solid var(--bd);border-radius:var(--r);border-left:3px solid var(--g);padding:16px;margin-bottom:10px;position:relative;overflow:hidden;}
 .agent-block::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.25),transparent);}
-.agent-block-title{color:var(--g);font-size:.85rem;font-weight:700;display:flex;align-items:center;gap:6px;margin-bottom:10px;font-family:'Outfit',sans-serif;letter-spacing:.5px;}
+.agent-block-title{color:var(--g);font-size:.85rem;font-weight:700;display:flex;align-items:center;gap:6px;margin-bottom:10px;font-family:'Outfit',sans-serif;}
 .agent-block-body{font-size:.84rem;line-height:1.9;color:var(--tx);}
 .agent-block-body strong,.agent-block-body b{color:var(--g2);}
 .agent-block-body h1,.agent-block-body h2,.agent-block-body h3{color:var(--g);font-family:'Outfit',sans-serif;margin:10px 0 5px;font-size:.9rem;}
 .agent-block-body ul,.agent-block-body ol{padding-left:16px;margin:6px 0;}
-.agent-block-body li{margin-bottom:3px;}
-
-/* ── DOWNLOAD ROW ────────────────────────────── */
 .dl-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
 .dl-btn{flex:1;min-width:120px;text-align:center;padding:10px;border-radius:50px;font-weight:700;font-size:.65rem;letter-spacing:1px;text-transform:uppercase;text-decoration:none;border:1px solid var(--bd);color:var(--g);background:rgba(201,168,76,.05);transition:all .2s;}
 .dl-btn:hover{border-color:var(--g);background:rgba(201,168,76,.1);}
-
-/* ── PILL ────────────────────────────────────── */
 .pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
 .pill-run{background:rgba(201,168,76,.1);color:var(--g);}
 .pill-done{background:rgba(74,175,120,.1);color:var(--gr);}
-
-/* ── ALERT ───────────────────────────────────── */
 .alert{padding:10px 14px;border-radius:var(--r2);border-left:3px solid;margin:8px 0;font-size:.82rem;display:none;}
 .alert-info{border-color:var(--g);background:rgba(201,168,76,.05);color:var(--g2);}
-.alert-err {border-color:var(--rd);background:rgba(224,82,82,.05);color:#f5a0a0;}
-.alert-ok  {border-color:var(--gr);background:rgba(74,175,120,.05);color:#a0f5c0;}
-
-/* ── SPINNER ─────────────────────────────────── */
+.alert-err{border-color:var(--rd);background:rgba(224,82,82,.05);color:#f5a0a0;}
+.alert-ok{border-color:var(--gr);background:rgba(74,175,120,.05);color:#a0f5c0;}
 .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(201,168,76,.3);border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg)}}
 
-/* ═══════════════════════════════════════════════
-   MODAIS — Login / Register (padrão Jusaii)
-   ═══════════════════════════════════════════════ */
-.modal-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,.82);
-  display:none;align-items:center;justify-content:center;z-index:1000;padding:16px;
-}
+/* MODAIS */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;z-index:1000;padding:16px;}
 .modal-overlay.open{display:flex;}
-.modal-box{
-  background:var(--card);border:1px solid var(--bd2);border-radius:14px;
-  padding:28px 24px;width:100%;max-width:360px;position:relative;
-}
+.modal-box{background:var(--card);border:1px solid var(--bd2);border-radius:14px;padding:28px 24px;width:100%;max-width:360px;position:relative;}
 .modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--g),transparent);}
-.modal-title{
-  font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:800;color:var(--g);
-  letter-spacing:.5px;margin-bottom:20px;
-}
-.modal-inp{
-  width:100%;background:rgba(0,0,0,.4);border:1px solid var(--bd);border-radius:var(--r2);
-  color:var(--tx);font-family:'Outfit',sans-serif;font-size:.9rem;padding:12px 14px;
-  outline:none;transition:border-color .2s;margin-bottom:10px;
-}
+.modal-title{font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:800;color:var(--g);letter-spacing:.5px;margin-bottom:20px;}
+.modal-inp{width:100%;background:rgba(0,0,0,.4);border:1px solid var(--bd);border-radius:var(--r2);color:var(--tx);font-family:'Outfit',sans-serif;font-size:.9rem;padding:12px 14px;outline:none;transition:border-color .2s;margin-bottom:10px;}
 .modal-inp:focus{border-color:rgba(201,168,76,.5);}
 .modal-inp::placeholder{color:var(--dm2);}
-.modal-submit{
-  width:100%;padding:13px;border-radius:50px;border:none;cursor:pointer;
-  background:linear-gradient(135deg,#b8860b,#e8c97a,#f5dfa0,#e8c97a,#8a6a2c);
-  background-size:200% auto;color:#0d0900;font-family:'Outfit',sans-serif;
-  font-weight:800;font-size:.85rem;letter-spacing:1px;margin-top:6px;
-  animation:shimmer 3s linear infinite;transition:box-shadow .2s;
-}
-.modal-submit:hover{box-shadow:0 4px 20px rgba(201,168,76,.4);}
-.modal-switch{
-  text-align:center;margin-top:14px;font-size:.75rem;color:var(--dm);
-}
+.modal-submit{width:100%;padding:13px;border-radius:50px;border:none;cursor:pointer;background:linear-gradient(135deg,#b8860b,#e8c97a,#f5dfa0,#e8c97a,#8a6a2c);background-size:200% auto;color:#0d0900;font-family:'Outfit',sans-serif;font-weight:800;font-size:.85rem;letter-spacing:1px;margin-top:6px;animation:shimmer 3s linear infinite;transition:box-shadow .2s;}
+.modal-submit:hover:not(:disabled){box-shadow:0 4px 20px rgba(201,168,76,.4);}
+.modal-submit:disabled{opacity:.5;cursor:not-allowed;}
+.modal-switch{text-align:center;margin-top:14px;font-size:.75rem;color:var(--dm);}
 .modal-switch a{color:var(--g);cursor:pointer;text-decoration:underline;}
-.modal-err{
-  background:rgba(224,82,82,.08);border:1px solid rgba(224,82,82,.3);
-  border-radius:var(--r2);padding:8px 12px;font-size:.78rem;color:#f5a0a0;
-  margin-top:8px;display:none;
-}
-.modal-close{
-  position:absolute;top:14px;right:16px;background:none;border:none;
-  color:var(--dm);font-size:1.1rem;cursor:pointer;line-height:1;
-}
+.modal-err{background:rgba(224,82,82,.08);border:1px solid rgba(224,82,82,.3);border-radius:var(--r2);padding:8px 12px;font-size:.78rem;color:#f5a0a0;margin-top:8px;display:none;}
+.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--dm);font-size:1.1rem;cursor:pointer;line-height:1;}
 .modal-close:hover{color:var(--g);}
 </style>
 </head>
@@ -266,46 +176,41 @@ textarea::placeholder{color:var(--dm2);}
   </div>
   <div class="hdr-right">
     <div class="credit-badge">⭐ PREMIUM: <span id="cred-num">0</span></div>
-    <div class="status-dot" id="api-status">● Verificando...</div>
-    <div style="font-size:.45rem;color:var(--dm2);font-family:'JetBrains Mono',monospace;margin-top:2px;" id="api-url-display"></div>
+    <div id="api-status" class="status-dot">Verificando...</div>
 
-    <!-- AUTH BAR — idêntico ao Jusaii -->
-    <div class="auth-bar" id="auth-bar">
-      <!-- Estado deslogado -->
+    <!-- AUTH BAR -->
+    <div class="auth-bar">
       <div id="auth-logged-out" style="display:flex;gap:6px;">
         <button class="auth-btn" onclick="openModal('login')">Entrar</button>
-        <button class="auth-btn auth-btn-primary" onclick="openModal('register')">Registrar</button>
+        <button class="auth-btn primary" onclick="openModal('register')">Registrar</button>
       </div>
-      <!-- Estado logado -->
       <div id="auth-logged-in" style="display:none;flex-direction:column;align-items:flex-end;gap:4px;">
         <span id="user-info"></span>
-        <button class="auth-btn auth-btn-danger" onclick="logout()">Sair</button>
+        <button class="auth-btn danger" onclick="logout()">Sair</button>
       </div>
     </div>
   </div>
 </div>
 
+<!-- BANNER: RENDER ACORDANDO -->
+<div id="wake-banner">
+  <div class="wt"><span class="wake-spin"></span> Acordando o servidor...</div>
+  <div class="ws">O servidor Render estava em repouso. Aguarde ~30 segundos enquanto ele inicializa. Tentativa <span id="wake-attempt">1</span>/6</div>
+</div>
+
 <!-- INPUT CARD -->
 <div class="card" id="card-input">
   <div class="inp-lbl">Descreva sua situação financeira</div>
-  <textarea id="txt-input"
-    placeholder="Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado."></textarea>
-
+  <textarea id="txt-input" placeholder="Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado."></textarea>
   <div class="btn-row">
-    <button class="btn btn-free" id="btn-free" onclick="handleFree()">
-      ⚡ ANÁLISE GRATUITA
-    </button>
-    <button class="btn btn-premium" id="btn-premium" onclick="handlePremium()">
-      ⭐ RELATÓRIO PREMIUM (16 ESP.)
-    </button>
-    <button class="btn btn-buy" id="btn-buy" onclick="handleBuy()">
-      🛒 COMPRAR (R$ 19,90)
-    </button>
+    <button class="btn btn-free" id="btn-free" onclick="handleFree()">⚡ ANÁLISE GRATUITA</button>
+    <button class="btn btn-premium" id="btn-premium" onclick="handlePremium()">⭐ RELATÓRIO PREMIUM (16 ESP.)</button>
+    <button class="btn btn-buy" id="btn-buy" onclick="handleBuy()">🛒 COMPRAR (R$ 19,90)</button>
   </div>
   <div class="alert alert-err" id="inp-alert"></div>
 </div>
 
-<!-- PIPELINE SECTION -->
+<!-- PIPELINE -->
 <div class="card" id="sec-pipeline" style="display:none;">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
     <span style="font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;color:var(--dm2);">AGENTES EM EXECUÇÃO</span>
@@ -316,9 +221,9 @@ textarea::placeholder{color:var(--dm2);}
   <div class="log" id="log-feed"><div class="ll">⬡ Iniciando...</div></div>
 </div>
 
-<!-- FREE RESULT SECTION -->
+<!-- FREE RESULT -->
 <div id="sec-free">
-  <div class="verdict-card" id="verdict-box">
+  <div class="verdict-card">
     <div class="verdict-title">⚖️ Veredito do Consultor IA</div>
     <div class="vline"></div>
     <div class="verdict-body" id="verdict-body"></div>
@@ -338,11 +243,11 @@ textarea::placeholder{color:var(--dm2);}
   </div>
 </div>
 
-<!-- FULL REPORT SECTION -->
+<!-- FULL REPORT -->
 <div id="sec-full">
   <div class="report-card" id="full-report-box"></div>
   <div id="agent-blocks-box"></div>
-  <div class="dl-row" id="dl-row">
+  <div class="dl-row">
     <a class="dl-btn" id="dl-md"   href="#" download="relatorio_wuzo.md">⬇ .MD</a>
     <a class="dl-btn" id="dl-txt"  href="#" download="relatorio_wuzo.txt">⬇ .TXT</a>
     <a class="dl-btn" id="dl-html" href="#" download="relatorio_wuzo.html">⬇ .HTML</a>
@@ -351,10 +256,8 @@ textarea::placeholder{color:var(--dm2);}
 
 </div><!-- /shell -->
 
-<!-- ═══════════════════════════════════════════════
-     MODAL LOGIN
-     ═══════════════════════════════════════════════ -->
-<div class="modal-overlay" id="modal-login" onclick="handleOverlayClick(event,'login')">
+<!-- MODAL LOGIN -->
+<div class="modal-overlay" id="modal-login" onclick="if(event.target===this)closeModal('login')">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('login')">✕</button>
     <div class="modal-title">⬡ Entrar no Wuzo</div>
@@ -362,103 +265,88 @@ textarea::placeholder{color:var(--dm2);}
       onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()">
     <input class="modal-inp" type="password" id="login-pass" placeholder="Senha"
       onkeydown="if(event.key==='Enter')doLogin()">
-    <button class="modal-submit" onclick="doLogin()">ENTRAR</button>
+    <button class="modal-submit" id="btn-login-submit" onclick="doLogin()">ENTRAR</button>
     <div class="modal-err" id="login-err"></div>
-    <div class="modal-switch">
-      Não tem conta? <a onclick="switchModal('login','register')">Criar conta</a>
-    </div>
+    <div class="modal-switch">Não tem conta? <a onclick="switchModal('login','register')">Criar conta</a></div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════
-     MODAL REGISTER
-     ═══════════════════════════════════════════════ -->
-<div class="modal-overlay" id="modal-register" onclick="handleOverlayClick(event,'register')">
+<!-- MODAL REGISTER -->
+<div class="modal-overlay" id="modal-register" onclick="if(event.target===this)closeModal('register')">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('register')">✕</button>
-    <div class="modal-title">⬡ Criar Conta</div>
+    <div class="modal-title">⬡ Criar Conta Grátis</div>
     <input class="modal-inp" type="email" id="reg-email" placeholder="seu@email.com"
       onkeydown="if(event.key==='Enter')document.getElementById('reg-pass').focus()">
     <input class="modal-inp" type="password" id="reg-pass" placeholder="Senha (mínimo 4 caracteres)"
       onkeydown="if(event.key==='Enter')doRegister()">
-    <button class="modal-submit" onclick="doRegister()">CRIAR CONTA GRÁTIS</button>
+    <button class="modal-submit" id="btn-reg-submit" onclick="doRegister()">CRIAR CONTA GRÁTIS</button>
     <div class="modal-err" id="reg-err"></div>
-    <div class="modal-switch">
-      Já tem conta? <a onclick="switchModal('register','login')">Entrar</a>
-    </div>
+    <div class="modal-switch">Já tem conta? <a onclick="switchModal('register','login')">Entrar</a></div>
   </div>
 </div>
 
-<!-- Marked.js para renderizar markdown -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 
 <script>
-// ════════════════════════════════════════════════════════
-// CONFIG
-// ════════════════════════════════════════════════════════
-const BACKEND_URL = "https://app.wuzo.com.br";  // Ajuste para o URL real do seu backend Flask
+// ══════════════════════════════════════════════════════════════════════
+// ⚠ ATENÇÃO: ALTERE ESTA URL PARA O SEU SERVIÇO NO RENDER
+// Exemplo: "https://wuzo-api.onrender.com"
+// ══════════════════════════════════════════════════════════════════════
+const BACKEND_URL = (()=>{
+  // Tenta detectar automaticamente se estiver no mesmo domínio
+  const stored = localStorage.getItem("wuzo_backend_url");
+  if(stored) return stored;
+  // PADRÃO — altere para a URL real do seu Render
+  return "https://wuzo-api.onrender.com";
+})();
 
-// ════════════════════════════════════════════════════════
-// AUTH — Token via localStorage (padrão Jusaii)
-// ════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════
+// AUTH — idêntico ao Jusaii (token no localStorage)
+// ══════════════════════════════════════════════════════════════════════
 function getToken(){
-  // Prioridade: URL param (compatibilidade antiga Streamlit) → localStorage
+  // Suporta token via URL (compatibilidade com Streamlit antigo) e localStorage
   const p = new URLSearchParams(location.search);
   const urlTok = p.get("token") || p.get("t") || "";
   if(urlTok){ localStorage.setItem("wuzo_token", urlTok); return urlTok; }
   return localStorage.getItem("wuzo_token") || "";
 }
+function setToken(t){ localStorage.setItem("wuzo_token", t); }
+function clearToken(){ localStorage.removeItem("wuzo_token"); }
 
-function setToken(tok){
-  localStorage.setItem("wuzo_token", tok);
-}
-
-function clearToken(){
-  localStorage.removeItem("wuzo_token");
-}
-
-// ── Modais ────────────────────────────────────────────
+// ── Modais ──────────────────────────────────────────────────────────
 function openModal(name){
   document.getElementById("modal-"+name).classList.add("open");
-  const firstInput = document.querySelector("#modal-"+name+" .modal-inp");
-  if(firstInput) setTimeout(()=>firstInput.focus(), 80);
+  const first = document.querySelector("#modal-"+name+" .modal-inp");
+  if(first) setTimeout(()=>first.focus(), 80);
 }
 function closeModal(name){
   document.getElementById("modal-"+name).classList.remove("open");
-  document.getElementById(name === "login" ? "login-err" : "reg-err").style.display = "none";
+  document.getElementById(name==="login"?"login-err":"reg-err").style.display="none";
 }
-function switchModal(from, to){
-  closeModal(from);
-  openModal(to);
-}
-function handleOverlayClick(e, name){
-  if(e.target === e.currentTarget) closeModal(name);
+function switchModal(from,to){ closeModal(from); openModal(to); }
+
+function showModalErr(id,msg){
+  const el=document.getElementById(id);
+  el.textContent=msg; el.style.display="block";
 }
 
-function showModalErr(id, msg){
-  const el = document.getElementById(id);
-  el.textContent = msg;
-  el.style.display = "block";
-}
-
-// ── Login ─────────────────────────────────────────────
+// ── Login ───────────────────────────────────────────────────────────
 async function doLogin(){
   const email = document.getElementById("login-email").value.trim();
-  const pass  = document.getElementById("login-pass").value.trim();
-  if(!email || !pass){ showModalErr("login-err","Preencha email e senha."); return; }
-
-  const btn = document.querySelector("#modal-login .modal-submit");
-  btn.textContent = "Entrando..."; btn.disabled = true;
-
+  const pass  = document.getElementById("login-pass").value;
+  if(!email||!pass){ showModalErr("login-err","Preencha email e senha."); return; }
+  const btn = document.getElementById("btn-login-submit");
+  btn.textContent="Entrando..."; btn.disabled=true;
   try{
     const r = await fetch(BACKEND_URL+"/api/auth/login",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({email, password:pass}),
-      signal: AbortSignal.timeout(10000),
+      signal: AbortSignal.timeout(12000),
     });
-    const d = await r.json();
-    if(r.ok){
+    const d = await r.json().catch(()=>({}));
+    if(r.ok && d.token){
       setToken(d.token);
       closeModal("login");
       updateUI();
@@ -466,31 +354,32 @@ async function doLogin(){
       showModalErr("login-err", d.error || "Erro ao entrar.");
     }
   }catch(e){
-    showModalErr("login-err","Sem conexão com o servidor.");
+    if(e.name==="TimeoutError")
+      showModalErr("login-err","Servidor demorou demais. Aguarde e tente novamente.");
+    else
+      showModalErr("login-err","Sem conexão com o servidor: "+e.message);
   }finally{
-    btn.textContent = "ENTRAR"; btn.disabled = false;
+    btn.textContent="ENTRAR"; btn.disabled=false;
   }
 }
 
-// ── Register ──────────────────────────────────────────
+// ── Register ────────────────────────────────────────────────────────
 async function doRegister(){
   const email = document.getElementById("reg-email").value.trim();
-  const pass  = document.getElementById("reg-pass").value.trim();
-  if(!email || !pass){ showModalErr("reg-err","Preencha email e senha."); return; }
-  if(pass.length < 4){ showModalErr("reg-err","Senha deve ter no mínimo 4 caracteres."); return; }
-
-  const btn = document.querySelector("#modal-register .modal-submit");
-  btn.textContent = "Criando conta..."; btn.disabled = true;
-
+  const pass  = document.getElementById("reg-pass").value;
+  if(!email||!pass){ showModalErr("reg-err","Preencha email e senha."); return; }
+  if(pass.length<4){ showModalErr("reg-err","Senha deve ter no mínimo 4 caracteres."); return; }
+  const btn = document.getElementById("btn-reg-submit");
+  btn.textContent="Criando conta..."; btn.disabled=true;
   try{
     const r = await fetch(BACKEND_URL+"/api/auth/register",{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({email, password:pass}),
-      signal: AbortSignal.timeout(10000),
+      signal: AbortSignal.timeout(12000),
     });
-    const d = await r.json();
-    if(r.ok){
+    const d = await r.json().catch(()=>({}));
+    if(r.ok && d.token){
       setToken(d.token);
       closeModal("register");
       updateUI();
@@ -498,52 +387,115 @@ async function doRegister(){
       showModalErr("reg-err", d.error || "Erro ao criar conta.");
     }
   }catch(e){
-    showModalErr("reg-err","Sem conexão com o servidor.");
+    if(e.name==="TimeoutError")
+      showModalErr("reg-err","Servidor demorou. Aguarde ~30s e tente novamente (Render acordando).");
+    else
+      showModalErr("reg-err","Sem conexão: "+e.message);
   }finally{
-    btn.textContent = "CRIAR CONTA GRÁTIS"; btn.disabled = false;
+    btn.textContent="CRIAR CONTA GRÁTIS"; btn.disabled=false;
   }
 }
 
-// ── Logout ────────────────────────────────────────────
+// ── Logout ──────────────────────────────────────────────────────────
 function logout(){
   clearToken();
+  document.getElementById("cred-num").textContent="0";
   updateUI();
-  document.getElementById("cred-num").textContent = "0";
 }
 
-// ── updateUI — mesma lógica do Jusaii ─────────────────
+// ── updateUI ─────────────────────────────────────────────────────────
 async function updateUI(){
   const tok = getToken();
   if(!tok){
-    document.getElementById("auth-logged-out").style.display = "flex";
-    document.getElementById("auth-logged-in").style.display  = "none";
-    document.getElementById("cred-num").textContent = "0";
+    document.getElementById("auth-logged-out").style.display="flex";
+    document.getElementById("auth-logged-in").style.display="none";
+    document.getElementById("cred-num").textContent="0";
     return;
   }
-
   try{
     const r = await fetch(BACKEND_URL+"/api/auth/me",{
       headers:{"Authorization":"Bearer "+tok},
-      signal: AbortSignal.timeout(8000),
+      signal: AbortSignal.timeout(10000),
     });
     if(!r.ok){ clearToken(); updateUI(); return; }
-
     const d = await r.json();
-    document.getElementById("auth-logged-out").style.display = "none";
-    document.getElementById("auth-logged-in").style.display  = "flex";
-    document.getElementById("user-info").textContent = d.email;
-    document.getElementById("cred-num").textContent  = d.credits || "0";
+    document.getElementById("auth-logged-out").style.display="none";
+    document.getElementById("auth-logged-in").style.display="flex";
+    document.getElementById("user-info").textContent = d.email || "";
+    document.getElementById("cred-num").textContent  = d.credits ?? d.premium_credits ?? 0;
   }catch{
-    // Token pode estar ok mas backend offline — mantém como logado sem confirmar
-    document.getElementById("auth-logged-out").style.display = "none";
-    document.getElementById("auth-logged-in").style.display  = "flex";
-    document.getElementById("user-info").textContent = "...";
+    // Backend offline mas token presente — mantém logado visualmente
+    const savedEmail = localStorage.getItem("wuzo_email")||"";
+    document.getElementById("auth-logged-out").style.display="none";
+    document.getElementById("auth-logged-in").style.display="flex";
+    document.getElementById("user-info").textContent = savedEmail || "logado";
   }
 }
 
-// ════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════
+// RENDER WAKE-UP — o serviço gratuito do Render dorme após 15 min
+// Tentamos até 6 vezes (≈60s) com retry automático
+// ══════════════════════════════════════════════════════════════════════
+let _backendOnline = false;
+
+async function checkBackendHealth(retryCount=0){
+  const maxRetries = 6;
+  const banner = document.getElementById("wake-banner");
+
+  try{
+    const r = await fetch(BACKEND_URL+"/health",{signal:AbortSignal.timeout(12000)});
+    if(r.ok){
+      const d = await r.json();
+      _backendOnline = true;
+      banner.style.display="none";
+
+      const status = document.getElementById("api-status");
+      status.style.color="var(--gr)";
+      status.textContent = `API OK · ${d.llm||"llm"}`;
+
+      document.getElementById("api-status").style.setProperty("--dot-color","var(--gr)");
+      return true;
+    }
+  }catch(e){
+    // falhou — provavelmente Render dormindo
+  }
+
+  _backendOnline = false;
+
+  if(retryCount < maxRetries){
+    // Mostra banner de wake-up
+    banner.style.display="block";
+    document.getElementById("wake-attempt").textContent = retryCount+1;
+
+    const status = document.getElementById("api-status");
+    status.style.color="var(--g)";
+    status.textContent = `Acordando... (${retryCount+1}/${maxRetries})`;
+
+    const delay = Math.min(10000 + retryCount * 5000, 30000); // 10s, 15s, 20s, 25s, 30s, 30s
+    await new Promise(res=>setTimeout(res, delay));
+    return checkBackendHealth(retryCount+1);
+  }
+
+  // Desistiu — backend offline
+  banner.style.display="none";
+  const status = document.getElementById("api-status");
+  status.style.color="var(--rd)";
+  status.textContent = "Backend offline";
+  return false;
+}
+
+// Keep-alive: ping a cada 4 minutos para evitar o Render dormir
+function startKeepAlive(){
+  setInterval(async()=>{
+    try{
+      await fetch(BACKEND_URL+"/health",{signal:AbortSignal.timeout(5000)});
+    }catch{}
+  }, 4 * 60 * 1000);
+}
+
+// ══════════════════════════════════════════════════════════════════════
 // 16 AGENTES
-// ════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════
 const AGENTS = [
   {id:"noticias_realtime",       em:"📡", nm:"Notícias"},
   {id:"macroeconomia",           em:"🌐", nm:"Macro"},
@@ -565,83 +517,77 @@ const AGENTS = [
 
 let agentOutputs = {};
 
-// ════════════════════════════════════════════════════════
-// INIT
-// ════════════════════════════════════════════════════════
-document.addEventListener("DOMContentLoaded", () => {
+// ── INIT ─────────────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded", ()=>{
   buildGrid();
+  getToken(); // processa token da URL
   updateUI();
-  checkBackendHealth();
+  checkBackendHealth().then(()=>{ if(_backendOnline) startKeepAlive(); });
 });
 
-async function checkBackendHealth(){
-  try{
-    const r = await fetch(BACKEND_URL+"/health",{signal:AbortSignal.timeout(6000)});
-    if(r.ok){
-      const d = await r.json();
-      document.getElementById("api-status").innerHTML =
-        `<span style="color:var(--gr)">● API OK · ${d.llm||"llm"}</span>`;
-      document.getElementById("api-url-display").textContent = BACKEND_URL;
-      return;
-    }
-  }catch{}
-  document.getElementById("api-status").innerHTML =
-    '<span style="color:var(--rd)">● Backend offline — verifique o deploy</span>';
-}
-
-// ════════════════════════════════════════════════════════
-// CREDITS
-// ════════════════════════════════════════════════════════
-async function loadCredits(){
-  const tok = getToken();
-  if(!tok){ document.getElementById("cred-num").textContent = "0"; return; }
-  try{
-    const r = await fetch(BACKEND_URL+"/credits/balance",{
-      headers:{"Authorization":"Bearer "+tok},
-    });
-    if(r.ok){
-      const d = await r.json();
-      const n = d.unlimited ? "∞" : (d.credits||0);
-      document.getElementById("cred-num").textContent = n;
-      if(d.credits > 0 || d.unlimited){
-        document.getElementById("btn-buy").style.opacity = ".5";
-      }
-    }
-  }catch{}
-}
-
-// ════════════════════════════════════════════════════════
-// LLM CALL — chama o backend Flask /agent/run
-// ════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════
+// LLM — chama /agent/run com retry se backend estava dormindo
+// ══════════════════════════════════════════════════════════════════════
 async function llm(system, user, tokens=600){
+  // Se backend offline, espera acordar (máx 20s)
+  if(!_backendOnline){
+    log("⏳ Aguardando servidor acordar...","");
+    const ok = await checkBackendHealth();
+    if(!ok) return "❌ Servidor offline. Tente em alguns instantes.";
+  }
+
   const tok = getToken();
   const headers = {"Content-Type":"application/json"};
-  if(tok) headers["Authorization"] = "Bearer " + tok;
+  if(tok) headers["Authorization"] = "Bearer "+tok;
 
   try{
-    const r = await fetch(BACKEND_URL + "/agent/run", {
-      method: "POST",
+    const r = await fetch(BACKEND_URL+"/agent/run",{
+      method:"POST",
       headers,
-      body: JSON.stringify({system, user, max_tokens: tokens}),
+      body:JSON.stringify({system, user, max_tokens: tokens}),
       signal: AbortSignal.timeout(35000),
     });
     if(r.ok){
       const d = await r.json();
       return d.result || d.content || "❌ Resposta vazia";
     }
-    // 401 → não logado
-    if(r.status === 401){
-      return "❌ Faça login para usar o consultor.";
+    // Render pode retornar 503 quando ainda está acordando
+    if(r.status===503||r.status===502){
+      _backendOnline=false;
+      await new Promise(res=>setTimeout(res, 8000));
+      return llm(system, user, tokens); // retry 1x
     }
-    return "❌ HTTP " + r.status + " — verifique o serviço";
+    return "❌ HTTP "+r.status;
   }catch(e){
-    return "❌ " + e.message;
+    if(e.name==="TimeoutError") return "❌ Timeout — servidor demorou demais. Tente novamente.";
+    return "❌ "+e.message;
   }
 }
 
-// ════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════
+// CREDITS
+// ══════════════════════════════════════════════════════════════════════
+async function loadCredits(){
+  const tok = getToken();
+  if(!tok){ document.getElementById("cred-num").textContent="0"; return; }
+  try{
+    const r = await fetch(BACKEND_URL+"/credits/balance",{
+      headers:{"Authorization":"Bearer "+tok},
+      signal: AbortSignal.timeout(8000),
+    });
+    if(r.ok){
+      const d = await r.json();
+      const n = d.unlimited?"∞":(d.credits||0);
+      document.getElementById("cred-num").textContent=n;
+      if(d.credits>0||d.unlimited)
+        document.getElementById("btn-buy").style.opacity=".5";
+    }
+  }catch{}
+}
+
+// ══════════════════════════════════════════════════════════════════════
 // AGENT GRID
-// ════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════
 function buildGrid(){
   const g = document.getElementById("agent-grid");
   g.innerHTML="";
@@ -670,15 +616,14 @@ function log(msg,cls=""){
   f.appendChild(d); f.scrollTop=f.scrollHeight;
 }
 
-// ════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════
 // FREE ANALYSIS
-// ════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════
 async function handleFree(){
   const txt = document.getElementById("txt-input").value.trim();
   if(!txt){ showAlert("inp-alert","alert-info","✍️ Descreva sua situação financeira."); return; }
-
   hideAlert("inp-alert");
-  agentOutputs = {};
+  agentOutputs={};
   resetGrid();
   document.getElementById("sec-pipeline").style.display="block";
   document.getElementById("sec-free").style.display="none";
@@ -689,55 +634,50 @@ async function handleFree(){
   const now = new Date().toLocaleDateString("pt-BR",{day:"2-digit",month:"long",year:"numeric"});
 
   setAc("consultor_senior","thinking");
-  log("👔 Consultor Sênior: analisando veredito...");
-
+  log("👔 Consultor Sênior analisando...");
   const veredito = await llm(
     "Você é um Consultor Financeiro Sênior com 20 anos de experiência. "+
-    "Analise a situação do usuário e responda em formato estruturado em português. "+
-    "Seja objetivo e direto. Use dados concretos.",
+    "Analise a situação e responda em formato estruturado em português. Seja objetivo.",
     `DATA: ${now}\nSITUAÇÃO DO USUÁRIO:\n${txt}\n\n`+
-    `Responda EXATAMENTE neste formato (sem markdown, sem asteriscos, texto limpo):\n`+
+    `Responda EXATAMENTE neste formato (texto limpo, sem markdown):\n`+
     `VEREDITO: [Favorável/Desfavorável/Atenção Necessária]\n`+
     `SAÚDE FINANCEIRA: [0-100]%\n`+
     `URGÊNCIA: [Alta/Média/Baixa]\n`+
     `ÁREAS CRÍTICAS:\n1. [área]\n2. [área]\n3. [área]\n`+
-    `FUNDAMENTO: [2-3 frases explicando o diagnóstico principal]\n`+
-    `SÍNTESE: [2 frases sobre o que foi identificado]\n`+
-    `RISCOS:\n1. [risco com impacto]\n2. [risco]\n3. [risco]\n`+
+    `FUNDAMENTO: [2-3 frases]\n`+
+    `SÍNTESE: [2 frases]\n`+
+    `RISCOS:\n1. [risco]\n2. [risco]\n3. [risco]\n`+
     `PRÓXIMOS PASSOS:\n1. [ação concreta]\n2. [ação]\n3. [ação]`,
     500
   );
-  agentOutputs["consultor_senior"] = veredito;
+  agentOutputs["consultor_senior"]=veredito;
   setAc("consultor_senior", veredito.startsWith("❌")?"error":"done");
   log("✓ Consultor Sênior concluído","ok");
 
   setAc("macroeconomia","thinking");
-  log("🌐 Macroeconomia: iniciando análise...");
+  log("🌐 Macroeconomia...");
   const macroPreview = await llm(
     "Você é um economista-chefe especializado em Brasil. Responda em português com análise técnica.",
     `DATA: ${now}\nSITUAÇÃO DO USUÁRIO: ${txt}\n\n`+
-    `ANÁLISE MACROECONÔMICA DETALHADA:\n`+
-    `Considerando Selic atual, IPCA, câmbio e cenário de juros globais, analise:\n`+
-    `1. Como o cenário macro impacta especificamente esta situação\n`+
+    `ANÁLISE MACROECONÔMICA:\n`+
+    `Considerando Selic, IPCA, câmbio e cenário de juros globais:\n`+
+    `1. Impacto do cenário macro nesta situação\n`+
     `2. Oportunidades em renda fixa no contexto atual\n`+
-    `3. Timing ideal para os investimentos descritos\n`+
-    `Seja técnico, use números reais de 2024-2025, mínimo 200 palavras.`,
+    `3. Timing ideal para os investimentos\n`+
+    `Mínimo 200 palavras, seja técnico.`,
     400
   );
-  agentOutputs["macroeconomia"] = macroPreview;
+  agentOutputs["macroeconomia"]=macroPreview;
   setAc("macroeconomia","done");
   log("✓ Macroeconomia concluída","ok");
 
   // Registra uso gratuito se logado
-  const tok = getToken();
+  const tok=getToken();
   if(tok){
-    try{
-      await fetch(BACKEND_URL+"/credits/consume-free",{
-        method:"POST",
-        headers:{"Authorization":"Bearer "+tok},
-        signal: AbortSignal.timeout(5000),
-      });
-    }catch{}
+    fetch(BACKEND_URL+"/credits/consume-free",{
+      method:"POST",headers:{"Authorization":"Bearer "+tok},
+      signal:AbortSignal.timeout(5000),
+    }).catch(()=>{});
   }
 
   finishPipeline();
@@ -746,64 +686,58 @@ async function handleFree(){
 }
 
 function renderFreeResult(veredito, preview){
-  const vBody = document.getElementById("verdict-body");
-  vBody.innerHTML = veredito
+  document.getElementById("verdict-body").innerHTML = veredito
     .replace(/^(VEREDITO|SAÚDE FINANCEIRA|URGÊNCIA|ÁREAS CRÍTICAS|FUNDAMENTO|SÍNTESE|RISCOS|PRÓXIMOS PASSOS):/gm,
       m=>`<div style="color:var(--g);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;margin-top:10px;margin-bottom:2px;">${m}</div>`)
     .replace(/\n/g,"<br>");
 
-  const pBody = document.getElementById("preview-body");
-  pBody.innerHTML = `<h3>📋 Análise — Macroeconomia</h3>`+
-    (typeof marked!=="undefined" ? marked.parse(preview) : preview.replace(/\n/g,"<br>"));
+  document.getElementById("preview-body").innerHTML=
+    `<h3>📋 Análise — Macroeconomia</h3>`+
+    (typeof marked!=="undefined"?marked.parse(preview):preview.replace(/\n/g,"<br>"));
 
   document.getElementById("sec-free").style.display="block";
   document.getElementById("sec-free").scrollIntoView({behavior:"smooth"});
 }
 
-// ════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════
 // PREMIUM — 16 AGENTES
-// ════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════
 async function handlePremium(){
   const tok = getToken();
   if(!tok){
     showAlert("inp-alert","alert-err","🔒 Faça login para usar o relatório premium.");
-    openModal("login");
-    return;
+    openModal("login"); return;
   }
-
-  // Verifica crédito
   try{
     const r=await fetch(BACKEND_URL+"/credits/balance",{
-      headers:{"Authorization":"Bearer "+tok},
-    });
+      headers:{"Authorization":"Bearer "+tok},signal:AbortSignal.timeout(8000)});
     if(r.ok){
       const d=await r.json();
-      if(!d.unlimited && (d.credits||0)<1){
+      if(!d.unlimited&&(d.credits||0)<1){
         showAlert("inp-alert","alert-err","⭐ Créditos insuficientes. Compre 1 crédito por R$ 19,90.");
         return;
       }
     }
   }catch{}
 
-  const txt = document.getElementById("txt-input").value.trim();
+  const txt=document.getElementById("txt-input").value.trim();
   if(!txt){ showAlert("inp-alert","alert-info","✍️ Descreva sua situação financeira."); return; }
-
   hideAlert("inp-alert");
-  agentOutputs = {};
+  agentOutputs={};
   resetGrid();
   document.getElementById("sec-pipeline").style.display="block";
   document.getElementById("sec-free").style.display="none";
   document.getElementById("sec-full").style.display="none";
   setBtns(true);
 
-  const now = new Date().toLocaleDateString("pt-BR",{day:"2-digit",month:"long",year:"numeric"});
+  const now=new Date().toLocaleDateString("pt-BR",{day:"2-digit",month:"long",year:"numeric"});
 
   async function ag(id,sys,usr,tokens=500){
     setAc(id,"thinking");
     log(`${AGENTS.find(a=>a.id===id)?.em||"⬡"} ${id}...`);
-    const out = await llm(sys,usr,tokens);
-    agentOutputs[id] = out;
-    setAc(id, out.startsWith("❌")||out.startsWith("⚠")?"error":"done");
+    const out=await llm(sys,usr,tokens);
+    agentOutputs[id]=out;
+    setAc(id,out.startsWith("❌")||out.startsWith("⚠")?"error":"done");
     log(`✓ ${id}`,"ok");
     return out;
   }
@@ -811,175 +745,144 @@ async function handlePremium(){
   log("▶ Ramo B: Contexto Macro");
   await Promise.all([
     ag("noticias_realtime","Analista de inteligência de mercado financeiro. Responda em português. Máx 250 palavras.",
-      `DATA:${now}\nUSUÁRIO:${txt}\n\nPrincipais eventos macro recentes impactando investidores BR. Ativos mais afetados. Oportunidades e alertas.`),
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nEventos macro recentes impactando investidores BR. Ativos afetados. Oportunidades e alertas.`),
     ag("macroeconomia","Economista-chefe Brasil/EUA. Responda em português. Máx 280 palavras.",
-      `DATA:${now}\nUSUÁRIO:${txt}\n\nSelic,IPCA,câmbio,Fed. Cenário macro atual BR. Projeções 6 meses. Impacto para esta situação específica.`),
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nSelic,IPCA,câmbio,Fed. Cenário macro BR. Projeções 6 meses. Impacto para esta situação.`),
     ag("sentimento_mercado","Analista de sentimento de mercado. Responda em português. Máx 220 palavras.",
-      `DATA:${now}\nUSUÁRIO:${txt}\n\nSentimento dominante (bullish/bearish/neutro). Fear&Greed. Indicadores contrários. Recomendação de posicionamento.`),
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nSentimento (bullish/bearish/neutro). Fear&Greed. Indicadores contrários. Recomendação.`),
   ]);
 
   log("▶ Ramo A: Mercado");
-  const macro = (agentOutputs["macroeconomia"]||"").slice(0,200);
+  const macro=(agentOutputs["macroeconomia"]||"").slice(0,200);
   await Promise.all([
     ag("criptomoedas","Analista sênior de criptoativos. Responda em português. Máx 250 palavras.",
-      `DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nBTC,ETH,SOL. Oportunidades com preço-alvo. Riscos. % alocação sugerida para este perfil.`),
+      `DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nBTC,ETH,SOL. Oportunidades com preço-alvo. Riscos. % alocação sugerida.`),
     ag("acoes_equity","Analista de equity B3 e NYSE. Responda em português. Máx 260 palavras.",
-      `DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nSetores promissores. Ações-destaque com tickers BR e EUA. Riscos. Estratégia para este perfil.`),
+      `DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nSetores promissores. Ações-destaque com tickers. Riscos. Estratégia.`),
     ag("derivativos","Especialista em derivativos e hedge. Responda em português. Máx 200 palavras.",
-      `DATA:${now}\nUSUÁRIO:${txt}\n\nDerivativos para proteção desta carteira. Estratégias de opções adequadas ao perfil. Riscos de alavancagem.`),
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nDerivativos para proteção desta carteira. Estratégias de opções. Riscos.`),
     ag("rwa","Especialista em RWA tokenizados. Responda em português. Máx 200 palavras.",
-      `DATA:${now}\nUSUÁRIO:${txt}\n\nOportunidades RWA para este perfil. Plataformas BR relevantes. Riscos regulatórios e de liquidez.`),
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nOportunidades RWA. Plataformas BR. Riscos regulatórios e liquidez.`),
     ag("renda_fixa","Especialista renda fixa BR. Responda em português. Máx 260 palavras.",
-      `DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nTesouro,CDB,LCI,LCA,CRI. Produtos mais adequados. Duration recomendada. IPCA+ vs prefixado vs CDI agora.`),
+      `DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nTesouro,CDB,LCI,LCA,CRI. Produtos adequados. Duration. IPCA+ vs prefixado vs CDI.`),
     ag("imoveis_fiis","Especialista FIIs e imóveis. Responda em português. Máx 220 palavras.",
-      `DATA:${now}\nUSUÁRIO:${txt}\n\nSegmentos FII mais atrativos. Melhores DY/VP. FII vs imóvel direto para este perfil.`),
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nSegmentos FII atrativos. Melhores DY/VP. FII vs imóvel direto.`),
   ]);
 
   log("▶ Ramo C: Finanças Pessoais");
   await Promise.all([
     ag("quitacao_dividas","Especialista em quitação de dívidas. Responda em português. Máx 230 palavras.",
-      `DATA:${now}\nUSUÁRIO:${txt}\n\nPriorização de dívidas. Método avalanche vs bola de neve para esta situação. Liberação de fluxo mensal.`),
-    ag("credito_financiamento","Especialista em crédito e financiamentos. Responda em português. Máx 220 palavras.",
-      `DATA:${now}\nUSUÁRIO:${txt}\n\nCapacidade atual de crédito. Oportunidades de refinanciamento. Estratégias para melhorar score. Crédito imobiliário vs investimento.`),
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nPriorização dívidas. Avalanche vs bola de neve. Liberação de fluxo mensal.`),
+    ag("credito_financiamento","Especialista crédito/financiamentos. Responda em português. Máx 220 palavras.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nCapacidade de crédito. Refinanciamento. Melhorar score. Crédito imobiliário vs investimento.`),
     ag("planejamento_tributario","Especialista IR e tributário PF Brasil. Responda em português. Máx 220 palavras.",
-      `DATA:${now}\nUSUÁRIO:${txt}\n\nEficiência tributária. Deduções IR disponíveis. PGBL vs VGBL para esta renda. Alertas de obrigações fiscais.`),
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nEficiência tributária. Deduções IR. PGBL vs VGBL. Alertas fiscais.`),
   ]);
 
   log("▶ Guardiões: Compliance + Auditor");
-  const allOut = Object.entries(agentOutputs).map(([k,v])=>`[${k}]:${v.slice(0,150)}`).join("\n");
+  const allOut=Object.entries(agentOutputs).map(([k,v])=>`[${k}]:${v.slice(0,150)}`).join("\n");
   await Promise.all([
-    ag("compliance_risco","Diretor de Compliance e Gestão de Riscos. Responda em português. Máx 200 palavras.",
-      `ANÁLISES:\n${allOut.slice(0,1800)}\nUSUÁRIO:${txt}\n\nFlags de risco identificados. Inconsistências entre análises. Ajustes obrigatórios.`),
-    ag("auditor_dados","Auditor de Dados e Qualidade. Responda em português. Máx 160 palavras.",
-      `ANÁLISES:\n${allOut.slice(0,1800)}\n\nConsistência dos dados. Contradições. Confiabilidade geral (Alta/Média/Baixa) com justificativa.`),
+    ag("compliance_risco","Diretor de Compliance e Riscos. Responda em português. Máx 200 palavras.",
+      `ANÁLISES:\n${allOut.slice(0,1800)}\nUSUÁRIO:${txt}\n\nFlags de risco. Inconsistências. Ajustes obrigatórios.`),
+    ag("auditor_dados","Auditor de Dados. Responda em português. Máx 160 palavras.",
+      `ANÁLISES:\n${allOut.slice(0,1800)}\n\nConsistência. Contradições. Confiabilidade geral.`),
   ]);
 
   log("▶ Consultor Sênior: veredito consolidado");
-  const comp = (agentOutputs["compliance_risco"]||"").slice(0,300);
+  const comp=(agentOutputs["compliance_risco"]||"").slice(0,300);
   await ag("consultor_senior",
     "Consultor Financeiro Sênior responsável pelo veredito final. Responda em português.",
-    `DATA:${now}\nUSUÁRIO:${txt}\n\nANÁLISES DOS 13 ESPECIALISTAS:\n${allOut.slice(0,2500)}\n\nCOMPLIANCE:${comp}\n\n`+
-    `Emita:\n1. Veredito consolidado (diagnóstico final da situação)\n`+
-    `2. Alocação de portfólio recomendada em % (soma=100%)\n`+
-    `3. Top 3 prioridades para os próximos 30 dias com valores específicos\n`+
-    `4. Nível de risco global: Conservador/Moderado/Arrojado\n`+
-    `5. Projeção patrimônio em 12 meses se seguir as recomendações`,
+    `DATA:${now}\nUSUÁRIO:${txt}\n\nANÁLISES:\n${allOut.slice(0,2500)}\nCOMPLIANCE:${comp}\n\n`+
+    `Emita:\n1. Veredito consolidado\n2. Alocação de portfólio em %\n3. Top 3 prioridades 30 dias\n4. Nível de risco\n5. Projeção patrimônio 12 meses`,
     650);
 
   log("▶ Redator: gerando relatório completo...");
-  const vfinal = (agentOutputs["consultor_senior"]||"").slice(0,500);
-  const fullReport = await ag("redator_relatorios",
+  const vfinal=(agentOutputs["consultor_senior"]||"").slice(0,500);
+  const fullReport=await ag("redator_relatorios",
     "Redator-sênior de relatórios financeiros. Produza relatório em Markdown. Responda em português. Mínimo 900 palavras.",
-    `DATA:${now}\nUSUÁRIO:${txt}\n\nVEREDITO DO CONSULTOR:\n${vfinal}\n\nANÁLISES:\n${allOut.slice(0,2800)}\n\n`+
-    `Produza relatório com estas seções (use ## para headers, **negrito** para destaques, tabelas Markdown):\n`+
-    `## 📊 Sumário Executivo\n`+
-    `## 🌐 Panorama Macroeconômico\n`+
-    `## 📈 Análise de Mercado e Oportunidades\n`+
-    `## 💼 Portfólio Recomendado\n`+
-    `## 💳 Gestão de Dívidas e Crédito\n`+
-    `## 📋 Planejamento Tributário\n`+
-    `## ⚠️ Riscos e Alertas\n`+
-    `## 🎯 Plano de Ação — Próximos 30 Dias\n\n`+
-    `Inclua números concretos, percentuais, benchmarks (CDI, IPCA, Selic) e tabelas comparativas.`,
+    `DATA:${now}\nUSUÁRIO:${txt}\nVEREDITO:\n${vfinal}\nANÁLISES:\n${allOut.slice(0,2800)}\n\n`+
+    `Produza relatório com:\n## 📊 Sumário Executivo\n## 🌐 Panorama Macroeconômico\n## 📈 Análise de Mercado\n## 💼 Portfólio Recomendado\n## 💳 Gestão de Dívidas\n## 📋 Planejamento Tributário\n## ⚠️ Riscos e Alertas\n## 🎯 Plano de Ação 30 Dias`,
     1800);
 
-  // Consome crédito
   await consumeCredit();
-
   finishPipeline();
   renderFullReport(fullReport);
 }
 
 async function consumeCredit(){
-  const tok = getToken();
-  if(!tok){ await loadCredits(); return; }
+  const tok=getToken(); if(!tok){await loadCredits();return;}
   try{
     await fetch(BACKEND_URL+"/credits/consume",{
-      method:"POST",
-      headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
-      signal: AbortSignal.timeout(8000),
+      method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
+      signal:AbortSignal.timeout(8000),
     });
   }catch{}
   await loadCredits();
 }
 
 function renderFullReport(md){
-  const box = document.getElementById("full-report-box");
-  box.innerHTML = typeof marked!=="undefined" ? marked.parse(md) : md.replace(/\n/g,"<br>");
+  document.getElementById("full-report-box").innerHTML=
+    typeof marked!=="undefined"?marked.parse(md):md.replace(/\n/g,"<br>");
 
-  const blocksBox = document.getElementById("agent-blocks-box");
-  blocksBox.innerHTML = "";
-  const skip = new Set(["consultor_senior","redator_relatorios","compliance_risco","auditor_dados"]);
-  AGENTS.filter(a=>!skip.has(a.id) && agentOutputs[a.id]).forEach(a=>{
-    const div = document.createElement("div");
-    div.className = "agent-block";
-    const body = agentOutputs[a.id]||"";
-    div.innerHTML = `<div class="agent-block-title">${a.em} Análise — ${a.nm}</div>`+
-      `<div class="agent-block-body">${
-        typeof marked!=="undefined"
-          ? marked.parse(body)
-          : body.replace(/\*\*(.*?)\*\*/g,"<b>$1</b>").replace(/\n/g,"<br>")
-      }</div>`;
+  const blocksBox=document.getElementById("agent-blocks-box");
+  blocksBox.innerHTML="";
+  const skip=new Set(["consultor_senior","redator_relatorios","compliance_risco","auditor_dados"]);
+  AGENTS.filter(a=>!skip.has(a.id)&&agentOutputs[a.id]).forEach(a=>{
+    const div=document.createElement("div");
+    div.className="agent-block";
+    const body=agentOutputs[a.id]||"";
+    div.innerHTML=`<div class="agent-block-title">${a.em} Análise — ${a.nm}</div>`+
+      `<div class="agent-block-body">${typeof marked!=="undefined"?marked.parse(body):body.replace(/\*\*(.*?)\*\*/g,"<b>$1</b>").replace(/\n/g,"<br>")}</div>`;
     blocksBox.appendChild(div);
   });
 
-  const ds = new Date().toISOString().slice(0,10).replace(/-/g,"");
-  const bMd   = new Blob([md],{type:"text/markdown"});
-  const bTxt  = new Blob([md],{type:"text/plain"});
-  const htmlContent = `<!DOCTYPE html><html><head><meta charset="UTF-8">
-<title>Relatório WUZO</title>
-<style>body{font-family:Georgia,serif;max-width:820px;margin:40px auto;padding:0 20px;line-height:1.85;color:#1a1a1a;background:#fafaf8;}
+  const ds=new Date().toISOString().slice(0,10).replace(/-/g,"");
+  const bMd=new Blob([md],{type:"text/markdown"});
+  const bTxt=new Blob([md],{type:"text/plain"});
+  const htmlContent=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Relatório WUZO</title>
+<style>body{font-family:Georgia,serif;max-width:820px;margin:40px auto;padding:0 20px;line-height:1.85;color:#1a1a1a;}
 h1,h2{color:#7a5200;border-bottom:1px solid #e0d0a0;padding-bottom:6px;margin:22px 0 10px;}
-h3{color:#3a3a3a;margin:16px 0 6px;}table{border-collapse:collapse;width:100%;margin:14px 0;}
-th{background:#f9f0dc;padding:8px 12px;text-align:left;border:1px solid #ddd;font-size:.85em;}
-td{padding:7px 12px;border:1px solid #eee;}tr:nth-child(even) td{background:#fafafa;}</style>
-</head><body><h1>WUZO — Relatório Financeiro</h1>
-<p style="color:#888;font-size:.85em;">Gerado em ${new Date().toLocaleDateString("pt-BR")} — 16 Agentes Especialistas</p>
-${typeof marked!=="undefined" ? marked.parse(md) : md.replace(/\n/g,"<br>")}
-</body></html>`;
-  const bHtml = new Blob([htmlContent],{type:"text/html"});
+table{border-collapse:collapse;width:100%;margin:14px 0;}th{background:#f9f0dc;padding:8px;border:1px solid #ddd;}
+td{padding:7px;border:1px solid #eee;}</style></head><body>
+<h1>WUZO — Relatório Financeiro</h1><p style="color:#888;font-size:.85em;">Gerado em ${new Date().toLocaleDateString("pt-BR")} — 16 Agentes</p>
+${typeof marked!=="undefined"?marked.parse(md):md.replace(/\n/g,"<br>")}</body></html>`;
+  const bHtml=new Blob([htmlContent],{type:"text/html"});
 
-  document.getElementById("dl-md").href   = URL.createObjectURL(bMd);
-  document.getElementById("dl-txt").href  = URL.createObjectURL(bTxt);
-  document.getElementById("dl-html").href = URL.createObjectURL(bHtml);
-  document.getElementById("dl-md").download   = `relatorio_wuzo_${ds}.md`;
-  document.getElementById("dl-txt").download  = `relatorio_wuzo_${ds}.txt`;
-  document.getElementById("dl-html").download = `relatorio_wuzo_${ds}.html`;
+  document.getElementById("dl-md").href=URL.createObjectURL(bMd);
+  document.getElementById("dl-txt").href=URL.createObjectURL(bTxt);
+  document.getElementById("dl-html").href=URL.createObjectURL(bHtml);
+  document.getElementById("dl-md").download=`relatorio_wuzo_${ds}.md`;
+  document.getElementById("dl-txt").download=`relatorio_wuzo_${ds}.txt`;
+  document.getElementById("dl-html").download=`relatorio_wuzo_${ds}.html`;
 
-  document.getElementById("sec-full").style.display = "block";
+  document.getElementById("sec-full").style.display="block";
   document.getElementById("sec-full").scrollIntoView({behavior:"smooth"});
   setBtns(false);
 }
 
-// ════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════
 // BUY
-// ════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════
 async function handleBuy(){
-  const tok = getToken();
-  if(!tok){
-    openModal("login");
-    return;
-  }
+  const tok=getToken();
+  if(!tok){ openModal("login"); return; }
   try{
-    const r = await fetch(BACKEND_URL+"/credits/purchase",{
-      method:"POST",
-      headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
+    const r=await fetch(BACKEND_URL+"/credits/purchase",{
+      method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
       body:JSON.stringify({quantity:1}),
     });
     if(r.ok){
-      const d = await r.json();
+      const d=await r.json();
       if(d.checkout_url){ window.open(d.checkout_url,"_blank"); return; }
     }
-    const e = await r.json().catch(()=>({}));
-    alert(e.error || "Erro ao iniciar pagamento.");
-  }catch{
-    alert("Erro de conexão com o servidor.");
-  }
+    const e=await r.json().catch(()=>({}));
+    alert(e.error||"Erro ao iniciar pagamento.");
+  }catch{ alert("Erro de conexão."); }
 }
 
-// ════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════
 // HELPERS
-// ════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════
 function resetGrid(){
   agentOutputs={};
   AGENTS.forEach(a=>setAc(a.id,"idle"));
@@ -988,7 +891,6 @@ function resetGrid(){
   document.getElementById("pip-pill").textContent="RUNNING";
   document.getElementById("pip-pill").className="pill pill-run";
 }
-
 function finishPipeline(){
   AGENTS.forEach(a=>{ if(!agentOutputs[a.id]) setAc(a.id,"done"); });
   document.getElementById("prog-fill").style.width="100%";
@@ -996,36 +898,22 @@ function finishPipeline(){
   document.getElementById("pip-pill").className="pill pill-done";
   log("✅ Concluído.","ok");
 }
-
-function setBtns(loading){
-  ["btn-free","btn-premium","btn-buy"].forEach(id=>{
-    document.getElementById(id).disabled = loading;
-  });
-  if(loading){
+function setBtns(on){
+  ["btn-free","btn-premium","btn-buy"].forEach(id=>document.getElementById(id).disabled=on);
+  if(on){
     document.getElementById("btn-free").innerHTML='<div class="spin"></div> Analisando...';
     document.getElementById("btn-premium").innerHTML='<div class="spin"></div> Orquestrando 16 agentes...';
-  } else {
+  }else{
     document.getElementById("btn-free").innerHTML='⚡ ANÁLISE GRATUITA';
     document.getElementById("btn-premium").innerHTML='⭐ RELATÓRIO PREMIUM (16 ESP.)';
   }
 }
-
-function showAlert(id,cls,msg){
-  const el=document.getElementById(id);
-  el.className="alert "+cls; el.textContent=msg; el.style.display="block";
-}
+function showAlert(id,cls,msg){ const el=document.getElementById(id); el.className="alert "+cls; el.textContent=msg; el.style.display="block"; }
 function hideAlert(id){ document.getElementById(id).style.display="none"; }
 
 // Debug helpers
-window.setLocalKey = (key, provider="groq") => {
-  localStorage.setItem("wuzo_llm_key", key);
-  localStorage.setItem("wuzo_llm_prov", provider);
-  location.reload();
-};
-window.setToken = (tok) => {
-  setToken(tok);
-  updateUI();
-};
+window.setBackendUrl=(url)=>{ localStorage.setItem("wuzo_backend_url",url); location.reload(); };
+window.setToken=(t)=>{ setToken(t); updateUI(); };
 </script>
 </body>
 </html>
