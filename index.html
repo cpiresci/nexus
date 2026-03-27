@@ -1,472 +1,963 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-    <title>WUZO — Consultor Financeiro IA</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        body { background: #030302; color: #f8fafc; font-family: 'Outfit', sans-serif; min-height: 100vh; margin: 0; }
-        .glass { background: rgba(15,23,42,0.85); backdrop-filter: blur(20px); border: 1px solid rgba(232,201,122,0.08); }
-        .loader { border: 3px solid rgba(232,201,122,0.1); border-top: 3px solid #e8c97a; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
-        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        @keyframes fadeIn { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-        .veredito-box { background: linear-gradient(135deg,rgba(232,201,122,0.2) 0%,rgba(232,201,122,0.1) 100%); border-left: 4px solid #e8c97a; }
-        .btn-premium { background: linear-gradient(135deg,#f59e0b,#d97706); }
-        .btn-buy { background: linear-gradient(135deg,#10b981,#059669); }
-        details summary { cursor: pointer; }
-        input::placeholder { color: rgba(148,163,184,0.5); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>WUZO — Consultor Financeiro IA</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+/* ── RESET + VARS ──────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#030302;
+  --card:#0d0c0a;
+  --card2:#131108;
+  --g:#e8c97a; --g2:#f5dfa0; --gd:#8a6a2c; --gdd:#3a2810;
+  --bd:rgba(201,168,76,.14); --bd2:rgba(201,168,76,.3);
+  --tx:#ede8dc; --dm:#c0b89e; --dm2:#5a4828;
+  --wh:#faf6ee; --rd:#e05252; --gr:#4aaf78;
+  --r:10px; --r2:6px;
+}
+html,body{background:var(--bg);color:var(--tx);font-family:'Outfit',sans-serif;min-height:100vh;}
+body{
+  background-image:
+    radial-gradient(ellipse 80% 50% at 0% 10%,rgba(201,168,76,.055) 0%,transparent 55%),
+    radial-gradient(ellipse 60% 60% at 100% 90%,rgba(201,168,76,.04) 0%,transparent 55%);
+}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:var(--gd);border-radius:2px;}
+
+/* ── LAYOUT ──────────────────────────────────── */
+.shell{max-width:680px;margin:0 auto;padding:20px 14px 80px;}
+
+/* ── HEADER ──────────────────────────────────── */
+.hdr{display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:14px;border-bottom:1px solid var(--bd);margin-bottom:20px;}
+.logo{
+  font-size:1.6rem;font-weight:900;letter-spacing:8px;
+  background:linear-gradient(135deg,#7a5a1c,#f5ead0 35%,#c9a84c 55%,#f5ead0 75%,#7a5a1c);
+  background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shimmer 4s linear infinite;
+}
+@keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
+.logo-sub{font-family:'JetBrains Mono',monospace;font-size:.42rem;letter-spacing:3px;color:var(--dm2);margin-top:2px;}
+.hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.credit-badge{
+  background:rgba(201,168,76,.08);border:1px solid var(--bd);
+  border-radius:20px;padding:5px 12px;
+  font-size:.68rem;font-weight:700;letter-spacing:1px;color:var(--g);
+  font-family:'JetBrains Mono',monospace;
+}
+.status-dot{display:flex;align-items:center;gap:5px;font-size:.6rem;color:var(--gr);letter-spacing:1px;}
+.status-dot::before{content:'';width:6px;height:6px;background:var(--gr);border-radius:50%;
+  box-shadow:0 0 6px var(--gr);animation:blink 2s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+/* ── CARD ────────────────────────────────────── */
+.card{
+  background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));
+  border:1px solid var(--bd);border-radius:var(--r);
+  padding:18px 16px;margin-bottom:14px;position:relative;overflow:hidden;
+}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,168,76,.28),transparent);}
+
+/* ── TEXTAREA ────────────────────────────────── */
+.inp-lbl{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:2px;
+  color:var(--dm2);text-transform:uppercase;margin-bottom:5px;}
+textarea{
+  width:100%;background:rgba(0,0,0,.35);border:1px solid var(--bd);
+  border-radius:var(--r2);color:var(--tx);font-family:'Outfit',sans-serif;
+  font-size:.92rem;padding:14px 16px;resize:vertical;min-height:110px;outline:none;
+  line-height:1.8;transition:border-color .2s,box-shadow .2s;
+  margin-bottom:4px;
+}
+textarea:focus{border-color:rgba(201,168,76,.4);box-shadow:0 0 0 3px rgba(201,168,76,.07);}
+textarea::placeholder{color:var(--dm2);}
+
+/* ── BUTTONS ─────────────────────────────────── */
+.btn-row{display:flex;flex-direction:column;gap:12px;margin-top:22px;padding-top:6px;}
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:15px 20px;border-radius:50px;border:none;cursor:pointer;
+  font-family:'Outfit',sans-serif;font-weight:800;font-size:.85rem;letter-spacing:1px;
+  transition:all .2s;text-decoration:none;
+}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important;}
+
+/* Botão FREE — azul como JUSAII */
+.btn-free{
+  background:linear-gradient(135deg,#1a3a8a,#2255cc);
+  color:#fff;
+  box-shadow:0 4px 20px rgba(34,85,204,.3);
+}
+.btn-free:hover:not(:disabled){
+  background:linear-gradient(135deg,#1e44a0,#2a60e0);
+  transform:translateY(-1px);box-shadow:0 6px 24px rgba(34,85,204,.45);
+}
+
+/* Botão PREMIUM — dourado */
+.btn-premium{
+  background:linear-gradient(135deg,#b8860b,#e8c97a,#f5dfa0,#e8c97a,#8a6a2c);
+  background-size:200% auto;color:#0d0900;
+  animation:shimmer 3s linear infinite;
+  box-shadow:0 4px 20px rgba(201,168,76,.3);
+}
+.btn-premium:hover:not(:disabled){
+  transform:translateY(-1px);box-shadow:0 6px 28px rgba(201,168,76,.5);
+}
+
+/* Botão COMPRAR — verde */
+.btn-buy{
+  background:linear-gradient(135deg,#1a7a3a,#22a04d);
+  color:#fff;
+  box-shadow:0 4px 20px rgba(34,160,77,.25);
+}
+.btn-buy:hover:not(:disabled){
+  background:linear-gradient(135deg,#1e8a42,#27b556);
+  transform:translateY(-1px);box-shadow:0 6px 24px rgba(34,160,77,.4);
+}
+
+/* ── AGENT GRID ──────────────────────────────── */
+.agent-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0;}
+@media(max-width:420px){.agent-grid{grid-template-columns:repeat(2,1fr);}}
+.ac{
+  background:rgba(0,0,0,.4);border:1px solid rgba(40,28,10,.7);
+  border-radius:8px;padding:10px 5px;text-align:center;
+  transition:border-color .3s,box-shadow .3s;
+}
+.ac.thinking{border-color:var(--g);animation:pg 1.3s ease-in-out infinite;}
+.ac.done{border-color:var(--gr);}
+.ac.error{border-color:var(--rd);}
+@keyframes pg{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,.4);}50%{box-shadow:0 0 10px rgba(201,168,76,.2);}}
+.ac-em{font-size:1.2rem;line-height:1;}
+.ac-nm{font-size:.5rem;color:#c0b89e;letter-spacing:.5px;margin-top:4px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;}
+.ac-st{font-size:.55rem;font-weight:700;margin-top:4px;color:rgba(40,28,10,.9);}
+.ac.thinking .ac-st{color:var(--g);}
+.ac.done .ac-st{color:var(--gr);}
+.ac.error .ac-st{color:var(--rd);}
+
+/* ── PROGRESS ────────────────────────────────── */
+.prog{background:rgba(201,168,76,.07);border-radius:3px;height:4px;overflow:hidden;margin:8px 0;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gdd),var(--g),var(--g2));
+  border-radius:3px;transition:width .4s;width:0%;}
+
+/* ── LOG ─────────────────────────────────────── */
+.log{background:rgba(0,0,0,.5);border:1px solid var(--bd);border-radius:var(--r2);
+  padding:8px 12px;max-height:90px;overflow-y:auto;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--dm);margin:8px 0;}
+.ll{padding:1px 0;border-bottom:1px solid rgba(201,168,76,.04);}
+.ll:last-child{border:none;color:var(--g);}
+.ll.ok{color:var(--gr);}
+.ll.er{color:var(--rd);}
+
+/* ── FREE RESULT ─────────────────────────────── */
+#sec-free{display:none;}
+.verdict-card{
+  background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.01));
+  border:1px solid var(--bd2);border-radius:var(--r);
+  border-left:3px solid var(--g);padding:18px 16px;margin-bottom:14px;
+  position:relative;overflow:hidden;
+}
+.verdict-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent);
+}
+.verdict-title{color:var(--g);font-size:1rem;font-weight:800;
+  display:flex;align-items:center;gap:8px;margin-bottom:12px;
+  font-family:'Outfit',sans-serif;letter-spacing:.5px;}
+.verdict-body{font-size:.88rem;line-height:1.95;color:var(--tx);}
+.verdict-body strong,.verdict-body b{color:var(--g2);}
+.vline{height:1px;background:rgba(201,168,76,.15);margin:10px 0;}
+
+/* ── PREVIEW CARD (parcial com blur) ─────────── */
+.preview-wrap{position:relative;overflow:hidden;border-radius:var(--r);}
+.preview-content{
+  background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));
+  border:1px solid var(--bd);border-radius:var(--r);
+  border-left:3px solid var(--g);padding:18px 16px;
+  font-size:.88rem;line-height:1.9;color:var(--tx);
+  max-height:240px;overflow:hidden;
+}
+.preview-content h3{color:var(--g);margin-bottom:8px;font-family:'Outfit',sans-serif;}
+.preview-content strong,.preview-content b{color:var(--g2);}
+.preview-blur{
+  position:absolute;bottom:0;left:0;right:0;height:120px;
+  background:linear-gradient(to bottom,transparent,rgba(3,3,2,.97));
+  display:flex;align-items:flex-end;padding-bottom:0;
+}
+/* ── LOCK CARD ───────────────────────────────── */
+.lock-card{
+  background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.02));
+  border:1px solid var(--bd2);border-radius:var(--r);
+  padding:22px 18px;text-align:center;margin-top:-4px;
+}
+.lock-icon{font-size:1.8rem;margin-bottom:8px;}
+.lock-title{color:var(--g);font-size:1rem;font-weight:800;margin-bottom:4px;}
+.lock-sub{color:var(--dm);font-size:.8rem;margin-bottom:16px;}
+
+/* ── FULL REPORT ─────────────────────────────── */
+#sec-full{display:none;}
+.report-card{
+  background:rgba(201,168,76,.015);border:1px solid var(--bd);
+  border-radius:var(--r);padding:22px 18px;margin-bottom:14px;
+}
+.report-card h1,.report-card h2{
+  font-family:'Outfit',sans-serif;color:var(--g);
+  border-bottom:1px solid var(--bd);padding-bottom:5px;margin:16px 0 8px;font-size:1rem;
+}
+.report-card h3{font-size:.9rem;color:var(--wh);margin:12px 0 5px;}
+.report-card p{margin-bottom:10px;font-size:.9rem;line-height:1.9;}
+.report-card strong,.report-card b{color:var(--g2);}
+.report-card ul,.report-card ol{padding-left:18px;margin-bottom:10px;}
+.report-card li{margin-bottom:3px;font-size:.88rem;line-height:1.8;}
+.report-card table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.8rem;}
+.report-card th{background:rgba(201,168,76,.07);color:var(--g);padding:6px 8px;
+  text-align:left;border:1px solid var(--bd);font-size:.6rem;letter-spacing:1px;text-transform:uppercase;}
+.report-card td{padding:5px 8px;border:1px solid rgba(201,168,76,.07);}
+.report-card tr:nth-child(even) td{background:rgba(201,168,76,.01);}
+.report-card blockquote{border-left:2px solid var(--g);padding-left:12px;
+  color:var(--dm);margin:10px 0;font-style:italic;}
+.report-card code{background:rgba(201,168,76,.08);padding:2px 5px;
+  border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:.82em;}
+
+/* markdown raw fix */
+.report-card p:has(> strong:first-child){margin-bottom:4px;}
+
+/* ── AGENT ANALYSIS BLOCKS ───────────────────── */
+.agent-block{
+  background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));
+  border:1px solid var(--bd);border-radius:var(--r);
+  border-left:3px solid var(--g);padding:16px;margin-bottom:10px;
+  position:relative;overflow:hidden;
+}
+.agent-block::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,168,76,.25),transparent);
+}
+.agent-block-title{color:var(--g);font-size:.85rem;font-weight:700;
+  display:flex;align-items:center;gap:6px;margin-bottom:10px;
+  font-family:'Outfit',sans-serif;letter-spacing:.5px;}
+.agent-block-body{font-size:.84rem;line-height:1.9;color:var(--tx);}
+.agent-block-body strong,.agent-block-body b{color:var(--g2);}
+.agent-block-body h1,.agent-block-body h2,.agent-block-body h3{
+  color:var(--g);font-family:'Outfit',sans-serif;margin:10px 0 5px;font-size:.9rem;
+}
+.agent-block-body ul,.agent-block-body ol{padding-left:16px;margin:6px 0;}
+.agent-block-body li{margin-bottom:3px;}
+
+/* ── DOWNLOAD ROW ────────────────────────────── */
+.dl-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.dl-btn{flex:1;min-width:120px;text-align:center;padding:10px;border-radius:50px;
+  font-weight:700;font-size:.65rem;letter-spacing:1px;text-transform:uppercase;
+  text-decoration:none;border:1px solid var(--bd);color:var(--g);
+  background:rgba(201,168,76,.05);transition:all .2s;}
+.dl-btn:hover{border-color:var(--g);background:rgba(201,168,76,.1);}
+
+/* ── PILL ────────────────────────────────────── */
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;
+  font-size:.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+.pill-run{background:rgba(201,168,76,.1);color:var(--g);}
+.pill-done{background:rgba(74,175,120,.1);color:var(--gr);}
+
+/* ── ALERT ───────────────────────────────────── */
+.alert{padding:10px 14px;border-radius:var(--r2);border-left:3px solid;
+  margin:8px 0;font-size:.82rem;display:none;}
+.alert-info{border-color:var(--g);background:rgba(201,168,76,.05);color:var(--g2);}
+.alert-err {border-color:var(--rd);background:rgba(224,82,82,.05);color:#f5a0a0;}
+.alert-ok  {border-color:var(--gr);background:rgba(74,175,120,.05);color:#a0f5c0;}
+
+/* ── SPINNER ─────────────────────────────────── */
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(201,168,76,.3);
+  border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
 </head>
-<body class="flex flex-col items-center p-4 md:p-12">
+<body>
+<div class="shell">
 
-    <!-- HEADER -->
-    <header class="w-full max-w-5xl flex justify-between items-center mb-10 border-b border-white/5 pb-8">
-        <div>
-            <h1 class="text-4xl font-black italic tracking-tighter text-amber-500 uppercase">WUZO</h1>
-            <p class="text-[9px] opacity-40 uppercase tracking-[0.4em] font-bold italic">Financial Multi‑Agent Intelligence</p>
-        </div>
-        <div class="flex gap-3 items-center flex-wrap justify-end">
-            <!-- Créditos premium -->
-            <div class="bg-amber-600/20 px-4 py-2 rounded-2xl border border-amber-500/30 flex items-center gap-2">
-                <span class="text-[10px] font-bold opacity-60 uppercase">Premium:</span>
-                <span id="p-count" class="font-black text-white italic text-lg">--</span>
-            </div>
-            <!-- Email do usuário -->
-            <span id="user-email" class="text-xs text-slate-400 hidden"></span>
-            <!-- Botões auth -->
-            <div id="auth-buttons" class="flex gap-2">
-                <button onclick="showLogin()" class="text-sm bg-white/10 px-4 py-2 rounded-xl hover:bg-white/20 transition">Login</button>
-                <button onclick="showRegister()" class="text-sm bg-amber-600 px-4 py-2 rounded-xl hover:bg-amber-500 transition">Registrar</button>
-            </div>
-            <div id="logout-button" class="hidden">
-                <button onclick="logout()" class="text-sm bg-red-600/20 px-4 py-2 rounded-xl hover:bg-red-600/40 transition">Sair</button>
-            </div>
-        </div>
-    </header>
+<!-- HEADER -->
+<div class="hdr">
+  <div>
+    <div class="logo">WUZO</div>
+    <div class="logo-sub">FINANCIAL INTELLIGENCE · MULTI-AGENT IA</div>
+  </div>
+  <div class="hdr-right">
+    <div class="credit-badge">⭐ PREMIUM: <span id="cred-num">0</span></div>
+    <div class="status-dot" id="api-status">● Verificando...</div>
+    <div style="font-size:.45rem;color:var(--dm2);font-family:'JetBrains Mono',monospace;margin-top:2px;" id="api-url-display"></div>
+  </div>
+</div>
 
-    <!-- MAIN -->
-    <main class="w-full max-w-4xl space-y-8">
+<!-- INPUT CARD -->
+<div class="card" id="card-input">
+  <div class="inp-lbl">Descreva sua situação financeira</div>
+  <textarea id="txt-input"
+    placeholder="Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado."></textarea>
 
-        <!-- INPUT -->
-        <section class="glass rounded-[2.5rem] p-2 shadow-2xl">
-            <textarea id="txt-input"
-                class="w-full h-64 p-8 bg-transparent border-none outline-none text-base leading-relaxed placeholder:opacity-30 resize-none text-white"
-                placeholder="Descreva sua situação financeira com o máximo de detalhes...&#10;&#10;Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado."></textarea>
-            <div class="p-5 flex flex-col md:flex-row justify-between items-center border-t border-white/5 gap-4">
-                <div class="flex items-center gap-2">
-                    <div id="status-dot" class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    <span id="st-msg" class="text-[10px] uppercase font-bold text-slate-500 tracking-widest">Motor Online</span>
-                </div>
-                <div class="flex gap-3 flex-wrap justify-center">
-                    <button onclick="analisar('free')" id="btn-free"
-                        class="bg-amber-600 hover:bg-amber-500 text-white px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition disabled:opacity-40">
-                        ⚡ Análise Gratuita
-                    </button>
-                    <button onclick="analisar('premium')" id="btn-premium"
-                        class="btn-premium hover:opacity-90 text-white px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition disabled:opacity-40">
-                        ⭐ Relatório Premium (16 Esp.)
-                    </button>
-                    <button onclick="comprar()" id="btn-buy"
-                        class="btn-buy hover:opacity-90 text-white px-6 py-4 rounded-2xl font-black text-[10px] uppercase tracking-widest transition">
-                        🛒 Comprar (R$ 19,90)
-                    </button>
-                </div>
-            </div>
-        </section>
+  <div class="btn-row">
+    <button class="btn btn-free" id="btn-free" onclick="handleFree()">
+      ⚡ ANÁLISE GRATUITA
+    </button>
+    <button class="btn btn-premium" id="btn-premium" onclick="handlePremium()">
+      ⭐ RELATÓRIO PREMIUM (16 ESP.)
+    </button>
+    <button class="btn btn-buy" id="btn-buy" onclick="handleBuy()">
+      🛒 COMPRAR (R$ 19,90)
+    </button>
+  </div>
+  <div class="alert alert-err" id="inp-alert"></div>
+</div>
 
-        <!-- LOADING -->
-        <div id="loading-box" class="hidden flex flex-col items-center py-10 space-y-4">
-            <div class="loader"></div>
-            <p id="loading-msg" class="text-[10px] uppercase tracking-widest text-amber-400 animate-pulse font-bold text-center">
-                Consultando especialistas financeiros...
-            </p>
-        </div>
+<!-- PIPELINE SECTION -->
+<div class="card" id="sec-pipeline" style="display:none;">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+    <span style="font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;color:var(--dm2);">AGENTES EM EXECUÇÃO</span>
+    <span class="pill pill-run" id="pip-pill">RUNNING</span>
+  </div>
+  <div class="agent-grid" id="agent-grid"></div>
+  <div class="prog"><div class="prog-fill" id="prog-fill"></div></div>
+  <div class="log" id="log-feed"><div class="ll">⬡ Iniciando...</div></div>
+</div>
 
-        <!-- OUTPUT -->
-        <div id="output-area" class="space-y-5 pb-40"></div>
+<!-- FREE RESULT SECTION -->
+<div id="sec-free">
 
-    </main>
+  <!-- Veredito -->
+  <div class="verdict-card" id="verdict-box">
+    <div class="verdict-title">⚖️ Veredito do Consultor IA</div>
+    <div class="vline"></div>
+    <div class="verdict-body" id="verdict-body"></div>
+  </div>
 
-    <!-- MODAL LOGIN -->
-    <div id="login-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center hidden z-50 p-4">
-        <div class="glass p-8 rounded-2xl w-full max-w-sm">
-            <h2 class="text-2xl font-bold mb-6">Entrar</h2>
-            <input type="email" id="login-email" placeholder="Email"
-                class="w-full p-3 rounded-xl bg-white/10 mb-3 text-white outline-none border border-white/10 focus:border-amber-500">
-            <input type="password" id="login-password" placeholder="Senha"
-                class="w-full p-3 rounded-xl bg-white/10 mb-5 text-white outline-none border border-white/10 focus:border-amber-500">
-            <button onclick="login()" class="w-full bg-amber-600 hover:bg-amber-500 py-3 rounded-xl font-bold transition">Entrar</button>
-            <button onclick="closeModals()" class="w-full mt-3 text-sm opacity-50 hover:opacity-100 transition">Cancelar</button>
-            <p id="login-error" class="text-red-400 text-sm mt-3 hidden"></p>
-        </div>
+  <!-- Preview de 1 especialista com blur -->
+  <div class="preview-wrap">
+    <div class="preview-content" id="preview-body"></div>
+    <div class="preview-blur"></div>
+  </div>
+
+  <!-- Lock card -->
+  <div class="lock-card">
+    <div class="lock-icon">🔒</div>
+    <div class="lock-title">Desbloqueie o relatório completo</div>
+    <div class="lock-sub">Veja a análise dos 16 especialistas + downloads em MD, TXT e HTML</div>
+    <div class="btn-row" style="margin-top:0;">
+      <button class="btn btn-premium" onclick="handlePremium()">⭐ Usar Crédito Premium</button>
+      <button class="btn btn-buy" onclick="handleBuy()">🛒 Comprar — R$ 19,90</button>
     </div>
+  </div>
+</div>
 
-    <!-- MODAL REGISTER -->
-    <div id="register-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center hidden z-50 p-4">
-        <div class="glass p-8 rounded-2xl w-full max-w-sm">
-            <h2 class="text-2xl font-bold mb-6">Criar Conta</h2>
-            <input type="email" id="reg-email" placeholder="Email"
-                class="w-full p-3 rounded-xl bg-white/10 mb-3 text-white outline-none border border-white/10 focus:border-amber-500">
-            <input type="text" id="reg-name" placeholder="Nome (opcional)"
-                class="w-full p-3 rounded-xl bg-white/10 mb-3 text-white outline-none border border-white/10 focus:border-amber-500">
-            <input type="password" id="reg-password" placeholder="Senha (mínimo 4 caracteres)"
-                class="w-full p-3 rounded-xl bg-white/10 mb-5 text-white outline-none border border-white/10 focus:border-amber-500">
-            <button onclick="register()" class="w-full bg-amber-600 hover:bg-amber-500 py-3 rounded-xl font-bold transition">Criar conta</button>
-            <button onclick="closeModals()" class="w-full mt-3 text-sm opacity-50 hover:opacity-100 transition">Cancelar</button>
-            <p id="reg-error" class="text-red-400 text-sm mt-3 hidden"></p>
-        </div>
-    </div>
+<!-- FULL REPORT SECTION -->
+<div id="sec-full">
+  <div class="report-card" id="full-report-box"></div>
 
-    <script>
-        // API URL – ajuste para a URL do seu serviço Flask no Render
-        const API = "https://wuzo-api.onrender.com"; // altere conforme seu deploy
-        let token = localStorage.getItem("token");
-        let userId = null;
+  <!-- Análises por agente -->
+  <div id="agent-blocks-box"></div>
 
-        // ── UI ──────────────────────────────────────────────────────────
-        function updateUI() {
-            if (token) {
-                document.getElementById("auth-buttons").classList.add("hidden");
-                document.getElementById("logout-button").classList.remove("hidden");
-                fetch(API + "/api/auth/me", { headers: { Authorization: `Bearer ${token}` } })
-                    .then(r => r.json())
-                    .then(data => {
-                        document.getElementById("p-count").innerText = data.premium_credits ?? 0;
-                        document.getElementById("user-email").innerText = data.email || "";
-                        document.getElementById("user-email").classList.remove("hidden");
-                        userId = data.id;
-                    })
-                    .catch(() => {
-                        localStorage.removeItem("token");
-                        token = null;
-                        updateUI();
-                    });
-            } else {
-                document.getElementById("auth-buttons").classList.remove("hidden");
-                document.getElementById("logout-button").classList.add("hidden");
-                document.getElementById("user-email").classList.add("hidden");
-                document.getElementById("p-count").innerText = "--";
-            }
+  <!-- Downloads -->
+  <div class="dl-row" id="dl-row">
+    <a class="dl-btn" id="dl-md"   href="#" download="relatorio_wuzo.md">⬇ .MD</a>
+    <a class="dl-btn" id="dl-txt"  href="#" download="relatorio_wuzo.txt">⬇ .TXT</a>
+    <a class="dl-btn" id="dl-html" href="#" download="relatorio_wuzo.html">⬇ .HTML</a>
+  </div>
+</div>
+
+<!-- SETUP TIP -->
+<div id="setup-tip" style="display:none;" class="card" style="margin-top:14px;">
+  <div class="inp-lbl" style="color:var(--rd);">⚠ BACKEND OFFLINE — SOLUÇÕES</div>
+  <div style="font-size:.82rem;line-height:1.9;margin-top:8px;color:var(--dm);">
+    <b style="color:var(--g);">Opção 1 — Groq gratuito (mais fácil):</b><br>
+    1. Crie conta em <a href="https://console.groq.com" target="_blank" style="color:var(--g);">console.groq.com</a><br>
+    2. Copie sua API Key<br>
+    3. Execute no console do browser (F12):<br>
+    <code style="background:rgba(0,0,0,.5);padding:6px 10px;border-radius:4px;display:block;margin:6px 0;font-size:.78rem;">window.setLocalKey("gsk_SUA_CHAVE_AQUI")</code>
+    <br>
+    <b style="color:var(--g);">Opção 2 — Backend Render (token de sessão):</b><br>
+    No Streamlit, abra o console e execute:<br>
+    <code style="background:rgba(0,0,0,.5);padding:6px 10px;border-radius:4px;display:block;margin:6px 0;font-size:.78rem;">window.setToken("token_da_sessao_streamlit")</code>
+  </div>
+</div>
+
+<script>
+// Mostra dica se backend offline após 8s
+setTimeout(()=>{
+  const el = document.getElementById("api-status");
+  if(el && el.innerHTML.includes("offline")){
+    document.getElementById("setup-tip").style.display="block";
+  }
+}, 8000);
+</script>
+
+</div><!-- /shell -->
+
+<!-- Marked.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+
+<script>
+// ════════════════════════════════════════════════════════
+// CONFIG — lida com app.wuzo.com.br rodando no Render
+// As env vars já estão no Render: SAMBANOVA_API_KEY,
+// GEMINI_API_KEY, CEREBRAS_API_KEY, OPENAI_API_KEY
+// O Streamlit (app.py) serve como backend via query params
+// ════════════════════════════════════════════════════════
+
+// URL base do backend Render (app.wuzo.com.br / Streamlit)
+// O HTML chama o endpoint /agent/run do FastAPI (api.py)
+// OU chama direto o LLM se tiver chave local
+// ═══════════════════════════════════════════════════════
+// URL DO AGENT API — segundo serviço no Render
+// Formato: https://wuzo-api.onrender.com
+// (ajuste se você nomeou diferente no Render)
+// ═══════════════════════════════════════════════════════
+const BACKEND_URL = "https://wuzo-api.onrender.com";
+
+// Sem Groq — usamos apenas o backend Render
+const GROQ_FALLBACK_KEY = "";
+const STRIPE_URL   = ""; // URL do Stripe checkout — preenchida via /credits/purchase
+
+// Chave local (fallback se não tiver backend)
+// Deixar vazio para usar sempre o backend
+const LOCAL_LLM_KEY      = localStorage.getItem("wuzo_llm_key") || "";
+const LOCAL_LLM_PROVIDER = localStorage.getItem("wuzo_llm_prov") || "sambanova";
+
+// Token de sessão (pego da URL ou localStorage)
+function getToken(){
+  const p = new URLSearchParams(location.search);
+  const t = p.get("token") || p.get("t") || localStorage.getItem("wuzo_token") || "";
+  if (t) localStorage.setItem("wuzo_token", t);
+  return t;
+}
+
+// ════════════════════════════════════════════════════════
+// 16 AGENTES
+// ════════════════════════════════════════════════════════
+const AGENTS = [
+  {id:"noticias_realtime",       em:"📡", nm:"Notícias"},
+  {id:"macroeconomia",           em:"🌐", nm:"Macro"},
+  {id:"sentimento_mercado",      em:"🧠", nm:"Sentimento"},
+  {id:"criptomoedas",            em:"₿",  nm:"Cripto"},
+  {id:"acoes_equity",            em:"📈", nm:"Ações"},
+  {id:"derivativos",             em:"🔄", nm:"Derivativos"},
+  {id:"rwa",                     em:"🏭", nm:"RWA"},
+  {id:"renda_fixa",              em:"💵", nm:"Renda Fixa"},
+  {id:"imoveis_fiis",            em:"🏢", nm:"FIIs"},
+  {id:"quitacao_dividas",        em:"💳", nm:"Dívidas"},
+  {id:"credito_financiamento",   em:"🏦", nm:"Crédito"},
+  {id:"planejamento_tributario", em:"📋", nm:"Tributário"},
+  {id:"compliance_risco",        em:"🛡️", nm:"Compliance"},
+  {id:"auditor_dados",           em:"🔍", nm:"Auditor"},
+  {id:"consultor_senior",        em:"👔", nm:"Consultor"},
+  {id:"redator_relatorios",      em:"✍️", nm:"Redator"},
+];
+
+// ════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════
+let agentOutputs = {};
+let freeMode = false;
+
+// ════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════
+document.addEventListener("DOMContentLoaded", () => {
+  buildGrid();
+  loadCredits();
+  // Pega token da URL
+  getToken();
+  checkBackendHealth();
+});
+
+async function checkBackendHealth(){
+  try{
+    const r = await fetch(BACKEND_URL+"/health", {signal: AbortSignal.timeout(6000)});
+    if(r.ok){
+      const d = await r.json();
+      document.getElementById("api-status").innerHTML = 
+        `<span style="color:var(--gr)">● API OK · ${d.llm||"llm"}</span>`;
+      document.getElementById("api-url-display").textContent = BACKEND_URL;
+      return;
+    }
+  }catch{}
+  document.getElementById("api-status").innerHTML = 
+    GROQ_FALLBACK_KEY
+      ? '<span style="color:var(--g)">● Groq Local Ativo</span>'
+      : '<span style="color:var(--rd)">● Backend offline — <a href="#setup-tip" style="color:var(--g)">ver solução</a></span>';
+}
+
+// ════════════════════════════════════════════════════════
+// CREDITS
+// ════════════════════════════════════════════════════════
+async function loadCredits(){
+  const tok = getToken();
+  if(!tok){ document.getElementById("cred-num").textContent = "0"; return; }
+  try{
+    const r = await fetch(BACKEND_URL+"/credits/balance",{
+      headers:{"Authorization":"Bearer "+tok}
+    });
+    if(r.ok){
+      const d = await r.json();
+      const n = d.unlimited ? "∞" : (d.credits||0);
+      document.getElementById("cred-num").textContent = n;
+      // Se tem crédito, deixa o btn-premium destaque
+      if(d.credits > 0 || d.unlimited){
+        document.getElementById("btn-buy").style.opacity = ".5";
+      }
+    }
+  }catch{}
+}
+
+// ════════════════════════════════════════════════════════
+// LLM CALL — usa backend ou chave local
+// ════════════════════════════════════════════════════════
+async function llm(system, user, tokens=600){
+  const tok = getToken();
+  const headers = {"Content-Type":"application/json"};
+  if(tok) headers["Authorization"] = "Bearer " + tok;
+
+  try{
+    const r = await fetch(BACKEND_URL + "/agent/run", {
+      method: "POST",
+      headers,
+      body: JSON.stringify({system, user, max_tokens: tokens}),
+      signal: AbortSignal.timeout(30000)
+    });
+    if(r.ok){
+      const d = await r.json();
+      return d.result || d.content || "❌ Resposta vazia";
+    }
+    return "❌ HTTP " + r.status + " — verifique o serviço no Render";
+  }catch(e){
+    return "❌ " + e.message;
+  }
+}
+
+async function llmDirect(system, user, tokens){
+  const PROVIDERS = {
+    sambanova:{url:"https://api.sambanova.ai/v1/chat/completions",  model:"Meta-Llama-3.3-70B-Instruct"},
+    openai:   {url:"https://api.openai.com/v1/chat/completions",    model:"gpt-4o-mini"},
+    groq:     {url:"https://api.groq.com/openai/v1/chat/completions",model:"llama-3.3-70b-versatile"},
+    gemini:   {url:"https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",model:"gemini-2.0-flash"},
+    cerebras: {url:"https://api.cerebras.ai/v1/chat/completions",   model:"llama3.1-8b"},
+  };
+  const ep = PROVIDERS[LOCAL_LLM_PROVIDER] || PROVIDERS.groq;
+  try{
+    const r = await fetch(ep.url,{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+LOCAL_LLM_KEY},
+      body:JSON.stringify({model:ep.model,max_tokens:tokens,temperature:.3,
+        messages:[{role:"system",content:system},{role:"user",content:user}]
+      })
+    });
+    if(!r.ok) return "❌ HTTP "+r.status;
+    const d = await r.json();
+    return d.choices?.[0]?.message?.content?.trim()||"";
+  }catch(e){ return "❌ "+e.message; }
+}
+
+// ════════════════════════════════════════════════════════
+// AGENT GRID
+// ════════════════════════════════════════════════════════
+function buildGrid(){
+  const g = document.getElementById("agent-grid");
+  g.innerHTML="";
+  AGENTS.forEach(a=>{
+    const d=document.createElement("div");
+    d.className="ac"; d.id="ac-"+a.id;
+    d.innerHTML=`<div class="ac-em">${a.em}</div><div class="ac-nm">${a.nm}</div><div class="ac-st">○</div>`;
+    g.appendChild(d);
+  });
+}
+
+function setAc(id,st){
+  const c=document.getElementById("ac-"+id); if(!c)return;
+  const ic={idle:"○",thinking:"◉",done:"✓",error:"✗"};
+  c.className="ac "+st;
+  c.querySelector(".ac-st").textContent=ic[st]||"○";
+  const done=Object.values(agentOutputs).filter(Boolean).length;
+  document.getElementById("prog-fill").style.width=Math.round(done/AGENTS.length*100)+"%";
+}
+
+function log(msg,cls=""){
+  const f=document.getElementById("log-feed");
+  const d=document.createElement("div");
+  d.className="ll "+cls;
+  d.textContent="["+new Date().toLocaleTimeString("pt-BR")+"] "+msg;
+  f.appendChild(d); f.scrollTop=f.scrollHeight;
+}
+
+// ════════════════════════════════════════════════════════
+// FREE ANALYSIS
+// ════════════════════════════════════════════════════════
+async function handleFree(){
+  const txt = document.getElementById("txt-input").value.trim();
+  if(!txt){ showAlert("inp-alert","alert-info","✍️ Descreva sua situação financeira."); return; }
+
+  hideAlert("inp-alert");
+  freeMode = true;
+  agentOutputs = {};
+  resetGrid();
+  document.getElementById("sec-pipeline").style.display="block";
+  document.getElementById("sec-free").style.display="none";
+  document.getElementById("sec-full").style.display="none";
+  setBtns(true);
+
+  log("⬡ Análise gratuita iniciada...");
+
+  const now = new Date().toLocaleDateString("pt-BR",{day:"2-digit",month:"long",year:"numeric"});
+
+  // ── 1. Veredito rápido (Consultor Sênior) ──────────────
+  setAc("consultor_senior","thinking");
+  log("👔 Consultor Sênior: analisando veredito...");
+
+  const veredito = await llm(
+    "Você é um Consultor Financeiro Sênior com 20 anos de experiência. "+
+    "Analise a situação do usuário e responda em formato estruturado em português. "+
+    "Seja objetivo e direto. Use dados concretos.",
+    `DATA: ${now}\nSITUAÇÃO DO USUÁRIO:\n${txt}\n\n`+
+    `Responda EXATAMENTE neste formato (sem markdown, sem asteriscos, texto limpo):\n`+
+    `VEREDITO: [Favorável/Desfavorável/Atenção Necessária]\n`+
+    `SAÚDE FINANCEIRA: [0-100]%\n`+
+    `URGÊNCIA: [Alta/Média/Baixa]\n`+
+    `ÁREAS CRÍTICAS:\n1. [área]\n2. [área]\n3. [área]\n`+
+    `FUNDAMENTO: [2-3 frases explicando o diagnóstico principal]\n`+
+    `SÍNTESE: [2 frases sobre o que foi identificado]\n`+
+    `RISCOS:\n1. [risco com impacto]\n2. [risco]\n3. [risco]\n`+
+    `PRÓXIMOS PASSOS:\n1. [ação concreta]\n2. [ação]\n3. [ação]`,
+    500
+  );
+  agentOutputs["consultor_senior"] = veredito;
+  setAc("consultor_senior","done");
+  log("✓ Consultor Sênior concluído","ok");
+
+  // ── 2. Preview de 1 especialista (Macroeconomia) ───────
+  setAc("macroeconomia","thinking");
+  log("🌐 Macroeconomia: iniciando análise...");
+
+  const macroPreview = await llm(
+    "Você é um economista-chefe especializado em Brasil. Responda em português com análise técnica.",
+    `DATA: ${now}\nSITUAÇÃO DO USUÁRIO: ${txt}\n\n`+
+    `ANÁLISE MACROECONÔMICA DETALHADA:\n`+
+    `Considerando Selic atual, IPCA, câmbio e cenário de juros globais, analise:\n`+
+    `1. Como o cenário macro impacta especificamente esta situação\n`+
+    `2. Oportunidades em renda fixa no contexto atual\n`+
+    `3. Timing ideal para os investimentos descritos\n`+
+    `Seja técnico, use números reais de 2024-2025, mínimo 200 palavras.`,
+    400
+  );
+  agentOutputs["macroeconomia"] = macroPreview;
+  setAc("macroeconomia","done");
+  log("✓ Macroeconomia concluída","ok");
+
+  // ── Finaliza ───────────────────────────────────────────
+  finishPipeline();
+  renderFreeResult(veredito, macroPreview);
+  setBtns(false);
+}
+
+function renderFreeResult(veredito, preview){
+  // Renderiza veredito
+  const vBody = document.getElementById("verdict-body");
+  // Formata o texto estruturado em HTML
+  vBody.innerHTML = veredito
+    .replace(/^(VEREDITO|SAÚDE FINANCEIRA|URGÊNCIA|ÁREAS CRÍTICAS|FUNDAMENTO|SÍNTESE|RISCOS|PRÓXIMOS PASSOS):/gm,
+      m=>`<div style="color:var(--g);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;margin-top:10px;margin-bottom:2px;">${m}</div>`)
+    .replace(/\n/g,"<br>");
+
+  // Renderiza preview parcial
+  const pBody = document.getElementById("preview-body");
+  pBody.innerHTML = `<h3>📋 Análise — Macroeconomia</h3>`+
+    (typeof marked!=="undefined" ? marked.parse(preview) : preview.replace(/\n/g,"<br>"));
+
+  document.getElementById("sec-free").style.display="block";
+  document.getElementById("sec-free").scrollIntoView({behavior:"smooth"});
+}
+
+// ════════════════════════════════════════════════════════
+// PREMIUM — 16 AGENTES
+// ════════════════════════════════════════════════════════
+async function handlePremium(){
+  // Verifica crédito
+  const tok = getToken();
+  if(tok){
+    try{
+      const r=await fetch(BACKEND_URL+"/credits/balance",{headers:{"Authorization":"Bearer "+tok}});
+      if(r.ok){
+        const d=await r.json();
+        if(!d.unlimited && (d.credits||0)<1){
+          showAlert("inp-alert","alert-err","⭐ Créditos insuficientes. Compre 1 crédito por R$ 19,90.");
+          return;
         }
+      }
+    }catch{}
+  }
 
-        function setStatus(msg, color = "text-slate-500") {
-            const el = document.getElementById("st-msg");
-            el.innerText = msg;
-            el.className = `text-[10px] uppercase font-bold tracking-widest ${color}`;
-        }
+  const txt = document.getElementById("txt-input").value.trim();
+  if(!txt){ showAlert("inp-alert","alert-info","✍️ Descreva sua situação financeira."); return; }
 
-        function setLoading(on, msg = "Consultando especialistas financeiros...") {
-            document.getElementById("loading-box").classList.toggle("hidden", !on);
-            document.getElementById("loading-msg").innerText = msg;
-            document.getElementById("btn-free").disabled = on;
-            document.getElementById("btn-premium").disabled = on;
-            if (on) setStatus("A processar...", "text-amber-400");
-            else setStatus("Motor Online", "text-slate-500");
-        }
+  hideAlert("inp-alert");
+  freeMode = false;
+  agentOutputs = {};
+  resetGrid();
+  document.getElementById("sec-pipeline").style.display="block";
+  document.getElementById("sec-free").style.display="none";
+  document.getElementById("sec-full").style.display="none";
+  setBtns(true);
 
-        // ── AUTH ────────────────────────────────────────────────────────
-        async function login() {
-            const email = document.getElementById("login-email").value.trim();
-            const password = document.getElementById("login-password").value;
-            const errEl = document.getElementById("login-error");
-            errEl.classList.add("hidden");
-            if (!email || !password) { showErr(errEl, "Preencha email e senha."); return; }
-            try {
-                const res = await fetch(API + "/api/auth/login", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password })
-                });
-                const data = await res.json();
-                if (res.ok) {
-                    token = data.token;
-                    localStorage.setItem("token", token);
-                    closeModals();
-                    updateUI();
-                } else {
-                    showErr(errEl, data.error || "Erro no login");
-                }
-            } catch { showErr(errEl, "Erro de conexão com o servidor."); }
-        }
+  const now = new Date().toLocaleDateString("pt-BR",{day:"2-digit",month:"long",year:"numeric"});
 
-        async function register() {
-            const email = document.getElementById("reg-email").value.trim();
-            const password = document.getElementById("reg-password").value;
-            const name = document.getElementById("reg-name").value.trim();
-            const errEl = document.getElementById("reg-error");
-            errEl.classList.add("hidden");
-            if (!email || !password) { showErr(errEl, "Preencha email e senha."); return; }
-            if (password.length < 4) { showErr(errEl, "Senha deve ter pelo menos 4 caracteres."); return; }
-            try {
-                const res = await fetch(API + "/api/auth/register", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password, name })
-                });
-                const data = await res.json();
-                if (res.ok) {
-                    closeModals();
-                    showLogin();
-                    document.getElementById("login-email").value = email;
-                    alert("Conta criada! Faça login.");
-                } else {
-                    showErr(errEl, data.error || "Erro ao criar conta");
-                }
-            } catch { showErr(errEl, "Erro de conexão com o servidor."); }
-        }
+  async function ag(id,sys,usr,tokens=500){
+    setAc(id,"thinking");
+    log(`${AGENTS.find(a=>a.id===id)?.em||"⬡"} ${id}...`);
+    const out = await llm(sys,usr,tokens);
+    agentOutputs[id] = out;
+    setAc(id, out.startsWith("❌")||out.startsWith("⚠")?"error":"done");
+    log(`✓ ${id}`,"ok");
+    return out;
+  }
 
-        function logout() {
-            localStorage.removeItem("token");
-            token = null;
-            userId = null;
-            document.getElementById("output-area").innerHTML = "";
-            updateUI();
-        }
+  // ── RAMO B — paralelo ──────────────────────────────────
+  log("▶ Ramo B: Contexto Macro");
+  await Promise.all([
+    ag("noticias_realtime",
+      "Analista de inteligência de mercado financeiro. Responda em português. Máx 250 palavras.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nPrincipais eventos macro recentes impactando investidores BR. Ativos mais afetados. Oportunidades e alertas.`),
+    ag("macroeconomia",
+      "Economista-chefe Brasil/EUA. Responda em português. Máx 280 palavras.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nSelic,IPCA,câmbio,Fed. Cenário macro atual BR. Projeções 6 meses. Impacto para esta situação específica.`),
+    ag("sentimento_mercado",
+      "Analista de sentimento de mercado. Responda em português. Máx 220 palavras.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nSentimento dominante (bullish/bearish/neutro). Fear&Greed. Indicadores contrários. Recomendação de posicionamento.`),
+  ]);
 
-        // ── ANÁLISE ─────────────────────────────────────────────────────
-        async function analisar(tipo) {
-            const prompt = document.getElementById("txt-input").value.trim();
-            if (!prompt || prompt.length < 20) {
-                alert("Descreva a situação financeira com pelo menos 20 caracteres.");
-                return;
-            }
-            if (tipo === "premium" && !token) {
-                alert("Você precisa estar logado para usar o relatório premium.");
-                showLogin();
-                return;
-            }
+  // ── RAMO A — paralelo ──────────────────────────────────
+  log("▶ Ramo A: Mercado");
+  const macro = (agentOutputs["macroeconomia"]||"").slice(0,200);
+  await Promise.all([
+    ag("criptomoedas",
+      "Analista sênior de criptoativos. Responda em português. Máx 250 palavras.",
+      `DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nBTC,ETH,SOL. Oportunidades com preço-alvo. Riscos. % alocação sugerida para este perfil.`),
+    ag("acoes_equity",
+      "Analista de equity B3 e NYSE. Responda em português. Máx 260 palavras.",
+      `DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nSetores promissores. Ações-destaque com tickers BR e EUA. Riscos. Estratégia para este perfil.`),
+    ag("derivativos",
+      "Especialista em derivativos e hedge. Responda em português. Máx 200 palavras.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nDerivativos para proteção desta carteira. Estratégias de opções adequadas ao perfil. Riscos de alavancagem.`),
+    ag("rwa",
+      "Especialista em RWA tokenizados. Responda em português. Máx 200 palavras.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nOportunidades RWA para este perfil. Plataformas BR relevantes. Riscos regulatórios e de liquidez.`),
+    ag("renda_fixa",
+      "Especialista renda fixa BR. Responda em português. Máx 260 palavras.",
+      `DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nTesouro,CDB,LCI,LCA,CRI. Produtos mais adequados. Duration recomendada. IPCA+ vs prefixado vs CDI agora.`),
+    ag("imoveis_fiis",
+      "Especialista FIIs e imóveis. Responda em português. Máx 220 palavras.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nSegmentos FII mais atrativos. Melhores DY/VP. FII vs imóvel direto para este perfil.`),
+  ]);
 
-            const output = document.getElementById("output-area");
-            output.innerHTML = "";
+  // ── RAMO C — paralelo ──────────────────────────────────
+  log("▶ Ramo C: Finanças Pessoais");
+  await Promise.all([
+    ag("quitacao_dividas",
+      "Especialista em quitação de dívidas. Responda em português. Máx 230 palavras.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nPriorização de dívidas. Método avalanche vs bola de neve para esta situação. Liberação de fluxo mensal.`),
+    ag("credito_financiamento",
+      "Especialista em crédito e financiamentos. Responda em português. Máx 220 palavras.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nCapacidade atual de crédito. Oportunidades de refinanciamento. Estratégias para melhorar score. Crédito imobiliário vs investimento.`),
+    ag("planejamento_tributario",
+      "Especialista IR e tributário PF Brasil. Responda em português. Máx 220 palavras.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nEficiência tributária. Deduções IR disponíveis. PGBL vs VGBL para esta renda. Alertas de obrigações fiscais.`),
+  ]);
 
-            const loadingMsg = tipo === "free"
-                ? "Consultando especialista financeiro..."
-                : "Iniciando análise premium...";
-            setLoading(true, loadingMsg);
+  // ── GUARDIÕES — paralelo ───────────────────────────────
+  log("▶ Guardiões: Compliance + Auditor");
+  const allOut = Object.entries(agentOutputs).map(([k,v])=>`[${k}]:${v.slice(0,150)}`).join("\n");
+  await Promise.all([
+    ag("compliance_risco",
+      "Diretor de Compliance e Gestão de Riscos. Responda em português. Máx 200 palavras.",
+      `ANÁLISES:\n${allOut.slice(0,1800)}\nUSUÁRIO:${txt}\n\nFlags de risco identificados. Inconsistências entre análises. Ajustes obrigatórios.`),
+    ag("auditor_dados",
+      "Auditor de Dados e Qualidade. Responda em português. Máx 160 palavras.",
+      `ANÁLISES:\n${allOut.slice(0,1800)}\n\nConsistência dos dados. Contradições. Confiabilidade geral (Alta/Média/Baixa) com justificativa.`),
+  ]);
 
-            try {
-                if (tipo === "free") {
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 60000);
-                    const res = await fetch(API + "/api/analyze", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ prompt }),
-                        signal: controller.signal
-                    });
-                    clearTimeout(timeoutId);
-                    if (!res.ok) {
-                        const err = await res.json().catch(() => ({}));
-                        throw new Error(err.error || `Erro ${res.status}`);
-                    }
-                    const data = await res.json();
-                    renderFree(data, output);
-                } else {
-                    // Premium
-                    const resJob = await fetch(API + "/api/analyze/premium", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                        body: JSON.stringify({ prompt })
-                    });
-                    if (!resJob.ok) {
-                        if (resJob.status === 402) {
-                            output.innerHTML = `
-                                <div class="glass p-8 rounded-2xl text-center fade-in">
-                                    <p class="text-yellow-400 text-lg font-bold mb-2">⚠ Sem créditos premium</p>
-                                    <p class="text-slate-400 mb-4">Adquira um relatório para continuar.</p>
-                                    <button onclick="comprar()" class="btn-buy px-8 py-3 rounded-xl font-bold text-white">
-                                        🛒 Comprar Relatório — R$ 19,90
-                                    </button>
-                                </div>`;
-                            return;
-                        }
-                        const err = await resJob.json().catch(() => ({}));
-                        throw new Error(err.error || `Erro ${resJob.status}`);
-                    }
-                    const jobData = await resJob.json();
-                    const jobId = jobData.job_id;
-                    const data = await pollJob(jobId);
-                    if (data) {
-                        renderPremium(data, output);
-                        updateUI();
-                    }
-                }
-            } catch (err) {
-                if (err.name === "AbortError") {
-                    output.innerHTML = `<div class="glass p-8 rounded-2xl text-center fade-in">
-                        <p class="text-red-400 font-bold text-lg">⏱ Tempo esgotado</p>
-                        <p class="text-slate-400 mt-2">A análise demorou mais que o esperado. Tente novamente.</p>
-                    </div>`;
-                } else {
-                    output.innerHTML = `<div class="glass p-8 rounded-2xl text-center fade-in">
-                        <p class="text-red-400 font-bold text-lg">❌ Erro</p>
-                        <p class="text-slate-400 mt-2">${err.message}</p>
-                    </div>`;
-                }
-            } finally {
-                setLoading(false);
-            }
-        }
+  // ── CONSULTOR SÊNIOR ───────────────────────────────────
+  log("▶ Consultor Sênior: veredito consolidado");
+  const comp = (agentOutputs["compliance_risco"]||"").slice(0,300);
+  await ag("consultor_senior",
+    "Consultor Financeiro Sênior responsável pelo veredito final. Responda em português.",
+    `DATA:${now}\nUSUÁRIO:${txt}\n\nANÁLISES DOS 13 ESPECIALISTAS:\n${allOut.slice(0,2500)}\n\nCOMPLIANCE:${comp}\n\n`+
+    `Emita:\n1. Veredito consolidado (diagnóstico final da situação)\n`+
+    `2. Alocação de portfólio recomendada em % (soma=100%)\n`+
+    `3. Top 3 prioridades para os próximos 30 dias com valores específicos\n`+
+    `4. Nível de risco global: Conservador/Moderado/Arrojado\n`+
+    `5. Projeção patrimônio em 12 meses se seguir as recomendações`,
+    650);
 
-        async function pollJob(jobId) {
-            const maxAttempts = 60; // 60 × 4s = 4 minutos
-            let dots = 0;
-            for (let i = 0; i < maxAttempts; i++) {
-                await new Promise(r => setTimeout(r, 4000));
-                dots = (dots % 3) + 1;
-                document.getElementById("loading-msg").innerText =
-                    "Consultando especialistas" + ".".repeat(dots) + " (" + (i * 4) + "s)";
-                try {
-                    const res = await fetch(API + `/api/job/${jobId}`, {
-                        headers: { "Authorization": `Bearer ${token}` }
-                    });
-                    const data = await res.json();
-                    if (data.status === "done") return data;
-                    if (data.status === "error") throw new Error(data.verdict || "Erro na análise");
-                    // pending/running → continua
-                } catch (err) {
-                    if (err.message.includes("Erro") || err.message.includes("reembolsado")) throw err;
-                    // erro de rede, tenta novamente
-                }
-            }
-            throw new Error("Tempo esgotado. Tente novamente.");
-        }
+  // ── REDATOR ────────────────────────────────────────────
+  log("▶ Redator: gerando relatório completo...");
+  const vfinal = (agentOutputs["consultor_senior"]||"").slice(0,500);
+  const fullReport = await ag("redator_relatorios",
+    "Redator-sênior de relatórios financeiros. Produza relatório em Markdown. Responda em português. Mínimo 900 palavras.",
+    `DATA:${now}\nUSUÁRIO:${txt}\n\nVEREDITO DO CONSULTOR:\n${vfinal}\n\nANÁLISES:\n${allOut.slice(0,2800)}\n\n`+
+    `Produza relatório com estas seções (use ## para headers, **negrito** para destaques, tabelas Markdown):\n`+
+    `## 📊 Sumário Executivo\n`+
+    `## 🌐 Panorama Macroeconômico\n`+
+    `## 📈 Análise de Mercado e Oportunidades\n`+
+    `## 💼 Portfólio Recomendado\n`+
+    `## 💳 Gestão de Dívidas e Crédito\n`+
+    `## 📋 Planejamento Tributário\n`+
+    `## ⚠️ Riscos e Alertas\n`+
+    `## 🎯 Plano de Ação — Próximos 30 Dias\n\n`+
+    `Inclua números concretos, percentuais, benchmarks (CDI, IPCA, Selic) e tabelas comparativas.`,
+    1800);
 
-        function renderFree(data, output) {
-            output.innerHTML = `
-                <div class="veredito-box glass p-8 rounded-2xl fade-in">
-                    <div class="flex items-center gap-3 mb-4">
-                        <span class="text-2xl">⚡</span>
-                        <h2 class="text-xl font-bold text-amber-300">Veredito do Consultor IA</h2>
-                    </div>
-                    <div class="whitespace-pre-wrap text-sm leading-relaxed">${escHtml(data.veredito)}</div>
-                </div>
-                <div class="glass p-6 rounded-2xl fade-in">
-                    <h3 class="text-lg font-bold text-amber-300 mb-3">📋 Análise — Educação Financeira</h3>
-                    <p class="text-slate-300 text-sm leading-relaxed">${escHtml(data.free_analysis)}</p>
-                </div>
-                <div class="glass p-6 rounded-2xl text-center fade-in border border-amber-500/20">
-                    <p class="text-amber-400 font-bold mb-1">🔓 Desbloqueie o relatório completo</p>
-                    <p class="text-slate-400 text-sm mb-4">Veja a análise dos 16 especialistas + PDF profissional</p>
-                    <div class="flex gap-3 justify-center flex-wrap">
-                        <button onclick="analisar('premium')" class="btn-premium px-6 py-3 rounded-xl font-bold text-white text-sm">
-                            ⭐ Usar Crédito Premium
-                        </button>
-                        <button onclick="comprar()" class="btn-buy px-6 py-3 rounded-xl font-bold text-white text-sm">
-                            🛒 Comprar — R$ 19,90
-                        </button>
-                    </div>
-                </div>`;
-        }
+  // Consome crédito
+  await consumeCredit();
 
-        function renderPremium(data, output) {
-            const analysisId = data.analysis_id;
-            const veredito = data.veredito || data.verdict || "";
-            const pdfBtn = analysisId
-                ? `<button onclick="downloadPDF(${analysisId})"
-                        class="bg-green-600 hover:bg-green-500 px-4 py-2 rounded-xl text-sm font-bold transition flex items-center gap-2">
-                        📄 Baixar PDF
-                   </button>`
-                : `<span class="text-xs text-slate-500">PDF indisponível</span>`;
+  finishPipeline();
+  renderFullReport(fullReport);
+}
 
-            output.innerHTML = `
-                <div class="veredito-box glass p-8 rounded-2xl fade-in">
-                    <div class="flex justify-between items-start flex-wrap gap-3">
-                        <div class="flex items-center gap-3">
-                            <span class="text-2xl">⚡</span>
-                            <h2 class="text-xl font-bold text-amber-300">Veredito do Consultor IA</h2>
-                        </div>
-                        ${pdfBtn}
-                    </div>
-                    <div class="whitespace-pre-wrap text-sm leading-relaxed mt-4">${escHtml(veredito)}</div>
-                    <p class="text-xs text-slate-500 mt-4">Gerado em: ${data.created_at || ""} · Créditos restantes: ${data.credits_remaining ?? "--"}</p>
-                </div>`;
+async function consumeCredit(){
+  const tok = getToken();
+  if(!tok){ await loadCredits(); return; }
+  try{
+    await fetch(BACKEND_URL+"/credits/consume",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
+      signal: AbortSignal.timeout(8000)
+    });
+  }catch{}
+  await loadCredits();
+}
 
-            data.agents.forEach((agent, idx) => {
-                const card = document.createElement("details");
-                if (idx === 0) card.setAttribute("open", "");
-                card.className = "glass rounded-2xl border border-white/10 overflow-hidden fade-in";
-                card.innerHTML = `
-                    <summary class="p-5 font-bold hover:bg-white/5 transition text-amber-300 flex items-center gap-2">
-                        <span class="text-xs bg-amber-600/30 px-2 py-1 rounded-lg">${idx + 1}</span>
-                        ${escHtml(agent.area)}
-                        <span class="text-slate-500 font-normal text-xs ml-1">— ${escHtml(agent.specialty || "")}</span>
-                    </summary>
-                    <div class="p-5 pt-0 text-slate-300 text-sm leading-relaxed border-t border-white/10 whitespace-pre-wrap">
-                        ${escHtml(agent.analysis)}
-                    </div>`;
-                output.appendChild(card);
-            });
-        }
+function renderFullReport(md){
+  const box = document.getElementById("full-report-box");
+  box.innerHTML = typeof marked!=="undefined" ? marked.parse(md) : md.replace(/\n/g,"<br>");
 
-        async function downloadPDF(analysisId) {
-            if (!token) { alert("Faça login para baixar o PDF."); return; }
-            try {
-                const res = await fetch(API + `/api/report/pdf/${analysisId}`, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                if (!res.ok) { alert("Erro ao baixar PDF."); return; }
-                const blob = await res.blob();
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = `wuzo_relatorio_${analysisId}.pdf`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            } catch { alert("Erro ao baixar PDF."); }
-        }
+  // Blocos individuais dos agentes
+  const blocksBox = document.getElementById("agent-blocks-box");
+  blocksBox.innerHTML = "";
+  const skip = new Set(["consultor_senior","redator_relatorios","compliance_risco","auditor_dados"]);
+  AGENTS.filter(a=>!skip.has(a.id) && agentOutputs[a.id]).forEach(a=>{
+    const div = document.createElement("div");
+    div.className = "agent-block";
+    const body = agentOutputs[a.id]||"";
+    div.innerHTML = `<div class="agent-block-title">${a.em} Análise — ${a.nm}</div>`+
+      `<div class="agent-block-body">${
+        typeof marked!=="undefined"
+          ? marked.parse(body)
+          : body.replace(/\*\*(.*?)\*\*/g,"<b>$1</b>").replace(/\n/g,"<br>")
+      }</div>`;
+    blocksBox.appendChild(div);
+  });
 
-        async function comprar() {
-            if (!token) { alert("Faça login primeiro."); showLogin(); return; }
-            try {
-                const res = await fetch(API + "/api/create-checkout-session", {
-                    method: "POST",
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                const data = await res.json();
-                if (res.ok && data.url) {
-                    window.location.href = data.url;
-                } else {
-                    alert(data.error || "Erro ao iniciar pagamento.");
-                }
-            } catch { alert("Erro de conexão."); }
-        }
+  // Downloads
+  const ds = new Date().toISOString().slice(0,10).replace(/-/g,"");
+  const bMd   = new Blob([md],{type:"text/markdown"});
+  const bTxt  = new Blob([md],{type:"text/plain"});
+  const htmlContent = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<title>Relatório WUZO</title>
+<style>body{font-family:Georgia,serif;max-width:820px;margin:40px auto;padding:0 20px;line-height:1.85;color:#1a1a1a;background:#fafaf8;}
+h1,h2{color:#7a5200;border-bottom:1px solid #e0d0a0;padding-bottom:6px;margin:22px 0 10px;}
+h3{color:#3a3a3a;margin:16px 0 6px;}table{border-collapse:collapse;width:100%;margin:14px 0;}
+th{background:#f9f0dc;padding:8px 12px;text-align:left;border:1px solid #ddd;font-size:.85em;}
+td{padding:7px 12px;border:1px solid #eee;}tr:nth-child(even) td{background:#fafafa;}
+blockquote{border-left:3px solid #c9a84c;padding-left:14px;color:#666;margin:12px 0;}
+code{background:#f5f0e0;padding:2px 6px;border-radius:3px;font-family:monospace;font-size:.9em;}</style>
+</head><body><h1>WUZO — Relatório Financeiro</h1>
+<p style="color:#888;font-size:.85em;">Gerado em ${new Date().toLocaleDateString("pt-BR")} — 16 Agentes Especialistas</p>
+${typeof marked!=="undefined" ? marked.parse(md) : md.replace(/\n/g,"<br>")}
+</body></html>`;
+  const bHtml = new Blob([htmlContent],{type:"text/html"});
 
-        // ── UTILS ───────────────────────────────────────────────────────
-        function escHtml(str) {
-            if (!str) return "";
-            return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
-                      .replace(/\n/g,"<br>");
-        }
-        function showErr(el, msg) {
-            el.innerText = msg;
-            el.classList.remove("hidden");
-        }
-        function showLogin() {
-            closeModals();
-            document.getElementById("login-modal").classList.remove("hidden");
-            setTimeout(() => document.getElementById("login-email").focus(), 100);
-        }
-        function showRegister() {
-            closeModals();
-            document.getElementById("register-modal").classList.remove("hidden");
-            setTimeout(() => document.getElementById("reg-email").focus(), 100);
-        }
-        function closeModals() {
-            document.getElementById("login-modal").classList.add("hidden");
-            document.getElementById("register-modal").classList.add("hidden");
-        }
-        document.getElementById("login-modal").addEventListener("click", e => { if (e.target === e.currentTarget) closeModals(); });
-        document.getElementById("register-modal").addEventListener("click", e => { if (e.target === e.currentTarget) closeModals(); });
-        document.getElementById("login-password").addEventListener("keydown", e => { if (e.key === "Enter") login(); });
-        document.getElementById("reg-password").addEventListener("keydown", e => { if (e.key === "Enter") register(); });
+  document.getElementById("dl-md").href   = URL.createObjectURL(bMd);
+  document.getElementById("dl-txt").href  = URL.createObjectURL(bTxt);
+  document.getElementById("dl-html").href = URL.createObjectURL(bHtml);
+  document.getElementById("dl-md").download   = `relatorio_wuzo_${ds}.md`;
+  document.getElementById("dl-txt").download  = `relatorio_wuzo_${ds}.txt`;
+  document.getElementById("dl-html").download = `relatorio_wuzo_${ds}.html`;
 
-        updateUI();
-    </script>
+  document.getElementById("sec-full").style.display = "block";
+  document.getElementById("sec-full").scrollIntoView({behavior:"smooth"});
+}
+
+// ════════════════════════════════════════════════════════
+// BUY
+// ════════════════════════════════════════════════════════
+async function handleBuy(){
+  const tok = getToken();
+  if(tok){
+    try{
+      const r = await fetch(BACKEND_URL+"/credits/purchase",{
+        method:"POST",
+        headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
+        body:JSON.stringify({quantity:1})
+      });
+      if(r.ok){
+        const d = await r.json();
+        if(d.checkout_url){ window.open(d.checkout_url,"_blank"); return; }
+      }
+    }catch{}
+  }
+  // Fallback: abre o Streamlit que tem o checkout
+  window.open(BACKEND_URL+"/?show_upgrade=1","_blank");
+}
+
+// ════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════
+function resetGrid(){
+  agentOutputs={};
+  AGENTS.forEach(a=>setAc(a.id,"idle"));
+  document.getElementById("prog-fill").style.width="0%";
+  document.getElementById("log-feed").innerHTML='<div class="ll">⬡ Iniciando...</div>';
+  document.getElementById("pip-pill").textContent="RUNNING";
+  document.getElementById("pip-pill").className="pill pill-run";
+}
+
+function finishPipeline(){
+  AGENTS.forEach(a=>{ if(!agentOutputs[a.id]) setAc(a.id,"done"); });
+  document.getElementById("prog-fill").style.width="100%";
+  document.getElementById("pip-pill").textContent="CONCLUÍDO";
+  document.getElementById("pip-pill").className="pill pill-done";
+  log("✅ Concluído.","ok");
+}
+
+function setBtns(loading){
+  ["btn-free","btn-premium","btn-buy"].forEach(id=>{
+    document.getElementById(id).disabled = loading;
+  });
+  if(loading){
+    document.getElementById("btn-free").innerHTML='<div class="spin"></div> Analisando...';
+    document.getElementById("btn-premium").innerHTML='<div class="spin"></div> Orquestrando 16 agentes...';
+  } else {
+    document.getElementById("btn-free").innerHTML='⚡ ANÁLISE GRATUITA';
+    document.getElementById("btn-premium").innerHTML='⭐ RELATÓRIO PREMIUM (16 ESP.)';
+  }
+}
+
+function showAlert(id,cls,msg){
+  const el=document.getElementById(id);
+  el.className="alert "+cls; el.textContent=msg; el.style.display="block";
+}
+function hideAlert(id){ document.getElementById(id).style.display="none"; }
+
+// ════════════════════════════════════════════════════════
+// SETUP LOCAL KEY (para debug — abre console e rode:
+//   window.setLocalKey("gsk_xxx", "groq")
+// ════════════════════════════════════════════════════════
+window.setLocalKey = (key, provider="groq") => {
+  localStorage.setItem("wuzo_llm_key", key);
+  localStorage.setItem("wuzo_llm_prov", provider);
+  location.reload();
+};
+window.setToken = (tok) => {
+  localStorage.setItem("wuzo_token", tok);
+  location.reload();
+};
+</script>
 </body>
 </html>
