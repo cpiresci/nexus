@@ -18,10 +18,7 @@
 html,body{background:var(--bg);color:var(--tx);font-family:'Outfit',sans-serif;min-height:100vh;}
 body{background-image:radial-gradient(ellipse 80% 50% at 0% 10%,rgba(201,168,76,.055) 0%,transparent 55%),radial-gradient(ellipse 60% 60% at 100% 90%,rgba(201,168,76,.04) 0%,transparent 55%);}
 ::-webkit-scrollbar{width:3px;height:3px;}::-webkit-scrollbar-thumb{background:var(--gd);border-radius:2px;}
-
 .shell{max-width:680px;margin:0 auto;padding:20px 14px 80px;}
-
-/* HEADER */
 .hdr{display:flex;align-items:flex-start;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid var(--bd);margin-bottom:20px;gap:12px;flex-wrap:wrap;}
 .logo{font-size:1.6rem;font-weight:900;letter-spacing:8px;background:linear-gradient(135deg,#7a5a1c,#f5ead0 35%,#c9a84c 55%,#f5ead0 75%,#7a5a1c);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
 @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
@@ -31,12 +28,7 @@ body{background-image:radial-gradient(ellipse 80% 50% at 0% 10%,rgba(201,168,76,
 .status-pill{display:flex;align-items:center;gap:5px;font-size:.6rem;letter-spacing:1px;cursor:pointer;}
 .status-pill::before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0;animation:blink 2s ease-in-out infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
-.s-online{color:var(--gr);}
-.s-waking{color:var(--g);}
-.s-offline{color:var(--rd);}
-.s-direct{color:#7b9ef5;}
-
-/* AUTH BAR */
+.s-online{color:var(--gr);}.s-waking{color:var(--g);}.s-offline{color:var(--rd);}.s-direct{color:#7b9ef5;}
 .auth-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
 .abtn{padding:6px 14px;border-radius:20px;border:1px solid var(--bd);font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;background:transparent;color:var(--dm);}
 .abtn:hover{border-color:var(--g);color:var(--g);}
@@ -45,8 +37,6 @@ body{background-image:radial-gradient(ellipse 80% 50% at 0% 10%,rgba(201,168,76,
 .abtn.red{border-color:rgba(224,82,82,.3);color:#e08080;}
 .abtn.red:hover{border-color:var(--rd);color:var(--rd);}
 #user-info{font-size:.6rem;color:var(--dm);font-family:'JetBrains Mono',monospace;letter-spacing:.5px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-
-/* SETUP CARD */
 #setup-card{background:rgba(201,168,76,.04);border:1px solid var(--bd2);border-radius:var(--r);padding:18px 16px;margin-bottom:14px;display:none;}
 #setup-card::before{content:'';display:block;height:1px;background:linear-gradient(90deg,transparent,var(--g),transparent);margin-bottom:14px;}
 .setup-title{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;color:var(--g);text-transform:uppercase;margin-bottom:12px;}
@@ -62,16 +52,12 @@ body{background-image:radial-gradient(ellipse 80% 50% at 0% 10%,rgba(201,168,76,
 .setup-note a{color:var(--g);text-decoration:none;}
 .setup-note a:hover{text-decoration:underline;}
 .setup-pill{display:inline-block;background:rgba(201,168,76,.07);border:1px solid var(--bd);border-radius:4px;padding:1px 6px;font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--g2);}
-
-/* CARD */
 .card{background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));border:1px solid var(--bd);border-radius:var(--r);padding:18px 16px;margin-bottom:14px;position:relative;overflow:hidden;}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.28),transparent);}
 .inp-lbl{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:2px;color:var(--dm2);text-transform:uppercase;margin-bottom:5px;}
 textarea{width:100%;background:rgba(0,0,0,.35);border:1px solid var(--bd);border-radius:var(--r2);color:var(--tx);font-family:'Outfit',sans-serif;font-size:.92rem;padding:14px 16px;resize:vertical;min-height:110px;outline:none;line-height:1.8;transition:border-color .2s,box-shadow .2s;margin-bottom:4px;}
 textarea:focus{border-color:rgba(201,168,76,.4);box-shadow:0 0 0 3px rgba(201,168,76,.07);}
 textarea::placeholder{color:var(--dm2);}
-
-/* BUTTONS */
 .btn-row{display:flex;flex-direction:column;gap:12px;margin-top:22px;padding-top:6px;}
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px 20px;border-radius:50px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:800;font-size:.85rem;letter-spacing:1px;transition:all .2s;}
 .btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important;}
@@ -85,14 +71,11 @@ textarea::placeholder{color:var(--dm2);}
 .alert-info{border-color:var(--g);background:rgba(201,168,76,.05);color:var(--g2);}
 .alert-err{border-color:var(--rd);background:rgba(224,82,82,.05);color:#f5a0a0;}
 .alert-ok{border-color:var(--gr);background:rgba(74,175,120,.05);color:#a0f5c0;}
-
-/* PIPELINE */
 .agent-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0;}
 @media(max-width:420px){.agent-grid{grid-template-columns:repeat(2,1fr);}}
 .ac{background:rgba(0,0,0,.4);border:1px solid rgba(40,28,10,.7);border-radius:8px;padding:10px 5px;text-align:center;transition:border-color .3s,box-shadow .3s;}
 .ac.thinking{border-color:var(--g);animation:pg 1.3s ease-in-out infinite;}
-.ac.done{border-color:var(--gr);}
-.ac.error{border-color:var(--rd);}
+.ac.done{border-color:var(--gr);}.ac.error{border-color:var(--rd);}
 @keyframes pg{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,.4);}50%{box-shadow:0 0 10px rgba(201,168,76,.2);}}
 .ac-em{font-size:1.2rem;line-height:1;}
 .ac-nm{font-size:.5rem;color:#c0b89e;letter-spacing:.5px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;}
@@ -107,8 +90,6 @@ textarea::placeholder{color:var(--dm2);}
 .pill-run{background:rgba(201,168,76,.1);color:var(--g);}.pill-done{background:rgba(74,175,120,.1);color:var(--gr);}
 .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(201,168,76,.3);border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* RESULTS */
 #sec-free{display:none;}
 .verdict-card{background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.01));border:1px solid var(--bd2);border-radius:var(--r);border-left:3px solid var(--g);padding:18px 16px;margin-bottom:14px;position:relative;overflow:hidden;}
 .verdict-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent);}
@@ -145,8 +126,6 @@ textarea::placeholder{color:var(--dm2);}
 .dl-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
 .dl-btn{flex:1;min-width:120px;text-align:center;padding:10px;border-radius:50px;font-weight:700;font-size:.65rem;letter-spacing:1px;text-transform:uppercase;text-decoration:none;border:1px solid var(--bd);color:var(--g);background:rgba(201,168,76,.05);transition:all .2s;}
 .dl-btn:hover{border-color:var(--g);background:rgba(201,168,76,.1);}
-
-/* MODAIS */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;z-index:1000;padding:16px;}
 .modal-overlay.open{display:flex;}
 .modal-box{background:var(--card);border:1px solid var(--bd2);border-radius:14px;padding:28px 24px;width:100%;max-width:360px;position:relative;}
@@ -168,7 +147,7 @@ textarea::placeholder{color:var(--dm2);}
 <body>
 <div class="shell">
 
-<!-- ═══════════ HEADER ═══════════ -->
+<!-- HEADER -->
 <div class="hdr">
   <div>
     <div class="logo">WUZO</div>
@@ -176,10 +155,7 @@ textarea::placeholder{color:var(--dm2);}
   </div>
   <div class="hdr-right">
     <div class="credit-badge">⭐ PREMIUM: <span id="cred-num">0</span></div>
-    <!-- Clique no status para abrir o painel de config -->
     <div id="api-status" class="status-pill s-waking" onclick="toggleSetup()" title="Clique para configurar">Verificando...</div>
-
-    <!-- AUTH BAR -->
     <div class="auth-bar">
       <div id="auth-out" style="display:flex;gap:6px;">
         <button class="abtn" onclick="openModal('login')">Entrar</button>
@@ -193,21 +169,16 @@ textarea::placeholder{color:var(--dm2);}
   </div>
 </div>
 
-<!-- ═══════════ PAINEL DE CONFIGURAÇÃO ═══════════ -->
+<!-- PAINEL DE CONFIGURAÇÃO -->
 <div id="setup-card">
   <div class="setup-title">⚙ CONFIGURAÇÃO DO MOTOR IA</div>
-
-  <!-- Opção 1: URL do backend Flask/Render -->
   <div class="setup-note"><b>Opção 1 — Backend Render (Flask API)</b><br>
-  Se você deployou o <span class="setup-pill">wuzo_api.py</span> no Render, cole a URL abaixo:</div>
+  Cole a URL do seu serviço no Render abaixo:</div>
   <div class="setup-row">
-    <input class="setup-inp" id="inp-backend-url" placeholder="https://meu-app.onrender.com" type="url">
+    <input class="setup-inp" id="inp-backend-url" placeholder="https://app.wuzo.com.br" type="url">
     <button class="setup-btn" onclick="saveBackendUrl()">✓ Salvar e testar</button>
   </div>
-
   <div class="setup-sep"></div>
-
-  <!-- Opção 2: Chave LLM direta (sem backend) -->
   <div class="setup-note"><b>Opção 2 — Chave LLM direta (mais rápido, sem backend)</b><br>
   Obtenha uma chave gratuita em
   <a href="https://console.groq.com" target="_blank">console.groq.com</a> (Groq) ou
@@ -223,16 +194,14 @@ textarea::placeholder{color:var(--dm2);}
     <input class="setup-inp" id="inp-llm-key" placeholder="gsk_... ou AIzaSy..." type="password">
     <button class="setup-btn" onclick="saveLlmKey()">✓ Ativar</button>
   </div>
-
   <div class="setup-sep"></div>
-
   <div class="setup-note" style="color:var(--dm2);font-size:.68rem;">
-  Suas chaves ficam apenas no <span class="setup-pill">localStorage</span> do seu navegador — não são enviadas a nenhum servidor nosso.<br>
+  Suas chaves ficam apenas no <span class="setup-pill">localStorage</span> do seu navegador.<br>
   Para remover: <span class="setup-pill" style="cursor:pointer;" onclick="clearConfig()">Limpar configuração</span>
   </div>
 </div>
 
-<!-- ═══════════ INPUT CARD ═══════════ -->
+<!-- INPUT CARD -->
 <div class="card" id="card-input">
   <div class="inp-lbl">Descreva sua situação financeira</div>
   <textarea id="txt-input" placeholder="Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado."></textarea>
@@ -244,7 +213,7 @@ textarea::placeholder{color:var(--dm2);}
   <div class="alert alert-err" id="inp-alert"></div>
 </div>
 
-<!-- ═══════════ PIPELINE ═══════════ -->
+<!-- PIPELINE -->
 <div class="card" id="sec-pipeline" style="display:none;">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
     <span style="font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;color:var(--dm2);">AGENTES EM EXECUÇÃO</span>
@@ -255,7 +224,7 @@ textarea::placeholder{color:var(--dm2);}
   <div class="log" id="log-feed"><div class="ll">⬡ Iniciando...</div></div>
 </div>
 
-<!-- ═══════════ FREE RESULT ═══════════ -->
+<!-- FREE RESULT -->
 <div id="sec-free">
   <div class="verdict-card">
     <div class="verdict-title">⚖️ Veredito do Consultor IA</div>
@@ -277,7 +246,7 @@ textarea::placeholder{color:var(--dm2);}
   </div>
 </div>
 
-<!-- ═══════════ FULL REPORT ═══════════ -->
+<!-- FULL REPORT -->
 <div id="sec-full">
   <div class="report-card" id="full-report-box"></div>
   <div id="agent-blocks-box"></div>
@@ -290,7 +259,7 @@ textarea::placeholder{color:var(--dm2);}
 
 </div><!-- /shell -->
 
-<!-- ═══════════ MODAL LOGIN ═══════════ -->
+<!-- MODAL LOGIN -->
 <div class="modal-overlay" id="modal-login" onclick="if(event.target===this)closeModal('login')">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('login')">✕</button>
@@ -305,7 +274,7 @@ textarea::placeholder{color:var(--dm2);}
   </div>
 </div>
 
-<!-- ═══════════ MODAL REGISTER ═══════════ -->
+<!-- MODAL REGISTER -->
 <div class="modal-overlay" id="modal-register" onclick="if(event.target===this)closeModal('register')">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('register')">✕</button>
@@ -323,336 +292,221 @@ textarea::placeholder{color:var(--dm2);}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <script>
 // ══════════════════════════════════════════════════════════════════════
-// ESTADO GLOBAL
+// CONFIG — URL CORRIGIDA PARA app.wuzo.com.br
 // ══════════════════════════════════════════════════════════════════════
-let _backendOnline  = false;   // backend Flask online
-let _directMode     = false;   // modo direto (chave LLM local)
-let _checking       = false;   // health check em andamento
-let agentOutputs    = {};
+let _backendOnline=false,_directMode=false,_checking=false,agentOutputs={};
+const LS={BACKEND:"wuzo_backend_url",LLM_KEY:"wuzo_llm_key",LLM_PROV:"wuzo_llm_prov",TOKEN:"wuzo_token"};
+function getSaved(k){return localStorage.getItem(k)||"";}
+function save(k,v){localStorage.setItem(k,v);}
+function del(k){localStorage.removeItem(k);}
 
-// Configurações salvas no localStorage
-const LS = {
-  BACKEND : "wuzo_backend_url",
-  LLM_KEY : "wuzo_llm_key",
-  LLM_PROV: "wuzo_llm_prov",
-  TOKEN   : "wuzo_token",
-};
-
-function getSaved(k){ return localStorage.getItem(k)||""; }
-function save(k,v)  { localStorage.setItem(k,v); }
-function del(k)     { localStorage.removeItem(k); }
-
-// URL do backend (pode ser alterada pelo usuário)
+// ✅ URL CORRIGIDA — aponta para app.wuzo.com.br
 function getBackendUrl(){
-  return getSaved(LS.BACKEND) || "https://wuzo-api.onrender.com";
+  return getSaved(LS.BACKEND)||"https://app.wuzo.com.br";
 }
 
-// Token JWT
 function getToken(){
-  const p = new URLSearchParams(location.search);
-  const t = p.get("token")||p.get("t")||"";
-  if(t){ save(LS.TOKEN, t); return t; }
+  const p=new URLSearchParams(location.search),t=p.get("token")||p.get("t")||"";
+  if(t){save(LS.TOKEN,t);return t;}
   return getSaved(LS.TOKEN);
 }
-function setToken(t){ save(LS.TOKEN, t); }
-function clearToken(){ del(LS.TOKEN); }
+function setToken(t){save(LS.TOKEN,t);}
+function clearToken(){del(LS.TOKEN);}
 
-// ══════════════════════════════════════════════════════════════════════
-// STATUS DISPLAY
-// ══════════════════════════════════════════════════════════════════════
-function setStatus(txt, cls){
-  const el = document.getElementById("api-status");
-  el.textContent = txt + " ⚙";
-  el.className = "status-pill " + cls;
+function setStatus(txt,cls){
+  const el=document.getElementById("api-status");
+  el.textContent=txt+" ⚙";el.className="status-pill "+cls;
 }
 
-// ══════════════════════════════════════════════════════════════════════
-// PAINEL DE CONFIGURAÇÃO
-// ══════════════════════════════════════════════════════════════════════
 function toggleSetup(){
-  const card = document.getElementById("setup-card");
-  const open = card.style.display==="block";
-  card.style.display = open ? "none" : "block";
+  const card=document.getElementById("setup-card");
+  const open=card.style.display==="block";
+  card.style.display=open?"none":"block";
   if(!open){
-    document.getElementById("inp-backend-url").value = getSaved(LS.BACKEND)||"";
-    const k = getSaved(LS.LLM_KEY);
-    if(k) document.getElementById("inp-llm-key").value = k;
-    const p = getSaved(LS.LLM_PROV);
-    if(p) document.getElementById("sel-provider").value = p;
+    document.getElementById("inp-backend-url").value=getSaved(LS.BACKEND)||"";
+    const k=getSaved(LS.LLM_KEY);if(k)document.getElementById("inp-llm-key").value=k;
+    const p=getSaved(LS.LLM_PROV);if(p)document.getElementById("sel-provider").value=p;
   }
 }
-
 function saveBackendUrl(){
-  const url = document.getElementById("inp-backend-url").value.trim().replace(/\/+$/,"");
-  if(!url){ alert("Digite a URL do seu Render."); return; }
-  save(LS.BACKEND, url);
+  const url=document.getElementById("inp-backend-url").value.trim().replace(/\/+$/,"");
+  if(!url){alert("Digite a URL.");return;}
+  save(LS.BACKEND,url);
   document.getElementById("setup-card").style.display="none";
-  setStatus("Testando...", "s-waking");
-  checkHealth(0, url);
+  setStatus("Testando...","s-waking");
+  checkHealth(0,url);
 }
-
 function saveLlmKey(){
-  const key  = document.getElementById("inp-llm-key").value.trim();
-  const prov = document.getElementById("sel-provider").value;
-  if(!key){ alert("Cole sua chave de API."); return; }
-  save(LS.LLM_KEY, key);
-  save(LS.LLM_PROV, prov);
-  _directMode    = true;
-  _backendOnline = false;
+  const key=document.getElementById("inp-llm-key").value.trim();
+  const prov=document.getElementById("sel-provider").value;
+  if(!key){alert("Cole sua chave.");return;}
+  save(LS.LLM_KEY,key);save(LS.LLM_PROV,prov);
+  _directMode=true;_backendOnline=false;
   document.getElementById("setup-card").style.display="none";
-  const provNames = {groq:"Groq",gemini:"Gemini",sambanova:"SambaNova",cerebras:"Cerebras",openai:"OpenAI"};
-  setStatus("Modo Direto · "+provNames[prov], "s-direct");
+  const nm={groq:"Groq",gemini:"Gemini",sambanova:"SambaNova",cerebras:"Cerebras",openai:"OpenAI"};
+  setStatus("Modo Direto · "+nm[prov],"s-direct");
 }
-
 function clearConfig(){
-  if(!confirm("Limpar todas as configurações?")) return;
-  del(LS.BACKEND); del(LS.LLM_KEY); del(LS.LLM_PROV);
-  location.reload();
+  if(!confirm("Limpar todas as configurações?"))return;
+  del(LS.BACKEND);del(LS.LLM_KEY);del(LS.LLM_PROV);location.reload();
 }
 
-// ══════════════════════════════════════════════════════════════════════
-// HEALTH CHECK — com retry automático (Render dormindo)
-// ══════════════════════════════════════════════════════════════════════
-async function checkHealth(attempt=0, backendUrl=null){
-  if(_checking && attempt===0) return;
-  _checking = true;
-  const url = backendUrl || getBackendUrl();
-  const max = 6;
-
-  // Se tem chave LLM direta, usa modo direto sem esperar backend
+// HEALTH CHECK com retry (Render dormindo)
+async function checkHealth(attempt=0,backendUrl=null){
+  if(_checking&&attempt===0)return;
+  _checking=true;
+  const url=backendUrl||getBackendUrl();
+  const max=6;
   if(getSaved(LS.LLM_KEY)){
-    _directMode = true;
-    const prov = getSaved(LS.LLM_PROV)||"groq";
-    const nm = {groq:"Groq",gemini:"Gemini",sambanova:"SambaNova",cerebras:"Cerebras",openai:"OpenAI"};
-    setStatus("Modo Direto · "+(nm[prov]||prov), "s-direct");
-    _checking = false;
-    return;
+    _directMode=true;
+    const prov=getSaved(LS.LLM_PROV)||"groq";
+    const nm={groq:"Groq",gemini:"Gemini",sambanova:"SambaNova",cerebras:"Cerebras",openai:"OpenAI"};
+    setStatus("Modo Direto · "+(nm[prov]||prov),"s-direct");
+    _checking=false;return;
   }
-
-  if(attempt > 0){
-    setStatus(`Acordando Render... (${attempt}/${max})`, "s-waking");
-  } else {
-    setStatus("Verificando...", "s-waking");
-  }
-
+  setStatus(attempt>0?`Acordando... (${attempt}/${max})`:"Verificando...","s-waking");
   try{
-    const r = await fetch(url+"/health", {signal: AbortSignal.timeout(12000)});
+    const r=await fetch(url+"/health",{signal:AbortSignal.timeout(12000)});
     if(r.ok){
-      const d = await r.json();
-      _backendOnline = true;
-      _directMode    = false;
-      _checking      = false;
-      setStatus("API OK · "+(d.llm||"llm"), "s-online");
-      // Keep-alive: ping a cada 4 min
-      setInterval(()=>fetch(url+"/health",{signal:AbortSignal.timeout(5000)}).catch(()=>{}), 4*60*1000);
+      const d=await r.json();
+      _backendOnline=true;_directMode=false;_checking=false;
+      setStatus("API OK · "+(d.llm||"llm"),"s-online");
+      // Keep-alive a cada 4 min para não dormir
+      setInterval(()=>fetch(url+"/ping",{signal:AbortSignal.timeout(5000)}).catch(()=>{}),4*60*1000);
       return;
     }
   }catch{}
-
-  _backendOnline = false;
-  if(attempt < max){
-    const wait = [8000,12000,15000,20000,25000,30000][attempt]||15000;
-    await new Promise(r=>setTimeout(r, wait));
-    return checkHealth(attempt+1, url);
+  _backendOnline=false;
+  if(attempt<max){
+    const wait=[8000,12000,15000,20000,25000,30000][attempt]||15000;
+    await new Promise(r=>setTimeout(r,wait));
+    return checkHealth(attempt+1,url);
   }
-
-  // Desistiu — mostra painel de config automaticamente
-  _checking = false;
-  setStatus("Backend offline — configure ⚙", "s-offline");
-  document.getElementById("setup-card").style.display = "block";
+  _checking=false;
+  setStatus("Backend offline — configure ⚙","s-offline");
+  document.getElementById("setup-card").style.display="block";
 }
 
-// ══════════════════════════════════════════════════════════════════════
-// LLM CALL — backend ou modo direto
-// ══════════════════════════════════════════════════════════════════════
-const PROVIDERS_DIRECT = {
-  groq:      {url:"https://api.groq.com/openai/v1/chat/completions",     model:"llama-3.3-70b-versatile"},
-  sambanova: {url:"https://api.sambanova.ai/v1/chat/completions",         model:"Meta-Llama-3.3-70B-Instruct"},
-  gemini:    {url:"https://generativelanguage.googleapis.com/v1beta/openai/chat/completions", model:"gemini-2.0-flash"},
-  cerebras:  {url:"https://api.cerebras.ai/v1/chat/completions",          model:"llama3.1-8b"},
-  openai:    {url:"https://api.openai.com/v1/chat/completions",           model:"gpt-4o-mini"},
+// LLM
+const PROVIDERS_DIRECT={
+  groq:{url:"https://api.groq.com/openai/v1/chat/completions",model:"llama-3.3-70b-versatile"},
+  sambanova:{url:"https://api.sambanova.ai/v1/chat/completions",model:"Meta-Llama-3.3-70B-Instruct"},
+  gemini:{url:"https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",model:"gemini-2.0-flash"},
+  cerebras:{url:"https://api.cerebras.ai/v1/chat/completions",model:"llama3.1-8b"},
+  openai:{url:"https://api.openai.com/v1/chat/completions",model:"gpt-4o-mini"},
 };
-
-async function llmDirect(system, user, tokens){
-  const key  = getSaved(LS.LLM_KEY);
-  const prov = getSaved(LS.LLM_PROV) || "groq";
-  const ep   = PROVIDERS_DIRECT[prov] || PROVIDERS_DIRECT.groq;
+async function llmDirect(system,user,tokens){
+  const key=getSaved(LS.LLM_KEY),prov=getSaved(LS.LLM_PROV)||"groq";
+  const ep=PROVIDERS_DIRECT[prov]||PROVIDERS_DIRECT.groq;
   try{
-    const r = await fetch(ep.url,{
-      method:"POST",
-      headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},
-      body:JSON.stringify({model:ep.model,max_tokens:tokens,temperature:.3,
-        messages:[{role:"system",content:system},{role:"user",content:user}]}),
-      signal: AbortSignal.timeout(35000),
-    });
-    if(!r.ok) return "❌ HTTP "+r.status+" ("+prov+")";
-    const d = await r.json();
-    return d.choices?.[0]?.message?.content?.trim()||"❌ Resposta vazia";
-  }catch(e){
-    return "❌ "+e.message;
-  }
+    const r=await fetch(ep.url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},
+      body:JSON.stringify({model:ep.model,max_tokens:tokens,temperature:.3,messages:[{role:"system",content:system},{role:"user",content:user}]}),
+      signal:AbortSignal.timeout(35000)});
+    if(!r.ok)return "❌ HTTP "+r.status+" ("+prov+")";
+    const d=await r.json();return d.choices?.[0]?.message?.content?.trim()||"❌ Resposta vazia";
+  }catch(e){return "❌ "+e.message;}
 }
-
-async function llmBackend(system, user, tokens){
+async function llmBackend(system,user,tokens){
   if(!_backendOnline){
-    log("⏳ Tentando reconectar ao servidor...");
-    const ok = await Promise.race([
-      checkHealth(0),
-      new Promise(r=>setTimeout(()=>r(false), 20000)),
-    ]);
-    if(!_backendOnline) return "❌ Servidor offline. Configure uma chave LLM direta (⚙ no status).";
+    log("⏳ Tentando reconectar...");
+    await Promise.race([checkHealth(0),new Promise(r=>setTimeout(()=>r(false),20000))]);
+    if(!_backendOnline)return "❌ Servidor offline. Configure uma chave LLM direta (⚙).";
   }
-  const tok = getToken();
-  const headers = {"Content-Type":"application/json"};
-  if(tok) headers["Authorization"] = "Bearer "+tok;
+  const tok=getToken();
+  const headers={"Content-Type":"application/json"};
+  if(tok)headers["Authorization"]="Bearer "+tok;
   try{
-    const r = await fetch(getBackendUrl()+"/agent/run",{
-      method:"POST", headers,
-      body:JSON.stringify({system, user, max_tokens:tokens}),
-      signal: AbortSignal.timeout(35000),
-    });
-    if(r.ok){
-      const d = await r.json();
-      return d.result || d.content || "❌ Resposta vazia";
-    }
-    if(r.status===502||r.status===503){
-      _backendOnline=false;
-      return "❌ Servidor reiniciando. Tente novamente em alguns segundos.";
-    }
+    const r=await fetch(getBackendUrl()+"/agent/run",{method:"POST",headers,
+      body:JSON.stringify({system,user,max_tokens:tokens}),signal:AbortSignal.timeout(35000)});
+    if(r.ok){const d=await r.json();return d.result||d.content||"❌ Resposta vazia";}
+    if(r.status===502||r.status===503){_backendOnline=false;return "❌ Servidor reiniciando. Tente novamente.";}
     return "❌ HTTP "+r.status;
   }catch(e){
-    if(e.name==="TimeoutError") return "❌ Timeout. O servidor pode estar acordando — tente novamente.";
+    if(e.name==="TimeoutError")return "❌ Timeout — servidor acordando. Tente novamente.";
     return "❌ "+e.message;
   }
 }
-
-async function llm(system, user, tokens=600){
-  tokens = Math.min(Math.max(100, tokens), 2000);
-  if(_directMode) return llmDirect(system, user, tokens);
-  return llmBackend(system, user, tokens);
+async function llm(system,user,tokens=600){
+  tokens=Math.min(Math.max(100,tokens),2000);
+  if(_directMode)return llmDirect(system,user,tokens);
+  return llmBackend(system,user,tokens);
 }
 
-// ══════════════════════════════════════════════════════════════════════
 // AUTH
-// ══════════════════════════════════════════════════════════════════════
 function openModal(name){
-  // Se backend offline e sem chave direta, abre setup antes
-  if(!_backendOnline && !_directMode && name==="login"){
+  if(!_backendOnline&&!_directMode&&name==="login"){
     document.getElementById("setup-card").style.display="block";
     document.getElementById("setup-card").scrollIntoView({behavior:"smooth"});
     showAlert("inp-alert","alert-info","⚙ Configure o servidor ou uma chave LLM antes de entrar.");
     return;
   }
   document.getElementById("modal-"+name).classList.add("open");
-  const first = document.querySelector("#modal-"+name+" .modal-inp");
-  if(first) setTimeout(()=>first.focus(), 80);
+  const first=document.querySelector("#modal-"+name+" .modal-inp");
+  if(first)setTimeout(()=>first.focus(),80);
 }
-function closeModal(n){ document.getElementById("modal-"+n).classList.remove("open"); document.getElementById(n==="login"?"login-err":"reg-err").style.display="none"; }
-function switchModal(f,t){ closeModal(f); openModal(t); }
-function showModalErr(id,msg){ const el=document.getElementById(id); el.textContent=msg; el.style.display="block"; }
+function closeModal(n){document.getElementById("modal-"+n).classList.remove("open");document.getElementById(n==="login"?"login-err":"reg-err").style.display="none";}
+function switchModal(f,t){closeModal(f);openModal(t);}
+function showModalErr(id,msg){const el=document.getElementById(id);el.textContent=msg;el.style.display="block";}
 
 async function doLogin(){
-  if(!_backendOnline){
-    showModalErr("login-err","Backend offline. Configure o servidor no painel ⚙.");
-    return;
-  }
-  const email = document.getElementById("login-email").value.trim();
-  const pass  = document.getElementById("login-pass").value;
-  if(!email||!pass){ showModalErr("login-err","Preencha email e senha."); return; }
-  const btn = document.getElementById("btn-login-sub");
-  btn.textContent="Entrando..."; btn.disabled=true;
+  if(!_backendOnline){showModalErr("login-err","Backend offline. Configure no painel ⚙.");return;}
+  const email=document.getElementById("login-email").value.trim();
+  const pass=document.getElementById("login-pass").value;
+  if(!email||!pass){showModalErr("login-err","Preencha email e senha.");return;}
+  const btn=document.getElementById("btn-login-sub");
+  btn.textContent="Entrando...";btn.disabled=true;
   try{
-    const r = await fetch(getBackendUrl()+"/api/auth/login",{
-      method:"POST",
+    const r=await fetch(getBackendUrl()+"/api/auth/login",{method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({email, password:pass}),
-      signal: AbortSignal.timeout(12000),
-    });
-    const d = await r.json().catch(()=>({}));
-    if(r.ok && d.token){
-      setToken(d.token);
-      save("wuzo_email", email);
-      closeModal("login");
-      updateUI();
-    } else {
-      showModalErr("login-err", d.error||"Email ou senha incorretos.");
-    }
+      body:JSON.stringify({email,password:pass}),signal:AbortSignal.timeout(12000)});
+    const d=await r.json().catch(()=>({}));
+    if(r.ok&&d.token){setToken(d.token);save("wuzo_email",email);closeModal("login");updateUI();}
+    else showModalErr("login-err",d.error||"Email ou senha incorretos.");
   }catch(e){
-    if(e.name==="TimeoutError")
-      showModalErr("login-err","Servidor demorou. Aguarde e tente novamente.");
-    else
-      showModalErr("login-err","Sem conexão: "+e.message);
-  }finally{
-    btn.textContent="ENTRAR"; btn.disabled=false;
-  }
+    if(e.name==="TimeoutError")showModalErr("login-err","Servidor demorou. Tente novamente.");
+    else showModalErr("login-err","Sem conexão: "+e.message);
+  }finally{btn.textContent="ENTRAR";btn.disabled=false;}
 }
 
 async function doRegister(){
-  if(!_backendOnline){
-    showModalErr("reg-err","Backend offline. Configure o servidor no painel ⚙.");
-    return;
-  }
-  const email = document.getElementById("reg-email").value.trim();
-  const pass  = document.getElementById("reg-pass").value;
-  if(!email||!pass){ showModalErr("reg-err","Preencha email e senha."); return; }
-  if(pass.length<4){ showModalErr("reg-err","Senha deve ter no mínimo 4 caracteres."); return; }
-  const btn = document.getElementById("btn-reg-sub");
-  btn.textContent="Criando conta..."; btn.disabled=true;
+  if(!_backendOnline){showModalErr("reg-err","Backend offline. Configure no painel ⚙.");return;}
+  const email=document.getElementById("reg-email").value.trim();
+  const pass=document.getElementById("reg-pass").value;
+  if(!email||!pass){showModalErr("reg-err","Preencha email e senha.");return;}
+  if(pass.length<4){showModalErr("reg-err","Senha deve ter no mínimo 4 caracteres.");return;}
+  const btn=document.getElementById("btn-reg-sub");
+  btn.textContent="Criando conta...";btn.disabled=true;
   try{
-    const r = await fetch(getBackendUrl()+"/api/auth/register",{
-      method:"POST",
+    const r=await fetch(getBackendUrl()+"/api/auth/register",{method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({email, password:pass}),
-      signal: AbortSignal.timeout(12000),
-    });
-    const d = await r.json().catch(()=>({}));
-    if(r.ok && d.token){
-      setToken(d.token);
-      save("wuzo_email", email);
-      closeModal("register");
-      updateUI();
-    } else {
-      showModalErr("reg-err", d.error||"Erro ao criar conta.");
-    }
+      body:JSON.stringify({email,password:pass}),signal:AbortSignal.timeout(12000)});
+    const d=await r.json().catch(()=>({}));
+    if(r.ok&&d.token){setToken(d.token);save("wuzo_email",email);closeModal("register");updateUI();}
+    else showModalErr("reg-err",d.error||"Erro ao criar conta.");
   }catch(e){
-    if(e.name==="TimeoutError")
-      showModalErr("reg-err","Servidor demorou (~30s para acordar). Tente novamente.");
-    else
-      showModalErr("reg-err","Sem conexão: "+e.message);
-  }finally{
-    btn.textContent="CRIAR CONTA GRÁTIS"; btn.disabled=false;
-  }
+    if(e.name==="TimeoutError")showModalErr("reg-err","Servidor demorou (~30s). Tente novamente.");
+    else showModalErr("reg-err","Sem conexão: "+e.message);
+  }finally{btn.textContent="CRIAR CONTA GRÁTIS";btn.disabled=false;}
 }
 
-function logout(){
-  clearToken();
-  del("wuzo_email");
-  document.getElementById("cred-num").textContent="0";
-  updateUI();
-}
+function logout(){clearToken();del("wuzo_email");document.getElementById("cred-num").textContent="0";updateUI();}
 
 async function updateUI(){
-  const tok = getToken();
+  const tok=getToken();
   if(!tok){
     document.getElementById("auth-out").style.display="flex";
     document.getElementById("auth-in").style.display="none";
-    document.getElementById("cred-num").textContent="0";
-    return;
+    document.getElementById("cred-num").textContent="0";return;
   }
   if(!_backendOnline){
-    // Modo offline — mostra usuário do localStorage
     document.getElementById("auth-out").style.display="none";
     document.getElementById("auth-in").style.display="flex";
-    document.getElementById("user-info").textContent=getSaved("wuzo_email")||"logado";
-    return;
+    document.getElementById("user-info").textContent=getSaved("wuzo_email")||"logado";return;
   }
   try{
-    const r = await fetch(getBackendUrl()+"/api/auth/me",{
-      headers:{"Authorization":"Bearer "+tok},
-      signal: AbortSignal.timeout(8000),
-    });
-    if(!r.ok){ clearToken(); del("wuzo_email"); updateUI(); return; }
-    const d = await r.json();
+    const r=await fetch(getBackendUrl()+"/api/auth/me",{headers:{"Authorization":"Bearer "+tok},signal:AbortSignal.timeout(8000)});
+    if(!r.ok){clearToken();del("wuzo_email");updateUI();return;}
+    const d=await r.json();
     document.getElementById("auth-out").style.display="none";
     document.getElementById("auth-in").style.display="flex";
     document.getElementById("user-info").textContent=d.email||"";
@@ -665,22 +519,16 @@ async function updateUI(){
 }
 
 async function loadCredits(){
-  const tok=getToken();
-  if(!tok||!_backendOnline){ return; }
+  const tok=getToken();if(!tok||!_backendOnline)return;
   try{
-    const r=await fetch(getBackendUrl()+"/credits/balance",{
-      headers:{"Authorization":"Bearer "+tok},signal:AbortSignal.timeout(6000)});
-    if(r.ok){
-      const d=await r.json();
+    const r=await fetch(getBackendUrl()+"/credits/balance",{headers:{"Authorization":"Bearer "+tok},signal:AbortSignal.timeout(6000)});
+    if(r.ok){const d=await r.json();
       document.getElementById("cred-num").textContent=d.unlimited?"∞":(d.credits||0);
-      if(d.credits>0||d.unlimited) document.getElementById("btn-buy").style.opacity=".5";
-    }
+      if(d.credits>0||d.unlimited)document.getElementById("btn-buy").style.opacity=".5";}
   }catch{}
 }
 
-// ══════════════════════════════════════════════════════════════════════
 // 16 AGENTES
-// ══════════════════════════════════════════════════════════════════════
 const AGENTS=[
   {id:"noticias_realtime",em:"📡",nm:"Notícias"},
   {id:"macroeconomia",em:"🌐",nm:"Macro"},
@@ -700,71 +548,37 @@ const AGENTS=[
   {id:"redator_relatorios",em:"✍️",nm:"Redator"},
 ];
 
-// ── INIT ─────────────────────────────────────────────────────────────
-document.addEventListener("DOMContentLoaded",()=>{
-  buildGrid();
-  getToken();
-  updateUI();
-  checkHealth();
-});
+document.addEventListener("DOMContentLoaded",()=>{buildGrid();getToken();updateUI();checkHealth();});
 
-// ══════════════════════════════════════════════════════════════════════
-// ANÁLISE GRATUITA
-// ══════════════════════════════════════════════════════════════════════
 async function handleFree(){
-  if(!_backendOnline && !_directMode){
-    showAlert("inp-alert","alert-err","⚙ Configure o servidor ou uma chave LLM direta para usar o consultor.");
+  if(!_backendOnline&&!_directMode){
+    showAlert("inp-alert","alert-err","⚙ Configure o servidor ou uma chave LLM direta.");
     document.getElementById("setup-card").style.display="block";
-    document.getElementById("setup-card").scrollIntoView({behavior:"smooth"});
-    return;
+    document.getElementById("setup-card").scrollIntoView({behavior:"smooth"});return;
   }
   const txt=document.getElementById("txt-input").value.trim();
-  if(!txt){ showAlert("inp-alert","alert-info","✍️ Descreva sua situação financeira."); return; }
-  hideAlert("inp-alert");
-  agentOutputs={};
-  resetGrid();
+  if(!txt){showAlert("inp-alert","alert-info","✍️ Descreva sua situação financeira.");return;}
+  hideAlert("inp-alert");agentOutputs={};resetGrid();
   document.getElementById("sec-pipeline").style.display="block";
   document.getElementById("sec-free").style.display="none";
   document.getElementById("sec-full").style.display="none";
-  setBtns(true);
-  log("⬡ Análise gratuita iniciada...");
+  setBtns(true);log("⬡ Análise gratuita iniciada...");
   const now=new Date().toLocaleDateString("pt-BR",{day:"2-digit",month:"long",year:"numeric"});
-
-  setAc("consultor_senior","thinking");
-  log("👔 Consultor Sênior analisando...");
+  setAc("consultor_senior","thinking");log("👔 Consultor Sênior analisando...");
   const veredito=await llm(
     "Você é um Consultor Financeiro Sênior com 20 anos de experiência. Analise a situação e responda em português. Seja objetivo.",
-    `DATA: ${now}\nSITUAÇÃO:\n${txt}\n\n`+
-    `Responda EXATAMENTE neste formato:\n`+
-    `VEREDITO: [Favorável/Desfavorável/Atenção Necessária]\n`+
-    `SAÚDE FINANCEIRA: [0-100]%\n`+
-    `URGÊNCIA: [Alta/Média/Baixa]\n`+
-    `ÁREAS CRÍTICAS:\n1. [área]\n2. [área]\n3. [área]\n`+
-    `FUNDAMENTO: [2-3 frases]\n`+
-    `SÍNTESE: [2 frases]\n`+
-    `RISCOS:\n1. [risco]\n2. [risco]\n3. [risco]\n`+
-    `PRÓXIMOS PASSOS:\n1. [ação]\n2. [ação]\n3. [ação]`,500);
+    `DATA: ${now}\nSITUAÇÃO:\n${txt}\n\nResponda EXATAMENTE neste formato:\nVEREDITO: [Favorável/Desfavorável/Atenção Necessária]\nSAÚDE FINANCEIRA: [0-100]%\nURGÊNCIA: [Alta/Média/Baixa]\nÁREAS CRÍTICAS:\n1. [área]\n2. [área]\n3. [área]\nFUNDAMENTO: [2-3 frases]\nSÍNTESE: [2 frases]\nRISCOS:\n1. [risco]\n2. [risco]\n3. [risco]\nPRÓXIMOS PASSOS:\n1. [ação]\n2. [ação]\n3. [ação]`,500);
   agentOutputs["consultor_senior"]=veredito;
   setAc("consultor_senior",veredito.startsWith("❌")?"error":"done");
   log("✓ Consultor Sênior concluído","ok");
-
-  setAc("macroeconomia","thinking");
-  log("🌐 Macroeconomia...");
+  setAc("macroeconomia","thinking");log("🌐 Macroeconomia...");
   const macroPreview=await llm(
     "Você é um economista-chefe especializado em Brasil. Responda em português com análise técnica.",
-    `DATA: ${now}\nSITUAÇÃO: ${txt}\n\nANÁLISE MACROECONÔMICA:\n`+
-    `Considerando Selic, IPCA, câmbio:\n1. Impacto macro nesta situação\n2. Oportunidades renda fixa\n3. Timing ideal dos investimentos\nMínimo 200 palavras.`,400);
+    `DATA: ${now}\nSITUAÇÃO: ${txt}\n\nANÁLISE MACROECONÔMICA:\nConsiderando Selic, IPCA, câmbio:\n1. Impacto macro nesta situação\n2. Oportunidades renda fixa\n3. Timing ideal dos investimentos\nMínimo 200 palavras.`,400);
   agentOutputs["macroeconomia"]=macroPreview;
-  setAc("macroeconomia","done");
-  log("✓ Macroeconomia concluída","ok");
-
-  if(_backendOnline){
-    const tok=getToken();
-    if(tok) fetch(getBackendUrl()+"/credits/consume-free",{method:"POST",headers:{"Authorization":"Bearer "+tok},signal:AbortSignal.timeout(5000)}).catch(()=>{});
-  }
-  finishPipeline();
-  renderFreeResult(veredito, macroPreview);
-  setBtns(false);
+  setAc("macroeconomia","done");log("✓ Macroeconomia concluída","ok");
+  if(_backendOnline){const tok=getToken();if(tok)fetch(getBackendUrl()+"/credits/consume-free",{method:"POST",headers:{"Authorization":"Bearer "+tok},signal:AbortSignal.timeout(5000)}).catch(()=>{});}
+  finishPipeline();renderFreeResult(veredito,macroPreview);setBtns(false);
 }
 
 function renderFreeResult(veredito,preview){
@@ -772,111 +586,80 @@ function renderFreeResult(veredito,preview){
     .replace(/^(VEREDITO|SAÚDE FINANCEIRA|URGÊNCIA|ÁREAS CRÍTICAS|FUNDAMENTO|SÍNTESE|RISCOS|PRÓXIMOS PASSOS):/gm,
       m=>`<div style="color:var(--g);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;margin-top:10px;margin-bottom:2px;">${m}</div>`)
     .replace(/\n/g,"<br>");
-  document.getElementById("preview-body").innerHTML=
-    `<h3>📋 Análise — Macroeconomia</h3>`+
-    (typeof marked!=="undefined"?marked.parse(preview):preview.replace(/\n/g,"<br>"));
+  document.getElementById("preview-body").innerHTML=`<h3>📋 Análise — Macroeconomia</h3>`+(typeof marked!=="undefined"?marked.parse(preview):preview.replace(/\n/g,"<br>"));
   document.getElementById("sec-free").style.display="block";
   document.getElementById("sec-free").scrollIntoView({behavior:"smooth"});
 }
 
-// ══════════════════════════════════════════════════════════════════════
-// PREMIUM — 16 AGENTES
-// ══════════════════════════════════════════════════════════════════════
 async function handlePremium(){
-  if(!_backendOnline && !_directMode){
-    showAlert("inp-alert","alert-err","⚙ Configure o servidor ou uma chave LLM direta.");
-    document.getElementById("setup-card").style.display="block";
-    return;
-  }
+  if(!_backendOnline&&!_directMode){showAlert("inp-alert","alert-err","⚙ Configure o servidor ou uma chave LLM direta.");document.getElementById("setup-card").style.display="block";return;}
   if(_backendOnline){
     const tok=getToken();
-    if(!tok){ showAlert("inp-alert","alert-err","🔒 Faça login para usar o relatório premium."); openModal("login"); return; }
-    try{
-      const r=await fetch(getBackendUrl()+"/credits/balance",{headers:{"Authorization":"Bearer "+tok},signal:AbortSignal.timeout(6000)});
-      if(r.ok){ const d=await r.json(); if(!d.unlimited&&(d.credits||0)<1){ showAlert("inp-alert","alert-err","⭐ Créditos insuficientes. Compre 1 crédito por R$ 19,90."); return; } }
+    if(!tok){showAlert("inp-alert","alert-err","🔒 Faça login para usar o relatório premium.");openModal("login");return;}
+    try{const r=await fetch(getBackendUrl()+"/credits/balance",{headers:{"Authorization":"Bearer "+tok},signal:AbortSignal.timeout(6000)});
+      if(r.ok){const d=await r.json();if(!d.unlimited&&(d.credits||0)<1){showAlert("inp-alert","alert-err","⭐ Créditos insuficientes. Compre 1 crédito por R$ 19,90.");return;}}
     }catch{}
   }
   const txt=document.getElementById("txt-input").value.trim();
-  if(!txt){ showAlert("inp-alert","alert-info","✍️ Descreva sua situação financeira."); return; }
-  hideAlert("inp-alert");
-  agentOutputs={};
-  resetGrid();
+  if(!txt){showAlert("inp-alert","alert-info","✍️ Descreva sua situação financeira.");return;}
+  hideAlert("inp-alert");agentOutputs={};resetGrid();
   document.getElementById("sec-pipeline").style.display="block";
   document.getElementById("sec-free").style.display="none";
   document.getElementById("sec-full").style.display="none";
   setBtns(true);
   const now=new Date().toLocaleDateString("pt-BR",{day:"2-digit",month:"long",year:"numeric"});
-
   async function ag(id,sys,usr,tokens=500){
-    setAc(id,"thinking");
-    log(`${AGENTS.find(a=>a.id===id)?.em||"⬡"} ${id}...`);
-    const out=await llm(sys,usr,tokens);
-    agentOutputs[id]=out;
-    setAc(id,out.startsWith("❌")||out.startsWith("⚠")?"error":"done");
-    log(`✓ ${id}`,"ok");
-    return out;
+    setAc(id,"thinking");log(`${AGENTS.find(a=>a.id===id)?.em||"⬡"} ${id}...`);
+    const out=await llm(sys,usr,tokens);agentOutputs[id]=out;
+    setAc(id,out.startsWith("❌")||out.startsWith("⚠")?"error":"done");log(`✓ ${id}`,"ok");return out;
   }
-
   log("▶ Ramo B: Contexto Macro");
   await Promise.all([
     ag("noticias_realtime","Analista de mercado financeiro. Responda em português. Máx 250 palavras.",`DATA:${now}\nUSUÁRIO:${txt}\n\nEventos macro recentes impactando investidores BR. Ativos afetados. Oportunidades e alertas.`),
-    ag("macroeconomia","Economista-chefe Brasil/EUA. Responda em português. Máx 280 palavras.",`DATA:${now}\nUSUÁRIO:${txt}\n\nSelic,IPCA,câmbio,Fed. Cenário macro BR. Projeções 6 meses. Impacto para esta situação.`),
-    ag("sentimento_mercado","Analista de sentimento de mercado. Responda em português. Máx 220 palavras.",`DATA:${now}\nUSUÁRIO:${txt}\n\nSentimento (bullish/bearish/neutro). Fear&Greed. Recomendação de posicionamento.`),
+    ag("macroeconomia","Economista-chefe Brasil/EUA. Responda em português. Máx 280 palavras.",`DATA:${now}\nUSUÁRIO:${txt}\n\nSelic,IPCA,câmbio,Fed. Cenário macro BR. Projeções 6 meses.`),
+    ag("sentimento_mercado","Analista de sentimento de mercado. Responda em português. Máx 220 palavras.",`DATA:${now}\nUSUÁRIO:${txt}\n\nSentimento (bullish/bearish/neutro). Fear&Greed. Recomendação.`),
   ]);
-
   log("▶ Ramo A: Mercado");
   const macro=(agentOutputs["macroeconomia"]||"").slice(0,200);
   await Promise.all([
-    ag("criptomoedas","Analista sênior de criptoativos. Responda em português. Máx 250 palavras.",`DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nBTC,ETH,SOL. Oportunidades com preço-alvo. Riscos. % alocação sugerida.`),
-    ag("acoes_equity","Analista de equity B3 e NYSE. Responda em português. Máx 260 palavras.",`DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nSetores promissores. Ações-destaque com tickers. Riscos. Estratégia.`),
-    ag("derivativos","Especialista em derivativos. Responda em português. Máx 200 palavras.",`DATA:${now}\nUSUÁRIO:${txt}\n\nDerivativos para proteção desta carteira. Estratégias de opções. Riscos.`),
-    ag("rwa","Especialista em RWA tokenizados. Responda em português. Máx 200 palavras.",`DATA:${now}\nUSUÁRIO:${txt}\n\nOportunidades RWA. Plataformas BR. Riscos regulatórios e liquidez.`),
-    ag("renda_fixa","Especialista renda fixa BR. Responda em português. Máx 260 palavras.",`DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nTesouro,CDB,LCI,LCA,CRI. Produtos adequados. Duration. IPCA+ vs prefixado vs CDI.`),
-    ag("imoveis_fiis","Especialista FIIs e imóveis. Responda em português. Máx 220 palavras.",`DATA:${now}\nUSUÁRIO:${txt}\n\nSegmentos FII atrativos. Melhores DY/VP. FII vs imóvel direto.`),
+    ag("criptomoedas","Analista sênior de criptoativos. Responda em português. Máx 250 palavras.",`DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nBTC,ETH,SOL. Oportunidades. Riscos. % alocação.`),
+    ag("acoes_equity","Analista de equity B3 e NYSE. Responda em português. Máx 260 palavras.",`DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nSetores promissores. Ações-destaque. Estratégia.`),
+    ag("derivativos","Especialista em derivativos. Responda em português. Máx 200 palavras.",`DATA:${now}\nUSUÁRIO:${txt}\n\nDerivativos para proteção desta carteira.`),
+    ag("rwa","Especialista em RWA tokenizados. Responda em português. Máx 200 palavras.",`DATA:${now}\nUSUÁRIO:${txt}\n\nOportunidades RWA. Plataformas BR.`),
+    ag("renda_fixa","Especialista renda fixa BR. Responda em português. Máx 260 palavras.",`DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nTesouro,CDB,LCI,LCA. IPCA+ vs prefixado vs CDI.`),
+    ag("imoveis_fiis","Especialista FIIs e imóveis. Responda em português. Máx 220 palavras.",`DATA:${now}\nUSUÁRIO:${txt}\n\nSegmentos FII atrativos. Melhores DY/VP.`),
   ]);
-
   log("▶ Ramo C: Finanças Pessoais");
   await Promise.all([
-    ag("quitacao_dividas","Especialista em quitação de dívidas. Responda em português. Máx 230 palavras.",`DATA:${now}\nUSUÁRIO:${txt}\n\nPriorização dívidas. Avalanche vs bola de neve. Liberação de fluxo mensal.`),
-    ag("credito_financiamento","Especialista crédito/financiamentos. Responda em português. Máx 220 palavras.",`DATA:${now}\nUSUÁRIO:${txt}\n\nCapacidade de crédito. Refinanciamento. Melhorar score.`),
-    ag("planejamento_tributario","Especialista IR e tributário PF. Responda em português. Máx 220 palavras.",`DATA:${now}\nUSUÁRIO:${txt}\n\nEficiência tributária. Deduções IR. PGBL vs VGBL. Alertas fiscais.`),
+    ag("quitacao_dividas","Especialista em quitação de dívidas. Responda em português. Máx 230 palavras.",`DATA:${now}\nUSUÁRIO:${txt}\n\nPriorização dívidas. Avalanche vs bola de neve.`),
+    ag("credito_financiamento","Especialista crédito. Responda em português. Máx 220 palavras.",`DATA:${now}\nUSUÁRIO:${txt}\n\nCapacidade de crédito. Refinanciamento.`),
+    ag("planejamento_tributario","Especialista IR e tributário PF. Responda em português. Máx 220 palavras.",`DATA:${now}\nUSUÁRIO:${txt}\n\nEficiência tributária. Deduções IR. PGBL vs VGBL.`),
   ]);
-
   log("▶ Guardiões: Compliance + Auditor");
   const allOut=Object.entries(agentOutputs).map(([k,v])=>`[${k}]:${v.slice(0,150)}`).join("\n");
   await Promise.all([
-    ag("compliance_risco","Diretor de Compliance e Riscos. Responda em português. Máx 200 palavras.",`ANÁLISES:\n${allOut.slice(0,1800)}\nUSUÁRIO:${txt}\n\nFlags de risco. Inconsistências. Ajustes obrigatórios.`),
-    ag("auditor_dados","Auditor de Dados. Responda em português. Máx 160 palavras.",`ANÁLISES:\n${allOut.slice(0,1800)}\n\nConsistência. Contradições. Confiabilidade geral.`),
+    ag("compliance_risco","Diretor de Compliance. Responda em português. Máx 200 palavras.",`ANÁLISES:\n${allOut.slice(0,1800)}\nUSUÁRIO:${txt}\n\nFlags de risco. Inconsistências.`),
+    ag("auditor_dados","Auditor de Dados. Responda em português. Máx 160 palavras.",`ANÁLISES:\n${allOut.slice(0,1800)}\n\nConsistência. Confiabilidade geral.`),
   ]);
-
   log("▶ Consultor Sênior: veredito consolidado");
   const comp=(agentOutputs["compliance_risco"]||"").slice(0,300);
   await ag("consultor_senior","Consultor Financeiro Sênior. Veredito final. Responda em português.",
-    `DATA:${now}\nUSUÁRIO:${txt}\nANÁLISES:\n${allOut.slice(0,2500)}\nCOMPLIANCE:${comp}\n\n`+
-    `Emita:\n1. Veredito consolidado\n2. Alocação portfólio em %\n3. Top 3 prioridades 30 dias\n4. Nível de risco\n5. Projeção patrimônio 12 meses`,650);
-
+    `DATA:${now}\nUSUÁRIO:${txt}\nANÁLISES:\n${allOut.slice(0,2500)}\nCOMPLIANCE:${comp}\n\nEmita:\n1. Veredito consolidado\n2. Alocação portfólio em %\n3. Top 3 prioridades 30 dias\n4. Nível de risco\n5. Projeção patrimônio 12 meses`,650);
   log("▶ Redator: gerando relatório...");
   const vfinal=(agentOutputs["consultor_senior"]||"").slice(0,500);
   const fullReport=await ag("redator_relatorios",
     "Redator-sênior de relatórios financeiros. Markdown. Português. Mínimo 900 palavras.",
-    `DATA:${now}\nUSUÁRIO:${txt}\nVEREDITO:\n${vfinal}\nANÁLISES:\n${allOut.slice(0,2800)}\n\n`+
-    `Seções: ## 📊 Sumário Executivo\n## 🌐 Panorama Macroeconômico\n## 📈 Análise de Mercado\n## 💼 Portfólio Recomendado\n## 💳 Gestão de Dívidas\n## 📋 Planejamento Tributário\n## ⚠️ Riscos\n## 🎯 Plano de Ação 30 Dias`,1800);
-
+    `DATA:${now}\nUSUÁRIO:${txt}\nVEREDITO:\n${vfinal}\nANÁLISES:\n${allOut.slice(0,2800)}\n\nSeções: ## 📊 Sumário Executivo\n## 🌐 Panorama Macroeconômico\n## 📈 Análise de Mercado\n## 💼 Portfólio Recomendado\n## 💳 Gestão de Dívidas\n## 📋 Planejamento Tributário\n## ⚠️ Riscos\n## 🎯 Plano de Ação 30 Dias`,1800);
   if(_backendOnline){
     const tok=getToken();
-    if(tok){
-      try{ await fetch(getBackendUrl()+"/credits/consume",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},signal:AbortSignal.timeout(8000)}); }catch{}
-      await loadCredits();
-    }
+    if(tok){try{await fetch(getBackendUrl()+"/credits/consume",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},signal:AbortSignal.timeout(8000)});}catch{}await loadCredits();}
   }
-  finishPipeline();
-  renderFullReport(fullReport);
+  finishPipeline();renderFullReport(fullReport);
 }
 
 function renderFullReport(md){
   document.getElementById("full-report-box").innerHTML=typeof marked!=="undefined"?marked.parse(md):md.replace(/\n/g,"<br>");
-  const blocksBox=document.getElementById("agent-blocks-box");
-  blocksBox.innerHTML="";
+  const blocksBox=document.getElementById("agent-blocks-box");blocksBox.innerHTML="";
   const skip=new Set(["consultor_senior","redator_relatorios","compliance_risco","auditor_dados"]);
   AGENTS.filter(a=>!skip.has(a.id)&&agentOutputs[a.id]).forEach(a=>{
     const div=document.createElement("div");div.className="agent-block";
@@ -886,13 +669,11 @@ function renderFullReport(md){
     blocksBox.appendChild(div);
   });
   const ds=new Date().toISOString().slice(0,10).replace(/-/g,"");
-  const bMd=new Blob([md],{type:"text/markdown"});
-  const bTxt=new Blob([md],{type:"text/plain"});
+  const bMd=new Blob([md],{type:"text/markdown"}),bTxt=new Blob([md],{type:"text/plain"});
   const htmlContent=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Relatório WUZO</title>
 <style>body{font-family:Georgia,serif;max-width:820px;margin:40px auto;padding:0 20px;line-height:1.85;color:#1a1a1a;}
 h1,h2{color:#7a5200;border-bottom:1px solid #e0d0a0;padding-bottom:6px;margin:22px 0 10px;}
-table{border-collapse:collapse;width:100%;margin:14px 0;}th{background:#f9f0dc;padding:8px;border:1px solid #ddd;}
-td{padding:7px;border:1px solid #eee;}</style></head><body>
+table{border-collapse:collapse;width:100%;margin:14px 0;}th{background:#f9f0dc;padding:8px;border:1px solid #ddd;}td{padding:7px;border:1px solid #eee;}</style></head><body>
 <h1>WUZO — Relatório Financeiro</h1><p style="color:#888;font-size:.85em;">Gerado em ${new Date().toLocaleDateString("pt-BR")} — 16 Agentes</p>
 ${typeof marked!=="undefined"?marked.parse(md):md.replace(/\n/g,"<br>")}</body></html>`;
   const bHtml=new Blob([htmlContent],{type:"text/html"});
@@ -908,51 +689,41 @@ ${typeof marked!=="undefined"?marked.parse(md):md.replace(/\n/g,"<br>")}</body><
 }
 
 async function handleBuy(){
-  if(!_backendOnline){ openModal("login"); return; }
-  const tok=getToken();
-  if(!tok){ openModal("login"); return; }
+  if(!_backendOnline){openModal("login");return;}
+  const tok=getToken();if(!tok){openModal("login");return;}
   try{
-    const r=await fetch(getBackendUrl()+"/credits/purchase",{
-      method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},body:JSON.stringify({quantity:1})});
-    if(r.ok){ const d=await r.json(); if(d.checkout_url){ window.open(d.checkout_url,"_blank"); return; } }
-    const e=await r.json().catch(()=>({}));
-    alert(e.error||"Erro ao iniciar pagamento.");
-  }catch{ alert("Erro de conexão."); }
+    const r=await fetch(getBackendUrl()+"/comprar-creditos",{method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},body:JSON.stringify({quantity:1})});
+    if(r.ok){const d=await r.json();if(d.checkout_url){window.open(d.checkout_url,"_blank");return;}}
+    const e=await r.json().catch(()=>({}));alert(e.error||"Erro ao iniciar pagamento.");
+  }catch{alert("Erro de conexão.");}
 }
 
-// ══════════════════════════════════════════════════════════════════════
-// HELPERS
-// ══════════════════════════════════════════════════════════════════════
 function buildGrid(){
-  const g=document.getElementById("agent-grid"); g.innerHTML="";
-  AGENTS.forEach(a=>{
-    const d=document.createElement("div"); d.className="ac"; d.id="ac-"+a.id;
-    d.innerHTML=`<div class="ac-em">${a.em}</div><div class="ac-nm">${a.nm}</div><div class="ac-st">○</div>`;
-    g.appendChild(d);
-  });
+  const g=document.getElementById("agent-grid");g.innerHTML="";
+  AGENTS.forEach(a=>{const d=document.createElement("div");d.className="ac";d.id="ac-"+a.id;
+    d.innerHTML=`<div class="ac-em">${a.em}</div><div class="ac-nm">${a.nm}</div><div class="ac-st">○</div>`;g.appendChild(d);});
 }
 function setAc(id,st){
-  const c=document.getElementById("ac-"+id); if(!c)return;
-  c.className="ac "+st;
-  c.querySelector(".ac-st").textContent={idle:"○",thinking:"◉",done:"✓",error:"✗"}[st]||"○";
+  const c=document.getElementById("ac-"+id);if(!c)return;
+  c.className="ac "+st;c.querySelector(".ac-st").textContent={idle:"○",thinking:"◉",done:"✓",error:"✗"}[st]||"○";
   const done=Object.values(agentOutputs).filter(Boolean).length;
   document.getElementById("prog-fill").style.width=Math.round(done/AGENTS.length*100)+"%";
 }
 function log(msg,cls=""){
-  const f=document.getElementById("log-feed");
-  const d=document.createElement("div"); d.className="ll "+cls;
-  d.textContent="["+new Date().toLocaleTimeString("pt-BR")+"] "+msg;
-  f.appendChild(d); f.scrollTop=f.scrollHeight;
+  const f=document.getElementById("log-feed"),d=document.createElement("div");
+  d.className="ll "+cls;d.textContent="["+new Date().toLocaleTimeString("pt-BR")+"] "+msg;
+  f.appendChild(d);f.scrollTop=f.scrollHeight;
 }
 function resetGrid(){
-  agentOutputs={}; AGENTS.forEach(a=>setAc(a.id,"idle"));
+  agentOutputs={};AGENTS.forEach(a=>setAc(a.id,"idle"));
   document.getElementById("prog-fill").style.width="0%";
   document.getElementById("log-feed").innerHTML='<div class="ll">⬡ Iniciando...</div>';
   document.getElementById("pip-pill").textContent="RUNNING";
   document.getElementById("pip-pill").className="pill pill-run";
 }
 function finishPipeline(){
-  AGENTS.forEach(a=>{ if(!agentOutputs[a.id]) setAc(a.id,"done"); });
+  AGENTS.forEach(a=>{if(!agentOutputs[a.id])setAc(a.id,"done");});
   document.getElementById("prog-fill").style.width="100%";
   document.getElementById("pip-pill").textContent="CONCLUÍDO";
   document.getElementById("pip-pill").className="pill pill-done";
@@ -960,21 +731,17 @@ function finishPipeline(){
 }
 function setBtns(on){
   ["btn-free","btn-premium","btn-buy"].forEach(id=>document.getElementById(id).disabled=on);
-  if(on){
-    document.getElementById("btn-free").innerHTML='<div class="spin"></div> Analisando...';
-    document.getElementById("btn-premium").innerHTML='<div class="spin"></div> Orquestrando 16 agentes...';
-  }else{
-    document.getElementById("btn-free").innerHTML='⚡ ANÁLISE GRATUITA';
-    document.getElementById("btn-premium").innerHTML='⭐ RELATÓRIO PREMIUM (16 ESP.)';
-  }
+  if(on){document.getElementById("btn-free").innerHTML='<div class="spin"></div> Analisando...';
+    document.getElementById("btn-premium").innerHTML='<div class="spin"></div> Orquestrando 16 agentes...';}
+  else{document.getElementById("btn-free").innerHTML='⚡ ANÁLISE GRATUITA';
+    document.getElementById("btn-premium").innerHTML='⭐ RELATÓRIO PREMIUM (16 ESP.)';}
 }
-function showAlert(id,cls,msg){ const el=document.getElementById(id); el.className="alert "+cls; el.textContent=msg; el.style.display="block"; }
-function hideAlert(id){ document.getElementById(id).style.display="none"; }
+function showAlert(id,cls,msg){const el=document.getElementById(id);el.className="alert "+cls;el.textContent=msg;el.style.display="block";}
+function hideAlert(id){document.getElementById(id).style.display="none";}
 
-// Helpers de debug via console
-window.setBackendUrl=(url)=>{ save(LS.BACKEND,url); location.reload(); };
-window.setLlmKey=(key,prov="groq")=>{ save(LS.LLM_KEY,key); save(LS.LLM_PROV,prov); location.reload(); };
-window.setToken=(t)=>{ setToken(t); updateUI(); };
+window.setBackendUrl=(url)=>{save(LS.BACKEND,url);location.reload();};
+window.setLlmKey=(key,prov="groq")=>{save(LS.LLM_KEY,key);save(LS.LLM_PROV,prov);location.reload();};
+window.setToken=(t)=>{setToken(t);updateUI();};
 </script>
 </body>
 </html>
