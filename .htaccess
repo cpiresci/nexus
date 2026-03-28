@@ -1,0 +1,54 @@
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# WUZO â€” .htaccess para Hostinger
+# Arquivo: public_html/wuzo.com.br/.htaccess
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+
+Options -MultiViews -Indexes
+
+# â”€â”€ SPA â€” redireciona tudo para index.html â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+RewriteEngine On
+RewriteBase /
+
+# NÃ£o redireciona arquivos e pastas que existem
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Tudo o mais vai para index.html
+RewriteRule ^ index.html [QSA,L]
+
+# â”€â”€ CORS â€” permite chamadas para app.wuzo.com.br â”€â”€â”€â”€â”€â”€â”€
+<IfModule mod_headers.c>
+    # Permite o frontend chamar a API no subdomÃ­nio
+    Header always set Access-Control-Allow-Origin "https://app.wuzo.com.br"
+    Header always set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Content-Type, Authorization"
+
+    # SeguranÃ§a bÃ¡sica
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# â”€â”€ Cache de assets estÃ¡ticos â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+<IfModule mod_expires.c>
+    ExpiresActive On
+    <FilesMatch "\.(css|js|woff2|woff|ttf|svg|png|jpg|webp|ico)$">
+        ExpiresDefault "access plus 30 days"
+        Header set Cache-Control "max-age=2592000, public"
+    </FilesMatch>
+    # HTML nunca em cache (garante atualizaÃ§Ã£o imediata)
+    <FilesMatch "\.html$">
+        ExpiresDefault "access plus 0 seconds"
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+    </FilesMatch>
+</IfModule>
+
+# â”€â”€ CompressÃ£o GZIP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css application/javascript
+</IfModule>
+
+# â”€â”€ ForÃ§a HTTPS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
