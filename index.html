@@ -291,6 +291,7 @@ textarea::placeholder{color:var(--dm2);}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <script>
+function aborter(ms){var c=new AbortController();setTimeout(function(){c.abort();},ms);return c.signal;}
 // ══════════════════════════════════════════════════════════════════════
 // WUZO — CORREÇÕES (substitua o bloco <script> do index.html por este)
 // ══════════════════════════════════════════════════════════════════════
@@ -382,12 +383,12 @@ async function checkHealth(attempt=0, backendUrl=null){
   for(let i=attempt;i<=max;i++){
     setStatus(i>0?`Acordando... (${i}/${max})`:"Verificando...","s-waking");
     try{
-      const r=await fetch(url+"/health",{signal:AbortSignal.timeout(12000)});
+      const r=await fetch(url+"/health",{signal:aborter(12000)});
       if(r.ok){
         const d=await r.json();
         _backendOnline=true;_directMode=false;_checking=false;
         setStatus("API OK · "+(d.llm||"llm"),"s-online");
-        setInterval(()=>fetch(url+"/ping",{signal:AbortSignal.timeout(5000)}).catch(()=>{}),4*60*1000);
+        setInterval(()=>fetch(url+"/ping",{signal:aborter(5000)}).catch(()=>{}),4*60*1000);
         await updateUI(); // atualiza créditos/login assim que o backend responde
         return;
       }
@@ -417,7 +418,7 @@ async function llmDirect(system,user,tokens){
   try{
     const r=await fetch(ep.url,{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+key},
       body:JSON.stringify({model:ep.model,max_tokens:tokens,temperature:.3,messages:[{role:"system",content:system},{role:"user",content:user}]}),
-      signal:AbortSignal.timeout(35000)});
+      signal:aborter(35000)});
     if(!r.ok)return "❌ HTTP "+r.status+" ("+prov+")";
     const d=await r.json();return d.choices?.[0]?.message?.content?.trim()||"❌ Resposta vazia";
   }catch(e){return "❌ "+e.message;}
@@ -433,7 +434,7 @@ async function llmBackend(system,user,tokens){
   if(tok)headers["Authorization"]="Bearer "+tok;
   try{
     const r=await fetch(getBackendUrl()+"/agent/run",{method:"POST",headers,
-      body:JSON.stringify({system,user,max_tokens:tokens}),signal:AbortSignal.timeout(35000)});
+      body:JSON.stringify({system,user,max_tokens:tokens}),signal:aborter(35000)});
     if(r.ok){const d=await r.json();return d.result||d.content||"❌ Resposta vazia";}
     if(r.status===502||r.status===503){_backendOnline=false;return "❌ Servidor reiniciando. Tente novamente.";}
     return "❌ HTTP "+r.status;
@@ -474,7 +475,7 @@ async function doLogin(){
   try{
     const r=await fetch(getBackendUrl()+"/api/auth/login",{method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({email,password:pass}),signal:AbortSignal.timeout(12000)});
+      body:JSON.stringify({email,password:pass}),signal:aborter(12000)});
     const d=await r.json().catch(()=>({}));
     if(r.ok&&d.token){setToken(d.token);save("wuzo_email",email);closeModal("login");updateUI();}
     else showModalErr("login-err",d.error||"Email ou senha incorretos.");
@@ -495,7 +496,7 @@ async function doRegister(){
   try{
     const r=await fetch(getBackendUrl()+"/api/auth/register",{method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({email,password:pass}),signal:AbortSignal.timeout(12000)});
+      body:JSON.stringify({email,password:pass}),signal:aborter(12000)});
     const d=await r.json().catch(()=>({}));
     if(r.ok&&d.token){setToken(d.token);save("wuzo_email",email);closeModal("register");updateUI();}
     else showModalErr("reg-err",d.error||"Erro ao criar conta.");
@@ -523,7 +524,7 @@ async function updateUI(){
     document.getElementById("user-info").textContent=getSaved("wuzo_email")||"logado";return;
   }
   try{
-    const r=await fetch(getBackendUrl()+"/api/auth/me",{headers:{"Authorization":"Bearer "+tok},signal:AbortSignal.timeout(8000)});
+    const r=await fetch(getBackendUrl()+"/api/auth/me",{headers:{"Authorization":"Bearer "+tok},signal:aborter(8000)});
     if(!r.ok){
       // ✅ CORREÇÃO: em vez de chamar updateUI() recursivamente,
       //    atualiza o DOM diretamente para o estado deslogado.
@@ -548,7 +549,7 @@ async function updateUI(){
 async function loadCredits(){
   const tok=getToken();if(!tok||!_backendOnline)return;
   try{
-    const r=await fetch(getBackendUrl()+"/credits/balance",{headers:{"Authorization":"Bearer "+tok},signal:AbortSignal.timeout(6000)});
+    const r=await fetch(getBackendUrl()+"/credits/balance",{headers:{"Authorization":"Bearer "+tok},signal:aborter(6000)});
     if(r.ok){const d=await r.json();
       document.getElementById("cred-num").textContent=d.unlimited?"∞":(d.credits||0);
       if(d.credits>0||d.unlimited)document.getElementById("btn-buy").style.opacity=".5";}
@@ -587,7 +588,7 @@ async function handleFree(){
     `DATA: ${now}\nSITUAÇÃO: ${txt}\n\nANÁLISE MACROECONÔMICA:\nConsiderando Selic, IPCA, câmbio:\n1. Impacto macro nesta situação\n2. Oportunidades renda fixa\n3. Timing ideal dos investimentos\nMínimo 200 palavras.`,400);
   agentOutputs["macroeconomia"]=macroPreview;
   setAc("macroeconomia","done");log("✓ Macroeconomia concluída","ok");
-  if(_backendOnline){const tok=getToken();if(tok)fetch(getBackendUrl()+"/credits/consume-free",{method:"POST",headers:{"Authorization":"Bearer "+tok},signal:AbortSignal.timeout(5000)}).catch(()=>{});}
+  if(_backendOnline){const tok=getToken();if(tok)fetch(getBackendUrl()+"/credits/consume-free",{method:"POST",headers:{"Authorization":"Bearer "+tok},signal:aborter(5000)}).catch(()=>{});}
   finishPipeline();renderFreeResult(veredito,macroPreview);setBtns(false);
 }
 
@@ -606,7 +607,7 @@ async function handlePremium(){
   if(_backendOnline){
     const tok=getToken();
     if(!tok){showAlert("inp-alert","alert-err","🔒 Faça login para usar o relatório premium.");openModal("login");return;}
-    try{const r=await fetch(getBackendUrl()+"/credits/balance",{headers:{"Authorization":"Bearer "+tok},signal:AbortSignal.timeout(6000)});
+    try{const r=await fetch(getBackendUrl()+"/credits/balance",{headers:{"Authorization":"Bearer "+tok},signal:aborter(6000)});
       if(r.ok){const d=await r.json();if(!d.unlimited&&(d.credits||0)<1){showAlert("inp-alert","alert-err","⭐ Créditos insuficientes. Compre 1 crédito por R$ 19,90.");return;}}
     }catch{}
   }
@@ -662,7 +663,7 @@ async function handlePremium(){
     `DATA:${now}\nUSUÁRIO:${txt}\nVEREDITO:\n${vfinal}\nANÁLISES:\n${allOut.slice(0,2800)}\n\nSeções: ## 📊 Sumário Executivo\n## 🌐 Panorama Macroeconômico\n## 📈 Análise de Mercado\n## 💼 Portfólio Recomendado\n## 💳 Gestão de Dívidas\n## 📋 Planejamento Tributário\n## ⚠️ Riscos\n## 🎯 Plano de Ação 30 Dias`,1800);
   if(_backendOnline){
     const tok=getToken();
-    if(tok){try{await fetch(getBackendUrl()+"/credits/consume",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},signal:AbortSignal.timeout(8000)});}catch{}await loadCredits();}
+    if(tok){try{await fetch(getBackendUrl()+"/credits/consume",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},signal:aborter(8000)});}catch{}await loadCredits();}
   }
   finishPipeline();renderFullReport(fullReport);
 }
