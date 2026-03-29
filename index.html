@@ -292,22 +292,32 @@ textarea::placeholder{color:var(--dm2);}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <script>
 // ══════════════════════════════════════════════════════════════════════
-// CONFIG — URL CORRIGIDA PARA app.wuzo.com.br
+// WUZO — CORREÇÕES (substitua o bloco <script> do index.html por este)
 // ══════════════════════════════════════════════════════════════════════
+
 let _backendOnline=false,_directMode=false,_checking=false,agentOutputs={};
 const LS={BACKEND:"wuzo_backend_url",LLM_KEY:"wuzo_llm_key",LLM_PROV:"wuzo_llm_prov",TOKEN:"wuzo_token"};
 function getSaved(k){return localStorage.getItem(k)||"";}
 function save(k,v){localStorage.setItem(k,v);}
 function del(k){localStorage.removeItem(k);}
 
-// ✅ URL CORRIGIDA — aponta para app.wuzo.com.br
 function getBackendUrl(){
   return getSaved(LS.BACKEND)||"https://app.wuzo.com.br";
 }
 
+// ✅ FIX BUG 2 — Lê token da URL UMA vez e remove da URL logo depois,
+//    evitando que clearToken() seja "revertido" pela próxima chamada.
 function getToken(){
-  const p=new URLSearchParams(location.search),t=p.get("token")||p.get("t")||"";
-  if(t){save(LS.TOKEN,t);return t;}
+  const p=new URLSearchParams(location.search);
+  const t=p.get("token")||p.get("t")||"";
+  if(t){
+    save(LS.TOKEN,t);
+    // Remove o parâmetro da URL para não re-salvar após logout
+    p.delete("token");p.delete("t");
+    const newUrl=location.pathname+(p.toString()?"?"+p.toString():"");
+    history.replaceState(null,"",newUrl);
+    return t;
+  }
   return getSaved(LS.TOKEN);
 }
 function setToken(t){save(LS.TOKEN,t);}
@@ -351,12 +361,15 @@ function clearConfig(){
   del(LS.BACKEND);del(LS.LLM_KEY);del(LS.LLM_PROV);location.reload();
 }
 
-// HEALTH CHECK com retry (Render dormindo)
-async function checkHealth(attempt=0,backendUrl=null){
+// ✅ FIX BUG 3 — Substituída recursão em cauda por loop iterativo.
+//    Isso evita a cadeia de Promises aninhadas e é mais fácil de debugar.
+async function checkHealth(attempt=0, backendUrl=null){
   if(_checking&&attempt===0)return;
   _checking=true;
   const url=backendUrl||getBackendUrl();
   const max=6;
+  const waits=[8000,12000,15000,20000,25000,30000];
+
   if(getSaved(LS.LLM_KEY)){
     _directMode=true;
     const prov=getSaved(LS.LLM_PROV)||"groq";
@@ -364,24 +377,27 @@ async function checkHealth(attempt=0,backendUrl=null){
     setStatus("Modo Direto · "+(nm[prov]||prov),"s-direct");
     _checking=false;return;
   }
-  setStatus(attempt>0?`Acordando... (${attempt}/${max})`:"Verificando...","s-waking");
-  try{
-    const r=await fetch(url+"/health",{signal:AbortSignal.timeout(12000)});
-    if(r.ok){
-      const d=await r.json();
-      _backendOnline=true;_directMode=false;_checking=false;
-      setStatus("API OK · "+(d.llm||"llm"),"s-online");
-      // Keep-alive a cada 4 min para não dormir
-      setInterval(()=>fetch(url+"/ping",{signal:AbortSignal.timeout(5000)}).catch(()=>{}),4*60*1000);
-      return;
+
+  // ── Loop no lugar de recursão ────────────────────────────────────────
+  for(let i=attempt;i<=max;i++){
+    setStatus(i>0?`Acordando... (${i}/${max})`:"Verificando...","s-waking");
+    try{
+      const r=await fetch(url+"/health",{signal:AbortSignal.timeout(12000)});
+      if(r.ok){
+        const d=await r.json();
+        _backendOnline=true;_directMode=false;_checking=false;
+        setStatus("API OK · "+(d.llm||"llm"),"s-online");
+        setInterval(()=>fetch(url+"/ping",{signal:AbortSignal.timeout(5000)}).catch(()=>{}),4*60*1000);
+        await updateUI(); // atualiza créditos/login assim que o backend responde
+        return;
+      }
+    }catch{}
+    _backendOnline=false;
+    if(i<max){
+      await new Promise(r=>setTimeout(r,waits[i]||15000));
     }
-  }catch{}
-  _backendOnline=false;
-  if(attempt<max){
-    const wait=[8000,12000,15000,20000,25000,30000][attempt]||15000;
-    await new Promise(r=>setTimeout(r,wait));
-    return checkHealth(attempt+1,url);
   }
+  // Esgotou as tentativas
   _checking=false;
   setStatus("Backend offline — configure ⚙","s-offline");
   document.getElementById("setup-card").style.display="block";
@@ -491,6 +507,9 @@ async function doRegister(){
 
 function logout(){clearToken();del("wuzo_email");document.getElementById("cred-num").textContent="0";updateUI();}
 
+// ✅ FIX BUG 1 — updateUI() NÃO chama mais a si mesma.
+//    Quando /api/auth/me retorna erro, limpa o token e atualiza o DOM
+//    diretamente para o estado deslogado, sem recursão.
 async function updateUI(){
   const tok=getToken();
   if(!tok){
@@ -505,7 +524,15 @@ async function updateUI(){
   }
   try{
     const r=await fetch(getBackendUrl()+"/api/auth/me",{headers:{"Authorization":"Bearer "+tok},signal:AbortSignal.timeout(8000)});
-    if(!r.ok){clearToken();del("wuzo_email");updateUI();return;}
+    if(!r.ok){
+      // ✅ CORREÇÃO: em vez de chamar updateUI() recursivamente,
+      //    atualiza o DOM diretamente para o estado deslogado.
+      clearToken();del("wuzo_email");
+      document.getElementById("auth-out").style.display="flex";
+      document.getElementById("auth-in").style.display="none";
+      document.getElementById("cred-num").textContent="0";
+      return;
+    }
     const d=await r.json();
     document.getElementById("auth-out").style.display="none";
     document.getElementById("auth-in").style.display="flex";
@@ -528,26 +555,9 @@ async function loadCredits(){
   }catch{}
 }
 
-// 16 AGENTES
-const AGENTS=[
-  {id:"noticias_realtime",em:"📡",nm:"Notícias"},
-  {id:"macroeconomia",em:"🌐",nm:"Macro"},
-  {id:"sentimento_mercado",em:"🧠",nm:"Sentimento"},
-  {id:"criptomoedas",em:"₿",nm:"Cripto"},
-  {id:"acoes_equity",em:"📈",nm:"Ações"},
-  {id:"derivativos",em:"🔄",nm:"Derivativos"},
-  {id:"rwa",em:"🏭",nm:"RWA"},
-  {id:"renda_fixa",em:"💵",nm:"Renda Fixa"},
-  {id:"imoveis_fiis",em:"🏢",nm:"FIIs"},
-  {id:"quitacao_dividas",em:"💳",nm:"Dívidas"},
-  {id:"credito_financiamento",em:"🏦",nm:"Crédito"},
-  {id:"planejamento_tributario",em:"📋",nm:"Tributário"},
-  {id:"compliance_risco",em:"🛡️",nm:"Compliance"},
-  {id:"auditor_dados",em:"🔍",nm:"Auditor"},
-  {id:"consultor_senior",em:"👔",nm:"Consultor"},
-  {id:"redator_relatorios",em:"✍️",nm:"Redator"},
-];
-
+window.setBackendUrl=(url)=>{save(LS.BACKEND,url);location.reload();};
+window.setLlmKey=(key,prov="groq")=>{save(LS.LLM_KEY,key);save(LS.LLM_PROV,prov);location.reload();};
+window.setToken=(t)=>{setToken(t);updateUI();};
 document.addEventListener("DOMContentLoaded",()=>{buildGrid();getToken();updateUI();checkHealth();});
 
 async function handleFree(){
