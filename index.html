@@ -357,7 +357,7 @@ async function checkHealth(attempt=0,backendUrl=null){
   if(_checking&&attempt===0)return;
   _checking=true;
   const url=backendUrl||getBackendUrl();
-  const max=6;
+  const max=8;
   if(getSaved(LS.LLM_KEY)){
     _directMode=true;
     const prov=getSaved(LS.LLM_PROV)||"groq";
@@ -367,7 +367,7 @@ async function checkHealth(attempt=0,backendUrl=null){
   }
   setStatus(attempt>0?`Acordando... (${attempt}/${max})`:"Verificando...","s-waking");
   try{
-    const r=await fetch(url+"/health",{signal:aborter(12000)});
+    const r=await fetch(url+"/health",{signal:aborter(55000)});
     if(r.ok){
       const d=await r.json();
       _backendOnline=true;_directMode=false;_checking=false;
