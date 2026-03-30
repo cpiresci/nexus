@@ -107,6 +107,13 @@ textarea::placeholder{color:var(--dm2);}
 .modal-err{background:rgba(224,82,82,.08);border:1px solid rgba(224,82,82,.3);border-radius:var(--r2);padding:8px 12px;font-size:.78rem;color:#f5a0a0;margin-top:8px;display:none;}
 .modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--dm);font-size:1.1rem;cursor:pointer;}
 .modal-close:hover{color:var(--g);}
+/* Admin panel */
+#admin-panel{position:fixed;bottom:20px;right:16px;z-index:500;display:none;flex-direction:column;gap:8px;align-items:flex-end;}
+.admin-btn{padding:10px 16px;border-radius:50px;border:none;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;box-shadow:0 4px 16px rgba(0,0,0,.4);}
+.admin-btn.purple{background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;}
+.admin-btn.purple:hover{background:linear-gradient(135deg,#6d28d9,#8b5cf6);transform:translateY(-1px);}
+.admin-btn.slate{background:rgba(30,20,60,.9);border:1px solid rgba(124,58,237,.3);color:#a78bfa;}
+.admin-btn.slate:hover{border-color:#7c3aed;color:#c4b5fd;}
 </style>
 </head>
 <body>
@@ -216,6 +223,12 @@ textarea::placeholder{color:var(--dm2);}
   </div>
 </div>
 
+<!-- ADMIN PANEL (visível só para admin) -->
+<div id="admin-panel">
+  <button class="admin-btn purple" onclick="adminAddCredits()">&#128081; Admin +Créditos</button>
+  <button class="admin-btn slate"  onclick="adminListUsers()">&#128101; Ver Usuários</button>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <script>
 var BACKEND="https://app.wuzo.com.br";
@@ -277,6 +290,8 @@ async function updateUI(){
     var d=await r.json();
     document.getElementById("auth-out").style.display="none";document.getElementById("auth-in").style.display="flex";
     document.getElementById("user-info").textContent=d.email||"";document.getElementById("cred-num").textContent=d.credits||0;
+    // Mostra painel admin se is_admin
+    document.getElementById("admin-panel").style.display=d.is_admin?"flex":"none";
   }catch(e){document.getElementById("auth-out").style.display="none";document.getElementById("auth-in").style.display="flex";document.getElementById("user-info").textContent=getSaved(LS.EMAIL)||"logado";}
 }
 function openModal(name){document.getElementById("modal-"+name).classList.add("open");var first=document.querySelector("#modal-"+name+" .modal-inp");if(first)setTimeout(function(){first.focus();},80);}
@@ -312,7 +327,7 @@ async function doRegister(){
   }catch(e){showModalErr("reg-err","Sem conexão: "+e.message);}
   finally{btn.textContent="CRIAR CONTA GRÁTIS";btn.disabled=false;}
 }
-function logout(){del(LS.TOKEN);del(LS.EMAIL);document.getElementById("cred-num").textContent="0";updateUI();}
+function logout(){del(LS.TOKEN);del(LS.EMAIL);document.getElementById("cred-num").textContent="0";document.getElementById("admin-panel").style.display="none";updateUI();}
 var AGENTS_UI=[
   {id:"macroeconomia",em:"&#127758;",nm:"Macro"},
   {id:"noticias_realtime",em:"&#128240;",nm:"Notícias"},
@@ -463,6 +478,50 @@ function setBtns(on){
 function showAlert(id,cls,msg){var el=document.getElementById(id);el.className="alert "+cls;el.textContent=msg;el.style.display="block";}
 function hideAlert(id){document.getElementById(id).style.display="none";}
 document.addEventListener("DOMContentLoaded",function(){buildGrid();getToken();updateUI();checkHealth();});
+
+// ── Admin ─────────────────────────────────────────────────
+async function adminAddCredits(){
+  var emailTarget=prompt("Email do usuário (deixe em branco para seu próprio email):");
+  if(emailTarget===null)return; // cancelou
+  var amount=parseInt(prompt("Quantos créditos adicionar?","1")||"1");
+  if(!amount||amount<1){alert("Quantidade inválida.");return;}
+  var tok=getToken();if(!tok)return;
+  try{
+    // Busca user_id pelo email se informado
+    var uid=null;
+    if(emailTarget.trim()){
+      var ru=await fetch(BACKEND+"/api/admin/users",{headers:{"Authorization":"Bearer "+tok},signal:aborter(8000)});
+      var users=await ru.json();
+      var found=users.find(function(u){return u.email===emailTarget.trim().toLowerCase();});
+      if(!found){alert("Usuário não encontrado: "+emailTarget);return;}
+      uid=found.id;
+    }else{
+      // próprio usuário
+      var rm=await fetch(BACKEND+"/api/auth/me",{headers:{"Authorization":"Bearer "+tok},signal:aborter(8000)});
+      var me=await rm.json();uid=me.id;
+    }
+    var r=await fetch(BACKEND+"/api/admin/add-credits",{
+      method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
+      body:JSON.stringify({user_id:uid,amount:amount}),signal:aborter(8000)
+    });
+    var d=await r.json();
+    if(r.ok){alert("✓ "+d.message+"\nNovo saldo: "+d.new_balance+" crédito(s)");await updateUI();}
+    else alert("Erro: "+(d.error||"Falha ao adicionar créditos."));
+  }catch(e){alert("Erro de conexão: "+e.message);}
+}
+
+async function adminListUsers(){
+  var tok=getToken();if(!tok)return;
+  try{
+    var r=await fetch(BACKEND+"/api/admin/users",{headers:{"Authorization":"Bearer "+tok},signal:aborter(8000)});
+    var users=await r.json();
+    if(!r.ok){alert("Erro: "+(users.error||"Sem permissão."));return;}
+    var lines=users.slice(0,20).map(function(u){
+      return u.id+" | "+u.email+" | "+u.credits+" crédito(s) | "+u.created_at;
+    });
+    alert("👥 Usuários ("+users.length+" total):\n\n"+lines.join("\n"));
+  }catch(e){alert("Erro: "+e.message);}
+}
 </script>
 </body>
 </html>
