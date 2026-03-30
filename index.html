@@ -8,7 +8,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#030302;--card:#0d0c0a;--card2:#131108;
+  --bg:#030302;--card:#0d0c0a;
   --g:#e8c97a;--g2:#f5dfa0;--gd:#8a6a2c;--gdd:#3a2810;
   --bd:rgba(201,168,76,.14);--bd2:rgba(201,168,76,.3);
   --tx:#ede8dc;--dm:#c0b89e;--dm2:#5a4828;
@@ -18,8 +18,22 @@
 html,body{background:var(--bg);color:var(--tx);font-family:'Outfit',sans-serif;min-height:100vh;}
 body{background-image:radial-gradient(ellipse 80% 50% at 0% 10%,rgba(201,168,76,.055) 0%,transparent 55%),radial-gradient(ellipse 60% 60% at 100% 90%,rgba(201,168,76,.04) 0%,transparent 55%);}
 ::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--gd);border-radius:2px;}
+
+/* CRYPTO TICKER */
+#crypto-ticker{width:100%;background:rgba(3,3,2,.95);border-bottom:1px solid var(--bd2);overflow:hidden;padding:7px 0;position:sticky;top:0;z-index:300;backdrop-filter:blur(10px);}
+.ticker-track{display:flex;gap:0;animation:ticker-scroll 50s linear infinite;width:max-content;will-change:transform;}
+.ticker-track:hover{animation-play-state:paused;}
+.ticker-item{display:inline-flex;align-items:center;gap:8px;padding:0 22px;border-right:1px solid rgba(201,168,76,.18);white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:.67rem;}
+.ticker-sym{font-weight:700;color:var(--g);letter-spacing:1.5px;}
+.ticker-price{color:var(--tx);font-weight:600;}
+.ticker-up{color:#4aaf78;font-weight:700;}
+.ticker-dn{color:#e05252;font-weight:700;}
+.ticker-chg{font-size:.6rem;}
+@keyframes ticker-scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* LAYOUT */
 .shell{max-width:680px;margin:0 auto;padding:20px 14px 80px;}
-.hdr{display:flex;align-items:flex-start;justify-content:space-between;padding-bottom:14px;border-bottom:1px solid var(--bd);margin-bottom:20px;gap:12px;flex-wrap:wrap;}
+.hdr{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 0 14px;border-bottom:1px solid var(--bd);margin-bottom:20px;gap:12px;flex-wrap:wrap;background:var(--bg);}
 .logo{font-size:1.6rem;font-weight:900;letter-spacing:8px;background:linear-gradient(135deg,#7a5a1c,#f5ead0 35%,#c9a84c 55%,#f5ead0 75%,#7a5a1c);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
 @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
 .logo-sub{font-family:'JetBrains Mono',monospace;font-size:.42rem;letter-spacing:3px;color:var(--dm2);margin-top:2px;}
@@ -36,6 +50,8 @@ body{background-image:radial-gradient(ellipse 80% 50% at 0% 10%,rgba(201,168,76,
 .abtn.red{border-color:rgba(224,82,82,.3);color:#e08080;}
 .abtn.red:hover{border-color:var(--rd);color:var(--rd);}
 #user-info{font-size:.6rem;color:var(--dm);font-family:'JetBrains Mono',monospace;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* CARDS */
 .card{background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));border:1px solid var(--bd);border-radius:var(--r);padding:18px 16px;margin-bottom:14px;position:relative;overflow:hidden;}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.28),transparent);}
 .inp-lbl{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:2px;color:var(--dm2);text-transform:uppercase;margin-bottom:5px;}
@@ -46,7 +62,7 @@ textarea::placeholder{color:var(--dm2);}
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px 20px;border-radius:50px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:800;font-size:.85rem;letter-spacing:1px;transition:all .2s;}
 .btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important;}
 .btn-free{background:linear-gradient(135deg,#1a3a8a,#2255cc);color:#fff;box-shadow:0 4px 20px rgba(34,85,204,.3);}
-.btn-free:hover:not(:disabled){background:linear-gradient(135deg,#1e44a0,#2a60e0);transform:translateY(-1px);}
+.btn-free:hover:not(:disabled){transform:translateY(-1px);}
 .btn-premium{background:linear-gradient(135deg,#b8860b,#e8c97a,#f5dfa0,#e8c97a,#8a6a2c);background-size:200% auto;color:#0d0900;animation:shimmer 3s linear infinite;box-shadow:0 4px 20px rgba(201,168,76,.3);}
 .btn-premium:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 28px rgba(201,168,76,.5);}
 .btn-buy{background:linear-gradient(135deg,#1a7a3a,#22a04d);color:#fff;box-shadow:0 4px 20px rgba(34,160,77,.25);}
@@ -57,6 +73,8 @@ textarea::placeholder{color:var(--dm2);}
 .alert-info{border-color:var(--g);background:rgba(201,168,76,.05);color:var(--g2);}
 .alert-err{border-color:var(--rd);background:rgba(224,82,82,.05);color:#f5a0a0;}
 .alert-ok{border-color:var(--gr);background:rgba(74,175,120,.05);color:#a0f5c0;}
+
+/* PIPELINE */
 .agent-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0;}
 @media(max-width:420px){.agent-grid{grid-template-columns:repeat(2,1fr);}}
 .ac{background:rgba(0,0,0,.4);border:1px solid rgba(40,28,10,.7);border-radius:8px;padding:10px 5px;text-align:center;transition:border-color .3s,box-shadow .3s;}
@@ -64,7 +82,7 @@ textarea::placeholder{color:var(--dm2);}
 .ac.done{border-color:var(--gr);}
 @keyframes pg{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,.4);}50%{box-shadow:0 0 10px rgba(201,168,76,.2);}}
 .ac-em{font-size:1.2rem;line-height:1;}
-.ac-nm{font-size:.5rem;color:#c0b89e;letter-spacing:.5px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;}
+.ac-nm{font-size:.45rem;color:#c0b89e;letter-spacing:.5px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;}
 .ac-st{font-size:.55rem;font-weight:700;margin-top:4px;}
 .ac.thinking .ac-st{color:var(--g);}.ac.done .ac-st{color:var(--gr);}
 .prog{background:rgba(201,168,76,.07);border-radius:3px;height:4px;overflow:hidden;margin:8px 0;}
@@ -76,6 +94,8 @@ textarea::placeholder{color:var(--dm2);}
 .pill-run{background:rgba(201,168,76,.1);color:var(--g);}.pill-done{background:rgba(74,175,120,.1);color:var(--gr);}
 .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(201,168,76,.3);border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* RESULTADOS */
 .verdict-card{background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.01));border:1px solid var(--bd2);border-radius:var(--r);border-left:3px solid var(--g);padding:18px 16px;margin-bottom:14px;position:relative;overflow:hidden;}
 .verdict-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent);}
 .verdict-title{color:var(--g);font-size:1rem;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:12px;}
@@ -87,11 +107,12 @@ textarea::placeholder{color:var(--dm2);}
 .lock-title{color:var(--g);font-size:1rem;font-weight:800;margin-bottom:4px;}
 .lock-sub{color:var(--dm);font-size:.8rem;margin-bottom:16px;}
 #sec-full{display:none;}
-.report-card{background:rgba(201,168,76,.015);border:1px solid var(--bd);border-radius:var(--r);padding:22px 18px;margin-bottom:14px;}
 .agent-block{background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));border:1px solid var(--bd);border-radius:var(--r);border-left:3px solid var(--g);padding:16px;margin-bottom:10px;}
-.agent-block-title{color:var(--g);font-size:.85rem;font-weight:700;margin-bottom:8px;}
+.agent-block-title{color:var(--g);font-size:.85rem;font-weight:700;margin-bottom:8px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.5px;}
 .agent-block-body{font-size:.84rem;line-height:1.9;color:var(--tx);}
 .agent-block-body strong{color:var(--g2);}
+
+/* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;z-index:1000;padding:16px;}
 .modal-overlay.open{display:flex;}
 .modal-box{background:var(--card);border:1px solid var(--bd2);border-radius:14px;padding:28px 24px;width:100%;max-width:360px;position:relative;}
@@ -107,18 +128,40 @@ textarea::placeholder{color:var(--dm2);}
 .modal-err{background:rgba(224,82,82,.08);border:1px solid rgba(224,82,82,.3);border-radius:var(--r2);padding:8px 12px;font-size:.78rem;color:#f5a0a0;margin-top:8px;display:none;}
 .modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--dm);font-size:1.1rem;cursor:pointer;}
 .modal-close:hover{color:var(--g);}
-/* Admin panel */
+
+/* ADMIN */
 #admin-panel{position:fixed;bottom:20px;right:16px;z-index:500;display:none;flex-direction:column;gap:8px;align-items:flex-end;}
 .admin-btn{padding:10px 16px;border-radius:50px;border:none;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;box-shadow:0 4px 16px rgba(0,0,0,.4);}
 .admin-btn.purple{background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;}
-.admin-btn.purple:hover{background:linear-gradient(135deg,#6d28d9,#8b5cf6);transform:translateY(-1px);}
+.admin-btn.purple:hover{transform:translateY(-1px);}
 .admin-btn.slate{background:rgba(30,20,60,.9);border:1px solid rgba(124,58,237,.3);color:#a78bfa;}
-.admin-btn.slate:hover{border-color:#7c3aed;color:#c4b5fd;}
+.admin-btn.slate:hover{border-color:#7c3aed;}
 </style>
 </head>
 <body>
+
+<!-- CRYPTO TICKER (tempo real — atualiza a cada 30s) -->
+<div id="crypto-ticker">
+  <div class="ticker-track" id="ticker-track">
+    <div class="ticker-item">⬡ <span style="color:var(--dm);font-size:.55rem;letter-spacing:2px;">AO VIVO</span></div>
+    <div class="ticker-item"><span class="ticker-sym">BTC</span>&nbsp;<span class="ticker-price" id="t-btc-p">---</span>&nbsp;<span class="ticker-chg" id="t-btc-c">--</span></div>
+    <div class="ticker-item"><span class="ticker-sym">ETH</span>&nbsp;<span class="ticker-price" id="t-eth-p">---</span>&nbsp;<span class="ticker-chg" id="t-eth-c">--</span></div>
+    <div class="ticker-item"><span class="ticker-sym">SOL</span>&nbsp;<span class="ticker-price" id="t-sol-p">---</span>&nbsp;<span class="ticker-chg" id="t-sol-c">--</span></div>
+    <div class="ticker-item"><span class="ticker-sym">BNB</span>&nbsp;<span class="ticker-price" id="t-bnb-p">---</span>&nbsp;<span class="ticker-chg" id="t-bnb-c">--</span></div>
+    <div class="ticker-item"><span class="ticker-sym">DOGE</span>&nbsp;<span class="ticker-price" id="t-doge-p">---</span>&nbsp;<span class="ticker-chg" id="t-doge-c">--</span></div>
+    <!-- Duplicado para loop contínuo -->
+    <div class="ticker-item">⬡ <span style="color:var(--dm);font-size:.55rem;letter-spacing:2px;">AO VIVO</span></div>
+    <div class="ticker-item"><span class="ticker-sym">BTC</span>&nbsp;<span class="ticker-price" id="t-btc-p2">---</span>&nbsp;<span class="ticker-chg" id="t-btc-c2">--</span></div>
+    <div class="ticker-item"><span class="ticker-sym">ETH</span>&nbsp;<span class="ticker-price" id="t-eth-p2">---</span>&nbsp;<span class="ticker-chg" id="t-eth-c2">--</span></div>
+    <div class="ticker-item"><span class="ticker-sym">SOL</span>&nbsp;<span class="ticker-price" id="t-sol-p2">---</span>&nbsp;<span class="ticker-chg" id="t-sol-c2">--</span></div>
+    <div class="ticker-item"><span class="ticker-sym">BNB</span>&nbsp;<span class="ticker-price" id="t-bnb-p2">---</span>&nbsp;<span class="ticker-chg" id="t-bnb-c2">--</span></div>
+    <div class="ticker-item"><span class="ticker-sym">DOGE</span>&nbsp;<span class="ticker-price" id="t-doge-p2">---</span>&nbsp;<span class="ticker-chg" id="t-doge-c2">--</span></div>
+  </div>
+</div>
+
 <div class="shell">
 
+<!-- HEADER -->
 <div class="hdr">
   <div>
     <div class="logo">WUZO</div>
@@ -140,20 +183,22 @@ textarea::placeholder{color:var(--dm2);}
   </div>
 </div>
 
+<!-- INPUT CARD -->
 <div class="card" id="card-input">
-  <div class="inp-lbl">Descreva sua situação financeira</div>
-  <textarea id="txt-input" placeholder="Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado."></textarea>
+  <div class="inp-lbl">Descreva sua situacao financeira</div>
+  <textarea id="txt-input" placeholder="Ex: Tenho R$ 50.000 para investir, divida no cartao de R$ 8.000 com juros de 12% ao mes, renda de R$ 6.000/mes. Quero construir patrimonio nos proximos 5 anos com perfil moderado."></textarea>
   <div class="btn-row">
-    <button class="btn btn-free"    id="btn-free"    onclick="handleFree()">&#9889; ANÁLISE GRATUITA</button>
-    <button class="btn btn-premium" id="btn-premium" onclick="handlePremium()">&#11088; RELATÓRIO PREMIUM (16 ESP.)</button>
+    <button class="btn btn-free"    id="btn-free"    onclick="handleFree()">&#9889; ANALISE GRATUITA</button>
+    <button class="btn btn-premium" id="btn-premium" onclick="handlePremium()">&#11088; RELATORIO PREMIUM (16 ESP. + DADOS REAIS)</button>
     <button class="btn btn-buy"     id="btn-buy"     onclick="handleBuy()">&#128722; COMPRAR (R$ 19,90)</button>
   </div>
   <div class="alert alert-err" id="inp-alert"></div>
 </div>
 
+<!-- PIPELINE -->
 <div class="card" id="sec-pipeline" style="display:none;">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-    <span style="font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;color:var(--dm2);">ESPECIALISTAS</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;color:var(--dm2);">16 ESPECIALISTAS + DADOS EM TEMPO REAL</span>
     <span class="pill pill-run" id="pip-pill">ANALISANDO</span>
   </div>
   <div class="agent-grid" id="agent-grid"></div>
@@ -161,40 +206,49 @@ textarea::placeholder{color:var(--dm2);}
   <div class="log" id="log-feed"><div class="ll">&#11041; Iniciando...</div></div>
 </div>
 
+<!-- FREE RESULT -->
 <div id="sec-free" style="display:none;">
   <div class="verdict-card">
-    <div class="verdict-title">&#9878;&#65039; Veredito do Consultor IA</div>
+    <div class="verdict-title">&#9878;&#65039; Veredito — Consultor Senior WUZO</div>
     <div class="vline"></div>
     <div class="verdict-body" id="verdict-body"></div>
   </div>
   <div class="lock-card">
     <div class="lock-icon">&#128274;</div>
-    <div class="lock-title">Relatório Completo com 16 Especialistas</div>
-    <div class="lock-sub">Cripto, Ações, Renda Fixa, FIIs, Dívidas, Tributário, Compliance e muito mais — com PDF para download.</div>
+    <div class="lock-title">Relatorio Completo com 16 Especialistas + Dados em Tempo Real</div>
+    <div class="lock-sub">Cripto com precos atuais, Acoes, Renda Fixa, FIIs, Dividas, Tributario, Compliance e muito mais — com PDF profissional para download.</div>
     <button class="btn btn-premium" onclick="handlePremiumFromFree()" style="max-width:400px;margin:0 auto;">
-      &#11088; OBTER RELATÓRIO COMPLETO (R$ 19,90)
+      &#11088; OBTER RELATORIO COMPLETO (R$ 19,90)
     </button>
   </div>
 </div>
 
+<!-- FULL REPORT -->
 <div id="sec-full">
   <div class="verdict-card">
-    <div class="verdict-title">&#128084; Veredito Final — Consultor Sênior</div>
+    <div class="verdict-title">&#128084; Veredito Final — Consultor Senior</div>
     <div class="vline"></div>
     <div class="verdict-body" id="full-verdict-body"></div>
   </div>
   <div id="agent-blocks-box"></div>
   <div class="card" style="text-align:center;padding:24px;">
-    <div style="color:var(--g);font-weight:800;font-size:1rem;margin-bottom:8px;">&#128196; Relatório em PDF</div>
-    <div style="color:var(--dm);font-size:.82rem;margin-bottom:16px;">Baixe o relatório completo com todas as análises dos 16 especialistas.</div>
+    <div style="color:var(--g);font-weight:800;font-size:1rem;margin-bottom:8px;">&#128196; Relatorio PDF Profissional</div>
+    <div style="color:var(--dm);font-size:.82rem;margin-bottom:16px;">Todos os 16 especialistas + dados em tempo real — formato PDF executivo para download.</div>
     <button class="btn btn-pdf" id="btn-dl-pdf" onclick="downloadPDF()" style="max-width:300px;margin:0 auto;">
       &#128229; BAIXAR PDF
     </button>
   </div>
 </div>
 
+</div><!-- /shell -->
+
+<!-- ADMIN PANEL -->
+<div id="admin-panel">
+  <button class="admin-btn purple" onclick="adminAddCredits()">&#128081; Admin +Creditos</button>
+  <button class="admin-btn slate"  onclick="adminListUsers()">&#128101; Ver Usuarios</button>
 </div>
 
+<!-- MODAL LOGIN -->
 <div class="modal-overlay" id="modal-login" onclick="if(event.target===this)closeModal('login')">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('login')">&#10005;</button>
@@ -205,33 +259,28 @@ textarea::placeholder{color:var(--dm2);}
       onkeydown="if(event.key==='Enter')doLogin()">
     <button class="modal-submit" id="btn-login-sub" onclick="doLogin()">ENTRAR</button>
     <div class="modal-err" id="login-err"></div>
-    <div class="modal-switch">Não tem conta? <a onclick="switchModal('login','register')">Criar conta</a></div>
+    <div class="modal-switch">Nao tem conta? <a onclick="switchModal('login','register')">Criar conta</a></div>
   </div>
 </div>
 
+<!-- MODAL REGISTER -->
 <div class="modal-overlay" id="modal-register" onclick="if(event.target===this)closeModal('register')">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('register')">&#10005;</button>
-    <div class="modal-title">&#11041; Criar Conta Grátis</div>
+    <div class="modal-title">&#11041; Criar Conta Gratis</div>
     <input class="modal-inp" type="email" id="reg-email" placeholder="seu@email.com"
       onkeydown="if(event.key==='Enter')document.getElementById('reg-pass').focus()">
-    <input class="modal-inp" type="password" id="reg-pass" placeholder="Senha (mínimo 4 caracteres)"
+    <input class="modal-inp" type="password" id="reg-pass" placeholder="Senha (minimo 4 caracteres)"
       onkeydown="if(event.key==='Enter')doRegister()">
-    <button class="modal-submit" id="btn-reg-sub" onclick="doRegister()">CRIAR CONTA GRÁTIS</button>
+    <button class="modal-submit" id="btn-reg-sub" onclick="doRegister()">CRIAR CONTA GRATIS</button>
     <div class="modal-err" id="reg-err"></div>
-    <div class="modal-switch">Já tem conta? <a onclick="switchModal('register','login')">Entrar</a></div>
+    <div class="modal-switch">Ja tem conta? <a onclick="switchModal('register','login')">Entrar</a></div>
   </div>
-</div>
-
-<!-- ADMIN PANEL (visível só para admin) -->
-<div id="admin-panel">
-  <button class="admin-btn purple" onclick="adminAddCredits()">&#128081; Admin +Créditos</button>
-  <button class="admin-btn slate"  onclick="adminListUsers()">&#128101; Ver Usuários</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <script>
-var BACKEND="https://app.wuzo.com.br";
+var BACKEND = "https://app.wuzo.com.br";
 function aborter(ms){var c=new AbortController();setTimeout(function(){c.abort();},ms);return c.signal;}
 var LS={TOKEN:"wuzo_token",EMAIL:"wuzo_email",PROMPT:"wuzo_pending_prompt"};
 function getSaved(k){return localStorage.getItem(k)||"";}
@@ -245,7 +294,58 @@ function getToken(){
 }
 function authHeader(){var t=getToken();return t?{"Content-Type":"application/json","Authorization":"Bearer "+t}:{"Content-Type":"application/json"};}
 var _online=false,_currentAnalysisId=null;
+
+// ── CRYPTO TICKER ────────────────────────────────────────────
+var TICKER_COINS={
+  BTC:{p:"t-btc-p",c:"t-btc-c",p2:"t-btc-p2",c2:"t-btc-c2"},
+  ETH:{p:"t-eth-p",c:"t-eth-c",p2:"t-eth-p2",c2:"t-eth-c2"},
+  SOL:{p:"t-sol-p",c:"t-sol-c",p2:"t-sol-p2",c2:"t-sol-c2"},
+  BNB:{p:"t-bnb-p",c:"t-bnb-c",p2:"t-bnb-p2",c2:"t-bnb-c2"},
+  DOGE:{p:"t-doge-p",c:"t-doge-c",p2:"t-doge-p2",c2:"t-doge-c2"},
+};
+
+async function updateTicker(){
+  try{
+    var r=await fetch(
+      "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin,dogecoin&vs_currencies=usd&include_24hr_change=true",
+      {signal:aborter(10000)}
+    );
+    if(!r.ok)return;
+    var d=await r.json();
+    var map={
+      BTC:d.bitcoin,ETH:d.ethereum,SOL:d.solana,
+      BNB:d.binancecoin,DOGE:d.dogecoin
+    };
+    Object.keys(TICKER_COINS).forEach(function(sym){
+      var coin=map[sym];if(!coin)return;
+      var ids=TICKER_COINS[sym];
+      var price=coin.usd||0;
+      var chg=coin.usd_24h_change||0;
+      var priceStr=price>=100
+        ?"$"+price.toLocaleString("en-US",{maximumFractionDigits:0})
+        :price>=1
+          ?"$"+price.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})
+          :"$"+price.toFixed(5);
+      var chgStr=(chg>=0?"▲ ":""+(chg<0?"▼ ":""))+Math.abs(chg).toFixed(2)+"%";
+      if(chg<0)chgStr="▼ "+Math.abs(chg).toFixed(2)+"%";
+      else chgStr="▲ "+Math.abs(chg).toFixed(2)+"%";
+      var cls=chg>=0?"ticker-up":"ticker-dn";
+      [ids.p,ids.p2].forEach(function(id){
+        var el=document.getElementById(id);
+        if(el){el.textContent=priceStr;el.className="ticker-price";}
+      });
+      [ids.c,ids.c2].forEach(function(id){
+        var el=document.getElementById(id);
+        if(el){el.textContent=chgStr;el.className="ticker-chg "+cls;}
+      });
+    });
+  }catch(e){}
+}
+
+// ── STATUS ───────────────────────────────────────────────────
 function setStatus(txt,cls){var el=document.getElementById("api-status");el.textContent=txt;el.className="status-pill "+cls;}
+
+// ── HEALTH CHECK (aguarda Render acordar até 90s) ────────────
 async function checkHealth(){
   setStatus("Conectando...","s-waking");
   var waits=[0,5000,10000,15000,20000,25000,30000,35000,40000];
@@ -264,6 +364,7 @@ async function checkHealth(){
   }
   _online=false;setStatus("Servidor offline","s-offline");
 }
+
 async function checkStripeReturn(){
   var p=new URLSearchParams(location.search);var sid=p.get("session_id")||"";if(!sid)return;
   p.delete("session_id");history.replaceState(null,"",location.pathname+(p.toString()?"?"+p.toString():""));
@@ -275,32 +376,60 @@ async function checkStripeReturn(){
     if(r.ok&&d.ok){
       document.getElementById("cred-num").textContent=d.credits||0;
       setStatus("Pagamento confirmado!","s-online");
-      var savedPrompt=getSaved(LS.PROMPT);
-      if(savedPrompt){document.getElementById("txt-input").value=savedPrompt;del(LS.PROMPT);setTimeout(function(){handlePremium();},1200);}
+      var sp=getSaved(LS.PROMPT);
+      if(sp){document.getElementById("txt-input").value=sp;del(LS.PROMPT);setTimeout(function(){handlePremium();},1200);}
     }
   }catch(e){setStatus("API OK","s-online");}
 }
+
 async function updateUI(){
   var tok=getToken();
-  if(!tok){document.getElementById("auth-out").style.display="flex";document.getElementById("auth-in").style.display="none";document.getElementById("cred-num").textContent="0";return;}
-  if(!_online){document.getElementById("auth-out").style.display="none";document.getElementById("auth-in").style.display="flex";document.getElementById("user-info").textContent=getSaved(LS.EMAIL)||"logado";return;}
+  if(!tok){
+    document.getElementById("auth-out").style.display="flex";
+    document.getElementById("auth-in").style.display="none";
+    document.getElementById("cred-num").textContent="0";
+    document.getElementById("admin-panel").style.display="none";
+    return;
+  }
+  if(!_online){
+    document.getElementById("auth-out").style.display="none";
+    document.getElementById("auth-in").style.display="flex";
+    document.getElementById("user-info").textContent=getSaved(LS.EMAIL)||"logado";
+    return;
+  }
   try{
     var r=await fetch(BACKEND+"/api/auth/me",{headers:{"Authorization":"Bearer "+tok},signal:aborter(8000)});
-    if(!r.ok){del(LS.TOKEN);del(LS.EMAIL);document.getElementById("auth-out").style.display="flex";document.getElementById("auth-in").style.display="none";document.getElementById("cred-num").textContent="0";return;}
+    if(!r.ok){
+      del(LS.TOKEN);del(LS.EMAIL);
+      document.getElementById("auth-out").style.display="flex";
+      document.getElementById("auth-in").style.display="none";
+      document.getElementById("cred-num").textContent="0";
+      document.getElementById("admin-panel").style.display="none";
+      return;
+    }
     var d=await r.json();
-    document.getElementById("auth-out").style.display="none";document.getElementById("auth-in").style.display="flex";
-    document.getElementById("user-info").textContent=d.email||"";document.getElementById("cred-num").textContent=d.credits||0;
-    // Mostra painel admin se is_admin
+    document.getElementById("auth-out").style.display="none";
+    document.getElementById("auth-in").style.display="flex";
+    document.getElementById("user-info").textContent=d.email||"";
+    document.getElementById("cred-num").textContent=d.credits||0;
     document.getElementById("admin-panel").style.display=d.is_admin?"flex":"none";
-  }catch(e){document.getElementById("auth-out").style.display="none";document.getElementById("auth-in").style.display="flex";document.getElementById("user-info").textContent=getSaved(LS.EMAIL)||"logado";}
+  }catch(e){
+    document.getElementById("auth-out").style.display="none";
+    document.getElementById("auth-in").style.display="flex";
+    document.getElementById("user-info").textContent=getSaved(LS.EMAIL)||"logado";
+  }
 }
+
+// ── AUTH MODALS ───────────────────────────────────────────────
 function openModal(name){document.getElementById("modal-"+name).classList.add("open");var first=document.querySelector("#modal-"+name+" .modal-inp");if(first)setTimeout(function(){first.focus();},80);}
 function closeModal(n){document.getElementById("modal-"+n).classList.remove("open");document.getElementById(n==="login"?"login-err":"reg-err").style.display="none";}
 function switchModal(f,t){closeModal(f);openModal(t);}
 function showModalErr(id,msg){var el=document.getElementById(id);el.textContent=msg;el.style.display="block";}
+
 async function doLogin(){
   if(!_online){showModalErr("login-err","Servidor offline. Aguarde.");return;}
-  var email=document.getElementById("login-email").value.trim();var pass=document.getElementById("login-pass").value;
+  var email=document.getElementById("login-email").value.trim();
+  var pass=document.getElementById("login-pass").value;
   if(!email||!pass){showModalErr("login-err","Preencha email e senha.");return;}
   var btn=document.getElementById("btn-login-sub");btn.textContent="Entrando...";btn.disabled=true;
   try{
@@ -308,14 +437,16 @@ async function doLogin(){
     var d=await r.json().catch(function(){return {};});
     if(r.ok&&d.token){save(LS.TOKEN,d.token);save(LS.EMAIL,email);closeModal("login");await updateUI();}
     else showModalErr("login-err",d.error||"Email ou senha incorretos.");
-  }catch(e){showModalErr("login-err","Sem conexão: "+e.message);}
+  }catch(e){showModalErr("login-err","Sem conexao: "+e.message);}
   finally{btn.textContent="ENTRAR";btn.disabled=false;}
 }
+
 async function doRegister(){
   if(!_online){showModalErr("reg-err","Servidor offline. Aguarde.");return;}
-  var email=document.getElementById("reg-email").value.trim();var pass=document.getElementById("reg-pass").value;
+  var email=document.getElementById("reg-email").value.trim();
+  var pass=document.getElementById("reg-pass").value;
   if(!email||!pass){showModalErr("reg-err","Preencha email e senha.");return;}
-  if(pass.length<4){showModalErr("reg-err","Senha mínimo 4 caracteres.");return;}
+  if(pass.length<4){showModalErr("reg-err","Senha minimo 4 caracteres.");return;}
   var btn=document.getElementById("btn-reg-sub");btn.textContent="Criando conta...";btn.disabled=true;
   try{
     var r=await fetch(BACKEND+"/api/auth/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:email,password:pass}),signal:aborter(12000)});
@@ -324,66 +455,98 @@ async function doRegister(){
       save(LS.TOKEN,d.token);save(LS.EMAIL,email);closeModal("register");await updateUI();
       if(getSaved(LS.PROMPT)){await startCheckout();}
     }else showModalErr("reg-err",d.error||"Erro ao criar conta.");
-  }catch(e){showModalErr("reg-err","Sem conexão: "+e.message);}
-  finally{btn.textContent="CRIAR CONTA GRÁTIS";btn.disabled=false;}
+  }catch(e){showModalErr("reg-err","Sem conexao: "+e.message);}
+  finally{btn.textContent="CRIAR CONTA GRATIS";btn.disabled=false;}
 }
-function logout(){del(LS.TOKEN);del(LS.EMAIL);document.getElementById("cred-num").textContent="0";document.getElementById("admin-panel").style.display="none";updateUI();}
+
+function logout(){
+  del(LS.TOKEN);del(LS.EMAIL);
+  document.getElementById("cred-num").textContent="0";
+  document.getElementById("admin-panel").style.display="none";
+  updateUI();
+}
+
+// ── PIPELINE VISUAL ───────────────────────────────────────────
 var AGENTS_UI=[
-  {id:"macroeconomia",em:"&#127758;",nm:"Macro"},
-  {id:"noticias_realtime",em:"&#128240;",nm:"Notícias"},
-  {id:"sentimento_mercado",em:"&#127919;",nm:"Sentimento"},
-  {id:"criptomoedas",em:"&#8383;",nm:"Cripto"},
-  {id:"acoes_equity",em:"&#128200;",nm:"Ações"},
-  {id:"renda_fixa",em:"&#128176;",nm:"Renda Fixa"},
-  {id:"imoveis_fiis",em:"&#127970;",nm:"FIIs"},
-  {id:"derivativos",em:"&#128202;",nm:"Derivativos"},
-  {id:"rwa",em:"&#128279;",nm:"RWA"},
-  {id:"quitacao_dividas",em:"&#128179;",nm:"Dívidas"},
-  {id:"credito_financiamento",em:"&#127970;",nm:"Crédito"},
-  {id:"planejamento_tributario",em:"&#128203;",nm:"Tributário"},
-  {id:"previdencia_aposentadoria",em:"&#127919;",nm:"Previdência"},
-  {id:"compliance_risco",em:"&#9888;&#65039;",nm:"Compliance"},
-  {id:"auditor_dados",em:"&#128269;",nm:"Auditor"},
-  {id:"consultor_senior",em:"&#128084;",nm:"Sênior"},
+  {id:"macroeconomia",              em:"&#127758;",nm:"Macro"},
+  {id:"noticias_realtime",          em:"&#128240;",nm:"Radar"},
+  {id:"sentimento_mercado",         em:"&#129504;",nm:"Psicologia"},
+  {id:"criptomoedas",               em:"&#8383;",  nm:"Cripto"},
+  {id:"acoes_equity",               em:"&#128200;",nm:"Acoes"},
+  {id:"renda_fixa",                 em:"&#128176;",nm:"R.Fixa"},
+  {id:"imoveis_fiis",               em:"&#127970;",nm:"FIIs"},
+  {id:"derivativos",                em:"&#128202;",nm:"Derivat."},
+  {id:"rwa",                        em:"&#128279;",nm:"RWA"},
+  {id:"quitacao_dividas",           em:"&#128179;",nm:"Dividas"},
+  {id:"credito_financiamento",      em:"&#127970;",nm:"Credito"},
+  {id:"planejamento_tributario",    em:"&#128203;",nm:"Tribut."},
+  {id:"previdencia_aposentadoria",  em:"&#127919;",nm:"Previd."},
+  {id:"compliance_risco",           em:"&#9888;",  nm:"Compliance"},
+  {id:"auditor_dados",              em:"&#128269;",nm:"Auditor"},
+  {id:"consultor_senior",           em:"&#128084;",nm:"Senior"},
 ];
+
 function buildGrid(){
   var g=document.getElementById("agent-grid");g.innerHTML="";
-  AGENTS_UI.forEach(function(a){var d=document.createElement("div");d.className="ac";d.id="ac-"+a.id;d.innerHTML='<div class="ac-em">'+a.em+'</div><div class="ac-nm">'+a.nm+'</div><div class="ac-st">&#9675;</div>';g.appendChild(d);});
+  AGENTS_UI.forEach(function(a){
+    var d=document.createElement("div");d.className="ac";d.id="ac-"+a.id;
+    d.innerHTML='<div class="ac-em">'+a.em+'</div><div class="ac-nm">'+a.nm+'</div><div class="ac-st">&#9675;</div>';
+    g.appendChild(d);
+  });
 }
-function setAllThinking(){AGENTS_UI.forEach(function(a){var c=document.getElementById("ac-"+a.id);if(!c)return;c.className="ac thinking";c.querySelector(".ac-st").textContent="◉";});animateProg();}
+
+function setAllThinking(){AGENTS_UI.forEach(function(a){var c=document.getElementById("ac-"+a.id);if(!c)return;c.className="ac thinking";c.querySelector(".ac-st").textContent="&#9675;";});animateProg();}
 var _progInt=null;
-function animateProg(){var fill=document.getElementById("prog-fill");var pct=0;clearInterval(_progInt);_progInt=setInterval(function(){pct+=0.25;if(pct>90)pct=90;fill.style.width=pct+"%";},600);}
+function animateProg(){var fill=document.getElementById("prog-fill");var pct=0;clearInterval(_progInt);_progInt=setInterval(function(){pct+=0.2;if(pct>90)pct=90;fill.style.width=pct+"%";},600);}
 function finishGrid(agents){
   clearInterval(_progInt);document.getElementById("prog-fill").style.width="100%";
-  var ids=agents?agents.map(function(a){return a.id;}):null;
-  AGENTS_UI.forEach(function(a){var c=document.getElementById("ac-"+a.id);if(!c)return;if(!ids||ids.indexOf(a.id)>=0){c.className="ac done";c.querySelector(".ac-st").textContent="✓";}});
-  document.getElementById("pip-pill").textContent="CONCLUÍDO";document.getElementById("pip-pill").className="pill pill-done";
-  addLog("✅ Concluído.","ok");
+  var ids=agents?agents.reduce(function(m,a){m[a.id]=1;return m;},{}):null;
+  AGENTS_UI.forEach(function(a){var c=document.getElementById("ac-"+a.id);if(!c)return;if(!ids||ids[a.id]){c.className="ac done";c.querySelector(".ac-st").textContent="&#10003;";}});
+  document.getElementById("pip-pill").textContent="CONCLUIDO";document.getElementById("pip-pill").className="pill pill-done";
+  addLog("Concluido.","ok");
 }
-function addLog(msg,cls){var f=document.getElementById("log-feed"),d=document.createElement("div");d.className="ll "+(cls||"");d.textContent="["+new Date().toLocaleTimeString("pt-BR")+"] "+msg;f.appendChild(d);f.scrollTop=f.scrollHeight;}
-function resetPipeline(){buildGrid();document.getElementById("prog-fill").style.width="0%";document.getElementById("log-feed").innerHTML='<div class="ll">&#11041; Iniciando...</div>';document.getElementById("pip-pill").textContent="ANALISANDO";document.getElementById("pip-pill").className="pill pill-run";}
+function addLog(msg,cls){
+  var f=document.getElementById("log-feed"),d=document.createElement("div");
+  d.className="ll "+(cls||"");d.textContent="["+new Date().toLocaleTimeString("pt-BR")+"] "+msg;
+  f.appendChild(d);f.scrollTop=f.scrollHeight;
+}
+function resetPipeline(){
+  buildGrid();document.getElementById("prog-fill").style.width="0%";
+  document.getElementById("log-feed").innerHTML='<div class="ll">&#11041; Iniciando...</div>';
+  document.getElementById("pip-pill").textContent="ANALISANDO";document.getElementById("pip-pill").className="pill pill-run";
+}
+
+// ── ANALISE GRATUITA ──────────────────────────────────────────
 async function handleFree(){
   if(!_online){showAlert("inp-alert","alert-info","&#9203; Servidor acordando, aguarde...");return;}
   var txt=document.getElementById("txt-input").value.trim();
-  if(!txt){showAlert("inp-alert","alert-info","&#9997;&#65039; Descreva sua situação financeira.");return;}
-  hideAlert("inp-alert");document.getElementById("sec-free").style.display="none";document.getElementById("sec-full").style.display="none";document.getElementById("sec-pipeline").style.display="block";
-  resetPipeline();setBtns(true);addLog("⚡ Análise gratuita — 2 especialistas...");
-  ["consultor_senior","macroeconomia"].forEach(function(id){var c=document.getElementById("ac-"+id);if(c){c.className="ac thinking";c.querySelector(".ac-st").textContent="◉";}});
+  if(!txt){showAlert("inp-alert","alert-info","Descreva sua situacao financeira.");return;}
+  hideAlert("inp-alert");
+  document.getElementById("sec-free").style.display="none";
+  document.getElementById("sec-full").style.display="none";
+  document.getElementById("sec-pipeline").style.display="block";
+  resetPipeline();setBtns(true);
+  addLog("Analise gratuita com dados em tempo real...");
+  ["consultor_senior","macroeconomia"].forEach(function(id){var c=document.getElementById("ac-"+id);if(c){c.className="ac thinking";}});
   animateProg();
   try{
     var r=await fetch(BACKEND+"/api/analyze/free",{method:"POST",headers:authHeader(),body:JSON.stringify({prompt:txt}),signal:aborter(90000)});
     var d=await r.json().catch(function(){return {};});
-    if(!r.ok){showAlert("inp-alert","alert-err",d.error||"Erro na análise.");clearInterval(_progInt);setBtns(false);return;}
+    if(!r.ok){showAlert("inp-alert","alert-err",d.error||"Erro na analise.");clearInterval(_progInt);setBtns(false);return;}
     finishGrid([{id:"consultor_senior"},{id:"macroeconomia"}]);
     renderFreeResult(d.verdict,d.preview);
   }catch(e){showAlert("inp-alert","alert-err","Erro: "+e.message);clearInterval(_progInt);}
   finally{setBtns(false);}
 }
+
 function renderFreeResult(verdict,preview){
   document.getElementById("verdict-body").innerHTML=(verdict||"").replace(/\n/g,"<br>").replace(/\*\*(.*?)\*\*/g,"<b>$1</b>");
-  document.getElementById("sec-pipeline").style.display="none";document.getElementById("sec-free").style.display="block";
+  document.getElementById("sec-pipeline").style.display="none";
+  document.getElementById("sec-free").style.display="block";
   document.getElementById("sec-free").scrollIntoView({behavior:"smooth"});
 }
+
+// ── PREMIUM ───────────────────────────────────────────────────
 async function handlePremium(){
   if(!_online){showAlert("inp-alert","alert-info","&#9203; Servidor acordando, aguarde...");return;}
   var tok=getToken();if(!tok){openModal("login");return;}
@@ -411,22 +574,27 @@ async function startCheckout(){
     var d=await r.json().catch(function(){return {};});
     if(r.ok&&(d.checkout_url||d.url)){window.location.href=d.checkout_url||d.url;}
     else showAlert("inp-alert","alert-err",d.error||"Erro ao iniciar pagamento.");
-  }catch(e){showAlert("inp-alert","alert-err","Erro de conexão.");}
+  }catch(e){showAlert("inp-alert","alert-err","Erro de conexao.");}
 }
+
 async function runPremiumAnalysis(){
   var txt=document.getElementById("txt-input").value.trim()||getSaved(LS.PROMPT);
-  if(!txt){showAlert("inp-alert","alert-info","&#9997;&#65039; Descreva sua situação financeira.");return;}
+  if(!txt){showAlert("inp-alert","alert-info","Descreva sua situacao financeira.");return;}
   del(LS.PROMPT);hideAlert("inp-alert");
-  document.getElementById("sec-free").style.display="none";document.getElementById("sec-full").style.display="none";document.getElementById("sec-pipeline").style.display="block";
-  resetPipeline();setAllThinking();setBtns(true);addLog("⭐ Análise premium — 16 especialistas...");
+  document.getElementById("sec-free").style.display="none";
+  document.getElementById("sec-full").style.display="none";
+  document.getElementById("sec-pipeline").style.display="block";
+  resetPipeline();setAllThinking();setBtns(true);
+  addLog("Iniciando 16 especialistas com dados em tempo real...");
   var tok=getToken();var jobId=null;
   try{
     var r=await fetch(BACKEND+"/api/analyze/premium",{method:"POST",headers:authHeader(),body:JSON.stringify({prompt:txt}),signal:aborter(15000)});
     var d=await r.json().catch(function(){return {};});
     if(!r.ok){showAlert("inp-alert","alert-err",d.error||"Erro ao iniciar.");clearInterval(_progInt);setBtns(false);return;}
-    jobId=d.job_id;addLog("📡 Processando com 16 especialistas...");
+    jobId=d.job_id;addLog("Buscando precos reais e noticias do dia...");
   }catch(e){showAlert("inp-alert","alert-err","Erro: "+e.message);clearInterval(_progInt);setBtns(false);return;}
-  var maxTries=75;
+
+  var maxTries=80;
   for(var i=0;i<maxTries;i++){
     await new Promise(function(r){setTimeout(r,4000);});
     try{
@@ -437,66 +605,65 @@ async function runPremiumAnalysis(){
         finishGrid(pd.agents);renderFullReport(pd.verdict,pd.agents);setBtns(false);return;
       }
       if(pd.status==="error"){showAlert("inp-alert","alert-err",pd.message||"Erro.");clearInterval(_progInt);setBtns(false);return;}
-      if(i%5===0)addLog("⏳ Aguardando... ("+((i+1)*4)+"s)");
+      if(i%5===0)addLog("Processando 16 especialistas... ("+((i+1)*4)+"s)");
     }catch(e){}
   }
   showAlert("inp-alert","alert-err","Timeout. Tente novamente.");clearInterval(_progInt);setBtns(false);
 }
+
+// ── RENDER FULL REPORT ────────────────────────────────────────
 function renderFullReport(verdict,agents){
   document.getElementById("full-verdict-body").innerHTML=(verdict||"").replace(/\n/g,"<br>").replace(/\*\*(.*?)\*\*/g,"<b>$1</b>");
-  var blocksBox=document.getElementById("agent-blocks-box");blocksBox.innerHTML="";
-  var skipIds={"consultor_senior":1,"auditor_dados":1,"compliance_risco":1};
+  var box=document.getElementById("agent-blocks-box");box.innerHTML="";
+  var skip={consultor_senior:1};
   if(agents&&agents.length){
-    agents.filter(function(a){return !skipIds[a.id];}).forEach(function(a){
+    agents.filter(function(a){return !skip[a.id];}).forEach(function(a){
       var div=document.createElement("div");div.className="agent-block";
       var body=a.analysis||"";
-      div.innerHTML='<div class="agent-block-title">'+(a.emoji||"&#11041;")+" "+(a.name||a.id)+'</div>'+
-        '<div class="agent-block-body">'+(typeof marked!=="undefined"?marked.parse(body):body.replace(/\*\*(.*?)\*\*/g,"<b>$1</b>").replace(/\n/g,"<br>"))+'</div>';
-      blocksBox.appendChild(div);
+      div.innerHTML='<div class="agent-block-title">'+
+        (a.emoji||"&#11041;")+" "+(a.name||a.id)+
+        '</div><div class="agent-block-body">'+(typeof marked!=="undefined"?marked.parse(body):body.replace(/\*\*(.*?)\*\*/g,"<b>$1</b>").replace(/\n/g,"<br>"))+
+        '</div>';
+      box.appendChild(div);
     });
   }
-  document.getElementById("sec-pipeline").style.display="none";document.getElementById("sec-full").style.display="block";
+  document.getElementById("sec-pipeline").style.display="none";
+  document.getElementById("sec-full").style.display="block";
   document.getElementById("sec-full").scrollIntoView({behavior:"smooth"});
 }
+
+// ── PDF DOWNLOAD ──────────────────────────────────────────────
 async function downloadPDF(){
-  if(!_currentAnalysisId){showAlert("inp-alert","alert-err","Análise não disponível.");return;}
+  if(!_currentAnalysisId){showAlert("inp-alert","alert-err","Analise nao disponivel.");return;}
   var tok=getToken();if(!tok){openModal("login");return;}
   var btn=document.getElementById("btn-dl-pdf");btn.disabled=true;btn.textContent="&#9203; Gerando PDF...";
   try{
-    var r=await fetch(BACKEND+"/api/report/pdf/"+_currentAnalysisId,{headers:{"Authorization":"Bearer "+tok},signal:aborter(30000)});
+    var r=await fetch(BACKEND+"/api/report/pdf/"+_currentAnalysisId,{headers:{"Authorization":"Bearer "+tok},signal:aborter(45000)});
     if(!r.ok){var e=await r.json().catch(function(){return {};});showAlert("inp-alert","alert-err",e.error||"Erro ao gerar PDF.");return;}
-    var blob=await r.blob();var url=URL.createObjectURL(blob);
-    var a=document.createElement("a");a.href=url;a.download="wuzo_relatorio_"+_currentAnalysisId+".pdf";document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+    var blob=await r.blob();
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement("a");a.href=url;a.download="wuzo_relatorio_"+_currentAnalysisId+".pdf";
+    document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
   }catch(e){showAlert("inp-alert","alert-err","Erro ao baixar: "+e.message);}
   finally{btn.disabled=false;btn.innerHTML="&#128229; BAIXAR PDF";}
 }
-function setBtns(on){
-  ["btn-free","btn-premium","btn-buy"].forEach(function(id){var b=document.getElementById(id);if(b)b.disabled=on;});
-  if(on){document.getElementById("btn-free").innerHTML='<div class="spin"></div> Analisando...';document.getElementById("btn-premium").innerHTML='<div class="spin"></div> Orquestrando 16 agentes...';}
-  else{document.getElementById("btn-free").innerHTML="&#9889; ANÁLISE GRATUITA";document.getElementById("btn-premium").innerHTML="&#11088; RELATÓRIO PREMIUM (16 ESP.)";}
-}
-function showAlert(id,cls,msg){var el=document.getElementById(id);el.className="alert "+cls;el.textContent=msg;el.style.display="block";}
-function hideAlert(id){document.getElementById(id).style.display="none";}
-document.addEventListener("DOMContentLoaded",function(){buildGrid();getToken();updateUI();checkHealth();});
 
-// ── Admin ─────────────────────────────────────────────────
+// ── ADMIN ─────────────────────────────────────────────────────
 async function adminAddCredits(){
-  var emailTarget=prompt("Email do usuário (deixe em branco para seu próprio email):");
-  if(emailTarget===null)return; // cancelou
-  var amount=parseInt(prompt("Quantos créditos adicionar?","1")||"1");
-  if(!amount||amount<1){alert("Quantidade inválida.");return;}
+  var emailTarget=prompt("Email do usuario (deixe em branco para voce mesmo):");
+  if(emailTarget===null)return;
+  var amount=parseInt(prompt("Quantos creditos adicionar?","1")||"1");
+  if(!amount||amount<1){alert("Quantidade invalida.");return;}
   var tok=getToken();if(!tok)return;
   try{
-    // Busca user_id pelo email se informado
     var uid=null;
     if(emailTarget.trim()){
       var ru=await fetch(BACKEND+"/api/admin/users",{headers:{"Authorization":"Bearer "+tok},signal:aborter(8000)});
       var users=await ru.json();
       var found=users.find(function(u){return u.email===emailTarget.trim().toLowerCase();});
-      if(!found){alert("Usuário não encontrado: "+emailTarget);return;}
+      if(!found){alert("Usuario nao encontrado: "+emailTarget);return;}
       uid=found.id;
     }else{
-      // próprio usuário
       var rm=await fetch(BACKEND+"/api/auth/me",{headers:{"Authorization":"Bearer "+tok},signal:aborter(8000)});
       var me=await rm.json();uid=me.id;
     }
@@ -505,9 +672,9 @@ async function adminAddCredits(){
       body:JSON.stringify({user_id:uid,amount:amount}),signal:aborter(8000)
     });
     var d=await r.json();
-    if(r.ok){alert("✓ "+d.message+"\nNovo saldo: "+d.new_balance+" crédito(s)");await updateUI();}
-    else alert("Erro: "+(d.error||"Falha ao adicionar créditos."));
-  }catch(e){alert("Erro de conexão: "+e.message);}
+    if(r.ok){alert("✓ "+d.message+"\nNovo saldo: "+d.new_balance+" credito(s)");await updateUI();}
+    else alert("Erro: "+(d.error||"Falha."));
+  }catch(e){alert("Erro de conexao: "+e.message);}
 }
 
 async function adminListUsers(){
@@ -515,13 +682,32 @@ async function adminListUsers(){
   try{
     var r=await fetch(BACKEND+"/api/admin/users",{headers:{"Authorization":"Bearer "+tok},signal:aborter(8000)});
     var users=await r.json();
-    if(!r.ok){alert("Erro: "+(users.error||"Sem permissão."));return;}
-    var lines=users.slice(0,20).map(function(u){
-      return u.id+" | "+u.email+" | "+u.credits+" crédito(s) | "+u.created_at;
-    });
-    alert("👥 Usuários ("+users.length+" total):\n\n"+lines.join("\n"));
+    if(!r.ok){alert("Erro: "+(users.error||"Sem permissao."));return;}
+    var lines=users.slice(0,20).map(function(u){return u.id+" | "+u.email+" | "+u.credits+" cred. | "+u.created_at;});
+    alert("Usuarios ("+users.length+" total):\n\n"+lines.join("\n"));
   }catch(e){alert("Erro: "+e.message);}
 }
+
+// ── HELPERS ───────────────────────────────────────────────────
+function setBtns(on){
+  ["btn-free","btn-premium","btn-buy"].forEach(function(id){var b=document.getElementById(id);if(b)b.disabled=on;});
+  if(on){
+    document.getElementById("btn-free").innerHTML='<div class="spin"></div> Analisando...';
+    document.getElementById("btn-premium").innerHTML='<div class="spin"></div> 16 especialistas + dados reais...';
+  }else{
+    document.getElementById("btn-free").innerHTML="&#9889; ANALISE GRATUITA";
+    document.getElementById("btn-premium").innerHTML="&#11088; RELATORIO PREMIUM (16 ESP. + DADOS REAIS)";
+  }
+}
+function showAlert(id,cls,msg){var el=document.getElementById(id);el.className="alert "+cls;el.textContent=msg;el.style.display="block";}
+function hideAlert(id){document.getElementById(id).style.display="none";}
+
+// ── INIT ─────────────────────────────────────────────────────
+document.addEventListener("DOMContentLoaded",function(){
+  buildGrid();getToken();updateUI();checkHealth();
+  updateTicker();
+  setInterval(updateTicker,30000); // atualiza precos a cada 30s
+});
 </script>
 </body>
 </html>
