@@ -748,7 +748,7 @@ async function adminLoadUsers(){
       var row=document.createElement("div");row.className="admin-user-row";
       row.innerHTML='<div class="admin-user-email">'+(u.is_admin?"&#128081; ":"")+u.email+'</div>'+
         '<div class="admin-user-meta">&#11088;'+u.credits+' &nbsp;ID:'+u.id+'</div>'+
-        '<button class="admin-credit-btn" onclick="quickAddCredit('+u.id+',''+u.email+'')">+1</button>';
+        '<button class="admin-credit-btn" onclick="quickAddCredit('+u.id+',\''+u.email+'\')">+1</button>';
       box.appendChild(row);
     });
     if(!users.length)box.innerHTML='<div style="color:var(--dm);font-size:.7rem;">Nenhum usuário.</div>';
