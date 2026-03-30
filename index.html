@@ -134,8 +134,12 @@ textarea::placeholder{color:var(--dm2);}
 .admin-btn{padding:10px 16px;border-radius:50px;border:none;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;box-shadow:0 4px 16px rgba(0,0,0,.4);}
 .admin-btn.purple{background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;}
 .admin-btn.purple:hover{transform:translateY(-1px);}
-.admin-btn.slate{background:rgba(30,20,60,.9);border:1px solid rgba(124,58,237,.3);color:#a78bfa;}
-.admin-btn.slate:hover{border-color:#7c3aed;}
+.admin-tab{flex:1;padding:6px 4px;border-radius:6px;border:1px solid var(--bd);background:transparent;color:var(--dm);font-family:'JetBrains Mono',monospace;font-size:.58rem;cursor:pointer;letter-spacing:.5px;transition:all .2s;}
+.admin-tab.active{background:rgba(201,168,76,.15);border-color:var(--gd);color:var(--g);}
+.admin-user-row{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;border-radius:6px;border:1px solid var(--bd);margin-bottom:4px;gap:6px;}
+.admin-user-email{font-size:.68rem;color:var(--tx);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.admin-user-meta{font-size:.6rem;color:var(--dm);font-family:'JetBrains Mono',monospace;white-space:nowrap;}
+.admin-credit-btn{padding:3px 8px;border-radius:4px;border:1px solid var(--gd);background:rgba(201,168,76,.1);color:var(--g);cursor:pointer;font-size:.6rem;font-family:'JetBrains Mono',monospace;}
 </style>
 </head>
 <body>
@@ -243,9 +247,48 @@ textarea::placeholder{color:var(--dm2);}
 </div><!-- /shell -->
 
 <!-- ADMIN PANEL -->
+<!-- ADMIN PANEL -->
 <div id="admin-panel">
-  <button class="admin-btn purple" onclick="adminAddCredits()">&#128081; Admin +Creditos</button>
-  <button class="admin-btn slate"  onclick="adminListUsers()">&#128101; Ver Usuarios</button>
+  <button class="admin-btn purple" onclick="openAdminModal()">&#128081; Admin</button>
+</div>
+
+<!-- MODAL ADMIN -->
+<div class="modal-overlay" id="modal-admin" onclick="if(event.target===this)closeAdminModal()">
+  <div class="modal-box" style="max-width:440px;max-height:90vh;overflow-y:auto;">
+    <button class="modal-close" onclick="closeAdminModal()">&#10005;</button>
+    <div class="modal-title">&#128081; Painel Administrativo</div>
+    <div style="display:flex;gap:4px;margin-bottom:16px;">
+      <button class="admin-tab active" id="tab-credits" onclick="switchAdminTab('credits')">&#128176; Créditos</button>
+      <button class="admin-tab" id="tab-users" onclick="switchAdminTab('users')">&#128101; Usuários</button>
+      <button class="admin-tab" id="tab-stats" onclick="switchAdminTab('stats')">&#128200; Stats</button>
+    </div>
+    <!-- Créditos -->
+    <div id="panel-credits">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--dm2);margin-bottom:6px;letter-spacing:1px;">EMAIL OU ID DO USUÁRIO</div>
+      <input class="modal-inp" type="text" id="admin-target" placeholder="email@exemplo.com ou ID">
+      <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;">
+        <input class="modal-inp" type="number" id="admin-amount" value="1" min="0" style="flex:0 0 80px;margin-bottom:0;">
+        <button onclick="adminCredit('add')" style="flex:1;padding:11px;border-radius:8px;border:none;background:linear-gradient(135deg,#1a7a3a,#22a04d);color:#fff;cursor:pointer;font-weight:700;font-size:.72rem;">&#43; Adicionar</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:8px;">
+        <button onclick="adminCredit('remove')" style="flex:1;padding:9px;border-radius:8px;border:1px solid rgba(224,82,82,.4);background:rgba(224,82,82,.07);color:#f5a0a0;cursor:pointer;font-size:.7rem;font-family:'JetBrains Mono',monospace;">&#8722; Remover</button>
+        <button onclick="adminCredit('set')" style="flex:1;padding:9px;border-radius:8px;border:1px solid var(--gd);background:rgba(201,168,76,.08);color:var(--g);cursor:pointer;font-size:.7rem;font-family:'JetBrains Mono',monospace;">&#61; Definir para</button>
+      </div>
+      <button onclick="adminCredit('reset_free')" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--bd);background:transparent;color:var(--dm);cursor:pointer;font-size:.65rem;font-family:'JetBrains Mono',monospace;margin-bottom:4px;">&#8635; Resetar análises gratuitas</button>
+      <div id="admin-credit-msg" style="font-size:.78rem;margin-top:8px;padding:8px;border-radius:6px;display:none;"></div>
+    </div>
+    <!-- Usuários -->
+    <div id="panel-users" style="display:none;">
+      <button onclick="adminLoadUsers()" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--gd);background:rgba(201,168,76,.08);color:var(--g);cursor:pointer;font-size:.7rem;font-family:'JetBrains Mono',monospace;margin-bottom:10px;">&#128260; Carregar lista</button>
+      <div id="admin-users-list" style="max-height:340px;overflow-y:auto;"></div>
+    </div>
+    <!-- Stats -->
+    <div id="panel-stats" style="display:none;">
+      <button onclick="adminLoadStats()" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--gd);background:rgba(201,168,76,.08);color:var(--g);cursor:pointer;font-size:.7rem;font-family:'JetBrains Mono',monospace;margin-bottom:10px;">&#128200; Carregar stats</button>
+      <div id="admin-stats-box" style="font-family:'JetBrains Mono',monospace;font-size:.7rem;line-height:1.9;color:var(--tx);"></div>
+      <button onclick="adminClearPDFCache()" style="width:100%;margin-top:12px;padding:8px;border-radius:8px;border:1px solid rgba(224,82,82,.3);background:rgba(224,82,82,.05);color:#f5a0a0;cursor:pointer;font-size:.65rem;font-family:'JetBrains Mono',monospace;">&#128465; Limpar cache de PDFs antigos</button>
+    </div>
+  </div>
 </div>
 
 <!-- MODAL LOGIN -->
@@ -649,42 +692,114 @@ async function downloadPDF(){
 }
 
 // ── ADMIN ─────────────────────────────────────────────────────
-async function adminAddCredits(){
-  var emailTarget=prompt("Email do usuario (deixe em branco para voce mesmo):");
-  if(emailTarget===null)return;
-  var amount=parseInt(prompt("Quantos creditos adicionar?","1")||"1");
-  if(!amount||amount<1){alert("Quantidade invalida.");return;}
-  var tok=getToken();if(!tok)return;
-  try{
-    var uid=null;
-    if(emailTarget.trim()){
-      var ru=await fetch(BACKEND+"/api/admin/users",{headers:{"Authorization":"Bearer "+tok},signal:aborter(8000)});
-      var users=await ru.json();
-      var found=users.find(function(u){return u.email===emailTarget.trim().toLowerCase();});
-      if(!found){alert("Usuario nao encontrado: "+emailTarget);return;}
-      uid=found.id;
-    }else{
-      var rm=await fetch(BACKEND+"/api/auth/me",{headers:{"Authorization":"Bearer "+tok},signal:aborter(8000)});
-      var me=await rm.json();uid=me.id;
-    }
-    var r=await fetch(BACKEND+"/api/admin/add-credits",{
-      method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
-      body:JSON.stringify({user_id:uid,amount:amount}),signal:aborter(8000)
-    });
-    var d=await r.json();
-    if(r.ok){alert("✓ "+d.message+"\nNovo saldo: "+d.new_balance+" credito(s)");await updateUI();}
-    else alert("Erro: "+(d.error||"Falha."));
-  }catch(e){alert("Erro de conexao: "+e.message);}
+function openAdminModal(){document.getElementById("modal-admin").classList.add("open");}
+function closeAdminModal(){document.getElementById("modal-admin").classList.remove("open");}
+function switchAdminTab(tab){
+  ["credits","users","stats"].forEach(function(t){
+    document.getElementById("panel-"+t).style.display=t===tab?"block":"none";
+    var btn=document.getElementById("tab-"+t);
+    if(btn){btn.className="admin-tab"+(t===tab?" active":"");}
+  });
 }
 
-async function adminListUsers(){
+function adminShowMsg(msg,ok){
+  var el=document.getElementById("admin-credit-msg");
+  el.textContent=msg;
+  el.style.display="block";
+  el.style.background=ok?"rgba(74,175,120,.1)":"rgba(224,82,82,.1)";
+  el.style.color=ok?"#a0f5c0":"#f5a0a0";
+  el.style.border="1px solid "+(ok?"rgba(74,175,120,.3)":"rgba(224,82,82,.3)");
+  setTimeout(function(){el.style.display="none";},4000);
+}
+
+async function adminCredit(action){
+  var target=document.getElementById("admin-target").value.trim();
+  var amount=parseInt(document.getElementById("admin-amount").value)||1;
+  if(!target){adminShowMsg("Informe email ou ID do usuário.",false);return;}
+  var tok=getToken();if(!tok)return;
+  var body={amount:amount};
+  if(target.includes("@"))body.email=target.toLowerCase();
+  else body.user_id=parseInt(target);
+  var endpoint=action==="add"?"/api/admin/add-credits"
+               :action==="remove"?"/api/admin/remove-credits"
+               :action==="set"?"/api/admin/set-credits"
+               :"/api/admin/reset-free-uses";
+  try{
+    var r=await fetch(BACKEND+endpoint,{
+      method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
+      body:JSON.stringify(body),signal:aborter(10000)
+    });
+    var d=await r.json();
+    if(r.ok){adminShowMsg(d.message+(d.new_balance!==undefined?" · Saldo: "+d.new_balance:""),true);await updateUI();}
+    else adminShowMsg(d.error||"Erro.",false);
+  }catch(e){adminShowMsg("Erro: "+e.message,false);}
+}
+
+async function adminLoadUsers(){
+  var tok=getToken();if(!tok)return;
+  var box=document.getElementById("admin-users-list");
+  box.innerHTML='<div style="color:var(--dm);font-size:.7rem;font-family:JetBrains Mono,monospace;">Carregando...</div>';
+  try{
+    var r=await fetch(BACKEND+"/api/admin/users",{headers:{"Authorization":"Bearer "+tok},signal:aborter(10000)});
+    var users=await r.json();
+    if(!r.ok){box.textContent=users.error||"Erro.";return;}
+    box.innerHTML="";
+    users.forEach(function(u){
+      var row=document.createElement("div");row.className="admin-user-row";
+      row.innerHTML='<div class="admin-user-email">'+(u.is_admin?"&#128081; ":"")+u.email+'</div>'+
+        '<div class="admin-user-meta">&#11088;'+u.credits+' &nbsp;ID:'+u.id+'</div>'+
+        '<button class="admin-credit-btn" onclick="quickAddCredit('+u.id+',''+u.email+'')">+1</button>';
+      box.appendChild(row);
+    });
+    if(!users.length)box.innerHTML='<div style="color:var(--dm);font-size:.7rem;">Nenhum usuário.</div>';
+  }catch(e){box.textContent="Erro: "+e.message;}
+}
+
+async function quickAddCredit(userId,email){
   var tok=getToken();if(!tok)return;
   try{
-    var r=await fetch(BACKEND+"/api/admin/users",{headers:{"Authorization":"Bearer "+tok},signal:aborter(8000)});
-    var users=await r.json();
-    if(!r.ok){alert("Erro: "+(users.error||"Sem permissao."));return;}
-    var lines=users.slice(0,20).map(function(u){return u.id+" | "+u.email+" | "+u.credits+" cred. | "+u.created_at;});
-    alert("Usuarios ("+users.length+" total):\n\n"+lines.join("\n"));
+    var r=await fetch(BACKEND+"/api/admin/add-credits",{
+      method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
+      body:JSON.stringify({user_id:userId,amount:1}),signal:aborter(8000)
+    });
+    var d=await r.json();
+    if(r.ok){adminShowMsg("+1 crédito para "+email+" · Saldo: "+d.new_balance,true);adminLoadUsers();}
+    else adminShowMsg(d.error||"Erro.",false);
+  }catch(e){adminShowMsg("Erro: "+e.message,false);}
+}
+
+async function adminLoadStats(){
+  var tok=getToken();if(!tok)return;
+  var box=document.getElementById("admin-stats-box");
+  box.textContent="Carregando...";
+  try{
+    var r=await fetch(BACKEND+"/api/admin/stats",{headers:{"Authorization":"Bearer "+tok},signal:aborter(10000)});
+    var d=await r.json();
+    if(!r.ok){box.textContent=d.error||"Erro.";return;}
+    box.innerHTML=[
+      "Usuários total: "+d.total_users,
+      "Novos hoje: "+d.new_users_today,
+      "Análises total: "+d.total_analyses,
+      "Análises hoje: "+d.new_analyses_today,
+      "Créditos no sistema: "+d.total_credits_system,
+      "PDFs em cache: "+d.pdfs_cached,
+      "Cache PDFs: "+d.pdf_cache_hours+"h",
+      "Providers: "+d.providers_active.join(" → "),
+      "Stripe ID: "+d.stripe_price_id,
+    ].map(function(l){return '<div style="border-bottom:1px solid var(--bd);padding:3px 0;">'+l+'</div>';}).join("");
+  }catch(e){box.textContent="Erro: "+e.message;}
+}
+
+async function adminClearPDFCache(){
+  if(!confirm("Limpar cache de PDFs antigos?"))return;
+  var tok=getToken();if(!tok)return;
+  try{
+    var r=await fetch(BACKEND+"/api/admin/clear-pdf-cache",{
+      method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
+      body:JSON.stringify({}),signal:aborter(10000)
+    });
+    var d=await r.json();
+    alert(r.ok?d.message:d.error||"Erro.");
   }catch(e){alert("Erro: "+e.message);}
 }
 
