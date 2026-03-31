@@ -68,6 +68,7 @@ textarea::placeholder{color:var(--dm2);}
 .btn-buy{background:linear-gradient(135deg,#1a7a3a,#22a04d);color:#fff;box-shadow:0 4px 20px rgba(34,160,77,.25);}
 .btn-buy:hover:not(:disabled){transform:translateY(-1px);}
 .btn-pdf{background:linear-gradient(135deg,#7a1a1a,#cc2222);color:#fff;box-shadow:0 4px 20px rgba(204,34,34,.25);}
+.btn-sub{font-size:.62rem;opacity:.75;font-weight:400;letter-spacing:.5px;margin-top:2px;display:block;}
 .btn-pdf:hover:not(:disabled){transform:translateY(-1px);}
 .alert{padding:10px 14px;border-radius:var(--r2);border-left:3px solid;margin:8px 0;font-size:.82rem;display:none;}
 .alert-info{border-color:var(--g);background:rgba(201,168,76,.05);color:var(--g2);}
@@ -189,12 +190,12 @@ textarea::placeholder{color:var(--dm2);}
 
 <!-- INPUT CARD -->
 <div class="card" id="card-input">
-  <div class="inp-lbl">Descreva sua situacao financeira</div>
-  <textarea id="txt-input" placeholder="Ex: Tenho R$ 50.000 para investir, divida no cartao de R$ 8.000 com juros de 12% ao mes, renda de R$ 6.000/mes. Quero construir patrimonio nos proximos 5 anos com perfil moderado."></textarea>
+  <div class="inp-lbl">Descreva sua situação financeira</div>
+  <textarea id="txt-input" placeholder="Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado."></textarea>
   <div class="btn-row">
-    <button class="btn btn-free"    id="btn-free"    onclick="handleFree()">&#9889; ANALISE GRATUITA</button>
-    <button class="btn btn-premium" id="btn-premium" onclick="handlePremium()">&#11088; RELATORIO PREMIUM (16 ESP. + DADOS REAIS)</button>
-    <button class="btn btn-buy"     id="btn-buy"     onclick="handleBuy()">&#128722; COMPRAR (R$ 19,90)</button>
+    <button class="btn btn-free"    id="btn-free"    onclick="handleFree()">&#9889; ANÁLISE GRATUITA — Experimente Agora</button>
+    <button class="btn btn-premium" id="btn-premium" onclick="handlePremium()">&#11088; RELATÓRIO PREMIUM — 16 Especialistas com Dados Reais</button>
+    <button class="btn btn-buy"     id="btn-buy"     onclick="handleBuy()">&#128274; ADQUIRIR ACESSO PREMIUM — R$&nbsp;19,90</button>
   </div>
   <div class="alert alert-err" id="inp-alert"></div>
 </div>
@@ -202,7 +203,7 @@ textarea::placeholder{color:var(--dm2);}
 <!-- PIPELINE -->
 <div class="card" id="sec-pipeline" style="display:none;">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-    <span style="font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;color:var(--dm2);">16 ESPECIALISTAS + DADOS EM TEMPO REAL</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;color:var(--dm2);">16 ESPECIALISTAS · DADOS EM TEMPO REAL</span>
     <span class="pill pill-run" id="pip-pill">ANALISANDO</span>
   </div>
   <div class="agent-grid" id="agent-grid"></div>
@@ -213,16 +214,16 @@ textarea::placeholder{color:var(--dm2);}
 <!-- FREE RESULT -->
 <div id="sec-free" style="display:none;">
   <div class="verdict-card">
-    <div class="verdict-title">&#9878;&#65039; Veredito — Consultor Senior WUZO</div>
+    <div class="verdict-title">&#9878;&#65039; Veredito — Consultor Sênior WUZO</div>
     <div class="vline"></div>
     <div class="verdict-body" id="verdict-body"></div>
   </div>
   <div class="lock-card">
     <div class="lock-icon">&#128274;</div>
-    <div class="lock-title">Relatorio Completo com 16 Especialistas + Dados em Tempo Real</div>
-    <div class="lock-sub">Cripto com precos atuais, Acoes, Renda Fixa, FIIs, Dividas, Tributario, Compliance e muito mais — com PDF profissional para download.</div>
+    <div class="lock-title">Desbloqueie o Relatório Completo — 16 Especialistas</div>
+    <div class="lock-sub">Análise completa de Cripto (preços ao vivo), Ações, Renda Fixa, FIIs, Dívidas, Tributário, Compliance e mais — com PDF executivo disponível por 72h.</div>
     <button class="btn btn-premium" onclick="handlePremiumFromFree()" style="max-width:400px;margin:0 auto;">
-      &#11088; OBTER RELATORIO COMPLETO (R$ 19,90)
+      &#128274; ADQUIRIR ACESSO COMPLETO — R$&nbsp;19,90
     </button>
   </div>
 </div>
@@ -230,16 +231,21 @@ textarea::placeholder{color:var(--dm2);}
 <!-- FULL REPORT -->
 <div id="sec-full">
   <div class="verdict-card">
-    <div class="verdict-title">&#128084; Veredito Final — Consultor Senior</div>
+    <div class="verdict-title">&#128084; Veredito Final — Consultor Sênior</div>
     <div class="vline"></div>
     <div class="verdict-body" id="full-verdict-body"></div>
   </div>
   <div id="agent-blocks-box"></div>
   <div class="card" style="text-align:center;padding:24px;">
-    <div style="color:var(--g);font-weight:800;font-size:1rem;margin-bottom:8px;">&#128196; Relatorio PDF Profissional</div>
-    <div style="color:var(--dm);font-size:.82rem;margin-bottom:16px;">Todos os 16 especialistas + dados em tempo real — formato PDF executivo para download.</div>
+    <div style="color:var(--g);font-weight:800;font-size:1rem;margin-bottom:8px;">&#128196; Relatório PDF Profissional</div>
+    <div style="color:var(--dm);font-size:.82rem;margin-bottom:10px;">Todos os 16 especialistas com dados em tempo real — formato PDF executivo.</div>
+    <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(224,82,82,.08);border:1px solid rgba(224,82,82,.25);border-radius:8px;padding:6px 14px;margin-bottom:16px;">
+      <span style="font-size:.75rem;">&#9203;</span>
+      <span style="font-size:.72rem;color:#f5a0a0;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;">Este relatório fica disponível por <strong>72 horas</strong> — baixe agora</span>
+    </div>
+    <br>
     <button class="btn btn-pdf" id="btn-dl-pdf" onclick="downloadPDF()" style="max-width:300px;margin:0 auto;">
-      &#128229; BAIXAR PDF
+      &#128229; BAIXAR PDF AGORA
     </button>
   </div>
 </div>
@@ -302,7 +308,7 @@ textarea::placeholder{color:var(--dm2);}
       onkeydown="if(event.key==='Enter')doLogin()">
     <button class="modal-submit" id="btn-login-sub" onclick="doLogin()">ENTRAR</button>
     <div class="modal-err" id="login-err"></div>
-    <div class="modal-switch">Nao tem conta? <a onclick="switchModal('login','register')">Criar conta</a></div>
+    <div class="modal-switch">Não tem conta? <a onclick="switchModal('login','register')">Criar conta</a></div>
   </div>
 </div>
 
@@ -310,14 +316,14 @@ textarea::placeholder{color:var(--dm2);}
 <div class="modal-overlay" id="modal-register" onclick="if(event.target===this)closeModal('register')">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('register')">&#10005;</button>
-    <div class="modal-title">&#11041; Criar Conta Gratis</div>
+    <div class="modal-title">&#11041; Criar Conta Grátis</div>
     <input class="modal-inp" type="email" id="reg-email" placeholder="seu@email.com"
       onkeydown="if(event.key==='Enter')document.getElementById('reg-pass').focus()">
-    <input class="modal-inp" type="password" id="reg-pass" placeholder="Senha (minimo 4 caracteres)"
+    <input class="modal-inp" type="password" id="reg-pass" placeholder="Senha (mínimo 4 caracteres)"
       onkeydown="if(event.key==='Enter')doRegister()">
-    <button class="modal-submit" id="btn-reg-sub" onclick="doRegister()">CRIAR CONTA GRATIS</button>
+    <button class="modal-submit" id="btn-reg-sub" onclick="doRegister()">CRIAR CONTA GRÁTIS</button>
     <div class="modal-err" id="reg-err"></div>
-    <div class="modal-switch">Ja tem conta? <a onclick="switchModal('register','login')">Entrar</a></div>
+    <div class="modal-switch">Já tem conta? <a onclick="switchModal('register','login')">Entrar</a></div>
   </div>
 </div>
 
@@ -398,7 +404,7 @@ async function checkHealth(){
       var r=await fetch(BACKEND+"/health",{signal:aborter(60000)});
       if(r.ok){
         var d=await r.json();_online=true;
-        setStatus("API OK · "+(d.llm||"online"),"s-online");
+        setStatus("Motor Online","s-online");
         setInterval(function(){fetch(BACKEND+"/ping",{signal:aborter(5000)}).catch(function(){});},4*60*1000);
         await updateUI();await checkStripeReturn();return;
       }
@@ -480,7 +486,7 @@ async function doLogin(){
     var d=await r.json().catch(function(){return {};});
     if(r.ok&&d.token){save(LS.TOKEN,d.token);save(LS.EMAIL,email);closeModal("login");await updateUI();}
     else showModalErr("login-err",d.error||"Email ou senha incorretos.");
-  }catch(e){showModalErr("login-err","Sem conexao: "+e.message);}
+  }catch(e){showModalErr("login-err","Sem conexão: "+e.message);}
   finally{btn.textContent="ENTRAR";btn.disabled=false;}
 }
 
@@ -489,7 +495,7 @@ async function doRegister(){
   var email=document.getElementById("reg-email").value.trim();
   var pass=document.getElementById("reg-pass").value;
   if(!email||!pass){showModalErr("reg-err","Preencha email e senha.");return;}
-  if(pass.length<4){showModalErr("reg-err","Senha minimo 4 caracteres.");return;}
+  if(pass.length<4){showModalErr("reg-err","Senha mínimo 4 caracteres.");return;}
   var btn=document.getElementById("btn-reg-sub");btn.textContent="Criando conta...";btn.disabled=true;
   try{
     var r=await fetch(BACKEND+"/api/auth/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:email,password:pass}),signal:aborter(12000)});
@@ -498,8 +504,8 @@ async function doRegister(){
       save(LS.TOKEN,d.token);save(LS.EMAIL,email);closeModal("register");await updateUI();
       if(getSaved(LS.PROMPT)){await startCheckout();}
     }else showModalErr("reg-err",d.error||"Erro ao criar conta.");
-  }catch(e){showModalErr("reg-err","Sem conexao: "+e.message);}
-  finally{btn.textContent="CRIAR CONTA GRATIS";btn.disabled=false;}
+  }catch(e){showModalErr("reg-err","Sem conexão: "+e.message);}
+  finally{btn.textContent="CRIAR CONTA GRÁTIS";btn.disabled=false;}
 }
 
 function logout(){
@@ -515,8 +521,8 @@ var AGENTS_UI=[
   {id:"noticias_realtime",          em:"&#128240;",nm:"Radar"},
   {id:"sentimento_mercado",         em:"&#129504;",nm:"Psicologia"},
   {id:"criptomoedas",               em:"&#8383;",  nm:"Cripto"},
-  {id:"acoes_equity",               em:"&#128200;",nm:"Acoes"},
-  {id:"renda_fixa",                 em:"&#128176;",nm:"R.Fixa"},
+  {id:"acoes_equity",               em:"&#128200;",nm:"Ações"},
+  {id:"renda_fixa",                 em:"&#128176;",nm:"R. Fixa"},
   {id:"imoveis_fiis",               em:"&#127970;",nm:"FIIs"},
   {id:"derivativos",                em:"&#128202;",nm:"Derivat."},
   {id:"rwa",                        em:"&#128279;",nm:"RWA"},
@@ -808,10 +814,10 @@ function setBtns(on){
   ["btn-free","btn-premium","btn-buy"].forEach(function(id){var b=document.getElementById(id);if(b)b.disabled=on;});
   if(on){
     document.getElementById("btn-free").innerHTML='<div class="spin"></div> Analisando...';
-    document.getElementById("btn-premium").innerHTML='<div class="spin"></div> 16 especialistas + dados reais...';
+    document.getElementById("btn-premium").innerHTML='<div class="spin"></div> Consultando 16 Especialistas...';
   }else{
-    document.getElementById("btn-free").innerHTML="&#9889; ANALISE GRATUITA";
-    document.getElementById("btn-premium").innerHTML="&#11088; RELATORIO PREMIUM (16 ESP. + DADOS REAIS)";
+    document.getElementById("btn-free").innerHTML="&#9889; ANÁLISE GRATUITA — Experimente Agora";
+    document.getElementById("btn-premium").innerHTML="&#11088; RELATÓRIO PREMIUM — 16 Especialistas com Dados Reais";
   }
 }
 function showAlert(id,cls,msg){var el=document.getElementById(id);el.className="alert "+cls;el.textContent=msg;el.style.display="block";}
