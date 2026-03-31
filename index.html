@@ -380,42 +380,61 @@ var TICKER_COINS={
   DOGE:{p:"t-doge-p",c:"t-doge-c",p2:"t-doge-p2",c2:"t-doge-c2"},
 };
 
+// Ticker: backend proxy primeiro (cache compartilhado) → fallback CoinGecko direto
+// CORRIGE AbortSignal: não passa signal no fetch do ticker (evita erro de clone em iframes/sandbox)
+function _tickerFetch(url, opts){
+  // Usa Promise.race com setTimeout puro para timeout seguro, sem AbortSignal
+  var ms=opts&&opts.ms||10000;
+  return Promise.race([
+    fetch(url),
+    new Promise(function(_,rej){setTimeout(function(){rej(new Error("timeout"));},ms);})
+  ]);
+}
+
+function _applyTickerData(d, mode){
+  // mode="backend": {BTC:{usd,chg24h},...}  mode="cg": {bitcoin:{usd,usd_24h_change},...}
+  var cgMap={BTC:"bitcoin",ETH:"ethereum",SOL:"solana",BNB:"binancecoin",DOGE:"dogecoin"};
+  Object.keys(TICKER_COINS).forEach(function(sym){
+    var coin=mode==="backend"?d[sym]:d[cgMap[sym]];
+    if(!coin)return;
+    var ids=TICKER_COINS[sym];
+    var price=mode==="backend"?(coin.usd||0):(coin.usd||0);
+    var chg  =mode==="backend"?(coin.chg24h||0):(coin.usd_24h_change||0);
+    if(!price)return;
+    var priceStr=price>=100
+      ?"$"+price.toLocaleString("en-US",{maximumFractionDigits:0})
+      :price>=1
+        ?"$"+price.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})
+        :"$"+price.toFixed(5);
+    var chgStr=chg>=0?"▲ "+Math.abs(chg).toFixed(2)+"%":"▼ "+Math.abs(chg).toFixed(2)+"%";
+    var cls=chg>=0?"ticker-up":"ticker-dn";
+    [ids.p,ids.p2].forEach(function(id){var el=document.getElementById(id);if(el){el.textContent=priceStr;el.className="ticker-price";}});
+    [ids.c,ids.c2].forEach(function(id){var el=document.getElementById(id);if(el){el.textContent=chgStr;el.className="ticker-chg "+cls;}});
+  });
+}
+
 async function updateTicker(){
+  // 1ª tentativa: backend proxy (compartilha cache de 2min, não consome rate limit)
   try{
-    var r=await fetch(
-      "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin,dogecoin&vs_currencies=usd&include_24hr_change=true",
-      {signal:aborter(10000)}
-    );
-    if(!r.ok)return;
+    var r=await _tickerFetch(BACKEND+"/api/market/crypto",{ms:8000});
+    if(!r.ok)throw new Error("HTTP "+r.status);
     var d=await r.json();
-    var map={
-      BTC:d.bitcoin,ETH:d.ethereum,SOL:d.solana,
-      BNB:d.binancecoin,DOGE:d.dogecoin
-    };
-    Object.keys(TICKER_COINS).forEach(function(sym){
-      var coin=map[sym];if(!coin)return;
-      var ids=TICKER_COINS[sym];
-      var price=coin.usd||0;
-      var chg=coin.usd_24h_change||0;
-      var priceStr=price>=100
-        ?"$"+price.toLocaleString("en-US",{maximumFractionDigits:0})
-        :price>=1
-          ?"$"+price.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})
-          :"$"+price.toFixed(5);
-      var chgStr=(chg>=0?"▲ ":""+(chg<0?"▼ ":""))+Math.abs(chg).toFixed(2)+"%";
-      if(chg<0)chgStr="▼ "+Math.abs(chg).toFixed(2)+"%";
-      else chgStr="▲ "+Math.abs(chg).toFixed(2)+"%";
-      var cls=chg>=0?"ticker-up":"ticker-dn";
-      [ids.p,ids.p2].forEach(function(id){
-        var el=document.getElementById(id);
-        if(el){el.textContent=priceStr;el.className="ticker-price";}
-      });
-      [ids.c,ids.c2].forEach(function(id){
-        var el=document.getElementById(id);
-        if(el){el.textContent=chgStr;el.className="ticker-chg "+cls;}
-      });
-    });
-  }catch(e){}
+    if(d.BTC&&d.BTC.usd>1000){_applyTickerData(d,"backend");return;}
+    throw new Error("dados invalidos");
+  }catch(e1){
+    // 2ª tentativa: CoinGecko direto (fallback quando backend está acordando)
+    try{
+      var r2=await _tickerFetch(
+        "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin,dogecoin&vs_currencies=usd&include_24hr_change=true",
+        {ms:9000}
+      );
+      if(!r2.ok)throw new Error("CG HTTP "+r2.status);
+      var d2=await r2.json();
+      _applyTickerData(d2,"cg");
+    }catch(e2){
+      // Ambos falharam — ticker mantém "---" até próximo ciclo (30s)
+    }
+  }
 }
 
 // ── STATUS ───────────────────────────────────────────────────
