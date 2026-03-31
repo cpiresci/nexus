@@ -9,8 +9,8 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
   --bg:#030302;--card:#0d0c0a;
-  --g:#e8c97a;--g2:#f5dfa0;--gd:#8a6a2c;--gdd:#3a2810;
-  --bd:rgba(201,168,76,.14);--bd2:rgba(201,168,76,.3);
+  --g:#d4a843;--g2:#f0cc70;--gd:#7a5a1c;--gdd:#3a2208;
+  --bd:rgba(180,140,50,.16);--bd2:rgba(180,140,50,.32);
   --tx:#ede8dc;--dm:#c0b89e;--dm2:#5a4828;
   --wh:#faf6ee;--rd:#e05252;--gr:#4aaf78;
   --r:10px;--r2:6px;
@@ -65,8 +65,8 @@ textarea::placeholder{color:var(--dm2);}
 .btn-free:hover:not(:disabled){transform:translateY(-1px);}
 .btn-premium{background:linear-gradient(135deg,#b8860b,#e8c97a,#f5dfa0,#e8c97a,#8a6a2c);background-size:200% auto;color:#0d0900;animation:shimmer 3s linear infinite;box-shadow:0 4px 20px rgba(201,168,76,.3);}
 .btn-premium:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 28px rgba(201,168,76,.5);}
-.btn-buy{background:linear-gradient(135deg,#1a7a3a,#22a04d);color:#fff;box-shadow:0 4px 20px rgba(34,160,77,.25);}
-.btn-buy:hover:not(:disabled){transform:translateY(-1px);}
+.btn-buy{background:linear-gradient(135deg,#7a4a00,#c47a00);color:#fff;box-shadow:0 4px 20px rgba(180,120,0,.3);}
+.btn-buy:hover:not(:disabled){background:linear-gradient(135deg,#8a5500,#d48800);transform:translateY(-1px);}
 .btn-pdf{background:linear-gradient(135deg,#7a1a1a,#cc2222);color:#fff;box-shadow:0 4px 20px rgba(204,34,34,.25);}
 .btn-sub{font-size:.62rem;opacity:.75;font-weight:400;letter-spacing:.5px;margin-top:2px;display:block;}
 .btn-pdf:hover:not(:disabled){transform:translateY(-1px);}
@@ -97,10 +97,10 @@ textarea::placeholder{color:var(--dm2);}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* RESULTADOS */
-.verdict-card{background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.01));border:1px solid var(--bd2);border-radius:var(--r);border-left:3px solid var(--g);padding:18px 16px;margin-bottom:14px;position:relative;overflow:hidden;}
+.verdict-card{background:linear-gradient(135deg,rgba(180,140,50,.06),rgba(180,140,50,.01));border:1px solid var(--bd2);border-radius:var(--r);border-left:4px solid var(--g);padding:16px;margin-bottom:12px;position:relative;overflow:hidden;}
 .verdict-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent);}
 .verdict-title{color:var(--g);font-size:1rem;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:12px;}
-.verdict-body{font-size:.88rem;line-height:1.95;color:var(--tx);}
+.verdict-body{font-size:.88rem;line-height:1.75;color:var(--tx);}
 .verdict-body strong,.verdict-body b{color:var(--g2);}
 .vline{height:1px;background:rgba(201,168,76,.15);margin:10px 0;}
 .lock-card{background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.02));border:1px solid var(--bd2);border-radius:var(--r);padding:22px 18px;text-align:center;margin-top:-4px;}
@@ -108,9 +108,9 @@ textarea::placeholder{color:var(--dm2);}
 .lock-title{color:var(--g);font-size:1rem;font-weight:800;margin-bottom:4px;}
 .lock-sub{color:var(--dm);font-size:.8rem;margin-bottom:16px;}
 #sec-full{display:none;}
-.agent-block{background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));border:1px solid var(--bd);border-radius:var(--r);border-left:3px solid var(--g);padding:16px;margin-bottom:10px;}
-.agent-block-title{color:var(--g);font-size:.85rem;font-weight:700;margin-bottom:8px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:.5px;}
-.agent-block-body{font-size:.84rem;line-height:1.9;color:var(--tx);}
+.agent-block{background:linear-gradient(135deg,rgba(180,140,50,.04),rgba(180,140,50,.01));border:1px solid var(--bd);border-radius:var(--r);border-left:3px solid var(--g);padding:14px 16px;margin-bottom:8px;}
+.agent-block-title{color:var(--g2);font-size:.72rem;font-weight:700;margin-bottom:6px;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;border-bottom:1px solid var(--bd);padding-bottom:4px;}
+.agent-block-body{font-size:.84rem;line-height:1.75;color:var(--tx);}
 .agent-block-body strong{color:var(--g2);}
 
 /* MODAL */
@@ -135,6 +135,15 @@ textarea::placeholder{color:var(--dm2);}
 .admin-btn{padding:10px 16px;border-radius:50px;border:none;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;box-shadow:0 4px 16px rgba(0,0,0,.4);}
 .admin-btn.purple{background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;}
 .admin-btn.purple:hover{transform:translateY(-1px);}
+.admin-btn.pdf-btn{background:linear-gradient(135deg,#7a1a1a,#cc2222);color:#fff;}
+.admin-btn.pdf-btn:hover{transform:translateY(-1px);}
+.pdf-row{display:flex;align-items:center;justify-content:space-between;padding:7px 8px;border-radius:6px;border:1px solid var(--bd);margin-bottom:4px;gap:6px;flex-wrap:wrap;}
+.pdf-row-prompt{font-size:.66rem;color:var(--tx);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.pdf-row-meta{font-size:.58rem;color:var(--dm);font-family:'JetBrains Mono',monospace;white-space:nowrap;}
+.pdf-expiry{font-size:.6rem;font-family:'JetBrains Mono',monospace;padding:2px 6px;border-radius:4px;}
+.pdf-expiry.ok{background:rgba(74,175,120,.1);color:var(--gr);}
+.pdf-expiry.warn{background:rgba(201,168,76,.1);color:var(--g);}
+.pdf-expiry.exp{background:rgba(224,82,82,.1);color:var(--rd);}
 .admin-tab{flex:1;padding:6px 4px;border-radius:6px;border:1px solid var(--bd);background:transparent;color:var(--dm);font-family:'JetBrains Mono',monospace;font-size:.58rem;cursor:pointer;letter-spacing:.5px;transition:all .2s;}
 .admin-tab.active{background:rgba(201,168,76,.15);border-color:var(--gd);color:var(--g);}
 .admin-user-row{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;border-radius:6px;border:1px solid var(--bd);margin-bottom:4px;gap:6px;}
@@ -255,7 +264,21 @@ textarea::placeholder{color:var(--dm2);}
 <!-- ADMIN PANEL -->
 <!-- ADMIN PANEL -->
 <div id="admin-panel">
+  <button class="admin-btn pdf-btn" onclick="openPDFFilesModal()">&#128196; PDFs</button>
   <button class="admin-btn purple" onclick="openAdminModal()">&#128081; Admin</button>
+</div>
+
+<!-- MODAL PDFs EXPIRING -->
+<div class="modal-overlay" id="modal-pdfs" onclick="if(event.target===this)document.getElementById('modal-pdfs').classList.remove('open')">
+  <div class="modal-box" style="max-width:480px;max-height:90vh;overflow-y:auto;">
+    <button class="modal-close" onclick="document.getElementById('modal-pdfs').classList.remove('open')">&#10005;</button>
+    <div class="modal-title">&#128196; Arquivos PDF em Cache</div>
+    <div style="font-size:.72rem;color:var(--dm);margin-bottom:12px;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;">
+      PDFs são excluídos automaticamente após <strong style="color:var(--rd)">72 horas</strong>
+    </div>
+    <button onclick="adminLoadPDFFiles()" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--gd);background:rgba(201,168,76,.08);color:var(--g);cursor:pointer;font-size:.7rem;font-family:'JetBrains Mono',monospace;margin-bottom:10px;">&#128260; Atualizar lista</button>
+    <div id="pdf-files-list" style="max-height:400px;overflow-y:auto;"></div>
+  </div>
 </div>
 
 <!-- MODAL ADMIN -->
@@ -698,6 +721,51 @@ async function downloadPDF(){
 }
 
 // ── ADMIN ─────────────────────────────────────────────────────
+async function openPDFFilesModal(){
+  document.getElementById("modal-pdfs").classList.add("open");
+  await adminLoadPDFFiles();
+}
+
+async function adminLoadPDFFiles(){
+  var tok=getToken();if(!tok)return;
+  var box=document.getElementById("pdf-files-list");
+  box.innerHTML='<div style="color:var(--dm);font-size:.7rem;font-family:JetBrains Mono,monospace;padding:8px;">Carregando...</div>';
+  try{
+    var r=await fetch(BACKEND+"/api/admin/pdf-files",{headers:{"Authorization":"Bearer "+tok},signal:aborter(10000)});
+    var files=await r.json();
+    if(!r.ok){box.textContent=files.error||"Erro.";return;}
+    box.innerHTML="";
+    if(!files.length){
+      box.innerHTML='<div style="color:var(--dm);font-size:.7rem;text-align:center;padding:20px;">Nenhum PDF em cache.</div>';
+      return;
+    }
+    files.forEach(function(f){
+      var row=document.createElement("div");row.className="pdf-row";
+      var cls=f.expired?"exp":f.hours_left<12?"warn":"ok";
+      var expLabel=f.expired?"Expirado":f.hours_left+"h restantes";
+      row.innerHTML=
+        '<div class="pdf-row-prompt">#'+f.analysis_id+' — '+escHtmlAdmin(f.prompt)+'</div>'+
+        '<div style="display:flex;gap:6px;align-items:center;">'+
+        '<div class="pdf-row-meta">ID:'+f.user_id+'</div>'+
+        '<div class="pdf-expiry '+cls+'">'+expLabel+'</div>'+
+        '</div>';
+      box.appendChild(row);
+    });
+    var total=files.length;
+    var expiring=files.filter(function(f){return !f.expired&&f.hours_left<24;}).length;
+    var expired=files.filter(function(f){return f.expired;}).length;
+    var summary=document.createElement("div");
+    summary.style.cssText="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--dm);padding:8px 4px;border-top:1px solid var(--bd);margin-top:8px;";
+    summary.textContent="Total: "+total+" | Expirando em 24h: "+expiring+" | Expirados: "+expired;
+    box.appendChild(summary);
+  }catch(e){box.textContent="Erro: "+e.message;}
+}
+
+function escHtmlAdmin(str){
+  if(!str)return "";
+  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+
 function openAdminModal(){document.getElementById("modal-admin").classList.add("open");}
 function closeAdminModal(){document.getElementById("modal-admin").classList.remove("open");}
 function switchAdminTab(tab){
