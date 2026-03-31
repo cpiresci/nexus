@@ -61,15 +61,19 @@ textarea::placeholder{color:var(--dm2);}
 .btn-row{display:flex;flex-direction:column;gap:12px;margin-top:22px;padding-top:6px;}
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px 20px;border-radius:50px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:800;font-size:.85rem;letter-spacing:1px;transition:all .2s;}
 .btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important;}
-.btn-free{background:linear-gradient(135deg,#1a3a8a,#2255cc);color:#fff;box-shadow:0 4px 20px rgba(34,85,204,.3);}
+.btn-free{background:linear-gradient(135deg,#1a3a8a,#2255cc);color:#fff;box-shadow:0 4px 20px rgba(34,85,204,.4);position:relative;overflow:hidden;}
+.btn-free::after{content:"";position:absolute;inset:0;border-radius:50px;border:2px solid rgba(100,160,255,.45);animation:free-pulse 2.2s ease-in-out infinite;pointer-events:none;}
+@keyframes free-pulse{0%,100%{opacity:1;transform:scale(1);}55%{opacity:0;transform:scale(1.035);}}
+.btn-free:hover:not(:disabled){background:linear-gradient(135deg,#1e44a8,#2a66ee);transform:translateY(-2px);box-shadow:0 8px 28px rgba(34,85,204,.5);}
 .btn-free:hover:not(:disabled){transform:translateY(-1px);}
-.btn-premium{background:linear-gradient(135deg,#b8860b,#e8c97a,#f5dfa0,#e8c97a,#8a6a2c);background-size:200% auto;color:#0d0900;animation:shimmer 3s linear infinite;box-shadow:0 4px 20px rgba(201,168,76,.3);}
-.btn-premium:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 6px 28px rgba(201,168,76,.5);}
-.btn-buy{background:linear-gradient(135deg,#7a4a00,#c47a00);color:#fff;box-shadow:0 4px 20px rgba(180,120,0,.3);}
-.btn-buy:hover:not(:disabled){background:linear-gradient(135deg,#8a5500,#d48800);transform:translateY(-1px);}
-.btn-pdf{background:linear-gradient(135deg,#7a1a1a,#cc2222);color:#fff;box-shadow:0 4px 20px rgba(204,34,34,.25);}
+.btn-premium{background:linear-gradient(135deg,#b8860b,#e8c97a,#f5dfa0,#e8c97a,#8a6a2c);background-size:200% auto;color:#0d0900;animation:shimmer 3s linear infinite;box-shadow:0 4px 24px rgba(201,168,76,.45);position:relative;}
+.btn-premium:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,168,76,.65);}
+.btn-premium::before{content:"✦ MAIS POPULAR";position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#c9a84c;color:#0d0900;font-size:.5rem;font-weight:900;letter-spacing:2px;padding:3px 10px;border-radius:20px;white-space:nowrap;}
+.btn-buy{background:linear-gradient(135deg,#c44e00,#ff8c00);color:#fff;box-shadow:0 4px 20px rgba(220,100,0,.4);position:relative;}
+.btn-buy:hover:not(:disabled){background:linear-gradient(135deg,#d45800,#ff9a1a);transform:translateY(-2px);box-shadow:0 8px 28px rgba(220,100,0,.55);}
+.btn-pdf{background:linear-gradient(135deg,#0f5c2e,#1aad58);color:#fff;box-shadow:0 4px 20px rgba(26,173,88,.35);}
 .btn-sub{font-size:.62rem;opacity:.75;font-weight:400;letter-spacing:.5px;margin-top:2px;display:block;}
-.btn-pdf:hover:not(:disabled){transform:translateY(-1px);}
+.btn-pdf:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 28px rgba(26,173,88,.5);}
 .alert{padding:10px 14px;border-radius:var(--r2);border-left:3px solid;margin:8px 0;font-size:.82rem;display:none;}
 .alert-info{border-color:var(--g);background:rgba(201,168,76,.05);color:var(--g2);}
 .alert-err{border-color:var(--rd);background:rgba(224,82,82,.05);color:#f5a0a0;}
@@ -202,9 +206,9 @@ textarea::placeholder{color:var(--dm2);}
   <div class="inp-lbl">Descreva sua situação financeira</div>
   <textarea id="txt-input" placeholder="Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado."></textarea>
   <div class="btn-row">
-    <button class="btn btn-free"    id="btn-free"    onclick="handleFree()">&#9889; ANÁLISE GRATUITA — Experimente Agora</button>
-    <button class="btn btn-premium" id="btn-premium" onclick="handlePremium()">&#11088; RELATÓRIO PREMIUM — 16 Especialistas com Dados Reais</button>
-    <button class="btn btn-buy"     id="btn-buy"     onclick="handleBuy()">&#128274; ADQUIRIR ACESSO PREMIUM — R$&nbsp;19,90</button>
+    <button class="btn btn-free"    id="btn-free"    onclick="handleFree()">&#9889; ANALISAR GRÁTIS AGORA<br><span class="btn-sub">Sem cadastro · Resultado em segundos · Sem cartão</span></button>
+    <button class="btn btn-premium" id="btn-premium" onclick="handlePremium()">&#11088; RELATÓRIO COMPLETO — 16 IA com Dados Ao Vivo<br><span class="btn-sub">&#10003; Cripto em tempo real &nbsp;&#10003; Ações &amp; FIIs &nbsp;&#10003; PDF por 72h &nbsp;&#10003; Acesso imediato</span></button>
+    <button class="btn btn-buy"     id="btn-buy"     onclick="handleBuy()">&#128274; LIBERAR ACESSO AGORA — R$&nbsp;19,90<br><span class="btn-sub">&#128179; Pix ou Cartão &nbsp;&#183;&nbsp; Acesso imediato &nbsp;&#183;&nbsp; Sem assinatura &nbsp;&#183;&nbsp; Sem recorrência</span></button>
   </div>
   <div class="alert alert-err" id="inp-alert"></div>
 </div>
@@ -232,7 +236,7 @@ textarea::placeholder{color:var(--dm2);}
     <div class="lock-title">Desbloqueie o Relatório Completo — 16 Especialistas</div>
     <div class="lock-sub">Análise completa de Cripto (preços ao vivo), Ações, Renda Fixa, FIIs, Dívidas, Tributário, Compliance e mais — com PDF executivo disponível por 72h.</div>
     <button class="btn btn-premium" onclick="handlePremiumFromFree()" style="max-width:400px;margin:0 auto;">
-      &#128274; ADQUIRIR ACESSO COMPLETO — R$&nbsp;19,90
+      &#128274; QUERO O RELATÓRIO COMPLETO — R$&nbsp;19,90
     </button>
   </div>
 </div>
@@ -254,7 +258,7 @@ textarea::placeholder{color:var(--dm2);}
     </div>
     <br>
     <button class="btn btn-pdf" id="btn-dl-pdf" onclick="downloadPDF()" style="max-width:300px;margin:0 auto;">
-      &#128229; BAIXAR PDF AGORA
+      &#9989; BAIXAR MEU RELATÓRIO PDF
     </button>
   </div>
 </div>
@@ -717,7 +721,7 @@ async function downloadPDF(){
     var a=document.createElement("a");a.href=url;a.download="wuzo_relatorio_"+_currentAnalysisId+".pdf";
     document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
   }catch(e){showAlert("inp-alert","alert-err","Erro ao baixar: "+e.message);}
-  finally{btn.disabled=false;btn.innerHTML="&#128229; BAIXAR PDF";}
+  finally{btn.disabled=false;btn.innerHTML="&#9989; BAIXAR MEU RELATÓRIO PDF";}
 }
 
 // ── ADMIN ─────────────────────────────────────────────────────
@@ -745,9 +749,10 @@ async function adminLoadPDFFiles(){
       var expLabel=f.expired?"Expirado":f.hours_left+"h restantes";
       row.innerHTML=
         '<div class="pdf-row-prompt">#'+f.analysis_id+' — '+escHtmlAdmin(f.prompt)+'</div>'+
-        '<div style="display:flex;gap:6px;align-items:center;">'+
-        '<div class="pdf-row-meta">ID:'+f.user_id+'</div>'+
+        '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">'+
+        '<div class="pdf-row-meta">User:'+f.user_id+'</div>'+
         '<div class="pdf-expiry '+cls+'">'+expLabel+'</div>'+
+        (f.expired?'':'<button class="admin-credit-btn" style="background:rgba(26,173,88,.12);border-color:var(--gr);color:var(--gr);padding:3px 10px;" onclick="adminDownloadPDF('+f.analysis_id+')">&#11015; PDF</button>')+
         '</div>';
       box.appendChild(row);
     });
@@ -759,6 +764,22 @@ async function adminLoadPDFFiles(){
     summary.textContent="Total: "+total+" | Expirando em 24h: "+expiring+" | Expirados: "+expired;
     box.appendChild(summary);
   }catch(e){box.textContent="Erro: "+e.message;}
+}
+
+
+// ── ADMIN DOWNLOAD PDF ────────────────────────────────────────
+async function adminDownloadPDF(analysisId){
+  var tok=getToken();if(!tok)return;
+  var btn=event.target;btn.disabled=true;btn.textContent="...";
+  try{
+    var r=await fetch(BACKEND+"/api/admin/pdf-download/"+analysisId,{headers:{"Authorization":"Bearer "+tok},signal:aborter(45000)});
+    if(!r.ok){var e=await r.json().catch(function(){return{};});alert(e.error||"Erro ao baixar PDF.");return;}
+    var blob=await r.blob();
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement("a");a.href=url;a.download="wuzo_admin_pdf_"+analysisId+".pdf";
+    document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  }catch(e){alert("Erro: "+e.message);}
+  finally{btn.disabled=false;btn.innerHTML="&#11015; PDF";}
 }
 
 function escHtmlAdmin(str){
@@ -884,8 +905,8 @@ function setBtns(on){
     document.getElementById("btn-free").innerHTML='<div class="spin"></div> Analisando...';
     document.getElementById("btn-premium").innerHTML='<div class="spin"></div> Consultando 16 Especialistas...';
   }else{
-    document.getElementById("btn-free").innerHTML="&#9889; ANÁLISE GRATUITA — Experimente Agora";
-    document.getElementById("btn-premium").innerHTML="&#11088; RELATÓRIO PREMIUM — 16 Especialistas com Dados Reais";
+    document.getElementById("btn-free").innerHTML='&#9889; ANALISAR GRÁTIS AGORA<br><span class=\"btn-sub\">Sem cadastro · Resultado em segundos · Sem cartão</span>';
+    document.getElementById("btn-premium").innerHTML='&#11088; RELATÓRIO COMPLETO — 16 IA com Dados Ao Vivo<br><span class=\"btn-sub\">&#10003; Cripto em tempo real &nbsp;&#10003; Ações &amp; FIIs &nbsp;&#10003; PDF por 72h &nbsp;&#10003; Acesso imediato</span>';
   }
 }
 function showAlert(id,cls,msg){var el=document.getElementById(id);el.className="alert "+cls;el.textContent=msg;el.style.display="block";}
