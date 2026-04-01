@@ -590,13 +590,13 @@ function buildGrid(){
   });
 }
 
-function setAllThinking(){AGENTS_UI.forEach(function(a){var c=document.getElementById("ac-"+a.id);if(!c)return;c.className="ac thinking";c.querySelector(".ac-st").textContent="&#9675;";});animateProg();}
+function setAllThinking(){AGENTS_UI.forEach(function(a){var c=document.getElementById("ac-"+a.id);if(!c)return;c.className="ac thinking";c.querySelector(".ac-st").innerHTML="&#9675;";});animateProg();}
 var _progInt=null;
 function animateProg(){var fill=document.getElementById("prog-fill");var pct=0;clearInterval(_progInt);_progInt=setInterval(function(){pct+=0.2;if(pct>90)pct=90;fill.style.width=pct+"%";},600);}
 function finishGrid(agents){
   clearInterval(_progInt);document.getElementById("prog-fill").style.width="100%";
   var ids=agents?agents.reduce(function(m,a){m[a.id]=1;return m;},{}):null;
-  AGENTS_UI.forEach(function(a){var c=document.getElementById("ac-"+a.id);if(!c)return;if(!ids||ids[a.id]){c.className="ac done";c.querySelector(".ac-st").textContent="&#10003;";}});
+  AGENTS_UI.forEach(function(a){var c=document.getElementById("ac-"+a.id);if(!c)return;if(!ids||ids[a.id]){c.className="ac done";c.querySelector(".ac-st").innerHTML="&#10003;";}});
   document.getElementById("pip-pill").textContent="CONCLUIDO";document.getElementById("pip-pill").className="pill pill-done";
   addLog("Concluido.","ok");
 }
@@ -731,7 +731,7 @@ function renderFullReport(verdict,agents){
 async function downloadPDF(){
   if(!_currentAnalysisId){showAlert("inp-alert","alert-err","Analise nao disponivel.");return;}
   var tok=getToken();if(!tok){openModal("login");return;}
-  var btn=document.getElementById("btn-dl-pdf");btn.disabled=true;btn.textContent="&#9203; Gerando PDF...";
+  var btn=document.getElementById("btn-dl-pdf");btn.disabled=true;btn.innerHTML="&#9203; Gerando PDF...";
   try{
     var r=await fetch(BACKEND+"/api/report/pdf/"+_currentAnalysisId,{headers:{"Authorization":"Bearer "+tok},signal:aborter(45000)});
     if(!r.ok){var e=await r.json().catch(function(){return {};});showAlert("inp-alert","alert-err",e.error||"Erro ao gerar PDF.");return;}
@@ -928,7 +928,7 @@ function setBtns(on){
     document.getElementById("btn-premium").innerHTML='&#11088; RELATÓRIO COMPLETO — 16 IA com Dados Ao Vivo<br><span class=\"btn-sub\">&#10003; Cripto em tempo real &nbsp;&#10003; Ações &amp; FIIs &nbsp;&#10003; PDF por 72h &nbsp;&#10003; Acesso imediato</span>';
   }
 }
-function showAlert(id,cls,msg){var el=document.getElementById(id);el.className="alert "+cls;el.textContent=msg;el.style.display="block";}
+function showAlert(id,cls,msg){var el=document.getElementById(id);el.className="alert "+cls;el.innerHTML=msg;el.style.display="block";}
 function hideAlert(id){document.getElementById(id).style.display="none";}
 
 // ── INIT ─────────────────────────────────────────────────────
