@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" id="html-root">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
@@ -154,6 +154,13 @@ textarea::placeholder{color:var(--dm2);}
 .admin-user-email{font-size:.68rem;color:var(--tx);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .admin-user-meta{font-size:.6rem;color:var(--dm);font-family:'JetBrains Mono',monospace;white-space:nowrap;}
 .admin-credit-btn{padding:3px 8px;border-radius:4px;border:1px solid var(--gd);background:rgba(201,168,76,.1);color:var(--g);cursor:pointer;font-size:.6rem;font-family:'JetBrains Mono',monospace;}
+
+/* LANGUAGE SELECTOR */
+.lang-selector{display:flex;gap:4px;align-items:center;}
+.lang-btn{background:transparent;border:1px solid var(--bd);border-radius:12px;color:var(--dm);font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:1px;padding:3px 8px;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.lang-btn:hover{border-color:var(--g);color:var(--g);}
+.lang-btn.active{background:rgba(201,168,76,.12);border-color:var(--gd);color:var(--g);}
+
 </style>
 </head>
 <body>
@@ -161,14 +168,14 @@ textarea::placeholder{color:var(--dm2);}
 <!-- CRYPTO TICKER (tempo real — atualiza a cada 30s) -->
 <div id="crypto-ticker">
   <div class="ticker-track" id="ticker-track">
-    <div class="ticker-item">⬡ <span style="color:var(--dm);font-size:.55rem;letter-spacing:2px;">AO VIVO</span></div>
+    <div class="ticker-item">⬡ <span style="color:var(--dm);font-size:.55rem;letter-spacing:2px;" data-i18n="live">AO VIVO</span></div>
     <div class="ticker-item"><span class="ticker-sym">BTC</span>&nbsp;<span class="ticker-price" id="t-btc-p">---</span>&nbsp;<span class="ticker-chg" id="t-btc-c">--</span></div>
     <div class="ticker-item"><span class="ticker-sym">ETH</span>&nbsp;<span class="ticker-price" id="t-eth-p">---</span>&nbsp;<span class="ticker-chg" id="t-eth-c">--</span></div>
     <div class="ticker-item"><span class="ticker-sym">SOL</span>&nbsp;<span class="ticker-price" id="t-sol-p">---</span>&nbsp;<span class="ticker-chg" id="t-sol-c">--</span></div>
     <div class="ticker-item"><span class="ticker-sym">BNB</span>&nbsp;<span class="ticker-price" id="t-bnb-p">---</span>&nbsp;<span class="ticker-chg" id="t-bnb-c">--</span></div>
     <div class="ticker-item"><span class="ticker-sym">DOGE</span>&nbsp;<span class="ticker-price" id="t-doge-p">---</span>&nbsp;<span class="ticker-chg" id="t-doge-c">--</span></div>
     <!-- Duplicado para loop contínuo -->
-    <div class="ticker-item">⬡ <span style="color:var(--dm);font-size:.55rem;letter-spacing:2px;">AO VIVO</span></div>
+    <div class="ticker-item">⬡ <span style="color:var(--dm);font-size:.55rem;letter-spacing:2px;" data-i18n="live">AO VIVO</span></div>
     <div class="ticker-item"><span class="ticker-sym">BTC</span>&nbsp;<span class="ticker-price" id="t-btc-p2">---</span>&nbsp;<span class="ticker-chg" id="t-btc-c2">--</span></div>
     <div class="ticker-item"><span class="ticker-sym">ETH</span>&nbsp;<span class="ticker-price" id="t-eth-p2">---</span>&nbsp;<span class="ticker-chg" id="t-eth-c2">--</span></div>
     <div class="ticker-item"><span class="ticker-sym">SOL</span>&nbsp;<span class="ticker-price" id="t-sol-p2">---</span>&nbsp;<span class="ticker-chg" id="t-sol-c2">--</span></div>
@@ -186,16 +193,21 @@ textarea::placeholder{color:var(--dm2);}
     <div class="logo-sub">FINANCIAL INTELLIGENCE · MULTI-AGENT IA</div>
   </div>
   <div class="hdr-right">
+    <div class="lang-selector">
+      <button class="lang-btn active" id="lang-pt" onclick="setLang('pt')">PT</button>
+      <button class="lang-btn" id="lang-en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" id="lang-es" onclick="setLang('es')">ES</button>
+    </div>
     <div class="credit-badge">&#11088; PREMIUM: <span id="cred-num">0</span></div>
     <div id="api-status" class="status-pill s-waking">Conectando...</div>
     <div class="auth-bar">
       <div id="auth-out" style="display:flex;gap:6px;">
-        <button class="abtn" onclick="openModal('login')">Entrar</button>
-        <button class="abtn gold" onclick="openModal('register')">Registrar</button>
+        <button class="abtn" onclick="openModal('login')" data-i18n="btn_login">Entrar</button>
+        <button class="abtn gold" onclick="openModal('register')" data-i18n="btn_register">Registrar</button>
       </div>
       <div id="auth-in" style="display:none;flex-direction:column;align-items:flex-end;gap:4px;">
         <span id="user-info"></span>
-        <button class="abtn red" onclick="logout()">Sair</button>
+        <button class="abtn red" onclick="logout()" data-i18n="btn_logout">Sair</button>
       </div>
     </div>
   </div>
@@ -203,8 +215,8 @@ textarea::placeholder{color:var(--dm2);}
 
 <!-- INPUT CARD -->
 <div class="card" id="card-input">
-  <div class="inp-lbl">Descreva sua situação financeira</div>
-  <textarea id="txt-input" placeholder="Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado."></textarea>
+  <div class="inp-lbl" data-i18n="inp_lbl">Descreva sua situação financeira</div>
+  <textarea id="txt-input" id="txt-input" placeholder="Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado."></textarea>
   <div class="btn-row">
     <button class="btn btn-free"    id="btn-free"    onclick="handleFree()">&#9889; ANALISAR GRÁTIS AGORA<br><span class="btn-sub">Sem cadastro · Resultado em segundos · Sem cartão</span></button>
     <button class="btn btn-premium" id="btn-premium" onclick="handlePremium()">&#11088; RELATÓRIO COMPLETO — 16 IA com Dados Ao Vivo<br><span class="btn-sub">&#10003; Cripto em tempo real &nbsp;&#10003; Ações &amp; FIIs &nbsp;&#10003; PDF por 72h &nbsp;&#10003; Acesso imediato</span></button>
@@ -216,27 +228,27 @@ textarea::placeholder{color:var(--dm2);}
 <!-- PIPELINE -->
 <div class="card" id="sec-pipeline" style="display:none;">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-    <span style="font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;color:var(--dm2);">16 ESPECIALISTAS · DADOS EM TEMPO REAL</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;color:var(--dm2);" data-i18n="pipeline_lbl">16 ESPECIALISTAS · DADOS EM TEMPO REAL</span>
     <span class="pill pill-run" id="pip-pill">ANALISANDO</span>
   </div>
   <div class="agent-grid" id="agent-grid"></div>
   <div class="prog"><div class="prog-fill" id="prog-fill"></div></div>
-  <div class="log" id="log-feed"><div class="ll">&#11041; Iniciando...</div></div>
+  <div class="log" id="log-feed"><div class="ll" id="log-init-ll">&#11041; Iniciando...</div></div>
 </div>
 
 <!-- FREE RESULT -->
 <div id="sec-free" style="display:none;">
   <div class="verdict-card">
-    <div class="verdict-title">&#9878;&#65039; Veredito — Consultor Sênior WUZO</div>
+    <div class="verdict-title" data-i18n="verdict_title">&#9878;&#65039; Veredito — Consultor Sênior WUZO</div>
     <div class="vline"></div>
     <div class="verdict-body" id="verdict-body"></div>
   </div>
   <div class="lock-card">
     <div class="lock-icon">&#128274;</div>
-    <div class="lock-title">Desbloqueie o Relatório Completo — 16 Especialistas</div>
-    <div class="lock-sub">Análise completa de Cripto (preços ao vivo), Ações, Renda Fixa, FIIs, Dívidas, Tributário, Compliance e mais — com PDF executivo disponível por 72h.</div>
+    <div class="lock-title" data-i18n="lock_title">Desbloqueie o Relatório Completo — 16 Especialistas</div>
+    <div class="lock-sub" data-i18n="lock_sub">Análise completa de Cripto (preços ao vivo), Ações, Renda Fixa, FIIs, Dívidas, Tributário, Compliance e mais — com PDF executivo disponível por 72h.</div>
     <button class="btn btn-premium" onclick="handlePremiumFromFree()" style="max-width:400px;margin:0 auto;">
-      &#128274; QUERO O RELATÓRIO COMPLETO — R$&nbsp;19,90
+      <span data-i18n="lock_btn">&#128274; QUERO O RELATÓRIO COMPLETO — R$&nbsp;19,90</span>
     </button>
   </div>
 </div>
@@ -244,17 +256,17 @@ textarea::placeholder{color:var(--dm2);}
 <!-- FULL REPORT -->
 <div id="sec-full">
   <div class="verdict-card">
-    <div class="verdict-title">&#128084; Veredito Final — Consultor Sênior</div>
+    <div class="verdict-title" data-i18n="verdict_full_title">&#128084; Veredito Final — Consultor Sênior</div>
     <div class="vline"></div>
     <div class="verdict-body" id="full-verdict-body"></div>
   </div>
   <div id="agent-blocks-box"></div>
   <div class="card" style="text-align:center;padding:24px;">
-    <div style="color:var(--g);font-weight:800;font-size:1rem;margin-bottom:8px;">&#128196; Relatório PDF Profissional</div>
-    <div style="color:var(--dm);font-size:.82rem;margin-bottom:10px;">Todos os 16 especialistas com dados em tempo real — formato PDF executivo.</div>
+    <div style="color:var(--g);font-weight:800;font-size:1rem;margin-bottom:8px;" data-i18n="pdf_title">&#128196; Relatório PDF Profissional</div>
+    <div style="color:var(--dm);font-size:.82rem;margin-bottom:10px;" data-i18n="pdf_sub">Todos os 16 especialistas com dados em tempo real — formato PDF executivo.</div>
     <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(224,82,82,.08);border:1px solid rgba(224,82,82,.25);border-radius:8px;padding:6px 14px;margin-bottom:16px;">
       <span style="font-size:.75rem;">&#9203;</span>
-      <span style="font-size:.72rem;color:#f5a0a0;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;">Este relatório fica disponível por <strong>72 horas</strong> — baixe agora</span>
+      <span style="font-size:.72rem;color:#f5a0a0;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;" data-i18n="pdf_timer">Este relatório fica disponível por <strong>72 horas</strong> — baixe agora</span>
     </div>
     <br>
     <button class="btn btn-pdf" id="btn-dl-pdf" onclick="downloadPDF()" style="max-width:300px;margin:0 auto;">
@@ -328,14 +340,14 @@ textarea::placeholder{color:var(--dm2);}
 <div class="modal-overlay" id="modal-login" onclick="if(event.target===this)closeModal('login')">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('login')">&#10005;</button>
-    <div class="modal-title">&#11041; Entrar no Wuzo</div>
+    <div class="modal-title" data-i18n="modal_login_title">&#11041; Entrar no Wuzo</div>
     <input class="modal-inp" type="email" id="login-email" placeholder="seu@email.com"
       onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()">
     <input class="modal-inp" type="password" id="login-pass" placeholder="Senha"
       onkeydown="if(event.key==='Enter')doLogin()">
-    <button class="modal-submit" id="btn-login-sub" onclick="doLogin()">ENTRAR</button>
+    <button class="modal-submit" id="btn-login-sub" onclick="doLogin()" data-i18n="btn_login_sub">ENTRAR</button>
     <div class="modal-err" id="login-err"></div>
-    <div class="modal-switch">Não tem conta? <a onclick="switchModal('login','register')">Criar conta</a></div>
+    <div class="modal-switch"><span data-i18n="login_switch">Não tem conta? <a onclick="switchModal('login','register')">Criar conta</a></span></div>
   </div>
 </div>
 
@@ -343,20 +355,225 @@ textarea::placeholder{color:var(--dm2);}
 <div class="modal-overlay" id="modal-register" onclick="if(event.target===this)closeModal('register')">
   <div class="modal-box">
     <button class="modal-close" onclick="closeModal('register')">&#10005;</button>
-    <div class="modal-title">&#11041; Criar Conta Grátis</div>
+    <div class="modal-title" data-i18n="modal_reg_title">&#11041; Criar Conta Grátis</div>
     <input class="modal-inp" type="email" id="reg-email" placeholder="seu@email.com"
       onkeydown="if(event.key==='Enter')document.getElementById('reg-pass').focus()">
     <input class="modal-inp" type="password" id="reg-pass" placeholder="Senha (mínimo 4 caracteres)"
       onkeydown="if(event.key==='Enter')doRegister()">
-    <button class="modal-submit" id="btn-reg-sub" onclick="doRegister()">CRIAR CONTA GRÁTIS</button>
+    <button class="modal-submit" id="btn-reg-sub" onclick="doRegister()" data-i18n="btn_reg_sub">CRIAR CONTA GRÁTIS</button>
     <div class="modal-err" id="reg-err"></div>
-    <div class="modal-switch">Já tem conta? <a onclick="switchModal('register','login')">Entrar</a></div>
+    <div class="modal-switch"><span data-i18n="reg_switch">Já tem conta? <a onclick="switchModal('register','login')">Entrar</a></span></div>
   </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <script>
 var BACKEND = "https://app.wuzo.com.br";
+
+// ── I18N ENGINE ──────────────────────────────────────────────────────────
+var _lang = localStorage.getItem("wuzo_lang") || "pt";
+
+var I18N = {
+  pt: {
+    live:             "AO VIVO",
+    inp_lbl:          "Descreva sua situação financeira",
+    inp_placeholder:  "Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado.",
+    pipeline_lbl:     "16 ESPECIALISTAS · DADOS EM TEMPO REAL",
+    lock_title:       "Desbloqueie o Relatório Completo — 16 Especialistas",
+    lock_sub:         "Análise completa de Cripto (preços ao vivo), Ações, Renda Fixa, FIIs, Dívidas, Tributário, Compliance e mais — com PDF executivo disponível por 72h.",
+    pdf_title:        "&#128196; Relatório PDF Profissional",
+    pdf_sub:          "Todos os 16 especialistas com dados em tempo real — formato PDF executivo.",
+    pdf_timer:        "Este relatório fica disponível por <strong>72 horas</strong> — baixe agora",
+    btn_login:        "Entrar",
+    btn_register:     "Registrar",
+    btn_logout:       "Sair",
+    btn_login_sub:    "ENTRAR",
+    btn_reg_sub:      "CRIAR CONTA GRÁTIS",
+    modal_login_title:"&#11041; Entrar no Wuzo",
+    modal_reg_title:  "&#11041; Criar Conta Grátis",
+    login_switch:     "Não tem conta? <a onclick=\"switchModal('login','register')\">Criar conta</a>",
+    reg_switch:       "Já tem conta? <a onclick=\"switchModal('register','login')\">Entrar</a>",
+    verdict_title:    "&#9878;&#65039; Veredito — Consultor Sênior WUZO",
+    verdict_full_title:"&#128084; Veredito Final — Consultor Sênior",
+    credit_label:     "&#11088; PREMIUM:",
+    status_connecting:"Conectando...",
+    status_waking:    "Acordando...",
+    status_online:    "Motor Online",
+    status_offline:   "Servidor offline",
+    btn_free_main:    "&#9889; ANALISAR GRÁTIS AGORA",
+    btn_free_sub:     "Sem cadastro · Resultado em segundos · Sem cartão",
+    btn_premium_main: "&#11088; RELATÓRIO COMPLETO — 16 IA com Dados Ao Vivo",
+    btn_premium_sub:  "&#10003; Cripto em tempo real &nbsp;&#10003; Ações &amp; FIIs &nbsp;&#10003; PDF por 72h &nbsp;&#10003; Acesso imediato",
+    btn_buy_main:     "&#128274; LIBERAR ACESSO AGORA — R$&nbsp;19,90",
+    btn_buy_sub:      "&#128179; Pix ou Cartão &nbsp;&#183;&nbsp; Acesso imediato &nbsp;&#183;&nbsp; Sem assinatura &nbsp;&#183;&nbsp; Sem recorrência",
+    btn_free_popular: "✦ MAIS POPULAR",
+    btn_pdf_dl:       "&#9989; BAIXAR MEU RELATÓRIO PDF",
+    btn_pdf_gen:      "&#9203; Gerando PDF...",
+    lock_btn:         "<span data-i18n=\"lock_btn\">&#128274; QUERO O RELATÓRIO COMPLETO — R$&nbsp;19,90</span>",
+    log_init:         "&#11041; Iniciando...",
+    pip_running:      "ANALISANDO",
+    pip_done:         "CONCLUÍDO",
+    log_starting:     "Análise com dados em tempo real...",
+    log_fetching:     "Buscando preços reais e notícias do dia...",
+    log_processing:   "Processando 16 especialistas...",
+    log_done:         "Concluído.",
+    err_describe:     "Descreva sua situação financeira.",
+    err_server_wake:  "&#9203; Servidor acordando, aguarde...",
+    login_placeholder_email: "seu@email.com",
+    login_placeholder_pass:  "Senha",
+    reg_placeholder_pass:    "Senha (mínimo 4 caracteres)",
+    lang_label:       "Idioma",
+    lang_instruction: "Responda em português do Brasil.",
+  },
+  en: {
+    live:             "LIVE",
+    inp_lbl:          "Describe your financial situation",
+    inp_placeholder:  "E.g.: I have $10,000 to invest, $2,000 credit card debt at 12% monthly interest, $2,500/mo income. I want to build wealth over the next 5 years with a moderate risk profile.",
+    pipeline_lbl:     "16 SPECIALISTS · REAL-TIME DATA",
+    lock_title:       "Unlock the Full Report — 16 Specialists",
+    lock_sub:         "Full analysis of Crypto (live prices), Stocks, Fixed Income, REITs, Debt, Tax Planning, Compliance and more — with executive PDF available for 72h.",
+    pdf_title:        "&#128196; Professional PDF Report",
+    pdf_sub:          "All 16 specialists with real-time data — executive PDF format.",
+    pdf_timer:        "This report is available for <strong>72 hours</strong> — download now",
+    btn_login:        "Sign In",
+    btn_register:     "Register",
+    btn_logout:       "Sign Out",
+    btn_login_sub:    "SIGN IN",
+    btn_reg_sub:      "CREATE FREE ACCOUNT",
+    modal_login_title:"&#11041; Sign In to Wuzo",
+    modal_reg_title:  "&#11041; Create Free Account",
+    login_switch:     "No account? <a onclick=\"switchModal('login','register')\">Create one</a>",
+    reg_switch:       "Already have an account? <a onclick=\"switchModal('register','login')\">Sign in</a>",
+    verdict_title:    "&#9878;&#65039; Verdict — Senior Consultant WUZO",
+    verdict_full_title:"&#128084; Final Verdict — Senior Consultant",
+    credit_label:     "&#11088; PREMIUM:",
+    status_connecting:"Connecting...",
+    status_waking:    "Starting up...",
+    status_online:    "Engine Online",
+    status_offline:   "Server offline",
+    btn_free_main:    "&#9889; ANALYZE FOR FREE NOW",
+    btn_free_sub:     "No signup · Results in seconds · No card",
+    btn_premium_main: "&#11088; FULL REPORT — 16 AIs with Live Data",
+    btn_premium_sub:  "&#10003; Real-time Crypto &nbsp;&#10003; Stocks &amp; REITs &nbsp;&#10003; PDF for 72h &nbsp;&#10003; Instant access",
+    btn_buy_main:     "&#128274; UNLOCK ACCESS NOW — R$&nbsp;19.90",
+    btn_buy_sub:      "&#128179; Card or Pix &nbsp;&#183;&nbsp; Instant access &nbsp;&#183;&nbsp; No subscription &nbsp;&#183;&nbsp; One-time",
+    btn_free_popular: "✦ MOST POPULAR",
+    btn_pdf_dl:       "&#9989; DOWNLOAD MY PDF REPORT",
+    btn_pdf_gen:      "&#9203; Generating PDF...",
+    lock_btn:         "&#128274; I WANT THE FULL REPORT — R$&nbsp;19.90",
+    log_init:         "&#11041; Starting...",
+    pip_running:      "ANALYZING",
+    pip_done:         "COMPLETED",
+    log_starting:     "Analysis with real-time data...",
+    log_fetching:     "Fetching live prices and today's news...",
+    log_processing:   "Processing 16 specialists...",
+    log_done:         "Completed.",
+    err_describe:     "Describe your financial situation.",
+    err_server_wake:  "&#9203; Server starting up, please wait...",
+    login_placeholder_email: "your@email.com",
+    login_placeholder_pass:  "Password",
+    reg_placeholder_pass:    "Password (minimum 4 characters)",
+    lang_label:       "Language",
+    lang_instruction: "Respond in English.",
+  },
+  es: {
+    live:             "EN VIVO",
+    inp_lbl:          "Describe tu situación financiera",
+    inp_placeholder:  "Ej.: Tengo $10.000 para invertir, deuda en tarjeta de $2.000 al 12% mensual, ingreso de $2.500/mes. Quiero construir patrimonio en los próximos 5 años con perfil moderado.",
+    pipeline_lbl:     "16 ESPECIALISTAS · DATOS EN TIEMPO REAL",
+    lock_title:       "Desbloquea el Informe Completo — 16 Especialistas",
+    lock_sub:         "Análisis completo de Cripto (precios en vivo), Acciones, Renta Fija, FIIs, Deudas, Tributario, Compliance y más — con PDF ejecutivo disponible por 72h.",
+    pdf_title:        "&#128196; Informe PDF Profesional",
+    pdf_sub:          "Los 16 especialistas con datos en tiempo real — formato PDF ejecutivo.",
+    pdf_timer:        "Este informe está disponible por <strong>72 horas</strong> — descárgalo ahora",
+    btn_login:        "Entrar",
+    btn_register:     "Registrarse",
+    btn_logout:       "Salir",
+    btn_login_sub:    "ENTRAR",
+    btn_reg_sub:      "CREAR CUENTA GRATIS",
+    modal_login_title:"&#11041; Entrar en Wuzo",
+    modal_reg_title:  "&#11041; Crear Cuenta Gratis",
+    login_switch:     "¿Sin cuenta? <a onclick=\"switchModal('login','register')\">Crear una</a>",
+    reg_switch:       "¿Ya tienes cuenta? <a onclick=\"switchModal('register','login')\">Entrar</a>",
+    verdict_title:    "&#9878;&#65039; Veredicto — Consultor Senior WUZO",
+    verdict_full_title:"&#128084; Veredicto Final — Consultor Senior",
+    credit_label:     "&#11088; PREMIUM:",
+    status_connecting:"Conectando...",
+    status_waking:    "Iniciando...",
+    status_online:    "Motor Online",
+    status_offline:   "Servidor offline",
+    btn_free_main:    "&#9889; ANALIZAR GRATIS AHORA",
+    btn_free_sub:     "Sin registro · Resultado en segundos · Sin tarjeta",
+    btn_premium_main: "&#11088; INFORME COMPLETO — 16 IAs con Datos en Vivo",
+    btn_premium_sub:  "&#10003; Cripto en tiempo real &nbsp;&#10003; Acciones &amp; FIIs &nbsp;&#10003; PDF 72h &nbsp;&#10003; Acceso inmediato",
+    btn_buy_main:     "&#128274; DESBLOQUEAR ACCESO — R$&nbsp;19,90",
+    btn_buy_sub:      "&#128179; Tarjeta o Pix &nbsp;&#183;&nbsp; Acceso inmediato &nbsp;&#183;&nbsp; Sin suscripción &nbsp;&#183;&nbsp; Sin recurrencia",
+    btn_free_popular: "✦ MÁS POPULAR",
+    btn_pdf_dl:       "&#9989; DESCARGAR MI INFORME PDF",
+    btn_pdf_gen:      "&#9203; Generando PDF...",
+    lock_btn:         "&#128274; QUIERO EL INFORME COMPLETO — R$&nbsp;19,90",
+    log_init:         "&#11041; Iniciando...",
+    pip_running:      "ANALIZANDO",
+    pip_done:         "COMPLETADO",
+    log_starting:     "Análisis con datos en tiempo real...",
+    log_fetching:     "Obteniendo precios reales y noticias del día...",
+    log_processing:   "Procesando 16 especialistas...",
+    log_done:         "Completado.",
+    err_describe:     "Describe tu situación financiera.",
+    err_server_wake:  "&#9203; Servidor iniciando, por favor espera...",
+    login_placeholder_email: "tu@email.com",
+    login_placeholder_pass:  "Contraseña",
+    reg_placeholder_pass:    "Contraseña (mínimo 4 caracteres)",
+    lang_label:       "Idioma",
+    lang_instruction: "Responde en español.",
+  }
+};
+
+function t(key){ return (I18N[_lang] || I18N.pt)[key] || (I18N.pt)[key] || key; }
+
+function setLang(lang){
+  _lang = lang;
+  localStorage.setItem("wuzo_lang", lang);
+  document.documentElement.lang = lang==="pt"?"pt-BR":lang;
+  // Highlight botão ativo
+  ["pt","en","es"].forEach(function(l){
+    var btn=document.getElementById("lang-"+l);
+    if(btn) btn.className="lang-btn"+(l===lang?" active":"");
+  });
+  applyTranslations();
+}
+
+function applyTranslations(){
+  // Elementos com data-i18n
+  document.querySelectorAll("[data-i18n]").forEach(function(el){
+    el.innerHTML = t(el.getAttribute("data-i18n"));
+  });
+  // Placeholders dinâmicos
+  var ti=document.getElementById("txt-input");
+  if(ti) ti.placeholder = t("inp_placeholder");
+  var le=document.getElementById("login-email");
+  if(le) le.placeholder = t("login_placeholder_email");
+  var lp=document.getElementById("login-pass");
+  if(lp) lp.placeholder = t("login_placeholder_pass");
+  var re=document.getElementById("reg-email");
+  if(re) re.placeholder = t("login_placeholder_email");
+  var rp=document.getElementById("reg-pass");
+  if(rp) rp.placeholder = t("reg_placeholder_pass");
+  // Botões principais (reconstruídos pelo setBtns)
+  setBtns(false);
+  // Ticker AO VIVO
+  document.querySelectorAll("[data-i18n='live']").forEach(function(el){
+    el.innerHTML = t("live");
+  });
+  // Pipeline pill
+  var pill=document.getElementById("pip-pill");
+  if(pill && pill.textContent.trim()==="ANALISANDO"||
+     pill && pill.textContent.trim()==="ANALYZING"||
+     pill && pill.textContent.trim()==="ANALIZANDO"){
+    pill.innerHTML=t("pip_running");
+  }
+}
+
 function aborter(ms){var c=new AbortController();setTimeout(function(){c.abort();},ms);return c.signal;}
 var LS={TOKEN:"wuzo_token",EMAIL:"wuzo_email",PROMPT:"wuzo_pending_prompt"};
 function getSaved(k){return localStorage.getItem(k)||"";}
@@ -442,7 +659,7 @@ function setStatus(txt,cls){var el=document.getElementById("api-status");el.text
 
 // ── HEALTH CHECK (aguarda Render acordar até 90s) ────────────
 async function checkHealth(){
-  setStatus("Conectando...","s-waking");
+  setStatus(t("status_connecting"),"s-waking");
   var waits=[0,5000,10000,15000,20000,25000,30000,35000,40000];
   for(var i=0;i<waits.length;i++){
     if(waits[i]>0)await new Promise(function(r){setTimeout(r,waits[i]);});
@@ -450,14 +667,14 @@ async function checkHealth(){
       var r=await fetch(BACKEND+"/health",{signal:aborter(60000)});
       if(r.ok){
         var d=await r.json();_online=true;
-        setStatus("Motor Online","s-online");
+        setStatus(t("status_online"),"s-online");
         setInterval(function(){fetch(BACKEND+"/ping",{signal:aborter(5000)}).catch(function(){});},4*60*1000);
         await updateUI();await checkStripeReturn();return;
       }
     }catch(e){}
-    if(i<waits.length-1)setStatus("Acordando... ("+(i+1)+"/"+(waits.length-1)+")","s-waking");
+    if(i<waits.length-1)setStatus(t("status_waking")+" ("+(i+1)+"/"+(waits.length-1)+")","s-waking");
   }
-  _online=false;setStatus("Servidor offline","s-offline");
+  _online=false;setStatus(t("status_offline"),"s-offline");
 }
 
 async function checkStripeReturn(){
@@ -597,8 +814,8 @@ function finishGrid(agents){
   clearInterval(_progInt);document.getElementById("prog-fill").style.width="100%";
   var ids=agents?agents.reduce(function(m,a){m[a.id]=1;return m;},{}):null;
   AGENTS_UI.forEach(function(a){var c=document.getElementById("ac-"+a.id);if(!c)return;if(!ids||ids[a.id]){c.className="ac done";c.querySelector(".ac-st").innerHTML="&#10003;";}});
-  document.getElementById("pip-pill").textContent="CONCLUIDO";document.getElementById("pip-pill").className="pill pill-done";
-  addLog("Concluido.","ok");
+  document.getElementById("pip-pill").innerHTML=t("pip_done");document.getElementById("pip-pill").className="pill pill-done";
+  addLog(t("log_done"),"ok");
 }
 function addLog(msg,cls){
   var f=document.getElementById("log-feed"),d=document.createElement("div");
@@ -607,25 +824,25 @@ function addLog(msg,cls){
 }
 function resetPipeline(){
   buildGrid();document.getElementById("prog-fill").style.width="0%";
-  document.getElementById("log-feed").innerHTML='<div class="ll">&#11041; Iniciando...</div>';
-  document.getElementById("pip-pill").textContent="ANALISANDO";document.getElementById("pip-pill").className="pill pill-run";
+  document.getElementById("log-feed").innerHTML='<div class="ll" id="log-init-ll">&#11041; Iniciando...</div>';
+  document.getElementById("pip-pill").innerHTML=t("pip_running");document.getElementById("pip-pill").className="pill pill-run";
 }
 
 // ── ANALISE GRATUITA ──────────────────────────────────────────
 async function handleFree(){
-  if(!_online){showAlert("inp-alert","alert-info","&#9203; Servidor acordando, aguarde...");return;}
+  if(!_online){showAlert("inp-alert","alert-info",t("err_server_wake"));return;}
   var txt=document.getElementById("txt-input").value.trim();
-  if(!txt){showAlert("inp-alert","alert-info","Descreva sua situacao financeira.");return;}
+  if(!txt){showAlert("inp-alert","alert-info",t("err_describe"));return;}
   hideAlert("inp-alert");
   document.getElementById("sec-free").style.display="none";
   document.getElementById("sec-full").style.display="none";
   document.getElementById("sec-pipeline").style.display="block";
   resetPipeline();setBtns(true);
-  addLog("Analise gratuita com dados em tempo real...");
+  addLog(t("log_starting"));
   ["consultor_senior","macroeconomia"].forEach(function(id){var c=document.getElementById("ac-"+id);if(c){c.className="ac thinking";}});
   animateProg();
   try{
-    var r=await fetch(BACKEND+"/api/analyze/free",{method:"POST",headers:authHeader(),body:JSON.stringify({prompt:txt}),signal:aborter(90000)});
+    var r=await fetch(BACKEND+"/api/analyze/free",{method:"POST",headers:authHeader(),body:JSON.stringify({prompt:txt,language:_lang}),signal:aborter(90000)});
     var d=await r.json().catch(function(){return {};});
     if(!r.ok){showAlert("inp-alert","alert-err",d.error||"Erro na analise.");clearInterval(_progInt);setBtns(false);return;}
     finishGrid([{id:"consultor_senior"},{id:"macroeconomia"}]);
@@ -643,14 +860,14 @@ function renderFreeResult(verdict,preview){
 
 // ── PREMIUM ───────────────────────────────────────────────────
 async function handlePremium(){
-  if(!_online){showAlert("inp-alert","alert-info","&#9203; Servidor acordando, aguarde...");return;}
+  if(!_online){showAlert("inp-alert","alert-info",t("err_server_wake"));return;}
   var tok=getToken();if(!tok){openModal("login");return;}
   var credits=parseInt(document.getElementById("cred-num").textContent)||0;
   if(credits<1){var txt=document.getElementById("txt-input").value.trim();if(txt)save(LS.PROMPT,txt);await startCheckout();return;}
   await runPremiumAnalysis();
 }
 async function handlePremiumFromFree(){
-  if(!_online){showAlert("inp-alert","alert-info","&#9203; Servidor acordando, aguarde...");return;}
+  if(!_online){showAlert("inp-alert","alert-info",t("err_server_wake"));return;}
   var txt=document.getElementById("txt-input").value.trim();if(txt)save(LS.PROMPT,txt);
   var tok=getToken();if(!tok){openModal("register");return;}
   var credits=parseInt(document.getElementById("cred-num").textContent)||0;
@@ -658,7 +875,7 @@ async function handlePremiumFromFree(){
   await runPremiumAnalysis();
 }
 async function handleBuy(){
-  if(!_online){showAlert("inp-alert","alert-info","&#9203; Servidor acordando, aguarde...");return;}
+  if(!_online){showAlert("inp-alert","alert-info",t("err_server_wake"));return;}
   var txt=document.getElementById("txt-input").value.trim();if(txt)save(LS.PROMPT,txt);
   var tok=getToken();if(!tok){openModal("register");return;}
   await startCheckout();
@@ -674,19 +891,19 @@ async function startCheckout(){
 
 async function runPremiumAnalysis(){
   var txt=document.getElementById("txt-input").value.trim()||getSaved(LS.PROMPT);
-  if(!txt){showAlert("inp-alert","alert-info","Descreva sua situacao financeira.");return;}
+  if(!txt){showAlert("inp-alert","alert-info",t("err_describe"));return;}
   del(LS.PROMPT);hideAlert("inp-alert");
   document.getElementById("sec-free").style.display="none";
   document.getElementById("sec-full").style.display="none";
   document.getElementById("sec-pipeline").style.display="block";
   resetPipeline();setAllThinking();setBtns(true);
-  addLog("Iniciando 16 especialistas com dados em tempo real...");
+  addLog(t("log_starting"));
   var tok=getToken();var jobId=null;
   try{
-    var r=await fetch(BACKEND+"/api/analyze/premium",{method:"POST",headers:authHeader(),body:JSON.stringify({prompt:txt}),signal:aborter(15000)});
+    var r=await fetch(BACKEND+"/api/analyze/premium",{method:"POST",headers:authHeader(),body:JSON.stringify({prompt:txt,language:_lang}),signal:aborter(15000)});
     var d=await r.json().catch(function(){return {};});
     if(!r.ok){showAlert("inp-alert","alert-err",d.error||"Erro ao iniciar.");clearInterval(_progInt);setBtns(false);return;}
-    jobId=d.job_id;addLog("Buscando precos reais e noticias do dia...");
+    jobId=d.job_id;addLog(t("log_fetching"));
   }catch(e){showAlert("inp-alert","alert-err","Erro: "+e.message);clearInterval(_progInt);setBtns(false);return;}
 
   var maxTries=80;
@@ -700,7 +917,7 @@ async function runPremiumAnalysis(){
         finishGrid(pd.agents);renderFullReport(pd.verdict,pd.agents);setBtns(false);return;
       }
       if(pd.status==="error"){showAlert("inp-alert","alert-err",pd.message||"Erro.");clearInterval(_progInt);setBtns(false);return;}
-      if(i%5===0)addLog("Processando 16 especialistas... ("+((i+1)*4)+"s)");
+      if(i%5===0)addLog(t("log_processing")+" ("+((i+1)*4)+"s)");
     }catch(e){}
   }
   showAlert("inp-alert","alert-err","Timeout. Tente novamente.");clearInterval(_progInt);setBtns(false);
@@ -731,7 +948,7 @@ function renderFullReport(verdict,agents){
 async function downloadPDF(){
   if(!_currentAnalysisId){showAlert("inp-alert","alert-err","Analise nao disponivel.");return;}
   var tok=getToken();if(!tok){openModal("login");return;}
-  var btn=document.getElementById("btn-dl-pdf");btn.disabled=true;btn.innerHTML="&#9203; Gerando PDF...";
+  var btn=document.getElementById("btn-dl-pdf");btn.disabled=true;btn.innerHTML=t("btn_pdf_gen");
   try{
     var r=await fetch(BACKEND+"/api/report/pdf/"+_currentAnalysisId,{headers:{"Authorization":"Bearer "+tok},signal:aborter(45000)});
     if(!r.ok){var e=await r.json().catch(function(){return {};});showAlert("inp-alert","alert-err",e.error||"Erro ao gerar PDF.");return;}
@@ -740,7 +957,7 @@ async function downloadPDF(){
     var a=document.createElement("a");a.href=url;a.download="wuzo_relatorio_"+_currentAnalysisId+".pdf";
     document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
   }catch(e){showAlert("inp-alert","alert-err","Erro ao baixar: "+e.message);}
-  finally{btn.disabled=false;btn.innerHTML="&#9989; BAIXAR MEU RELATÓRIO PDF";}
+  finally{btn.disabled=false;btn.innerHTML=t("btn_pdf_dl");}
 }
 
 // ── ADMIN ─────────────────────────────────────────────────────
@@ -920,12 +1137,21 @@ async function adminClearPDFCache(){
 // ── HELPERS ───────────────────────────────────────────────────
 function setBtns(on){
   ["btn-free","btn-premium","btn-buy"].forEach(function(id){var b=document.getElementById(id);if(b)b.disabled=on;});
+  var bf=document.getElementById("btn-free");
+  var bp=document.getElementById("btn-premium");
+  var bb=document.getElementById("btn-buy");
   if(on){
-    document.getElementById("btn-free").innerHTML='<div class="spin"></div> Analisando...';
-    document.getElementById("btn-premium").innerHTML='<div class="spin"></div> Consultando 16 Especialistas...';
+    if(bf)bf.innerHTML='<div class="spin"></div> '+(_lang==="en"?"Analyzing...":_lang==="es"?"Analizando...":"Analisando...");
+    if(bp)bp.innerHTML='<div class="spin"></div> '+(_lang==="en"?"Consulting 16 Specialists...":_lang==="es"?"Consultando 16 Especialistas...":"Consultando 16 Especialistas...");
   }else{
-    document.getElementById("btn-free").innerHTML='&#9889; ANALISAR GRÁTIS AGORA<br><span class=\"btn-sub\">Sem cadastro · Resultado em segundos · Sem cartão</span>';
-    document.getElementById("btn-premium").innerHTML='&#11088; RELATÓRIO COMPLETO — 16 IA com Dados Ao Vivo<br><span class=\"btn-sub\">&#10003; Cripto em tempo real &nbsp;&#10003; Ações &amp; FIIs &nbsp;&#10003; PDF por 72h &nbsp;&#10003; Acesso imediato</span>';
+    if(bf)bf.innerHTML=t("btn_free_main")+'<br><span class="btn-sub">'+t("btn_free_sub")+'</span>';
+    if(bp){
+      var popular=t("btn_free_popular");
+      // Atualiza o ::before via CSS var (workaround: usa atributo data)
+      bp.setAttribute("data-popular",popular);
+      bp.innerHTML=t("btn_premium_main")+'<br><span class="btn-sub">'+t("btn_premium_sub")+'</span>';
+    }
+    if(bb)bb.innerHTML=t("btn_buy_main")+'<br><span class="btn-sub">'+t("btn_buy_sub")+'</span>';
   }
 }
 function showAlert(id,cls,msg){var el=document.getElementById(id);el.className="alert "+cls;el.innerHTML=msg;el.style.display="block";}
@@ -933,7 +1159,7 @@ function hideAlert(id){document.getElementById(id).style.display="none";}
 
 // ── INIT ─────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded",function(){
-  buildGrid();getToken();updateUI();checkHealth();
+  setLang(_lang);buildGrid();getToken();updateUI();checkHealth();
   updateTicker();
   setInterval(updateTicker,30000); // atualiza precos a cada 30s
 });
