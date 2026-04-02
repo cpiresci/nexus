@@ -1,189 +1,277 @@
 <!DOCTYPE html>
-<html lang="pt-BR" id="html-root">
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>WUZO — Consultor Financeiro IA</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+/* ── RESET + VARS ──────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --bg:#030302;--card:#0d0c0a;
-  --g:#d4a843;--g2:#f0cc70;--gd:#7a5a1c;--gdd:#3a2208;
-  --bd:rgba(180,140,50,.16);--bd2:rgba(180,140,50,.32);
-  --tx:#ede8dc;--dm:#c0b89e;--dm2:#5a4828;
-  --wh:#faf6ee;--rd:#e05252;--gr:#4aaf78;
-  --r:10px;--r2:6px;
+  --bg:#030302;
+  --card:#0d0c0a;
+  --card2:#131108;
+  --g:#e8c97a; --g2:#f5dfa0; --gd:#8a6a2c; --gdd:#3a2810;
+  --bd:rgba(201,168,76,.14); --bd2:rgba(201,168,76,.3);
+  --tx:#ede8dc; --dm:#c0b89e; --dm2:#5a4828;
+  --wh:#faf6ee; --rd:#e05252; --gr:#4aaf78;
+  --r:10px; --r2:6px;
 }
 html,body{background:var(--bg);color:var(--tx);font-family:'Outfit',sans-serif;min-height:100vh;}
-body{background-image:radial-gradient(ellipse 80% 50% at 0% 10%,rgba(201,168,76,.055) 0%,transparent 55%),radial-gradient(ellipse 60% 60% at 100% 90%,rgba(201,168,76,.04) 0%,transparent 55%);}
-::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--gd);border-radius:2px;}
+body{
+  background-image:
+    radial-gradient(ellipse 80% 50% at 0% 10%,rgba(201,168,76,.055) 0%,transparent 55%),
+    radial-gradient(ellipse 60% 60% at 100% 90%,rgba(201,168,76,.04) 0%,transparent 55%);
+}
+::-webkit-scrollbar{width:3px;height:3px;}
+::-webkit-scrollbar-thumb{background:var(--gd);border-radius:2px;}
 
-/* CRYPTO TICKER */
-#crypto-ticker{width:100%;background:rgba(3,3,2,.95);border-bottom:1px solid var(--bd2);overflow:hidden;padding:7px 0;position:sticky;top:0;z-index:300;backdrop-filter:blur(10px);}
-.ticker-track{display:flex;gap:0;animation:ticker-scroll 50s linear infinite;width:max-content;will-change:transform;}
-.ticker-track:hover{animation-play-state:paused;}
-.ticker-item{display:inline-flex;align-items:center;gap:8px;padding:0 22px;border-right:1px solid rgba(201,168,76,.18);white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:.67rem;}
-.ticker-sym{font-weight:700;color:var(--g);letter-spacing:1.5px;}
-.ticker-price{color:var(--tx);font-weight:600;}
-.ticker-up{color:#4aaf78;font-weight:700;}
-.ticker-dn{color:#e05252;font-weight:700;}
-.ticker-chg{font-size:.6rem;}
-@keyframes ticker-scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
-
-/* LAYOUT */
+/* ── LAYOUT ──────────────────────────────────── */
 .shell{max-width:680px;margin:0 auto;padding:20px 14px 80px;}
-.hdr{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 0 14px;border-bottom:1px solid var(--bd);margin-bottom:20px;gap:12px;flex-wrap:wrap;background:var(--bg);}
-.logo{font-size:1.6rem;font-weight:900;letter-spacing:8px;background:linear-gradient(135deg,#7a5a1c,#f5ead0 35%,#c9a84c 55%,#f5ead0 75%,#7a5a1c);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
+
+/* ── HEADER ──────────────────────────────────── */
+.hdr{display:flex;align-items:center;justify-content:space-between;
+  padding-bottom:14px;border-bottom:1px solid var(--bd);margin-bottom:20px;}
+.logo{
+  font-size:1.6rem;font-weight:900;letter-spacing:8px;
+  background:linear-gradient(135deg,#7a5a1c,#f5ead0 35%,#c9a84c 55%,#f5ead0 75%,#7a5a1c);
+  background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  animation:shimmer 4s linear infinite;
+}
 @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
 .logo-sub{font-family:'JetBrains Mono',monospace;font-size:.42rem;letter-spacing:3px;color:var(--dm2);margin-top:2px;}
-.hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
-.credit-badge{background:rgba(201,168,76,.08);border:1px solid var(--bd);border-radius:20px;padding:5px 12px;font-size:.68rem;font-weight:700;letter-spacing:1px;color:var(--g);font-family:'JetBrains Mono',monospace;}
-.status-pill{display:flex;align-items:center;gap:5px;font-size:.6rem;letter-spacing:1px;}
-.status-pill::before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor;flex-shrink:0;animation:blink 2s ease-in-out infinite;}
+.hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;}
+.credit-badge{
+  background:rgba(201,168,76,.08);border:1px solid var(--bd);
+  border-radius:20px;padding:5px 12px;
+  font-size:.68rem;font-weight:700;letter-spacing:1px;color:var(--g);
+  font-family:'JetBrains Mono',monospace;
+}
+.status-dot{display:flex;align-items:center;gap:5px;font-size:.6rem;color:var(--gr);letter-spacing:1px;}
+.status-dot::before{content:'';width:6px;height:6px;background:var(--gr);border-radius:50%;
+  box-shadow:0 0 6px var(--gr);animation:blink 2s ease-in-out infinite;}
 @keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
-.s-online{color:var(--gr);}.s-waking{color:var(--g);}.s-offline{color:var(--rd);}
-.auth-bar{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
-.abtn{padding:6px 14px;border-radius:20px;border:1px solid var(--bd);font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .2s;background:transparent;color:var(--dm);}
-.abtn:hover{border-color:var(--g);color:var(--g);}
-.abtn.gold{background:rgba(201,168,76,.1);border-color:var(--gd);color:var(--g);}
-.abtn.red{border-color:rgba(224,82,82,.3);color:#e08080;}
-.abtn.red:hover{border-color:var(--rd);color:var(--rd);}
-#user-info{font-size:.6rem;color:var(--dm);font-family:'JetBrains Mono',monospace;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
-/* CARDS */
-.card{background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));border:1px solid var(--bd);border-radius:var(--r);padding:18px 16px;margin-bottom:14px;position:relative;overflow:hidden;}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.28),transparent);}
-.inp-lbl{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:2px;color:var(--dm2);text-transform:uppercase;margin-bottom:5px;}
-textarea{width:100%;background:rgba(0,0,0,.35);border:1px solid var(--bd);border-radius:var(--r2);color:var(--tx);font-family:'Outfit',sans-serif;font-size:.92rem;padding:14px 16px;resize:vertical;min-height:256px;outline:none;line-height:1.8;transition:border-color .2s,box-shadow .2s;margin-bottom:4px;}
+/* ── CARD ────────────────────────────────────── */
+.card{
+  background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));
+  border:1px solid var(--bd);border-radius:var(--r);
+  padding:18px 16px;margin-bottom:14px;position:relative;overflow:hidden;
+}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,168,76,.28),transparent);}
+
+/* ── TEXTAREA ────────────────────────────────── */
+.inp-lbl{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:2px;
+  color:var(--dm2);text-transform:uppercase;margin-bottom:5px;}
+textarea{
+  width:100%;background:rgba(0,0,0,.35);border:1px solid var(--bd);
+  border-radius:var(--r2);color:var(--tx);font-family:'Outfit',sans-serif;
+  font-size:.92rem;padding:12px 14px;resize:vertical;min-height:100px;outline:none;
+  line-height:1.7;transition:border-color .2s,box-shadow .2s;
+}
 textarea:focus{border-color:rgba(201,168,76,.4);box-shadow:0 0 0 3px rgba(201,168,76,.07);}
 textarea::placeholder{color:var(--dm2);}
-.btn-row{display:flex;flex-direction:column;gap:12px;margin-top:22px;padding-top:6px;}
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px 20px;border-radius:50px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:800;font-size:.85rem;letter-spacing:1px;transition:all .2s;}
-.btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important;}
-.btn-free{background:linear-gradient(135deg,#1a3a8a,#2255cc);color:#fff;box-shadow:0 4px 20px rgba(34,85,204,.4);position:relative;overflow:hidden;}
-.btn-free::after{content:"";position:absolute;inset:0;border-radius:50px;border:2px solid rgba(100,160,255,.45);animation:free-pulse 2.2s ease-in-out infinite;pointer-events:none;}
-@keyframes free-pulse{0%,100%{opacity:1;transform:scale(1);}55%{opacity:0;transform:scale(1.035);}}
-.btn-free:hover:not(:disabled){background:linear-gradient(135deg,#1e44a8,#2a66ee);transform:translateY(-2px);box-shadow:0 8px 28px rgba(34,85,204,.5);}
-.btn-free:hover:not(:disabled){transform:translateY(-1px);}
-.btn-premium{background:linear-gradient(135deg,#b8860b,#e8c97a,#f5dfa0,#e8c97a,#8a6a2c);background-size:200% auto;color:#0d0900;animation:shimmer 3s linear infinite;box-shadow:0 4px 24px rgba(201,168,76,.45);position:relative;}
-.btn-premium:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,168,76,.65);}
-.btn-premium::before{content:"✦ MAIS POPULAR";position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#c9a84c;color:#0d0900;font-size:.5rem;font-weight:900;letter-spacing:2px;padding:3px 10px;border-radius:20px;white-space:nowrap;}
-.btn-buy{background:linear-gradient(135deg,#c44e00,#ff8c00);color:#fff;box-shadow:0 4px 20px rgba(220,100,0,.4);position:relative;}
-.btn-buy:hover:not(:disabled){background:linear-gradient(135deg,#d45800,#ff9a1a);transform:translateY(-2px);box-shadow:0 8px 28px rgba(220,100,0,.55);}
-.btn-pdf{background:linear-gradient(135deg,#0f5c2e,#1aad58);color:#fff;box-shadow:0 4px 20px rgba(26,173,88,.35);}
-.btn-sub{font-size:.62rem;opacity:.75;font-weight:400;letter-spacing:.5px;margin-top:2px;display:block;}
-.btn-pdf:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 28px rgba(26,173,88,.5);}
-.alert{padding:10px 14px;border-radius:var(--r2);border-left:3px solid;margin:8px 0;font-size:.82rem;display:none;}
-.alert-info{border-color:var(--g);background:rgba(201,168,76,.05);color:var(--g2);}
-.alert-err{border-color:var(--rd);background:rgba(224,82,82,.05);color:#f5a0a0;}
-.alert-ok{border-color:var(--gr);background:rgba(74,175,120,.05);color:#a0f5c0;}
 
-/* PIPELINE */
+/* ── BUTTONS ─────────────────────────────────── */
+.btn-row{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
+.btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:15px 20px;border-radius:50px;border:none;cursor:pointer;
+  font-family:'Outfit',sans-serif;font-weight:800;font-size:.85rem;letter-spacing:1px;
+  transition:all .2s;text-decoration:none;
+}
+.btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important;}
+
+/* Botão FREE — azul como JUSAII */
+.btn-free{
+  background:linear-gradient(135deg,#1a3a8a,#2255cc);
+  color:#fff;
+  box-shadow:0 4px 20px rgba(34,85,204,.3);
+}
+.btn-free:hover:not(:disabled){
+  background:linear-gradient(135deg,#1e44a0,#2a60e0);
+  transform:translateY(-1px);box-shadow:0 6px 24px rgba(34,85,204,.45);
+}
+
+/* Botão PREMIUM — dourado */
+.btn-premium{
+  background:linear-gradient(135deg,#b8860b,#e8c97a,#f5dfa0,#e8c97a,#8a6a2c);
+  background-size:200% auto;color:#0d0900;
+  animation:shimmer 3s linear infinite;
+  box-shadow:0 4px 20px rgba(201,168,76,.3);
+}
+.btn-premium:hover:not(:disabled){
+  transform:translateY(-1px);box-shadow:0 6px 28px rgba(201,168,76,.5);
+}
+
+/* Botão COMPRAR — verde */
+.btn-buy{
+  background:linear-gradient(135deg,#1a7a3a,#22a04d);
+  color:#fff;
+  box-shadow:0 4px 20px rgba(34,160,77,.25);
+}
+.btn-buy:hover:not(:disabled){
+  background:linear-gradient(135deg,#1e8a42,#27b556);
+  transform:translateY(-1px);box-shadow:0 6px 24px rgba(34,160,77,.4);
+}
+
+/* ── AGENT GRID ──────────────────────────────── */
 .agent-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0;}
 @media(max-width:420px){.agent-grid{grid-template-columns:repeat(2,1fr);}}
-.ac{background:rgba(0,0,0,.4);border:1px solid rgba(40,28,10,.7);border-radius:8px;padding:10px 5px;text-align:center;transition:border-color .3s,box-shadow .3s;}
+.ac{
+  background:rgba(0,0,0,.4);border:1px solid rgba(40,28,10,.7);
+  border-radius:8px;padding:10px 5px;text-align:center;
+  transition:border-color .3s,box-shadow .3s;
+}
 .ac.thinking{border-color:var(--g);animation:pg 1.3s ease-in-out infinite;}
 .ac.done{border-color:var(--gr);}
+.ac.error{border-color:var(--rd);}
 @keyframes pg{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,.4);}50%{box-shadow:0 0 10px rgba(201,168,76,.2);}}
 .ac-em{font-size:1.2rem;line-height:1;}
-.ac-nm{font-size:.45rem;color:#c0b89e;letter-spacing:.5px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;}
-.ac-st{font-size:.55rem;font-weight:700;margin-top:4px;}
-.ac.thinking .ac-st{color:var(--g);}.ac.done .ac-st{color:var(--gr);}
-.prog{background:rgba(201,168,76,.07);border-radius:3px;height:4px;overflow:hidden;margin:8px 0;}
-.prog-fill{height:100%;background:linear-gradient(90deg,var(--gdd),var(--g),var(--g2));border-radius:3px;transition:width .5s;width:0%;}
-.log{background:rgba(0,0,0,.5);border:1px solid var(--bd);border-radius:var(--r2);padding:8px 12px;max-height:90px;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--dm);margin:8px 0;}
-.ll{padding:1px 0;border-bottom:1px solid rgba(201,168,76,.04);}
-.ll:last-child{border:none;color:var(--g);}.ll.ok{color:var(--gr);}
-.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
-.pill-run{background:rgba(201,168,76,.1);color:var(--g);}.pill-done{background:rgba(74,175,120,.1);color:var(--gr);}
-.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(201,168,76,.3);border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg)}}
+.ac-nm{font-size:.5rem;color:#c0b89e;letter-spacing:.5px;margin-top:4px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;}
+.ac-st{font-size:.55rem;font-weight:700;margin-top:4px;color:rgba(40,28,10,.9);}
+.ac.thinking .ac-st{color:var(--g);}
+.ac.done .ac-st{color:var(--gr);}
+.ac.error .ac-st{color:var(--rd);}
 
-/* RESULTADOS */
-.verdict-card{background:linear-gradient(135deg,rgba(180,140,50,.06),rgba(180,140,50,.01));border:1px solid var(--bd2);border-radius:var(--r);border-left:4px solid var(--g);padding:16px;margin-bottom:12px;position:relative;overflow:hidden;}
-.verdict-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent);}
-.verdict-title{color:var(--g);font-size:1rem;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:12px;}
-.verdict-body{font-size:.88rem;line-height:1.75;color:var(--tx);}
-.verdict-body strong,.verdict-body b{color:var(--g2);}
-.vline{height:1px;background:rgba(201,168,76,.15);margin:10px 0;}
-.lock-card{background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.02));border:1px solid var(--bd2);border-radius:var(--r);padding:22px 18px;text-align:center;margin-top:-4px;}
+/* ── PROGRESS ────────────────────────────────── */
+.prog{background:rgba(201,168,76,.07);border-radius:3px;height:4px;overflow:hidden;margin:8px 0;}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gdd),var(--g),var(--g2));
+  border-radius:3px;transition:width .4s;width:0%;}
+
+/* ── LOG ─────────────────────────────────────── */
+.log{background:rgba(0,0,0,.5);border:1px solid var(--bd);border-radius:var(--r2);
+  padding:8px 12px;max-height:90px;overflow-y:auto;
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--dm);margin:8px 0;}
+.ll{padding:1px 0;border-bottom:1px solid rgba(201,168,76,.04);}
+.ll:last-child{border:none;color:var(--g);}
+.ll.ok{color:var(--gr);}
+.ll.er{color:var(--rd);}
+
+/* ── FREE RESULT ─────────────────────────────── */
+#sec-free{display:none;}
+.verdict-card{
+  background:linear-gradient(135deg,#0a1225,#0d1830);
+  border:1px solid rgba(100,150,255,.2);border-radius:var(--r);
+  border-left:3px solid #4488ff;padding:18px 16px;margin-bottom:14px;
+}
+.verdict-title{color:#6aabff;font-size:1rem;font-weight:800;
+  display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.verdict-body{font-size:.88rem;line-height:1.9;color:#d0ddf5;}
+.verdict-body strong,.verdict-body b{color:#a0c4ff;}
+.vline{height:1px;background:rgba(100,150,255,.15);margin:10px 0;}
+
+/* ── PREVIEW CARD (parcial com blur) ─────────── */
+.preview-wrap{position:relative;overflow:hidden;border-radius:var(--r);}
+.preview-content{
+  background:linear-gradient(135deg,#0a1225,#0d1830);
+  border:1px solid rgba(100,150,255,.2);border-radius:var(--r);
+  border-left:3px solid #4488ff;padding:18px 16px;
+  font-size:.88rem;line-height:1.9;color:#d0ddf5;
+  max-height:240px;overflow:hidden;
+}
+.preview-content h3{color:#6aabff;margin-bottom:8px;}
+.preview-blur{
+  position:absolute;bottom:0;left:0;right:0;height:120px;
+  background:linear-gradient(to bottom,transparent,rgba(3,3,2,.97));
+  display:flex;align-items:flex-end;padding-bottom:0;
+}
+/* ── LOCK CARD ───────────────────────────────── */
+.lock-card{
+  background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.02));
+  border:1px solid var(--bd2);border-radius:var(--r);
+  padding:22px 18px;text-align:center;margin-top:-4px;
+}
 .lock-icon{font-size:1.8rem;margin-bottom:8px;}
 .lock-title{color:var(--g);font-size:1rem;font-weight:800;margin-bottom:4px;}
 .lock-sub{color:var(--dm);font-size:.8rem;margin-bottom:16px;}
+
+/* ── FULL REPORT ─────────────────────────────── */
 #sec-full{display:none;}
-.agent-block{background:linear-gradient(135deg,rgba(180,140,50,.04),rgba(180,140,50,.01));border:1px solid var(--bd);border-radius:var(--r);border-left:3px solid var(--g);padding:14px 16px;margin-bottom:8px;}
-.agent-block-title{color:var(--g2);font-size:.72rem;font-weight:700;margin-bottom:6px;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;border-bottom:1px solid var(--bd);padding-bottom:4px;}
-.agent-block-body{font-size:.84rem;line-height:1.75;color:var(--tx);}
-.agent-block-body strong{color:var(--g2);}
+.report-card{
+  background:rgba(201,168,76,.015);border:1px solid var(--bd);
+  border-radius:var(--r);padding:22px 18px;margin-bottom:14px;
+}
+.report-card h1,.report-card h2{
+  font-family:'Outfit',sans-serif;color:var(--g);
+  border-bottom:1px solid var(--bd);padding-bottom:5px;margin:16px 0 8px;font-size:1rem;
+}
+.report-card h3{font-size:.9rem;color:var(--wh);margin:12px 0 5px;}
+.report-card p{margin-bottom:10px;font-size:.9rem;line-height:1.9;}
+.report-card strong,.report-card b{color:var(--g2);}
+.report-card ul,.report-card ol{padding-left:18px;margin-bottom:10px;}
+.report-card li{margin-bottom:3px;font-size:.88rem;line-height:1.8;}
+.report-card table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.8rem;}
+.report-card th{background:rgba(201,168,76,.07);color:var(--g);padding:6px 8px;
+  text-align:left;border:1px solid var(--bd);font-size:.6rem;letter-spacing:1px;text-transform:uppercase;}
+.report-card td{padding:5px 8px;border:1px solid rgba(201,168,76,.07);}
+.report-card tr:nth-child(even) td{background:rgba(201,168,76,.01);}
+.report-card blockquote{border-left:2px solid var(--g);padding-left:12px;
+  color:var(--dm);margin:10px 0;font-style:italic;}
+.report-card code{background:rgba(201,168,76,.08);padding:2px 5px;
+  border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:.82em;}
 
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;z-index:1000;padding:16px;}
-.modal-overlay.open{display:flex;}
-.modal-box{background:var(--card);border:1px solid var(--bd2);border-radius:14px;padding:28px 24px;width:100%;max-width:360px;position:relative;}
-.modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--g),transparent);}
-.modal-title{font-family:'Outfit',sans-serif;font-size:1.1rem;font-weight:800;color:var(--g);margin-bottom:20px;}
-.modal-inp{width:100%;background:rgba(0,0,0,.4);border:1px solid var(--bd);border-radius:var(--r2);color:var(--tx);font-family:'Outfit',sans-serif;font-size:.9rem;padding:12px 14px;outline:none;transition:border-color .2s;margin-bottom:10px;}
-.modal-inp:focus{border-color:rgba(201,168,76,.5);}
-.modal-inp::placeholder{color:var(--dm2);}
-.modal-submit{width:100%;padding:13px;border-radius:50px;border:none;cursor:pointer;background:linear-gradient(135deg,#b8860b,#e8c97a,#f5dfa0,#e8c97a,#8a6a2c);background-size:200% auto;color:#0d0900;font-family:'Outfit',sans-serif;font-weight:800;font-size:.85rem;letter-spacing:1px;margin-top:6px;animation:shimmer 3s linear infinite;}
-.modal-submit:disabled{opacity:.5;cursor:not-allowed;}
-.modal-switch{text-align:center;margin-top:14px;font-size:.75rem;color:var(--dm);}
-.modal-switch a{color:var(--g);cursor:pointer;text-decoration:underline;}
-.modal-err{background:rgba(224,82,82,.08);border:1px solid rgba(224,82,82,.3);border-radius:var(--r2);padding:8px 12px;font-size:.78rem;color:#f5a0a0;margin-top:8px;display:none;}
-.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--dm);font-size:1.1rem;cursor:pointer;}
-.modal-close:hover{color:var(--g);}
+/* markdown raw fix */
+.report-card p:has(> strong:first-child){margin-bottom:4px;}
 
-/* ADMIN */
-#admin-panel{position:fixed;bottom:20px;right:16px;z-index:500;display:none;flex-direction:column;gap:8px;align-items:flex-end;}
-.admin-btn{padding:10px 16px;border-radius:50px;border:none;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;box-shadow:0 4px 16px rgba(0,0,0,.4);}
-.admin-btn.purple{background:linear-gradient(135deg,#5b21b6,#7c3aed);color:#fff;}
-.admin-btn.purple:hover{transform:translateY(-1px);}
-.admin-btn.pdf-btn{background:linear-gradient(135deg,#7a1a1a,#cc2222);color:#fff;}
-.admin-btn.pdf-btn:hover{transform:translateY(-1px);}
-.pdf-row{display:flex;align-items:center;justify-content:space-between;padding:7px 8px;border-radius:6px;border:1px solid var(--bd);margin-bottom:4px;gap:6px;flex-wrap:wrap;}
-.pdf-row-prompt{font-size:.66rem;color:var(--tx);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.pdf-row-meta{font-size:.58rem;color:var(--dm);font-family:'JetBrains Mono',monospace;white-space:nowrap;}
-.pdf-expiry{font-size:.6rem;font-family:'JetBrains Mono',monospace;padding:2px 6px;border-radius:4px;}
-.pdf-expiry.ok{background:rgba(74,175,120,.1);color:var(--gr);}
-.pdf-expiry.warn{background:rgba(201,168,76,.1);color:var(--g);}
-.pdf-expiry.exp{background:rgba(224,82,82,.1);color:var(--rd);}
-.admin-tab{flex:1;padding:6px 4px;border-radius:6px;border:1px solid var(--bd);background:transparent;color:var(--dm);font-family:'JetBrains Mono',monospace;font-size:.58rem;cursor:pointer;letter-spacing:.5px;transition:all .2s;}
-.admin-tab.active{background:rgba(201,168,76,.15);border-color:var(--gd);color:var(--g);}
-.admin-user-row{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;border-radius:6px;border:1px solid var(--bd);margin-bottom:4px;gap:6px;}
-.admin-user-email{font-size:.68rem;color:var(--tx);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.admin-user-meta{font-size:.6rem;color:var(--dm);font-family:'JetBrains Mono',monospace;white-space:nowrap;}
-.admin-credit-btn{padding:3px 8px;border-radius:4px;border:1px solid var(--gd);background:rgba(201,168,76,.1);color:var(--g);cursor:pointer;font-size:.6rem;font-family:'JetBrains Mono',monospace;}
+/* ── AGENT ANALYSIS BLOCKS ───────────────────── */
+.agent-block{
+  background:linear-gradient(135deg,#0a1225,#0d1830);
+  border:1px solid rgba(100,150,255,.15);border-radius:var(--r);
+  border-left:3px solid #4488ff;padding:16px;margin-bottom:10px;
+}
+.agent-block-title{color:#6aabff;font-size:.85rem;font-weight:700;
+  display:flex;align-items:center;gap:6px;margin-bottom:10px;}
+.agent-block-body{font-size:.84rem;line-height:1.85;color:#d0ddf5;}
+.agent-block-body strong,.agent-block-body b{color:#a0c4ff;}
 
-/* LANGUAGE SELECTOR */
-.lang-selector{display:flex;gap:4px;align-items:center;}
-.lang-btn{background:transparent;border:1px solid var(--bd);border-radius:12px;color:var(--dm);font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:1px;padding:3px 8px;cursor:pointer;transition:all .2s;text-transform:uppercase;}
-.lang-btn:hover{border-color:var(--g);color:var(--g);}
-.lang-btn.active{background:rgba(201,168,76,.12);border-color:var(--gd);color:var(--g);}
+/* ── DOWNLOAD ROW ────────────────────────────── */
+.dl-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+.dl-btn{flex:1;min-width:120px;text-align:center;padding:10px;border-radius:50px;
+  font-weight:700;font-size:.65rem;letter-spacing:1px;text-transform:uppercase;
+  text-decoration:none;border:1px solid var(--bd);color:var(--g);
+  background:rgba(201,168,76,.05);transition:all .2s;}
+.dl-btn:hover{border-color:var(--g);background:rgba(201,168,76,.1);}
 
+/* ── PILL ────────────────────────────────────── */
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;
+  font-size:.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+.pill-run{background:rgba(201,168,76,.1);color:var(--g);}
+.pill-done{background:rgba(74,175,120,.1);color:var(--gr);}
+
+/* ── ALERT ───────────────────────────────────── */
+.alert{padding:10px 14px;border-radius:var(--r2);border-left:3px solid;
+  margin:8px 0;font-size:.82rem;display:none;}
+.alert-info{border-color:var(--g);background:rgba(201,168,76,.05);color:var(--g2);}
+.alert-err {border-color:var(--rd);background:rgba(224,82,82,.05);color:#f5a0a0;}
+.alert-ok  {border-color:var(--gr);background:rgba(74,175,120,.05);color:#a0f5c0;}
+
+/* ── LANGUAGE SELECTOR ───────────────────────── */
+.lang-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+.lang-lbl{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:2px;
+  color:var(--dm2);text-transform:uppercase;white-space:nowrap;}
+.lang-btn{
+  padding:5px 13px;border-radius:20px;border:1px solid var(--bd);
+  background:rgba(0,0,0,.3);color:var(--dm);font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;letter-spacing:1px;cursor:pointer;transition:all .2s;
+}
+.lang-btn.active{
+  border-color:var(--g);background:rgba(201,168,76,.1);
+  color:var(--g);font-weight:700;
+}
+.lang-btn:hover:not(.active){border-color:rgba(201,168,76,.3);color:var(--g2);}
+
+/* ── SPINNER ─────────────────────────────────── */
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(201,168,76,.3);
+  border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
-
-<!-- CRYPTO TICKER (tempo real — atualiza a cada 30s) -->
-<div id="crypto-ticker">
-  <div class="ticker-track" id="ticker-track">
-    <div class="ticker-item">⬡ <span style="color:var(--dm);font-size:.55rem;letter-spacing:2px;" data-i18n="live">AO VIVO</span></div>
-    <div class="ticker-item"><span class="ticker-sym">BTC</span>&nbsp;<span class="ticker-price" id="t-btc-p">---</span>&nbsp;<span class="ticker-chg" id="t-btc-c">--</span></div>
-    <div class="ticker-item"><span class="ticker-sym">ETH</span>&nbsp;<span class="ticker-price" id="t-eth-p">---</span>&nbsp;<span class="ticker-chg" id="t-eth-c">--</span></div>
-    <div class="ticker-item"><span class="ticker-sym">SOL</span>&nbsp;<span class="ticker-price" id="t-sol-p">---</span>&nbsp;<span class="ticker-chg" id="t-sol-c">--</span></div>
-    <div class="ticker-item"><span class="ticker-sym">BNB</span>&nbsp;<span class="ticker-price" id="t-bnb-p">---</span>&nbsp;<span class="ticker-chg" id="t-bnb-c">--</span></div>
-    <div class="ticker-item"><span class="ticker-sym">DOGE</span>&nbsp;<span class="ticker-price" id="t-doge-p">---</span>&nbsp;<span class="ticker-chg" id="t-doge-c">--</span></div>
-    <!-- Duplicado para loop contínuo -->
-    <div class="ticker-item">⬡ <span style="color:var(--dm);font-size:.55rem;letter-spacing:2px;" data-i18n="live">AO VIVO</span></div>
-    <div class="ticker-item"><span class="ticker-sym">BTC</span>&nbsp;<span class="ticker-price" id="t-btc-p2">---</span>&nbsp;<span class="ticker-chg" id="t-btc-c2">--</span></div>
-    <div class="ticker-item"><span class="ticker-sym">ETH</span>&nbsp;<span class="ticker-price" id="t-eth-p2">---</span>&nbsp;<span class="ticker-chg" id="t-eth-c2">--</span></div>
-    <div class="ticker-item"><span class="ticker-sym">SOL</span>&nbsp;<span class="ticker-price" id="t-sol-p2">---</span>&nbsp;<span class="ticker-chg" id="t-sol-c2">--</span></div>
-    <div class="ticker-item"><span class="ticker-sym">BNB</span>&nbsp;<span class="ticker-price" id="t-bnb-p2">---</span>&nbsp;<span class="ticker-chg" id="t-bnb-c2">--</span></div>
-    <div class="ticker-item"><span class="ticker-sym">DOGE</span>&nbsp;<span class="ticker-price" id="t-doge-p2">---</span>&nbsp;<span class="ticker-chg" id="t-doge-c2">--</span></div>
-  </div>
-</div>
-
 <div class="shell">
 
 <!-- HEADER -->
@@ -193,1030 +281,689 @@ textarea::placeholder{color:var(--dm2);}
     <div class="logo-sub">FINANCIAL INTELLIGENCE · MULTI-AGENT IA</div>
   </div>
   <div class="hdr-right">
-    <div class="lang-selector">
-      <button class="lang-btn active" id="lang-pt" onclick="setLang('pt')">PT</button>
-      <button class="lang-btn" id="lang-en" onclick="setLang('en')">EN</button>
-      <button class="lang-btn" id="lang-es" onclick="setLang('es')">ES</button>
-    </div>
-    <div class="credit-badge">&#11088; PREMIUM: <span id="cred-num">0</span></div>
-    <div id="api-status" class="status-pill s-waking">Conectando...</div>
-    <div class="auth-bar">
-      <div id="auth-out" style="display:flex;gap:6px;">
-        <button class="abtn" onclick="openModal('login')" data-i18n="btn_login">Entrar</button>
-        <button class="abtn gold" onclick="openModal('register')" data-i18n="btn_register">Registrar</button>
-      </div>
-      <div id="auth-in" style="display:none;flex-direction:column;align-items:flex-end;gap:4px;">
-        <span id="user-info"></span>
-        <button class="abtn red" onclick="logout()" data-i18n="btn_logout">Sair</button>
-      </div>
-    </div>
+    <div class="credit-badge">⭐ PREMIUM: <span id="cred-num">0</span></div>
+    <div class="status-dot">MOTOR ONLINE</div>
   </div>
 </div>
 
 <!-- INPUT CARD -->
 <div class="card" id="card-input">
-  <div class="inp-lbl" data-i18n="inp_lbl">Descreva sua situação financeira</div>
-  <textarea id="txt-input" id="txt-input" placeholder="Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado."></textarea>
+  <!-- Seletor de idioma -->
+  <div class="lang-row">
+    <span class="lang-lbl">Language:</span>
+    <button class="lang-btn" id="lang-pt" onclick="setLang('pt')">🇧🇷 PT</button>
+    <button class="lang-btn" id="lang-en" onclick="setLang('en')">🇺🇸 EN</button>
+    <button class="lang-btn" id="lang-es" onclick="setLang('es')">🇪🇸 ES</button>
+  </div>
+
+  <div class="inp-lbl" id="inp-lbl-txt">Descreva sua situação financeira</div>
+  <textarea id="txt-input"
+    placeholder="Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado."></textarea>
+
   <div class="btn-row">
-    <button class="btn btn-free"    id="btn-free"    onclick="handleFree()">&#9889; ANALISAR GRÁTIS AGORA<br><span class="btn-sub">Sem cadastro · Resultado em segundos · Sem cartão</span></button>
-    <button class="btn btn-premium" id="btn-premium" onclick="handlePremium()">&#11088; RELATÓRIO COMPLETO — 16 IA com Dados Ao Vivo<br><span class="btn-sub">&#10003; Cripto em tempo real &nbsp;&#10003; Ações &amp; FIIs &nbsp;&#10003; PDF por 72h &nbsp;&#10003; Acesso imediato</span></button>
-    <button class="btn btn-buy"     id="btn-buy"     onclick="handleBuy()">&#128274; LIBERAR ACESSO AGORA — R$&nbsp;19,90<br><span class="btn-sub">&#128179; Pix ou Cartão &nbsp;&#183;&nbsp; Acesso imediato &nbsp;&#183;&nbsp; Sem assinatura &nbsp;&#183;&nbsp; Sem recorrência</span></button>
+    <button class="btn btn-free" id="btn-free" onclick="handleFree()">
+      ⚡ ANÁLISE GRATUITA
+    </button>
+    <button class="btn btn-premium" id="btn-premium" onclick="handlePremium()">
+      ⭐ RELATÓRIO PREMIUM (16 ESP.)
+    </button>
+    <button class="btn btn-buy" id="btn-buy" onclick="handleBuy()">
+      🛒 COMPRAR (R$ 19,90)
+    </button>
   </div>
   <div class="alert alert-err" id="inp-alert"></div>
 </div>
 
-<!-- PIPELINE -->
+<!-- PIPELINE SECTION -->
 <div class="card" id="sec-pipeline" style="display:none;">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-    <span style="font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;color:var(--dm2);" data-i18n="pipeline_lbl">16 ESPECIALISTAS · DADOS EM TEMPO REAL</span>
-    <span class="pill pill-run" id="pip-pill">ANALISANDO</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;color:var(--dm2);">AGENTES EM EXECUÇÃO</span>
+    <span class="pill pill-run" id="pip-pill">RUNNING</span>
   </div>
   <div class="agent-grid" id="agent-grid"></div>
   <div class="prog"><div class="prog-fill" id="prog-fill"></div></div>
-  <div class="log" id="log-feed"><div class="ll" id="log-init-ll">&#11041; Iniciando...</div></div>
+  <div class="log" id="log-feed"><div class="ll">⬡ Iniciando...</div></div>
 </div>
 
-<!-- FREE RESULT -->
-<div id="sec-free" style="display:none;">
-  <div class="verdict-card">
-    <div class="verdict-title" data-i18n="verdict_title">&#9878;&#65039; Veredito — Consultor Sênior WUZO</div>
+<!-- FREE RESULT SECTION -->
+<div id="sec-free">
+
+  <!-- Veredito -->
+  <div class="verdict-card" id="verdict-box">
+    <div class="verdict-title">⚖️ Veredito do Consultor IA</div>
     <div class="vline"></div>
     <div class="verdict-body" id="verdict-body"></div>
   </div>
+
+  <!-- Preview de 1 especialista com blur -->
+  <div class="preview-wrap">
+    <div class="preview-content" id="preview-body"></div>
+    <div class="preview-blur"></div>
+  </div>
+
+  <!-- Lock card -->
   <div class="lock-card">
-    <div class="lock-icon">&#128274;</div>
-    <div class="lock-title" data-i18n="lock_title">Desbloqueie o Relatório Completo — 16 Especialistas</div>
-    <div class="lock-sub" data-i18n="lock_sub">Análise completa de Cripto (preços ao vivo), Ações, Renda Fixa, FIIs, Dívidas, Tributário, Compliance e mais — com PDF executivo disponível por 72h.</div>
-    <button class="btn btn-premium" onclick="handlePremiumFromFree()" style="max-width:400px;margin:0 auto;">
-      <span data-i18n="lock_btn">&#128274; QUERO O RELATÓRIO COMPLETO — R$&nbsp;19,90</span>
-    </button>
+    <div class="lock-icon">🔒</div>
+    <div class="lock-title">Desbloqueie o relatório completo</div>
+    <div class="lock-sub">Veja a análise dos 16 especialistas + downloads em MD, TXT e HTML</div>
+    <div class="btn-row" style="margin-top:0;">
+      <button class="btn btn-premium" onclick="handlePremium()">⭐ Usar Crédito Premium</button>
+      <button class="btn btn-buy" onclick="handleBuy()">🛒 Comprar — R$ 19,90</button>
+    </div>
   </div>
 </div>
 
-<!-- FULL REPORT -->
+<!-- FULL REPORT SECTION -->
 <div id="sec-full">
-  <div class="verdict-card">
-    <div class="verdict-title" data-i18n="verdict_full_title">&#128084; Veredito Final — Consultor Sênior</div>
-    <div class="vline"></div>
-    <div class="verdict-body" id="full-verdict-body"></div>
-  </div>
+  <div class="report-card" id="full-report-box"></div>
+
+  <!-- Análises por agente -->
   <div id="agent-blocks-box"></div>
-  <div class="card" style="text-align:center;padding:24px;">
-    <div style="color:var(--g);font-weight:800;font-size:1rem;margin-bottom:8px;" data-i18n="pdf_title">&#128196; Relatório PDF Profissional</div>
-    <div style="color:var(--dm);font-size:.82rem;margin-bottom:10px;" data-i18n="pdf_sub">Todos os 16 especialistas com dados em tempo real — formato PDF executivo.</div>
-    <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(224,82,82,.08);border:1px solid rgba(224,82,82,.25);border-radius:8px;padding:6px 14px;margin-bottom:16px;">
-      <span style="font-size:.75rem;">&#9203;</span>
-      <span style="font-size:.72rem;color:#f5a0a0;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;" data-i18n="pdf_timer">Este relatório fica disponível por <strong>72 horas</strong> — baixe agora</span>
-    </div>
-    <br>
-    <button class="btn btn-pdf" id="btn-dl-pdf" onclick="downloadPDF()" style="max-width:300px;margin:0 auto;">
-      &#9989; BAIXAR MEU RELATÓRIO PDF
-    </button>
+
+  <!-- Downloads -->
+  <div class="dl-row" id="dl-row">
+    <a class="dl-btn" id="dl-md"   href="#" download="relatorio_wuzo.md">⬇ .MD</a>
+    <a class="dl-btn" id="dl-txt"  href="#" download="relatorio_wuzo.txt">⬇ .TXT</a>
+    <a class="dl-btn" id="dl-html" href="#" download="relatorio_wuzo.html">⬇ .HTML</a>
   </div>
 </div>
 
 </div><!-- /shell -->
 
-<!-- ADMIN PANEL -->
-<!-- ADMIN PANEL -->
-<div id="admin-panel">
-  <button class="admin-btn pdf-btn" onclick="openPDFFilesModal()">&#128196; PDFs</button>
-  <button class="admin-btn purple" onclick="openAdminModal()">&#128081; Admin</button>
-</div>
-
-<!-- MODAL PDFs EXPIRING -->
-<div class="modal-overlay" id="modal-pdfs" onclick="if(event.target===this)document.getElementById('modal-pdfs').classList.remove('open')">
-  <div class="modal-box" style="max-width:480px;max-height:90vh;overflow-y:auto;">
-    <button class="modal-close" onclick="document.getElementById('modal-pdfs').classList.remove('open')">&#10005;</button>
-    <div class="modal-title">&#128196; Arquivos PDF em Cache</div>
-    <div style="font-size:.72rem;color:var(--dm);margin-bottom:12px;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;">
-      PDFs são excluídos automaticamente após <strong style="color:var(--rd)">72 horas</strong>
-    </div>
-    <button onclick="adminLoadPDFFiles()" style="width:100%;padding:9px;border-radius:8px;border:1px solid var(--gd);background:rgba(201,168,76,.08);color:var(--g);cursor:pointer;font-size:.7rem;font-family:'JetBrains Mono',monospace;margin-bottom:10px;">&#128260; Atualizar lista</button>
-    <div id="pdf-files-list" style="max-height:400px;overflow-y:auto;"></div>
-  </div>
-</div>
-
-<!-- MODAL ADMIN -->
-<div class="modal-overlay" id="modal-admin" onclick="if(event.target===this)closeAdminModal()">
-  <div class="modal-box" style="max-width:440px;max-height:90vh;overflow-y:auto;">
-    <button class="modal-close" onclick="closeAdminModal()">&#10005;</button>
-    <div class="modal-title">&#128081; Painel Administrativo</div>
-    <div style="display:flex;gap:4px;margin-bottom:16px;">
-      <button class="admin-tab active" id="tab-credits" onclick="switchAdminTab('credits')">&#128176; Créditos</button>
-      <button class="admin-tab" id="tab-users" onclick="switchAdminTab('users')">&#128101; Usuários</button>
-      <button class="admin-tab" id="tab-stats" onclick="switchAdminTab('stats')">&#128200; Stats</button>
-    </div>
-    <!-- Créditos -->
-    <div id="panel-credits">
-      <div style="font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--dm2);margin-bottom:6px;letter-spacing:1px;">EMAIL OU ID DO USUÁRIO</div>
-      <input class="modal-inp" type="text" id="admin-target" placeholder="email@exemplo.com ou ID">
-      <div style="display:flex;gap:8px;margin-bottom:8px;align-items:center;">
-        <input class="modal-inp" type="number" id="admin-amount" value="1" min="0" style="flex:0 0 80px;margin-bottom:0;">
-        <button onclick="adminCredit('add')" style="flex:1;padding:11px;border-radius:8px;border:none;background:linear-gradient(135deg,#1a7a3a,#22a04d);color:#fff;cursor:pointer;font-weight:700;font-size:.72rem;">&#43; Adicionar</button>
-      </div>
-      <div style="display:flex;gap:8px;margin-bottom:8px;">
-        <button onclick="adminCredit('remove')" style="flex:1;padding:9px;border-radius:8px;border:1px solid rgba(224,82,82,.4);background:rgba(224,82,82,.07);color:#f5a0a0;cursor:pointer;font-size:.7rem;font-family:'JetBrains Mono',monospace;">&#8722; Remover</button>
-        <button onclick="adminCredit('set')" style="flex:1;padding:9px;border-radius:8px;border:1px solid var(--gd);background:rgba(201,168,76,.08);color:var(--g);cursor:pointer;font-size:.7rem;font-family:'JetBrains Mono',monospace;">&#61; Definir para</button>
-      </div>
-      <button onclick="adminCredit('reset_free')" style="width:100%;padding:8px;border-radius:8px;border:1px solid var(--bd);background:transparent;color:var(--dm);cursor:pointer;font-size:.65rem;font-family:'JetBrains Mono',monospace;margin-bottom:4px;">&#8635; Resetar análises gratuitas</button>
-      <div id="admin-credit-msg" style="font-size:.78rem;margin-top:8px;padding:8px;border-radius:6px;display:none;"></div>
-    </div>
-    <!-- Usuários -->
-    <div id="panel-users" style="display:none;">
-      <button onclick="adminLoadUsers()" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--gd);background:rgba(201,168,76,.08);color:var(--g);cursor:pointer;font-size:.7rem;font-family:'JetBrains Mono',monospace;margin-bottom:10px;">&#128260; Carregar lista</button>
-      <div id="admin-users-list" style="max-height:340px;overflow-y:auto;"></div>
-    </div>
-    <!-- Stats -->
-    <div id="panel-stats" style="display:none;">
-      <button onclick="adminLoadStats()" style="width:100%;padding:10px;border-radius:8px;border:1px solid var(--gd);background:rgba(201,168,76,.08);color:var(--g);cursor:pointer;font-size:.7rem;font-family:'JetBrains Mono',monospace;margin-bottom:10px;">&#128200; Carregar stats</button>
-      <div id="admin-stats-box" style="font-family:'JetBrains Mono',monospace;font-size:.7rem;line-height:1.9;color:var(--tx);"></div>
-      <button onclick="adminClearPDFCache()" style="width:100%;margin-top:12px;padding:8px;border-radius:8px;border:1px solid rgba(224,82,82,.3);background:rgba(224,82,82,.05);color:#f5a0a0;cursor:pointer;font-size:.65rem;font-family:'JetBrains Mono',monospace;">&#128465; Limpar cache de PDFs antigos</button>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL LOGIN -->
-<div class="modal-overlay" id="modal-login" onclick="if(event.target===this)closeModal('login')">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal('login')">&#10005;</button>
-    <div class="modal-title" data-i18n="modal_login_title">&#11041; Entrar no Wuzo</div>
-    <input class="modal-inp" type="email" id="login-email" placeholder="seu@email.com"
-      onkeydown="if(event.key==='Enter')document.getElementById('login-pass').focus()">
-    <input class="modal-inp" type="password" id="login-pass" placeholder="Senha"
-      onkeydown="if(event.key==='Enter')doLogin()">
-    <button class="modal-submit" id="btn-login-sub" onclick="doLogin()" data-i18n="btn_login_sub">ENTRAR</button>
-    <div class="modal-err" id="login-err"></div>
-    <div class="modal-switch"><span data-i18n="login_switch">Não tem conta? <a onclick="switchModal('login','register')">Criar conta</a></span></div>
-  </div>
-</div>
-
-<!-- MODAL REGISTER -->
-<div class="modal-overlay" id="modal-register" onclick="if(event.target===this)closeModal('register')">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal('register')">&#10005;</button>
-    <div class="modal-title" data-i18n="modal_reg_title">&#11041; Criar Conta Grátis</div>
-    <input class="modal-inp" type="email" id="reg-email" placeholder="seu@email.com"
-      onkeydown="if(event.key==='Enter')document.getElementById('reg-pass').focus()">
-    <input class="modal-inp" type="password" id="reg-pass" placeholder="Senha (mínimo 4 caracteres)"
-      onkeydown="if(event.key==='Enter')doRegister()">
-    <button class="modal-submit" id="btn-reg-sub" onclick="doRegister()" data-i18n="btn_reg_sub">CRIAR CONTA GRÁTIS</button>
-    <div class="modal-err" id="reg-err"></div>
-    <div class="modal-switch"><span data-i18n="reg_switch">Já tem conta? <a onclick="switchModal('register','login')">Entrar</a></span></div>
-  </div>
-</div>
-
+<!-- Marked.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+
 <script>
-var BACKEND = "https://app.wuzo.com.br";
+// ════════════════════════════════════════════════════════
+// CONFIG
+// ════════════════════════════════════════════════════════
+const BACKEND_URL  = "https://wuzo-teste.onrender.com"; // ajuste se mudar
+const LOCAL_LLM_KEY      = localStorage.getItem("wuzo_llm_key") || "";
+const LOCAL_LLM_PROVIDER = localStorage.getItem("wuzo_llm_prov") || "sambanova";
 
-// ── I18N ENGINE ──────────────────────────────────────────────────────────
-var _lang = localStorage.getItem("wuzo_lang") || "pt";
+function getToken(){
+  const p = new URLSearchParams(location.search);
+  const t = p.get("token") || p.get("t") || localStorage.getItem("wuzo_token") || "";
+  if (t) localStorage.setItem("wuzo_token", t);
+  return t;
+}
 
-var I18N = {
-  pt: {
-    live:             "AO VIVO",
-    inp_lbl:          "Descreva sua situação financeira",
-    inp_placeholder:  "Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado.",
-    pipeline_lbl:     "16 ESPECIALISTAS · DADOS EM TEMPO REAL",
-    lock_title:       "Desbloqueie o Relatório Completo — 16 Especialistas",
-    lock_sub:         "Análise completa de Cripto (preços ao vivo), Ações, Renda Fixa, FIIs, Dívidas, Tributário, Compliance e mais — com PDF executivo disponível por 72h.",
-    pdf_title:        "&#128196; Relatório PDF Profissional",
-    pdf_sub:          "Todos os 16 especialistas com dados em tempo real — formato PDF executivo.",
-    pdf_timer:        "Este relatório fica disponível por <strong>72 horas</strong> — baixe agora",
-    btn_login:        "Entrar",
-    btn_register:     "Registrar",
-    btn_logout:       "Sair",
-    btn_login_sub:    "ENTRAR",
-    btn_reg_sub:      "CRIAR CONTA GRÁTIS",
-    modal_login_title:"&#11041; Entrar no Wuzo",
-    modal_reg_title:  "&#11041; Criar Conta Grátis",
-    login_switch:     "Não tem conta? <a onclick=\"switchModal('login','register')\">Criar conta</a>",
-    reg_switch:       "Já tem conta? <a onclick=\"switchModal('register','login')\">Entrar</a>",
-    verdict_title:    "&#9878;&#65039; Veredito — Consultor Sênior WUZO",
-    verdict_full_title:"&#128084; Veredito Final — Consultor Sênior",
-    credit_label:     "&#11088; PREMIUM:",
-    status_connecting:"Conectando...",
-    status_waking:    "Acordando...",
-    status_online:    "Motor Online",
-    status_offline:   "Servidor offline",
-    btn_free_main:    "&#9889; ANALISAR GRÁTIS AGORA",
-    btn_free_sub:     "Sem cadastro · Resultado em segundos · Sem cartão",
-    btn_premium_main: "&#11088; RELATÓRIO COMPLETO — 16 IA com Dados Ao Vivo",
-    btn_premium_sub:  "&#10003; Cripto em tempo real &nbsp;&#10003; Ações &amp; FIIs &nbsp;&#10003; PDF por 72h &nbsp;&#10003; Acesso imediato",
-    btn_buy_main:     "&#128274; LIBERAR ACESSO AGORA — R$&nbsp;19,90",
-    btn_buy_sub:      "&#128179; Pix ou Cartão &nbsp;&#183;&nbsp; Acesso imediato &nbsp;&#183;&nbsp; Sem assinatura &nbsp;&#183;&nbsp; Sem recorrência",
-    btn_free_popular: "✦ MAIS POPULAR",
-    btn_pdf_dl:       "&#9989; BAIXAR MEU RELATÓRIO PDF",
-    btn_pdf_gen:      "&#9203; Gerando PDF...",
-    lock_btn:         "<span data-i18n=\"lock_btn\">&#128274; QUERO O RELATÓRIO COMPLETO — R$&nbsp;19,90</span>",
-    log_init:         "&#11041; Iniciando...",
-    pip_running:      "ANALISANDO",
-    pip_done:         "CONCLUÍDO",
-    log_starting:     "Análise com dados em tempo real...",
-    log_fetching:     "Buscando preços reais e notícias do dia...",
-    log_processing:   "Processando 16 especialistas...",
-    log_done:         "Concluído.",
-    err_describe:     "Descreva sua situação financeira.",
-    err_server_wake:  "&#9203; Servidor acordando, aguarde...",
-    login_placeholder_email: "seu@email.com",
-    login_placeholder_pass:  "Senha",
-    reg_placeholder_pass:    "Senha (mínimo 4 caracteres)",
-    lang_label:       "Idioma",
-    lang_instruction: "Responda em português do Brasil.",
-  },
-  en: {
-    live:             "LIVE",
-    inp_lbl:          "Describe your financial situation",
-    inp_placeholder:  "E.g.: I have $10,000 to invest, $2,000 credit card debt at 12% monthly interest, $2,500/mo income. I want to build wealth over the next 5 years with a moderate risk profile.",
-    pipeline_lbl:     "16 SPECIALISTS · REAL-TIME DATA",
-    lock_title:       "Unlock the Full Report — 16 Specialists",
-    lock_sub:         "Full analysis of Crypto (live prices), Stocks, Fixed Income, REITs, Debt, Tax Planning, Compliance and more — with executive PDF available for 72h.",
-    pdf_title:        "&#128196; Professional PDF Report",
-    pdf_sub:          "All 16 specialists with real-time data — executive PDF format.",
-    pdf_timer:        "This report is available for <strong>72 hours</strong> — download now",
-    btn_login:        "Sign In",
-    btn_register:     "Register",
-    btn_logout:       "Sign Out",
-    btn_login_sub:    "SIGN IN",
-    btn_reg_sub:      "CREATE FREE ACCOUNT",
-    modal_login_title:"&#11041; Sign In to Wuzo",
-    modal_reg_title:  "&#11041; Create Free Account",
-    login_switch:     "No account? <a onclick=\"switchModal('login','register')\">Create one</a>",
-    reg_switch:       "Already have an account? <a onclick=\"switchModal('register','login')\">Sign in</a>",
-    verdict_title:    "&#9878;&#65039; Verdict — Senior Consultant WUZO",
-    verdict_full_title:"&#128084; Final Verdict — Senior Consultant",
-    credit_label:     "&#11088; PREMIUM:",
-    status_connecting:"Connecting...",
-    status_waking:    "Starting up...",
-    status_online:    "Engine Online",
-    status_offline:   "Server offline",
-    btn_free_main:    "&#9889; ANALYZE FOR FREE NOW",
-    btn_free_sub:     "No signup · Results in seconds · No card",
-    btn_premium_main: "&#11088; FULL REPORT — 16 AIs with Live Data",
-    btn_premium_sub:  "&#10003; Real-time Crypto &nbsp;&#10003; Stocks &amp; REITs &nbsp;&#10003; PDF for 72h &nbsp;&#10003; Instant access",
-    btn_buy_main:     "&#128274; UNLOCK ACCESS NOW — R$&nbsp;19.90",
-    btn_buy_sub:      "&#128179; Card or Pix &nbsp;&#183;&nbsp; Instant access &nbsp;&#183;&nbsp; No subscription &nbsp;&#183;&nbsp; One-time",
-    btn_free_popular: "✦ MOST POPULAR",
-    btn_pdf_dl:       "&#9989; DOWNLOAD MY PDF REPORT",
-    btn_pdf_gen:      "&#9203; Generating PDF...",
-    lock_btn:         "&#128274; I WANT THE FULL REPORT — R$&nbsp;19.90",
-    log_init:         "&#11041; Starting...",
-    pip_running:      "ANALYZING",
-    pip_done:         "COMPLETED",
-    log_starting:     "Analysis with real-time data...",
-    log_fetching:     "Fetching live prices and today's news...",
-    log_processing:   "Processing 16 specialists...",
-    log_done:         "Completed.",
-    err_describe:     "Describe your financial situation.",
-    err_server_wake:  "&#9203; Server starting up, please wait...",
-    login_placeholder_email: "your@email.com",
-    login_placeholder_pass:  "Password",
-    reg_placeholder_pass:    "Password (minimum 4 characters)",
-    lang_label:       "Language",
-    lang_instruction: "Respond in English.",
-  },
-  es: {
-    live:             "EN VIVO",
-    inp_lbl:          "Describe tu situación financiera",
-    inp_placeholder:  "Ej.: Tengo $10.000 para invertir, deuda en tarjeta de $2.000 al 12% mensual, ingreso de $2.500/mes. Quiero construir patrimonio en los próximos 5 años con perfil moderado.",
-    pipeline_lbl:     "16 ESPECIALISTAS · DATOS EN TIEMPO REAL",
-    lock_title:       "Desbloquea el Informe Completo — 16 Especialistas",
-    lock_sub:         "Análisis completo de Cripto (precios en vivo), Acciones, Renta Fija, FIIs, Deudas, Tributario, Compliance y más — con PDF ejecutivo disponible por 72h.",
-    pdf_title:        "&#128196; Informe PDF Profesional",
-    pdf_sub:          "Los 16 especialistas con datos en tiempo real — formato PDF ejecutivo.",
-    pdf_timer:        "Este informe está disponible por <strong>72 horas</strong> — descárgalo ahora",
-    btn_login:        "Entrar",
-    btn_register:     "Registrarse",
-    btn_logout:       "Salir",
-    btn_login_sub:    "ENTRAR",
-    btn_reg_sub:      "CREAR CUENTA GRATIS",
-    modal_login_title:"&#11041; Entrar en Wuzo",
-    modal_reg_title:  "&#11041; Crear Cuenta Gratis",
-    login_switch:     "¿Sin cuenta? <a onclick=\"switchModal('login','register')\">Crear una</a>",
-    reg_switch:       "¿Ya tienes cuenta? <a onclick=\"switchModal('register','login')\">Entrar</a>",
-    verdict_title:    "&#9878;&#65039; Veredicto — Consultor Senior WUZO",
-    verdict_full_title:"&#128084; Veredicto Final — Consultor Senior",
-    credit_label:     "&#11088; PREMIUM:",
-    status_connecting:"Conectando...",
-    status_waking:    "Iniciando...",
-    status_online:    "Motor Online",
-    status_offline:   "Servidor offline",
-    btn_free_main:    "&#9889; ANALIZAR GRATIS AHORA",
-    btn_free_sub:     "Sin registro · Resultado en segundos · Sin tarjeta",
-    btn_premium_main: "&#11088; INFORME COMPLETO — 16 IAs con Datos en Vivo",
-    btn_premium_sub:  "&#10003; Cripto en tiempo real &nbsp;&#10003; Acciones &amp; FIIs &nbsp;&#10003; PDF 72h &nbsp;&#10003; Acceso inmediato",
-    btn_buy_main:     "&#128274; DESBLOQUEAR ACCESO — R$&nbsp;19,90",
-    btn_buy_sub:      "&#128179; Tarjeta o Pix &nbsp;&#183;&nbsp; Acceso inmediato &nbsp;&#183;&nbsp; Sin suscripción &nbsp;&#183;&nbsp; Sin recurrencia",
-    btn_free_popular: "✦ MÁS POPULAR",
-    btn_pdf_dl:       "&#9989; DESCARGAR MI INFORME PDF",
-    btn_pdf_gen:      "&#9203; Generando PDF...",
-    lock_btn:         "&#128274; QUIERO EL INFORME COMPLETO — R$&nbsp;19,90",
-    log_init:         "&#11041; Iniciando...",
-    pip_running:      "ANALIZANDO",
-    pip_done:         "COMPLETADO",
-    log_starting:     "Análisis con datos en tiempo real...",
-    log_fetching:     "Obteniendo precios reales y noticias del día...",
-    log_processing:   "Procesando 16 especialistas...",
-    log_done:         "Completado.",
-    err_describe:     "Describe tu situación financiera.",
-    err_server_wake:  "&#9203; Servidor iniciando, por favor espera...",
-    login_placeholder_email: "tu@email.com",
-    login_placeholder_pass:  "Contraseña",
-    reg_placeholder_pass:    "Contraseña (mínimo 4 caracteres)",
-    lang_label:       "Idioma",
-    lang_instruction: "Responde en español.",
-  }
-};
-
-function t(key){ return (I18N[_lang] || I18N.pt)[key] || (I18N.pt)[key] || key; }
+// ════════════════════════════════════════════════════════
+// LANGUAGE — detecta pelo navegador, permite troca manual
+// ════════════════════════════════════════════════════════
+const _BROWSER_LANG = (navigator.language || "pt").toLowerCase().slice(0,2);
+const _VALID_LANGS  = ["pt","en","es"];
+let currentLang = localStorage.getItem("wuzo_lang")
+  || (_VALID_LANGS.includes(_BROWSER_LANG) ? _BROWSER_LANG : "pt");
 
 function setLang(lang){
-  _lang = lang;
+  if(!_VALID_LANGS.includes(lang)) return;
+  currentLang = lang;
   localStorage.setItem("wuzo_lang", lang);
-  document.documentElement.lang = lang==="pt"?"pt-BR":lang;
-  // Highlight botão ativo
-  ["pt","en","es"].forEach(function(l){
-    var btn=document.getElementById("lang-"+l);
-    if(btn) btn.className="lang-btn"+(l===lang?" active":"");
-  });
-  applyTranslations();
+  _applyLangUI();
 }
 
-function applyTranslations(){
-  // Elementos com data-i18n
-  document.querySelectorAll("[data-i18n]").forEach(function(el){
-    el.innerHTML = t(el.getAttribute("data-i18n"));
-  });
-  // Placeholders dinâmicos
-  var ti=document.getElementById("txt-input");
-  if(ti) ti.placeholder = t("inp_placeholder");
-  var le=document.getElementById("login-email");
-  if(le) le.placeholder = t("login_placeholder_email");
-  var lp=document.getElementById("login-pass");
-  if(lp) lp.placeholder = t("login_placeholder_pass");
-  var re=document.getElementById("reg-email");
-  if(re) re.placeholder = t("login_placeholder_email");
-  var rp=document.getElementById("reg-pass");
-  if(rp) rp.placeholder = t("reg_placeholder_pass");
-  // Botões principais (reconstruídos pelo setBtns)
-  setBtns(false);
-  // Ticker AO VIVO
-  document.querySelectorAll("[data-i18n='live']").forEach(function(el){
-    el.innerHTML = t("live");
-  });
-  // Pipeline pill
-  var pill=document.getElementById("pip-pill");
-  if(pill && pill.textContent.trim()==="ANALISANDO"||
-     pill && pill.textContent.trim()==="ANALYZING"||
-     pill && pill.textContent.trim()==="ANALIZANDO"){
-    pill.innerHTML=t("pip_running");
-  }
-}
-
-function aborter(ms){var c=new AbortController();setTimeout(function(){c.abort();},ms);return c.signal;}
-var LS={TOKEN:"wuzo_token",EMAIL:"wuzo_email",PROMPT:"wuzo_pending_prompt"};
-function getSaved(k){return localStorage.getItem(k)||"";}
-function save(k,v){localStorage.setItem(k,v);}
-function del(k){localStorage.removeItem(k);}
-function getToken(){
-  var p=new URLSearchParams(location.search);
-  var t=p.get("token")||p.get("t")||"";
-  if(t){save(LS.TOKEN,t);p.delete("token");p.delete("t");history.replaceState(null,"",location.pathname+(p.toString()?"?"+p.toString():""));return t;}
-  return getSaved(LS.TOKEN);
-}
-function authHeader(){var t=getToken();return t?{"Content-Type":"application/json","Authorization":"Bearer "+t}:{"Content-Type":"application/json"};}
-var _online=false,_currentAnalysisId=null;
-
-// ── CRYPTO TICKER ────────────────────────────────────────────
-var TICKER_COINS={
-  BTC:{p:"t-btc-p",c:"t-btc-c",p2:"t-btc-p2",c2:"t-btc-c2"},
-  ETH:{p:"t-eth-p",c:"t-eth-c",p2:"t-eth-p2",c2:"t-eth-c2"},
-  SOL:{p:"t-sol-p",c:"t-sol-c",p2:"t-sol-p2",c2:"t-sol-c2"},
-  BNB:{p:"t-bnb-p",c:"t-bnb-c",p2:"t-bnb-p2",c2:"t-bnb-c2"},
-  DOGE:{p:"t-doge-p",c:"t-doge-c",p2:"t-doge-p2",c2:"t-doge-c2"},
+// Textos da interface por idioma
+const _UI = {
+  pt:{
+    inp_lbl:       "Descreva sua situação financeira",
+    placeholder:   "Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado.",
+    btn_free:      "⚡ ANÁLISE GRATUITA",
+    btn_premium:   "⭐ RELATÓRIO PREMIUM (16 ESP.)",
+    btn_buy:       "🛒 COMPRAR (R$ 19,90)",
+    btn_free_load: "Analisando...",
+    btn_prem_load: "Orquestrando 16 agentes...",
+    no_prompt:     "✍️ Descreva sua situação financeira.",
+    no_credits:    "⭐ Créditos insuficientes. Compre 1 crédito por R$ 19,90.",
+    starting:      "⬡ Iniciando...",
+    agents_running:"AGENTES EM EXECUÇÃO",
+    running:       "RUNNING",
+    done:          "CONCLUÍDO",
+    log_free:      "⬡ Análise gratuita iniciada...",
+    log_premium:   "⬡ Análise premium iniciada (16 especialistas)...",
+    log_polling:   "⏳ Processando...",
+    log_done:      "✅ Concluído.",
+    log_error:     "❌ Erro na análise.",
+    verdict_title: "⚖️ Veredito do Consultor IA",
+    preview_title: "📋 Análise — Macroeconomia",
+    lock_title:    "Desbloqueie o relatório completo",
+    lock_sub:      "Veja a análise dos 16 especialistas + downloads em MD, TXT e HTML",
+    lock_btn_prem: "⭐ Usar Crédito Premium",
+    lock_btn_buy:  "🛒 Comprar — R$ 19,90",
+    report_title:  "WUZO — Relatório Financeiro",
+    report_sub:    lang => `Gerado em ${new Date().toLocaleDateString("pt-BR")} — 16 Agentes Especialistas`,
+    dl_md:   "⬇ .MD", dl_txt: "⬇ .TXT", dl_html: "⬇ .HTML",
+    err_backend:   "⚠ Erro ao conectar com o backend.",
+    err_analysis:  "⚠ Erro na análise. Tente novamente.",
+  },
+  en:{
+    inp_lbl:       "Describe your financial situation",
+    placeholder:   "Ex: I have $50,000 to invest, $8,000 in credit card debt at 24% APR, income of $5,000/month. I want to build wealth over the next 5 years with a moderate risk profile.",
+    btn_free:      "⚡ FREE ANALYSIS",
+    btn_premium:   "⭐ PREMIUM REPORT (16 SPEC.)",
+    btn_buy:       "🛒 BUY (R$ 19,90)",
+    btn_free_load: "Analyzing...",
+    btn_prem_load: "Orchestrating 16 agents...",
+    no_prompt:     "✍️ Describe your financial situation.",
+    no_credits:    "⭐ Insufficient credits. Buy 1 credit for R$ 19.90.",
+    starting:      "⬡ Starting...",
+    agents_running:"AGENTS RUNNING",
+    running:       "RUNNING",
+    done:          "DONE",
+    log_free:      "⬡ Free analysis started...",
+    log_premium:   "⬡ Premium analysis started (16 specialists)...",
+    log_polling:   "⏳ Processing...",
+    log_done:      "✅ Done.",
+    log_error:     "❌ Analysis error.",
+    verdict_title: "⚖️ AI Consultant Verdict",
+    preview_title: "📋 Analysis — Macroeconomics",
+    lock_title:    "Unlock the full report",
+    lock_sub:      "See all 16 specialist analyses + downloads in MD, TXT and HTML",
+    lock_btn_prem: "⭐ Use Premium Credit",
+    lock_btn_buy:  "🛒 Buy — R$ 19.90",
+    report_title:  "WUZO — Financial Report",
+    report_sub:    lang => `Generated on ${new Date().toLocaleDateString("en-US")} — 16 Specialist Agents`,
+    dl_md:   "⬇ .MD", dl_txt: "⬇ .TXT", dl_html: "⬇ .HTML",
+    err_backend:   "⚠ Error connecting to backend.",
+    err_analysis:  "⚠ Analysis error. Please try again.",
+  },
+  es:{
+    inp_lbl:       "Describe tu situación financiera",
+    placeholder:   "Ej: Tengo $50.000 para invertir, deuda de tarjeta de $8.000 al 24% anual, ingreso de $5.000/mes. Quiero construir patrimonio en los próximos 5 años con perfil moderado.",
+    btn_free:      "⚡ ANÁLISIS GRATUITO",
+    btn_premium:   "⭐ INFORME PREMIUM (16 ESP.)",
+    btn_buy:       "🛒 COMPRAR (R$ 19,90)",
+    btn_free_load: "Analizando...",
+    btn_prem_load: "Orquestando 16 agentes...",
+    no_prompt:     "✍️ Describe tu situación financiera.",
+    no_credits:    "⭐ Créditos insuficientes. Compra 1 crédito por R$ 19,90.",
+    starting:      "⬡ Iniciando...",
+    agents_running:"AGENTES EN EJECUCIÓN",
+    running:       "RUNNING",
+    done:          "CONCLUIDO",
+    log_free:      "⬡ Análisis gratuito iniciado...",
+    log_premium:   "⬡ Análisis premium iniciado (16 especialistas)...",
+    log_polling:   "⏳ Procesando...",
+    log_done:      "✅ Concluido.",
+    log_error:     "❌ Error en el análisis.",
+    verdict_title: "⚖️ Veredicto del Consultor IA",
+    preview_title: "📋 Análisis — Macroeconomía",
+    lock_title:    "Desbloquea el informe completo",
+    lock_sub:      "Mira los 16 análisis de especialistas + descargas en MD, TXT y HTML",
+    lock_btn_prem: "⭐ Usar Crédito Premium",
+    lock_btn_buy:  "🛒 Comprar — R$ 19,90",
+    report_title:  "WUZO — Informe Financiero",
+    report_sub:    lang => `Generado el ${new Date().toLocaleDateString("es-ES")} — 16 Agentes Especialistas`,
+    dl_md:   "⬇ .MD", dl_txt: "⬇ .TXT", dl_html: "⬇ .HTML",
+    err_backend:   "⚠ Error al conectar con el backend.",
+    err_analysis:  "⚠ Error en el análisis. Inténtalo de nuevo.",
+  },
 };
 
-// Ticker: backend proxy primeiro (cache compartilhado) → fallback CoinGecko direto
-// CORRIGE AbortSignal: não passa signal no fetch do ticker (evita erro de clone em iframes/sandbox)
-function _tickerFetch(url, opts){
-  // Usa Promise.race com setTimeout puro para timeout seguro, sem AbortSignal
-  var ms=opts&&opts.ms||10000;
-  return Promise.race([
-    fetch(url),
-    new Promise(function(_,rej){setTimeout(function(){rej(new Error("timeout"));},ms);})
-  ]);
-}
+function T(key){ return (_UI[currentLang]||_UI["pt"])[key] || _UI["pt"][key] || ""; }
 
-function _applyTickerData(d, mode){
-  // mode="backend": {BTC:{usd,chg24h},...}  mode="cg": {bitcoin:{usd,usd_24h_change},...}
-  var cgMap={BTC:"bitcoin",ETH:"ethereum",SOL:"solana",BNB:"binancecoin",DOGE:"dogecoin"};
-  Object.keys(TICKER_COINS).forEach(function(sym){
-    var coin=mode==="backend"?d[sym]:d[cgMap[sym]];
-    if(!coin)return;
-    var ids=TICKER_COINS[sym];
-    var price=mode==="backend"?(coin.usd||0):(coin.usd||0);
-    var chg  =mode==="backend"?(coin.chg24h||0):(coin.usd_24h_change||0);
-    if(!price)return;
-    var priceStr=price>=100
-      ?"$"+price.toLocaleString("en-US",{maximumFractionDigits:0})
-      :price>=1
-        ?"$"+price.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})
-        :"$"+price.toFixed(5);
-    var chgStr=chg>=0?"▲ "+Math.abs(chg).toFixed(2)+"%":"▼ "+Math.abs(chg).toFixed(2)+"%";
-    var cls=chg>=0?"ticker-up":"ticker-dn";
-    [ids.p,ids.p2].forEach(function(id){var el=document.getElementById(id);if(el){el.textContent=priceStr;el.className="ticker-price";}});
-    [ids.c,ids.c2].forEach(function(id){var el=document.getElementById(id);if(el){el.textContent=chgStr;el.className="ticker-chg "+cls;}});
+function _applyLangUI(){
+  // Botões de idioma
+  ["pt","en","es"].forEach(l=>{
+    const el = document.getElementById("lang-"+l);
+    if(el) el.classList.toggle("active", l === currentLang);
   });
+  // Labels de interface
+  const lbl = document.getElementById("inp-lbl-txt");
+  if(lbl) lbl.textContent = T("inp_lbl");
+  const ta = document.getElementById("txt-input");
+  if(ta) ta.placeholder = T("placeholder");
+  // Botões principais
+  const bf = document.getElementById("btn-free");
+  const bp = document.getElementById("btn-premium");
+  const bb = document.getElementById("btn-buy");
+  if(bf && !bf.disabled) bf.innerHTML = T("btn_free");
+  if(bp && !bp.disabled) bp.innerHTML = T("btn_premium");
+  if(bb) bb.innerHTML = T("btn_buy");
+  // Pipeline label
+  const pl = document.querySelector("#sec-pipeline span[style*='letter-spacing']");
+  if(pl) pl.textContent = T("agents_running");
+  // Lock card
+  const lt = document.querySelector(".lock-title");
+  const ls = document.querySelector(".lock-sub");
+  if(lt) lt.textContent = T("lock_title");
+  if(ls) ls.textContent = T("lock_sub");
 }
 
-async function updateTicker(){
-  // 1ª tentativa: backend proxy (compartilha cache de 2min, não consome rate limit)
-  try{
-    var r=await _tickerFetch(BACKEND+"/api/market/crypto",{ms:8000});
-    if(!r.ok)throw new Error("HTTP "+r.status);
-    var d=await r.json();
-    if(d.BTC&&d.BTC.usd>1000){_applyTickerData(d,"backend");return;}
-    throw new Error("dados invalidos");
-  }catch(e1){
-    // 2ª tentativa: CoinGecko direto (fallback quando backend está acordando)
-    try{
-      var r2=await _tickerFetch(
-        "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin,dogecoin&vs_currencies=usd&include_24hr_change=true",
-        {ms:9000}
-      );
-      if(!r2.ok)throw new Error("CG HTTP "+r2.status);
-      var d2=await r2.json();
-      _applyTickerData(d2,"cg");
-    }catch(e2){
-      // Ambos falharam — ticker mantém "---" até próximo ciclo (30s)
-    }
-  }
-}
-
-// ── STATUS ───────────────────────────────────────────────────
-function setStatus(txt,cls){var el=document.getElementById("api-status");el.textContent=txt;el.className="status-pill "+cls;}
-
-// ── HEALTH CHECK (aguarda Render acordar até 90s) ────────────
-async function checkHealth(){
-  setStatus(t("status_connecting"),"s-waking");
-  var waits=[0,5000,10000,15000,20000,25000,30000,35000,40000];
-  for(var i=0;i<waits.length;i++){
-    if(waits[i]>0)await new Promise(function(r){setTimeout(r,waits[i]);});
-    try{
-      var r=await fetch(BACKEND+"/health",{signal:aborter(60000)});
-      if(r.ok){
-        var d=await r.json();_online=true;
-        setStatus(t("status_online"),"s-online");
-        setInterval(function(){fetch(BACKEND+"/ping",{signal:aborter(5000)}).catch(function(){});},4*60*1000);
-        await updateUI();await checkStripeReturn();return;
-      }
-    }catch(e){}
-    if(i<waits.length-1)setStatus(t("status_waking")+" ("+(i+1)+"/"+(waits.length-1)+")","s-waking");
-  }
-  _online=false;setStatus(t("status_offline"),"s-offline");
-}
-
-async function checkStripeReturn(){
-  var p=new URLSearchParams(location.search);var sid=p.get("session_id")||"";if(!sid)return;
-  p.delete("session_id");history.replaceState(null,"",location.pathname+(p.toString()?"?"+p.toString():""));
-  var tok=getToken();if(!tok)return;
-  try{
-    setStatus("Verificando pagamento...","s-waking");
-    var r=await fetch(BACKEND+"/verificar-pagamento",{method:"POST",headers:authHeader(),body:JSON.stringify({session_id:sid}),signal:aborter(15000)});
-    var d=await r.json();
-    if(r.ok&&d.ok){
-      document.getElementById("cred-num").textContent=d.credits||0;
-      setStatus("Pagamento confirmado!","s-online");
-      var sp=getSaved(LS.PROMPT);
-      if(sp){document.getElementById("txt-input").value=sp;del(LS.PROMPT);setTimeout(function(){handlePremium();},1200);}
-    }
-  }catch(e){setStatus("API OK","s-online");}
-}
-
-async function updateUI(){
-  var tok=getToken();
-  if(!tok){
-    document.getElementById("auth-out").style.display="flex";
-    document.getElementById("auth-in").style.display="none";
-    document.getElementById("cred-num").textContent="0";
-    document.getElementById("admin-panel").style.display="none";
-    return;
-  }
-  if(!_online){
-    document.getElementById("auth-out").style.display="none";
-    document.getElementById("auth-in").style.display="flex";
-    document.getElementById("user-info").textContent=getSaved(LS.EMAIL)||"logado";
-    return;
-  }
-  try{
-    var r=await fetch(BACKEND+"/api/auth/me",{headers:{"Authorization":"Bearer "+tok},signal:aborter(8000)});
-    if(!r.ok){
-      del(LS.TOKEN);del(LS.EMAIL);
-      document.getElementById("auth-out").style.display="flex";
-      document.getElementById("auth-in").style.display="none";
-      document.getElementById("cred-num").textContent="0";
-      document.getElementById("admin-panel").style.display="none";
-      return;
-    }
-    var d=await r.json();
-    document.getElementById("auth-out").style.display="none";
-    document.getElementById("auth-in").style.display="flex";
-    document.getElementById("user-info").textContent=d.email||"";
-    document.getElementById("cred-num").textContent=d.credits||0;
-    document.getElementById("admin-panel").style.display=d.is_admin?"flex":"none";
-  }catch(e){
-    document.getElementById("auth-out").style.display="none";
-    document.getElementById("auth-in").style.display="flex";
-    document.getElementById("user-info").textContent=getSaved(LS.EMAIL)||"logado";
-  }
-}
-
-// ── AUTH MODALS ───────────────────────────────────────────────
-function openModal(name){document.getElementById("modal-"+name).classList.add("open");var first=document.querySelector("#modal-"+name+" .modal-inp");if(first)setTimeout(function(){first.focus();},80);}
-function closeModal(n){document.getElementById("modal-"+n).classList.remove("open");document.getElementById(n==="login"?"login-err":"reg-err").style.display="none";}
-function switchModal(f,t){closeModal(f);openModal(t);}
-function showModalErr(id,msg){var el=document.getElementById(id);el.textContent=msg;el.style.display="block";}
-
-async function doLogin(){
-  if(!_online){showModalErr("login-err","Servidor offline. Aguarde.");return;}
-  var email=document.getElementById("login-email").value.trim();
-  var pass=document.getElementById("login-pass").value;
-  if(!email||!pass){showModalErr("login-err","Preencha email e senha.");return;}
-  var btn=document.getElementById("btn-login-sub");btn.textContent="Entrando...";btn.disabled=true;
-  try{
-    var r=await fetch(BACKEND+"/api/auth/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:email,password:pass}),signal:aborter(12000)});
-    var d=await r.json().catch(function(){return {};});
-    if(r.ok&&d.token){save(LS.TOKEN,d.token);save(LS.EMAIL,email);closeModal("login");await updateUI();}
-    else showModalErr("login-err",d.error||"Email ou senha incorretos.");
-  }catch(e){showModalErr("login-err","Sem conexão: "+e.message);}
-  finally{btn.textContent="ENTRAR";btn.disabled=false;}
-}
-
-async function doRegister(){
-  if(!_online){showModalErr("reg-err","Servidor offline. Aguarde.");return;}
-  var email=document.getElementById("reg-email").value.trim();
-  var pass=document.getElementById("reg-pass").value;
-  if(!email||!pass){showModalErr("reg-err","Preencha email e senha.");return;}
-  if(pass.length<4){showModalErr("reg-err","Senha mínimo 4 caracteres.");return;}
-  var btn=document.getElementById("btn-reg-sub");btn.textContent="Criando conta...";btn.disabled=true;
-  try{
-    var r=await fetch(BACKEND+"/api/auth/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:email,password:pass}),signal:aborter(12000)});
-    var d=await r.json().catch(function(){return {};});
-    if(r.ok&&d.token){
-      save(LS.TOKEN,d.token);save(LS.EMAIL,email);closeModal("register");await updateUI();
-      if(getSaved(LS.PROMPT)){await startCheckout();}
-    }else showModalErr("reg-err",d.error||"Erro ao criar conta.");
-  }catch(e){showModalErr("reg-err","Sem conexão: "+e.message);}
-  finally{btn.textContent="CRIAR CONTA GRÁTIS";btn.disabled=false;}
-}
-
-function logout(){
-  del(LS.TOKEN);del(LS.EMAIL);
-  document.getElementById("cred-num").textContent="0";
-  document.getElementById("admin-panel").style.display="none";
-  updateUI();
-}
-
-// ── PIPELINE VISUAL ───────────────────────────────────────────
-var AGENTS_UI=[
-  {id:"macroeconomia",              em:"&#127758;",nm:"Macro"},
-  {id:"noticias_realtime",          em:"&#128240;",nm:"Radar"},
-  {id:"sentimento_mercado",         em:"&#129504;",nm:"Psicologia"},
-  {id:"criptomoedas",               em:"&#8383;",  nm:"Cripto"},
-  {id:"acoes_equity",               em:"&#128200;",nm:"Ações"},
-  {id:"renda_fixa",                 em:"&#128176;",nm:"R. Fixa"},
-  {id:"imoveis_fiis",               em:"&#127970;",nm:"FIIs"},
-  {id:"derivativos",                em:"&#128202;",nm:"Derivat."},
-  {id:"rwa",                        em:"&#128279;",nm:"RWA"},
-  {id:"quitacao_dividas",           em:"&#128179;",nm:"Dividas"},
-  {id:"credito_financiamento",      em:"&#127970;",nm:"Credito"},
-  {id:"planejamento_tributario",    em:"&#128203;",nm:"Tribut."},
-  {id:"previdencia_aposentadoria",  em:"&#127919;",nm:"Previd."},
-  {id:"compliance_risco",           em:"&#9888;",  nm:"Compliance"},
-  {id:"auditor_dados",              em:"&#128269;",nm:"Auditor"},
-  {id:"consultor_senior",           em:"&#128084;",nm:"Senior"},
+// ════════════════════════════════════════════════════════
+// 16 AGENTES
+// ════════════════════════════════════════════════════════
+const AGENTS = [
+  {id:"noticias_realtime",       em:"📡", nm:"Notícias"},
+  {id:"macroeconomia",           em:"🌐", nm:"Macro"},
+  {id:"sentimento_mercado",      em:"🧠", nm:"Sentimento"},
+  {id:"criptomoedas",            em:"₿",  nm:"Cripto"},
+  {id:"acoes_equity",            em:"📈", nm:"Ações"},
+  {id:"derivativos",             em:"🔄", nm:"Derivativos"},
+  {id:"rwa",                     em:"🏭", nm:"RWA"},
+  {id:"renda_fixa",              em:"💵", nm:"Renda Fixa"},
+  {id:"imoveis_fiis",            em:"🏢", nm:"FIIs"},
+  {id:"quitacao_dividas",        em:"💳", nm:"Dívidas"},
+  {id:"credito_financiamento",   em:"🏦", nm:"Crédito"},
+  {id:"planejamento_tributario", em:"📋", nm:"Tributário"},
+  {id:"compliance_risco",        em:"🛡️", nm:"Compliance"},
+  {id:"auditor_dados",           em:"🔍", nm:"Auditor"},
+  {id:"consultor_senior",        em:"👔", nm:"Consultor"},
+  {id:"redator_relatorios",      em:"✍️", nm:"Redator"},
 ];
 
-function buildGrid(){
-  var g=document.getElementById("agent-grid");g.innerHTML="";
-  AGENTS_UI.forEach(function(a){
-    var d=document.createElement("div");d.className="ac";d.id="ac-"+a.id;
-    d.innerHTML='<div class="ac-em">'+a.em+'</div><div class="ac-nm">'+a.nm+'</div><div class="ac-st">&#9675;</div>';
-    g.appendChild(d);
-  });
+// ════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════
+let agentOutputs = {};
+let freeMode = false;
+
+// ════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════
+document.addEventListener("DOMContentLoaded", () => {
+  buildGrid();
+  loadCredits();
+  getToken();
+  _applyLangUI();
+});
+
+// ════════════════════════════════════════════════════════
+// CREDITS
+// ════════════════════════════════════════════════════════
+async function loadCredits(){
+  const tok = getToken();
+  if(!tok){ document.getElementById("cred-num").textContent = "0"; return; }
+  try{
+    const r = await fetch(BACKEND_URL+"/api/auth/me",{
+      headers:{"Authorization":"Bearer "+tok}
+    });
+    if(r.ok){
+      const d = await r.json();
+      const n = d.credits !== undefined ? d.credits : (d.premium_credits||0);
+      document.getElementById("cred-num").textContent = n;
+      if(n > 0) document.getElementById("btn-buy").style.opacity = ".5";
+    }
+  }catch{}
 }
 
-function setAllThinking(){AGENTS_UI.forEach(function(a){var c=document.getElementById("ac-"+a.id);if(!c)return;c.className="ac thinking";c.querySelector(".ac-st").innerHTML="&#9675;";});animateProg();}
-var _progInt=null;
-function animateProg(){var fill=document.getElementById("prog-fill");var pct=0;clearInterval(_progInt);_progInt=setInterval(function(){pct+=0.2;if(pct>90)pct=90;fill.style.width=pct+"%";},600);}
-function finishGrid(agents){
-  clearInterval(_progInt);document.getElementById("prog-fill").style.width="100%";
-  var ids=agents?agents.reduce(function(m,a){m[a.id]=1;return m;},{}):null;
-  AGENTS_UI.forEach(function(a){var c=document.getElementById("ac-"+a.id);if(!c)return;if(!ids||ids[a.id]){c.className="ac done";c.querySelector(".ac-st").innerHTML="&#10003;";}});
-  document.getElementById("pip-pill").innerHTML=t("pip_done");document.getElementById("pip-pill").className="pill pill-done";
-  addLog(t("log_done"),"ok");
-}
-function addLog(msg,cls){
-  var f=document.getElementById("log-feed"),d=document.createElement("div");
-  d.className="ll "+(cls||"");d.textContent="["+new Date().toLocaleTimeString("pt-BR")+"] "+msg;
-  f.appendChild(d);f.scrollTop=f.scrollHeight;
-}
-function resetPipeline(){
-  buildGrid();document.getElementById("prog-fill").style.width="0%";
-  document.getElementById("log-feed").innerHTML='<div class="ll" id="log-init-ll">&#11041; Iniciando...</div>';
-  document.getElementById("pip-pill").innerHTML=t("pip_running");document.getElementById("pip-pill").className="pill pill-run";
+// ════════════════════════════════════════════════════════
+// POLLING HELPER
+// ════════════════════════════════════════════════════════
+async function _pollJob(url, tok, maxWait=180000, interval=3000){
+  const t0 = Date.now();
+  while(Date.now()-t0 < maxWait){
+    await new Promise(r=>setTimeout(r,interval));
+    try{
+      const headers = tok ? {"Authorization":"Bearer "+tok} : {};
+      const r = await fetch(url, {headers});
+      if(!r.ok) continue;
+      const d = await r.json();
+      if(d.status === "done")   return {ok:true,  data:d};
+      if(d.status === "error")  return {ok:false, data:d};
+      // pending / running → continua polling
+      log(T("log_polling"));
+    }catch(e){ log("⚠ "+e.message); }
+  }
+  return {ok:false, data:{message:"timeout"}};
 }
 
-// ── ANALISE GRATUITA ──────────────────────────────────────────
-// Usa background job + polling para evitar timeout de 30s do Render.
+// ════════════════════════════════════════════════════════
+// FREE ANALYSIS — usa /api/analyze/free + polling
+// ════════════════════════════════════════════════════════
 async function handleFree(){
-  if(!_online){showAlert("inp-alert","alert-info",t("err_server_wake"));return;}
-  var txt=document.getElementById("txt-input").value.trim();
-  if(!txt){showAlert("inp-alert","alert-info",t("err_describe"));return;}
+  const txt = document.getElementById("txt-input").value.trim();
+  if(!txt){ showAlert("inp-alert","alert-info", T("no_prompt")); return; }
+
   hideAlert("inp-alert");
+  freeMode = true;
+  agentOutputs = {};
+  resetGrid();
+  document.getElementById("sec-pipeline").style.display="block";
   document.getElementById("sec-free").style.display="none";
   document.getElementById("sec-full").style.display="none";
-  document.getElementById("sec-pipeline").style.display="block";
-  resetPipeline();setBtns(true);
-  addLog(t("log_starting"));
-  ["consultor_senior","macroeconomia"].forEach(function(id){
-    var c=document.getElementById("ac-"+id);if(c){c.className="ac thinking";}
-  });
-  animateProg();
+  setBtns(true);
 
-  // ── Passo 1: inicia job (retorna em <1s, evita timeout Render) ──
-  var jobId=null;
+  log(T("log_free"));
+
+  // Marca agentes que participam da análise gratuita
+  setAc("consultor_senior","thinking");
+  setAc("macroeconomia","thinking");
+
+  const tok = getToken();
+  let verdict = "", preview = "";
+
   try{
-    var r=await fetch(BACKEND+"/api/analyze/free",{
-      method:"POST",headers:authHeader(),
-      body:JSON.stringify({prompt:txt,language:_lang}),
-      signal:aborter(15000)
+    // 1. Dispara job no backend com idioma correto
+    const resp = await fetch(BACKEND_URL+"/api/analyze/free",{
+      method:"POST",
+      headers:{"Content-Type":"application/json",
+               ...(tok?{"Authorization":"Bearer "+tok}:{})},
+      body: JSON.stringify({prompt: txt, language: currentLang})
     });
-    var d=await r.json().catch(function(){return {};});
-    if(!r.ok){showAlert("inp-alert","alert-err",d.error||"Erro na analise.");clearInterval(_progInt);setBtns(false);return;}
-    jobId=d.job_id;
-    addLog(t("log_fetching"));
-  }catch(e){
-    showAlert("inp-alert","alert-err","Erro: "+e.message);
-    clearInterval(_progInt);setBtns(false);return;
+
+    if(!resp.ok) throw new Error("HTTP "+resp.status);
+    const job = await resp.json();
+    const jobId = job.job_id;
+
+    log("⬡ Job iniciado — aguardando resultado...");
+
+    // 2. Polling
+    const result = await _pollJob(
+      BACKEND_URL+"/api/job/free/"+jobId, tok
+    );
+
+    if(result.ok){
+      verdict = result.data.verdict || "";
+      preview = result.data.preview || "";
+      agentOutputs["consultor_senior"] = verdict;
+      agentOutputs["macroeconomia"]    = preview;
+      setAc("consultor_senior","done");
+      setAc("macroeconomia","done");
+    } else {
+      throw new Error(result.data.message || "error");
+    }
+
+  } catch(err){
+    log(T("log_error")+" "+err.message,"er");
+    setAc("consultor_senior","error");
+    setAc("macroeconomia","error");
+    showAlert("inp-alert","alert-err", T("err_analysis"));
+    setBtns(false);
+    return;
   }
 
-  // ── Passo 2: polling até resultado (máx 120s = 40 × 3s) ─────────
-  var maxTries=40;
-  for(var i=0;i<maxTries;i++){
-    await new Promise(function(res){setTimeout(res,3000);});
-    try{
-      var pr=await fetch(BACKEND+"/api/job/free/"+jobId,{signal:aborter(8000)});
-      var pd=await pr.json().catch(function(){return {};});
-      if(pd.status==="done"){
-        finishGrid([{id:"consultor_senior"},{id:"macroeconomia"}]);
-        renderFreeResult(pd.verdict,pd.preview);
-        setBtns(false);
-        return;
-      }
-      if(pd.status==="error"){
-        showAlert("inp-alert","alert-err",pd.message||"Erro.");
-        clearInterval(_progInt);setBtns(false);return;
-      }
-      if(i%4===0)addLog(t("log_processing")+" ("+(((i+1)*3))+"s)");
-    }catch(e){}
-  }
-  showAlert("inp-alert","alert-err","Timeout. Tente novamente.");
-  clearInterval(_progInt);setBtns(false);
+  finishPipeline();
+  renderFreeResult(verdict, preview);
+  setBtns(false);
 }
 
-function renderFreeResult(verdict,preview){
-  document.getElementById("verdict-body").innerHTML=(verdict||"").replace(/\n/g,"<br>").replace(/\*\*(.*?)\*\*/g,"<b>$1</b>");
-  document.getElementById("sec-pipeline").style.display="none";
+function renderFreeResult(veredito, preview){
+  document.querySelector(".verdict-title").textContent = T("verdict_title");
+  const vBody = document.getElementById("verdict-body");
+  vBody.innerHTML = veredito
+    .replace(/\n/g,"<br>")
+    .replace(/\*\*(.*?)\*\*/g,"<b>$1</b>");
+
+  const pBody = document.getElementById("preview-body");
+  pBody.innerHTML = `<h3>${T("preview_title")}</h3>`+
+    (typeof marked!=="undefined" ? marked.parse(preview) : preview.replace(/\n/g,"<br>"));
+
+  // Lock card
+  document.querySelector(".lock-title").textContent = T("lock_title");
+  document.querySelector(".lock-sub").textContent   = T("lock_sub");
+
   document.getElementById("sec-free").style.display="block";
   document.getElementById("sec-free").scrollIntoView({behavior:"smooth"});
 }
 
-// ── PREMIUM ───────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════
+// PREMIUM — usa /api/analyze/premium + polling
+// ════════════════════════════════════════════════════════
 async function handlePremium(){
-  if(!_online){showAlert("inp-alert","alert-info",t("err_server_wake"));return;}
-  var tok=getToken();if(!tok){openModal("login");return;}
-  var credits=parseInt(document.getElementById("cred-num").textContent)||0;
-  if(credits<1){var txt=document.getElementById("txt-input").value.trim();if(txt)save(LS.PROMPT,txt);await startCheckout();return;}
-  await runPremiumAnalysis();
-}
-async function handlePremiumFromFree(){
-  if(!_online){showAlert("inp-alert","alert-info",t("err_server_wake"));return;}
-  var txt=document.getElementById("txt-input").value.trim();if(txt)save(LS.PROMPT,txt);
-  var tok=getToken();if(!tok){openModal("register");return;}
-  var credits=parseInt(document.getElementById("cred-num").textContent)||0;
-  if(credits<1){await startCheckout();return;}
-  await runPremiumAnalysis();
-}
-async function handleBuy(){
-  if(!_online){showAlert("inp-alert","alert-info",t("err_server_wake"));return;}
-  var txt=document.getElementById("txt-input").value.trim();if(txt)save(LS.PROMPT,txt);
-  var tok=getToken();if(!tok){openModal("register");return;}
-  await startCheckout();
-}
-async function startCheckout(){
-  try{
-    var r=await fetch(BACKEND+"/api/checkout",{method:"POST",headers:authHeader(),signal:aborter(12000)});
-    var d=await r.json().catch(function(){return {};});
-    if(r.ok&&(d.checkout_url||d.url)){window.location.href=d.checkout_url||d.url;}
-    else showAlert("inp-alert","alert-err",d.error||"Erro ao iniciar pagamento.");
-  }catch(e){showAlert("inp-alert","alert-err","Erro de conexao.");}
-}
+  const tok = getToken();
+  if(tok){
+    try{
+      const r=await fetch(BACKEND_URL+"/api/auth/me",{headers:{"Authorization":"Bearer "+tok}});
+      if(r.ok){
+        const d=await r.json();
+        const credits = d.credits !== undefined ? d.credits : (d.premium_credits||0);
+        if(credits < 1){
+          showAlert("inp-alert","alert-err", T("no_credits"));
+          return;
+        }
+      }
+    }catch{}
+  }
 
-async function runPremiumAnalysis(){
-  var txt=document.getElementById("txt-input").value.trim()||getSaved(LS.PROMPT);
-  if(!txt){showAlert("inp-alert","alert-info",t("err_describe"));return;}
-  del(LS.PROMPT);hideAlert("inp-alert");
+  const txt = document.getElementById("txt-input").value.trim();
+  if(!txt){ showAlert("inp-alert","alert-info", T("no_prompt")); return; }
+
+  hideAlert("inp-alert");
+  freeMode = false;
+  agentOutputs = {};
+  resetGrid();
+  document.getElementById("sec-pipeline").style.display="block";
   document.getElementById("sec-free").style.display="none";
   document.getElementById("sec-full").style.display="none";
-  document.getElementById("sec-pipeline").style.display="block";
-  resetPipeline();setAllThinking();setBtns(true);
-  addLog(t("log_starting"));
-  var tok=getToken();var jobId=null;
+  setBtns(true);
+
+  log(T("log_premium"));
+  AGENTS.forEach(a=>setAc(a.id,"thinking"));
+
+  let fullData = null;
+
   try{
-    var r=await fetch(BACKEND+"/api/analyze/premium",{method:"POST",headers:authHeader(),body:JSON.stringify({prompt:txt,language:_lang}),signal:aborter(15000)});
-    var d=await r.json().catch(function(){return {};});
-    if(!r.ok){showAlert("inp-alert","alert-err",d.error||"Erro ao iniciar.");clearInterval(_progInt);setBtns(false);return;}
-    jobId=d.job_id;addLog(t("log_fetching"));
-  }catch(e){showAlert("inp-alert","alert-err","Erro: "+e.message);clearInterval(_progInt);setBtns(false);return;}
-
-  var maxTries=80;
-  for(var i=0;i<maxTries;i++){
-    await new Promise(function(r){setTimeout(r,4000);});
-    try{
-      var pr=await fetch(BACKEND+"/api/job/"+jobId,{headers:{"Authorization":"Bearer "+tok},signal:aborter(10000)});
-      var pd=await pr.json().catch(function(){return {};});
-      if(pd.status==="done"){
-        _currentAnalysisId=pd.analysis_id;await updateUI();
-        finishGrid(pd.agents);renderFullReport(pd.verdict,pd.agents);setBtns(false);return;
-      }
-      if(pd.status==="error"){showAlert("inp-alert","alert-err",pd.message||"Erro.");clearInterval(_progInt);setBtns(false);return;}
-      if(i%5===0)addLog(t("log_processing")+" ("+((i+1)*4)+"s)");
-    }catch(e){}
-  }
-  showAlert("inp-alert","alert-err","Timeout. Tente novamente.");clearInterval(_progInt);setBtns(false);
-}
-
-// ── RENDER FULL REPORT ────────────────────────────────────────
-function renderFullReport(verdict,agents){
-  document.getElementById("full-verdict-body").innerHTML=(verdict||"").replace(/\n/g,"<br>").replace(/\*\*(.*?)\*\*/g,"<b>$1</b>");
-  var box=document.getElementById("agent-blocks-box");box.innerHTML="";
-  var skip={consultor_senior:1};
-  if(agents&&agents.length){
-    agents.filter(function(a){return !skip[a.id];}).forEach(function(a){
-      var div=document.createElement("div");div.className="agent-block";
-      var body=a.analysis||"";
-      div.innerHTML='<div class="agent-block-title">'+
-        (a.emoji||"&#11041;")+" "+(a.name||a.id)+
-        '</div><div class="agent-block-body">'+(typeof marked!=="undefined"?marked.parse(body):body.replace(/\*\*(.*?)\*\*/g,"<b>$1</b>").replace(/\n/g,"<br>"))+
-        '</div>';
-      box.appendChild(div);
+    // 1. Dispara job com idioma correto
+    const resp = await fetch(BACKEND_URL+"/api/analyze/premium",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
+      body: JSON.stringify({prompt: txt, language: currentLang})
     });
-  }
-  document.getElementById("sec-pipeline").style.display="none";
-  document.getElementById("sec-full").style.display="block";
-  document.getElementById("sec-full").scrollIntoView({behavior:"smooth"});
-}
 
-// ── PDF DOWNLOAD ──────────────────────────────────────────────
-// Detecta se está rodando dentro do APK (Capacitor/Android WebView)
-var _isCapacitor = !!(window.Capacitor) || navigator.userAgent.indexOf("WuzoApp") !== -1;
+    if(!resp.ok){
+      const err = await resp.json().catch(()=>({}));
+      if(resp.status===402){
+        showAlert("inp-alert","alert-err", T("no_credits")); setBtns(false); return;
+      }
+      throw new Error(err.error||"HTTP "+resp.status);
+    }
 
-async function downloadPDF(){
-  if(!_currentAnalysisId){showAlert("inp-alert","alert-err","Analise nao disponivel.");return;}
-  var tok=getToken();if(!tok){openModal("login");return;}
-  var btn=document.getElementById("btn-dl-pdf");btn.disabled=true;btn.innerHTML=t("btn_pdf_gen");
+    const job = await resp.json();
+    log("⬡ Job premium iniciado — 16 especialistas em paralelo...");
 
-  // ── Capacitor / Android WebView ───────────────────────────────
-  // URL.createObjectURL(blob) e a.download não funcionam no WebView Android.
-  // Solução: abre a URL do PDF diretamente com o token como query param.
-  // O backend aceita ?token= para este endpoint.
-  // O MainActivity.java intercepta a URL e abre no app de PDF do sistema.
-  if(_isCapacitor){
-    try{
-      var pdfUrl=BACKEND+"/api/report/pdf/"+_currentAnalysisId+"?token="+encodeURIComponent(tok);
-      window.open(pdfUrl,"_blank");
-    }catch(e){showAlert("inp-alert","alert-err","Erro ao abrir PDF: "+e.message);}
-    finally{btn.disabled=false;btn.innerHTML=t("btn_pdf_dl");}
+    // 2. Polling — análise premium leva até ~90s
+    const result = await _pollJob(
+      BACKEND_URL+"/api/job/"+job.job_id, tok, 180000, 4000
+    );
+
+    if(!result.ok) throw new Error(result.data.message || "error");
+    fullData = result.data;
+
+    // Marca todos os agentes como done
+    const agentList = fullData.agents || [];
+    agentList.forEach(a=>{
+      agentOutputs[a.id] = a.analysis || "";
+      setAc(a.id, "done");
+    });
+    agentOutputs["verdict"] = fullData.verdict || "";
+
+  } catch(err){
+    log(T("log_error")+" "+err.message,"er");
+    AGENTS.forEach(a=>setAc(a.id,"error"));
+    showAlert("inp-alert","alert-err", T("err_analysis"));
+    setBtns(false);
+    await loadCredits(); // recarrega créditos (backend reembolsa em erro)
     return;
   }
 
-  // ── Web browser padrão ────────────────────────────────────────
-  try{
-    var r=await fetch(BACKEND+"/api/report/pdf/"+_currentAnalysisId,{headers:{"Authorization":"Bearer "+tok},signal:aborter(45000)});
-    if(!r.ok){var e=await r.json().catch(function(){return {};});showAlert("inp-alert","alert-err",e.error||"Erro ao gerar PDF.");return;}
-    var blob=await r.blob();
-    var url=URL.createObjectURL(blob);
-    var a=document.createElement("a");a.href=url;a.download="wuzo_relatorio_"+_currentAnalysisId+".pdf";
-    document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
-  }catch(e){showAlert("inp-alert","alert-err","Erro ao baixar: "+e.message);}
-  finally{btn.disabled=false;btn.innerHTML=t("btn_pdf_dl");}
+  finishPipeline();
+  renderFullReport(fullData);
+  setBtns(false);
+  await loadCredits();
 }
 
-// ── ADMIN ─────────────────────────────────────────────────────
-async function openPDFFilesModal(){
-  document.getElementById("modal-pdfs").classList.add("open");
-  await adminLoadPDFFiles();
-}
+function renderFullReport(data){
+  const verdict    = data.verdict    || "";
+  const agentList  = data.agents     || [];
+  const analysisId = data.analysis_id || "";
 
-async function adminLoadPDFFiles(){
-  var tok=getToken();if(!tok)return;
-  var box=document.getElementById("pdf-files-list");
-  box.innerHTML='<div style="color:var(--dm);font-size:.7rem;font-family:JetBrains Mono,monospace;padding:8px;">Carregando...</div>';
-  try{
-    var r=await fetch(BACKEND+"/api/admin/pdf-files",{headers:{"Authorization":"Bearer "+tok},signal:aborter(10000)});
-    var files=await r.json();
-    if(!r.ok){box.textContent=files.error||"Erro.";return;}
-    box.innerHTML="";
-    if(!files.length){
-      box.innerHTML='<div style="color:var(--dm);font-size:.7rem;text-align:center;padding:20px;">Nenhum PDF em cache.</div>';
-      return;
+  // Monta markdown do relatório completo
+  const reportMd = verdict;
+
+  const box = document.getElementById("full-report-box");
+  box.innerHTML = typeof marked!=="undefined" ? marked.parse(reportMd) : reportMd.replace(/\n/g,"<br>");
+
+  // Blocos individuais dos agentes
+  const blocksBox = document.getElementById("agent-blocks-box");
+  blocksBox.innerHTML = "";
+  const skip = new Set(["consultor_senior"]);
+  const agentMeta = {id:"", nm:"Especialista"};
+  agentList.filter(a=>!skip.has(a.id)).forEach(a=>{
+    const meta = AGENTS.find(m=>m.id===a.id)||{em:"⬡",name:a.name||a.id};
+    const div  = document.createElement("div");
+    div.className = "agent-block";
+    const body = a.analysis || "";
+    div.innerHTML =
+      `<div class="agent-block-title">${meta.em} ${a.name||a.id}</div>`+
+      `<div class="agent-block-body">${
+        typeof marked!=="undefined"
+          ? marked.parse(body)
+          : body.replace(/\*\*(.*?)\*\*/g,"<b>$1</b>").replace(/\n/g,"<br>")
+      }</div>`;
+    blocksBox.appendChild(div);
+  });
+
+  // Link para PDF do backend se disponível
+  const tok = getToken();
+  if(analysisId && tok){
+    const pdfUrl = BACKEND_URL+"/api/report/pdf/"+analysisId;
+    const dlRow = document.getElementById("dl-row");
+    if(dlRow && !document.getElementById("dl-pdf")){
+      const pdfLink = document.createElement("a");
+      pdfLink.id = "dl-pdf";
+      pdfLink.className = "dl-btn";
+      pdfLink.href = pdfUrl;
+      pdfLink.target = "_blank";
+      pdfLink.textContent = "⬇ PDF";
+      dlRow.prepend(pdfLink);
     }
-    files.forEach(function(f){
-      var row=document.createElement("div");row.className="pdf-row";
-      var cls=f.expired?"exp":f.hours_left<12?"warn":"ok";
-      var expLabel=f.expired?"Expirado":f.hours_left+"h restantes";
-      row.innerHTML=
-        '<div class="pdf-row-prompt">#'+f.analysis_id+' — '+escHtmlAdmin(f.prompt)+'</div>'+
-        '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">'+
-        '<div class="pdf-row-meta">User:'+f.user_id+'</div>'+
-        '<div class="pdf-expiry '+cls+'">'+expLabel+'</div>'+
-        (f.expired?'':'<button class="admin-credit-btn" style="background:rgba(26,173,88,.12);border-color:var(--gr);color:var(--gr);padding:3px 10px;" onclick="adminDownloadPDF('+f.analysis_id+')">&#11015; PDF</button>')+
-        '</div>';
-      box.appendChild(row);
-    });
-    var total=files.length;
-    var expiring=files.filter(function(f){return !f.expired&&f.hours_left<24;}).length;
-    var expired=files.filter(function(f){return f.expired;}).length;
-    var summary=document.createElement("div");
-    summary.style.cssText="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--dm);padding:8px 4px;border-top:1px solid var(--bd);margin-top:8px;";
-    summary.textContent="Total: "+total+" | Expirando em 24h: "+expiring+" | Expirados: "+expired;
-    box.appendChild(summary);
-  }catch(e){box.textContent="Erro: "+e.message;}
+  }
+
+  // Downloads locais
+  const ds = new Date().toISOString().slice(0,10).replace(/-/g,"");
+  const bMd   = new Blob([reportMd],{type:"text/markdown"});
+  const bTxt  = new Blob([reportMd],{type:"text/plain"});
+  const htmlContent = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<title>${T("report_title")}</title>
+<style>body{font-family:Georgia,serif;max-width:820px;margin:40px auto;padding:0 20px;line-height:1.85;color:#1a1a1a;background:#fafaf8;}
+h1,h2{color:#7a5200;border-bottom:1px solid #e0d0a0;padding-bottom:6px;margin:22px 0 10px;}
+h3{color:#3a3a3a;margin:16px 0 6px;}table{border-collapse:collapse;width:100%;margin:14px 0;}
+th{background:#f9f0dc;padding:8px 12px;text-align:left;border:1px solid #ddd;font-size:.85em;}
+td{padding:7px 12px;border:1px solid #eee;}tr:nth-child(even) td{background:#fafafa;}
+code{background:#f5f0e0;padding:2px 6px;border-radius:3px;font-family:monospace;font-size:.9em;}</style>
+</head><body><h1>${T("report_title")}</h1>
+<p style="color:#888;font-size:.85em;">${T("report_sub")(currentLang)}</p>
+${typeof marked!=="undefined" ? marked.parse(reportMd) : reportMd.replace(/\n/g,"<br>")}
+</body></html>`;
+  const bHtml = new Blob([htmlContent],{type:"text/html"});
+
+  document.getElementById("dl-md").href   = URL.createObjectURL(bMd);
+  document.getElementById("dl-txt").href  = URL.createObjectURL(bTxt);
+  document.getElementById("dl-html").href = URL.createObjectURL(bHtml);
+  document.getElementById("dl-md").download   = `relatorio_wuzo_${ds}.md`;
+  document.getElementById("dl-txt").download  = `relatorio_wuzo_${ds}.txt`;
+  document.getElementById("dl-html").download = `relatorio_wuzo_${ds}.html`;
+
+  document.getElementById("dl-md").textContent   = T("dl_md");
+  document.getElementById("dl-txt").textContent  = T("dl_txt");
+  document.getElementById("dl-html").textContent = T("dl_html");
+
+  document.getElementById("sec-full").style.display = "block";
+  document.getElementById("sec-full").scrollIntoView({behavior:"smooth"});
 }
 
-
-// ── ADMIN DOWNLOAD PDF ────────────────────────────────────────
-async function adminDownloadPDF(analysisId){
-  var tok=getToken();if(!tok)return;
-  var btn=event.target;btn.disabled=true;btn.textContent="...";
-  try{
-    var r=await fetch(BACKEND+"/api/admin/pdf-download/"+analysisId,{headers:{"Authorization":"Bearer "+tok},signal:aborter(45000)});
-    if(!r.ok){var e=await r.json().catch(function(){return{};});alert(e.error||"Erro ao baixar PDF.");return;}
-    var blob=await r.blob();
-    var url=URL.createObjectURL(blob);
-    var a=document.createElement("a");a.href=url;a.download="wuzo_admin_pdf_"+analysisId+".pdf";
-    document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
-  }catch(e){alert("Erro: "+e.message);}
-  finally{btn.disabled=false;btn.innerHTML="&#11015; PDF";}
+// ════════════════════════════════════════════════════════
+// BUY
+// ════════════════════════════════════════════════════════
+async function handleBuy(){
+  const tok = getToken();
+  if(tok){
+    try{
+      const r = await fetch(BACKEND_URL+"/api/credits/checkout",{
+        method:"POST",
+        headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
+        body:JSON.stringify({quantity:1})
+      });
+      if(r.ok){
+        const d = await r.json();
+        if(d.checkout_url){ window.open(d.checkout_url,"_blank"); return; }
+      }
+    }catch{}
+  }
+  window.open(BACKEND_URL+"/","_blank");
 }
 
-function escHtmlAdmin(str){
-  if(!str)return "";
-  return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-}
-
-function openAdminModal(){document.getElementById("modal-admin").classList.add("open");}
-function closeAdminModal(){document.getElementById("modal-admin").classList.remove("open");}
-function switchAdminTab(tab){
-  ["credits","users","stats"].forEach(function(t){
-    document.getElementById("panel-"+t).style.display=t===tab?"block":"none";
-    var btn=document.getElementById("tab-"+t);
-    if(btn){btn.className="admin-tab"+(t===tab?" active":"");}
+// ════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════
+function buildGrid(){
+  const g = document.getElementById("agent-grid");
+  g.innerHTML="";
+  AGENTS.forEach(a=>{
+    const d=document.createElement("div");
+    d.className="ac"; d.id="ac-"+a.id;
+    d.innerHTML=`<div class="ac-em">${a.em}</div><div class="ac-nm">${a.nm}</div><div class="ac-st">○</div>`;
+    g.appendChild(d);
   });
 }
 
-function adminShowMsg(msg,ok){
-  var el=document.getElementById("admin-credit-msg");
-  el.textContent=msg;
-  el.style.display="block";
-  el.style.background=ok?"rgba(74,175,120,.1)":"rgba(224,82,82,.1)";
-  el.style.color=ok?"#a0f5c0":"#f5a0a0";
-  el.style.border="1px solid "+(ok?"rgba(74,175,120,.3)":"rgba(224,82,82,.3)");
-  setTimeout(function(){el.style.display="none";},4000);
+function setAc(id,st){
+  const c=document.getElementById("ac-"+id); if(!c)return;
+  const ic={idle:"○",thinking:"◉",done:"✓",error:"✗"};
+  c.className="ac "+st;
+  c.querySelector(".ac-st").textContent=ic[st]||"○";
+  const done=Object.values(agentOutputs).filter(Boolean).length;
+  document.getElementById("prog-fill").style.width=Math.round(done/AGENTS.length*100)+"%";
 }
 
-async function adminCredit(action){
-  var target=document.getElementById("admin-target").value.trim();
-  var amount=parseInt(document.getElementById("admin-amount").value)||1;
-  if(!target){adminShowMsg("Informe email ou ID do usuário.",false);return;}
-  var tok=getToken();if(!tok)return;
-  var body={amount:amount};
-  if(target.includes("@"))body.email=target.toLowerCase();
-  else body.user_id=parseInt(target);
-  var endpoint=action==="add"?"/api/admin/add-credits"
-               :action==="remove"?"/api/admin/remove-credits"
-               :action==="set"?"/api/admin/set-credits"
-               :"/api/admin/reset-free-uses";
-  try{
-    var r=await fetch(BACKEND+endpoint,{
-      method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
-      body:JSON.stringify(body),signal:aborter(10000)
-    });
-    var d=await r.json();
-    if(r.ok){adminShowMsg(d.message+(d.new_balance!==undefined?" · Saldo: "+d.new_balance:""),true);await updateUI();}
-    else adminShowMsg(d.error||"Erro.",false);
-  }catch(e){adminShowMsg("Erro: "+e.message,false);}
+function log(msg,cls=""){
+  const f=document.getElementById("log-feed");
+  const d=document.createElement("div");
+  d.className="ll "+cls;
+  const locale = currentLang==="en"?"en-US":currentLang==="es"?"es-ES":"pt-BR";
+  d.textContent="["+new Date().toLocaleTimeString(locale)+"] "+msg;
+  f.appendChild(d); f.scrollTop=f.scrollHeight;
 }
 
-async function adminLoadUsers(){
-  var tok=getToken();if(!tok)return;
-  var box=document.getElementById("admin-users-list");
-  box.innerHTML='<div style="color:var(--dm);font-size:.7rem;font-family:JetBrains Mono,monospace;">Carregando...</div>';
-  try{
-    var r=await fetch(BACKEND+"/api/admin/users",{headers:{"Authorization":"Bearer "+tok},signal:aborter(10000)});
-    var users=await r.json();
-    if(!r.ok){box.textContent=users.error||"Erro.";return;}
-    box.innerHTML="";
-    users.forEach(function(u){
-      var row=document.createElement("div");row.className="admin-user-row";
-      row.innerHTML='<div class="admin-user-email">'+(u.is_admin?"&#128081; ":"")+u.email+'</div>'+
-        '<div class="admin-user-meta">&#11088;'+u.credits+' &nbsp;ID:'+u.id+'</div>'+
-        '<button class="admin-credit-btn" onclick="quickAddCredit('+u.id+',\''+u.email+'\')">+1</button>';
-      box.appendChild(row);
-    });
-    if(!users.length)box.innerHTML='<div style="color:var(--dm);font-size:.7rem;">Nenhum usuário.</div>';
-  }catch(e){box.textContent="Erro: "+e.message;}
+function resetGrid(){
+  agentOutputs={};
+  AGENTS.forEach(a=>setAc(a.id,"idle"));
+  document.getElementById("prog-fill").style.width="0%";
+  document.getElementById("log-feed").innerHTML=`<div class="ll">${T("starting")}</div>`;
+  document.getElementById("pip-pill").textContent=T("running");
+  document.getElementById("pip-pill").className="pill pill-run";
 }
 
-async function quickAddCredit(userId,email){
-  var tok=getToken();if(!tok)return;
-  try{
-    var r=await fetch(BACKEND+"/api/admin/add-credits",{
-      method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
-      body:JSON.stringify({user_id:userId,amount:1}),signal:aborter(8000)
-    });
-    var d=await r.json();
-    if(r.ok){adminShowMsg("+1 crédito para "+email+" · Saldo: "+d.new_balance,true);adminLoadUsers();}
-    else adminShowMsg(d.error||"Erro.",false);
-  }catch(e){adminShowMsg("Erro: "+e.message,false);}
+function finishPipeline(){
+  AGENTS.forEach(a=>{ if(!agentOutputs[a.id]) setAc(a.id,"done"); });
+  document.getElementById("prog-fill").style.width="100%";
+  document.getElementById("pip-pill").textContent=T("done");
+  document.getElementById("pip-pill").className="pill pill-done";
+  log(T("log_done"),"ok");
 }
 
-async function adminLoadStats(){
-  var tok=getToken();if(!tok)return;
-  var box=document.getElementById("admin-stats-box");
-  box.textContent="Carregando...";
-  try{
-    var r=await fetch(BACKEND+"/api/admin/stats",{headers:{"Authorization":"Bearer "+tok},signal:aborter(10000)});
-    var d=await r.json();
-    if(!r.ok){box.textContent=d.error||"Erro.";return;}
-    box.innerHTML=[
-      "Usuários total: "+d.total_users,
-      "Novos hoje: "+d.new_users_today,
-      "Análises total: "+d.total_analyses,
-      "Análises hoje: "+d.new_analyses_today,
-      "Créditos no sistema: "+d.total_credits_system,
-      "PDFs em cache: "+d.pdfs_cached,
-      "Cache PDFs: "+d.pdf_cache_hours+"h",
-      "Providers: "+d.providers_active.join(" → "),
-      "Stripe ID: "+d.stripe_price_id,
-    ].map(function(l){return '<div style="border-bottom:1px solid var(--bd);padding:3px 0;">'+l+'</div>';}).join("");
-  }catch(e){box.textContent="Erro: "+e.message;}
-}
-
-async function adminClearPDFCache(){
-  if(!confirm("Limpar cache de PDFs antigos?"))return;
-  var tok=getToken();if(!tok)return;
-  try{
-    var r=await fetch(BACKEND+"/api/admin/clear-pdf-cache",{
-      method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
-      body:JSON.stringify({}),signal:aborter(10000)
-    });
-    var d=await r.json();
-    alert(r.ok?d.message:d.error||"Erro.");
-  }catch(e){alert("Erro: "+e.message);}
-}
-
-// ── HELPERS ───────────────────────────────────────────────────
-function setBtns(on){
-  ["btn-free","btn-premium","btn-buy"].forEach(function(id){var b=document.getElementById(id);if(b)b.disabled=on;});
-  var bf=document.getElementById("btn-free");
-  var bp=document.getElementById("btn-premium");
-  var bb=document.getElementById("btn-buy");
-  if(on){
-    if(bf)bf.innerHTML='<div class="spin"></div> '+(_lang==="en"?"Analyzing...":_lang==="es"?"Analizando...":"Analisando...");
-    if(bp)bp.innerHTML='<div class="spin"></div> '+(_lang==="en"?"Consulting 16 Specialists...":_lang==="es"?"Consultando 16 Especialistas...":"Consultando 16 Especialistas...");
-  }else{
-    if(bf)bf.innerHTML=t("btn_free_main")+'<br><span class="btn-sub">'+t("btn_free_sub")+'</span>';
-    if(bp){
-      var popular=t("btn_free_popular");
-      // Atualiza o ::before via CSS var (workaround: usa atributo data)
-      bp.setAttribute("data-popular",popular);
-      bp.innerHTML=t("btn_premium_main")+'<br><span class="btn-sub">'+t("btn_premium_sub")+'</span>';
-    }
-    if(bb)bb.innerHTML=t("btn_buy_main")+'<br><span class="btn-sub">'+t("btn_buy_sub")+'</span>';
+function setBtns(loading){
+  ["btn-free","btn-premium","btn-buy"].forEach(id=>{
+    document.getElementById(id).disabled = loading;
+  });
+  if(loading){
+    document.getElementById("btn-free").innerHTML='<div class="spin"></div> '+T("btn_free_load");
+    document.getElementById("btn-premium").innerHTML='<div class="spin"></div> '+T("btn_prem_load");
+  } else {
+    document.getElementById("btn-free").innerHTML    = T("btn_free");
+    document.getElementById("btn-premium").innerHTML = T("btn_premium");
+    document.getElementById("btn-buy").innerHTML     = T("btn_buy");
   }
 }
-function showAlert(id,cls,msg){var el=document.getElementById(id);el.className="alert "+cls;el.innerHTML=msg;el.style.display="block";}
-function hideAlert(id){document.getElementById(id).style.display="none";}
 
-// ── INIT ─────────────────────────────────────────────────────
-document.addEventListener("DOMContentLoaded",function(){
-  setLang(_lang);buildGrid();getToken();updateUI();checkHealth();
-  updateTicker();
-  setInterval(updateTicker,30000); // atualiza precos a cada 30s
-});
+function showAlert(id,cls,msg){
+  const el=document.getElementById(id);
+  el.className="alert "+cls; el.textContent=msg; el.style.display="block";
+}
+function hideAlert(id){ document.getElementById(id).style.display="none"; }
+
+window.setLocalKey = (key, provider="groq") => {
+  localStorage.setItem("wuzo_llm_key", key);
+  localStorage.setItem("wuzo_llm_prov", provider);
+  location.reload();
+};
+window.setToken = (tok) => {
+  localStorage.setItem("wuzo_token", tok);
+  location.reload();
+};
+
+
 </script>
 </body>
 </html>
