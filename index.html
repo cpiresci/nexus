@@ -251,19 +251,14 @@ textarea::placeholder{color:var(--dm2);}
 .alert-ok  {border-color:var(--gr);background:rgba(74,175,120,.05);color:#a0f5c0;}
 
 /* ── LANGUAGE SELECTOR ───────────────────────── */
-.lang-row{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
-.lang-lbl{font-family:'JetBrains Mono',monospace;font-size:.55rem;letter-spacing:2px;
-  color:var(--dm2);text-transform:uppercase;white-space:nowrap;}
-.lang-btn{
-  padding:5px 13px;border-radius:20px;border:1px solid var(--bd);
-  background:rgba(0,0,0,.3);color:var(--dm);font-family:'JetBrains Mono',monospace;
-  font-size:.6rem;letter-spacing:1px;cursor:pointer;transition:all .2s;
+.lang-sel{display:flex;align-items:center;gap:5px;}
+.lang-opt{
+  padding:3px 9px;border-radius:20px;border:1px solid var(--bd);
+  background:transparent;color:var(--dm2);font-family:'JetBrains Mono',monospace;
+  font-size:.52rem;letter-spacing:1px;cursor:pointer;transition:all .15s;
 }
-.lang-btn.active{
-  border-color:var(--g);background:rgba(201,168,76,.1);
-  color:var(--g);font-weight:700;
-}
-.lang-btn:hover:not(.active){border-color:rgba(201,168,76,.3);color:var(--g2);}
+.lang-opt.active{border-color:var(--g);color:var(--g);background:rgba(201,168,76,.08);}
+.lang-opt:hover:not(.active){color:var(--dm);border-color:rgba(201,168,76,.2);}
 
 /* ── SPINNER ─────────────────────────────────── */
 .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(201,168,76,.3);
@@ -282,21 +277,18 @@ textarea::placeholder{color:var(--dm2);}
   </div>
   <div class="hdr-right">
     <div class="credit-badge">⭐ PREMIUM: <span id="cred-num">0</span></div>
+    <div class="lang-sel">
+      <button class="lang-opt active" id="lo-pt" onclick="setLang('pt')">PT</button>
+      <button class="lang-opt" id="lo-en" onclick="setLang('en')">EN</button>
+      <button class="lang-opt" id="lo-es" onclick="setLang('es')">ES</button>
+    </div>
     <div class="status-dot">MOTOR ONLINE</div>
   </div>
 </div>
 
 <!-- INPUT CARD -->
 <div class="card" id="card-input">
-  <!-- Seletor de idioma -->
-  <div class="lang-row">
-    <span class="lang-lbl">Language:</span>
-    <button class="lang-btn" id="lang-pt" onclick="setLang('pt')">🇧🇷 PT</button>
-    <button class="lang-btn" id="lang-en" onclick="setLang('en')">🇺🇸 EN</button>
-    <button class="lang-btn" id="lang-es" onclick="setLang('es')">🇪🇸 ES</button>
-  </div>
-
-  <div class="inp-lbl" id="inp-lbl-txt">Descreva sua situação financeira</div>
+  <div class="inp-lbl">Descreva sua situação financeira</div>
   <textarea id="txt-input"
     placeholder="Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado."></textarea>
 
@@ -375,12 +367,24 @@ textarea::placeholder{color:var(--dm2);}
 
 <script>
 // ════════════════════════════════════════════════════════
-// CONFIG
+// CONFIG — lida com app.wuzo.com.br rodando no Render
+// As env vars já estão no Render: SAMBANOVA_API_KEY,
+// GEMINI_API_KEY, CEREBRAS_API_KEY, OPENAI_API_KEY
+// O Streamlit (app.py) serve como backend via query params
 // ════════════════════════════════════════════════════════
+
+// URL base do backend Render (app.wuzo.com.br / Streamlit)
+// O HTML chama o endpoint /agent/run do FastAPI (api.py)
+// OU chama direto o LLM se tiver chave local
 const BACKEND_URL  = "https://wuzo-teste.onrender.com"; // ajuste se mudar
+const STRIPE_URL   = ""; // URL do Stripe checkout — preenchida via /credits/purchase
+
+// Chave local (fallback se não tiver backend)
+// Deixar vazio para usar sempre o backend
 const LOCAL_LLM_KEY      = localStorage.getItem("wuzo_llm_key") || "";
 const LOCAL_LLM_PROVIDER = localStorage.getItem("wuzo_llm_prov") || "sambanova";
 
+// Token de sessão (pego da URL ou localStorage)
 function getToken(){
   const p = new URLSearchParams(location.search);
   const t = p.get("token") || p.get("t") || localStorage.getItem("wuzo_token") || "";
@@ -389,146 +393,40 @@ function getToken(){
 }
 
 // ════════════════════════════════════════════════════════
-// LANGUAGE — detecta pelo navegador, permite troca manual
+// LANGUAGE — detecta pelo navegador, persiste em localStorage
 // ════════════════════════════════════════════════════════
-const _BROWSER_LANG = (navigator.language || "pt").toLowerCase().slice(0,2);
-const _VALID_LANGS  = ["pt","en","es"];
+const _VALID_LANGS = ["pt","en","es"];
+const _BROWSER_LANG = (navigator.language||"pt").toLowerCase().slice(0,2);
 let currentLang = localStorage.getItem("wuzo_lang")
   || (_VALID_LANGS.includes(_BROWSER_LANG) ? _BROWSER_LANG : "pt");
+
+// Instrução de idioma injetada nos system prompts
+const _LANG_INSTR = {
+  pt: "Responda em português.",
+  en: "Respond entirely in English. Do not use Portuguese or Spanish.",
+  es: "Responde completamente en español. No uses portugués ni inglés.",
+};
+function langInstr(){ return _LANG_INSTR[currentLang] || _LANG_INSTR.pt; }
+
+// Locale para datas
+const _LOCALE = {pt:"pt-BR", en:"en-US", es:"es-ES"};
+function locale(){ return _LOCALE[currentLang] || "pt-BR"; }
 
 function setLang(lang){
   if(!_VALID_LANGS.includes(lang)) return;
   currentLang = lang;
   localStorage.setItem("wuzo_lang", lang);
-  _applyLangUI();
-}
-
-// Textos da interface por idioma
-const _UI = {
-  pt:{
-    inp_lbl:       "Descreva sua situação financeira",
-    placeholder:   "Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado.",
-    btn_free:      "⚡ ANÁLISE GRATUITA",
-    btn_premium:   "⭐ RELATÓRIO PREMIUM (16 ESP.)",
-    btn_buy:       "🛒 COMPRAR (R$ 19,90)",
-    btn_free_load: "Analisando...",
-    btn_prem_load: "Orquestrando 16 agentes...",
-    no_prompt:     "✍️ Descreva sua situação financeira.",
-    no_credits:    "⭐ Créditos insuficientes. Compre 1 crédito por R$ 19,90.",
-    starting:      "⬡ Iniciando...",
-    agents_running:"AGENTES EM EXECUÇÃO",
-    running:       "RUNNING",
-    done:          "CONCLUÍDO",
-    log_free:      "⬡ Análise gratuita iniciada...",
-    log_premium:   "⬡ Análise premium iniciada (16 especialistas)...",
-    log_polling:   "⏳ Processando...",
-    log_done:      "✅ Concluído.",
-    log_error:     "❌ Erro na análise.",
-    verdict_title: "⚖️ Veredito do Consultor IA",
-    preview_title: "📋 Análise — Macroeconomia",
-    lock_title:    "Desbloqueie o relatório completo",
-    lock_sub:      "Veja a análise dos 16 especialistas + downloads em MD, TXT e HTML",
-    lock_btn_prem: "⭐ Usar Crédito Premium",
-    lock_btn_buy:  "🛒 Comprar — R$ 19,90",
-    report_title:  "WUZO — Relatório Financeiro",
-    report_sub:    lang => `Gerado em ${new Date().toLocaleDateString("pt-BR")} — 16 Agentes Especialistas`,
-    dl_md:   "⬇ .MD", dl_txt: "⬇ .TXT", dl_html: "⬇ .HTML",
-    err_backend:   "⚠ Erro ao conectar com o backend.",
-    err_analysis:  "⚠ Erro na análise. Tente novamente.",
-  },
-  en:{
-    inp_lbl:       "Describe your financial situation",
-    placeholder:   "Ex: I have $50,000 to invest, $8,000 in credit card debt at 24% APR, income of $5,000/month. I want to build wealth over the next 5 years with a moderate risk profile.",
-    btn_free:      "⚡ FREE ANALYSIS",
-    btn_premium:   "⭐ PREMIUM REPORT (16 SPEC.)",
-    btn_buy:       "🛒 BUY (R$ 19,90)",
-    btn_free_load: "Analyzing...",
-    btn_prem_load: "Orchestrating 16 agents...",
-    no_prompt:     "✍️ Describe your financial situation.",
-    no_credits:    "⭐ Insufficient credits. Buy 1 credit for R$ 19.90.",
-    starting:      "⬡ Starting...",
-    agents_running:"AGENTS RUNNING",
-    running:       "RUNNING",
-    done:          "DONE",
-    log_free:      "⬡ Free analysis started...",
-    log_premium:   "⬡ Premium analysis started (16 specialists)...",
-    log_polling:   "⏳ Processing...",
-    log_done:      "✅ Done.",
-    log_error:     "❌ Analysis error.",
-    verdict_title: "⚖️ AI Consultant Verdict",
-    preview_title: "📋 Analysis — Macroeconomics",
-    lock_title:    "Unlock the full report",
-    lock_sub:      "See all 16 specialist analyses + downloads in MD, TXT and HTML",
-    lock_btn_prem: "⭐ Use Premium Credit",
-    lock_btn_buy:  "🛒 Buy — R$ 19.90",
-    report_title:  "WUZO — Financial Report",
-    report_sub:    lang => `Generated on ${new Date().toLocaleDateString("en-US")} — 16 Specialist Agents`,
-    dl_md:   "⬇ .MD", dl_txt: "⬇ .TXT", dl_html: "⬇ .HTML",
-    err_backend:   "⚠ Error connecting to backend.",
-    err_analysis:  "⚠ Analysis error. Please try again.",
-  },
-  es:{
-    inp_lbl:       "Describe tu situación financiera",
-    placeholder:   "Ej: Tengo $50.000 para invertir, deuda de tarjeta de $8.000 al 24% anual, ingreso de $5.000/mes. Quiero construir patrimonio en los próximos 5 años con perfil moderado.",
-    btn_free:      "⚡ ANÁLISIS GRATUITO",
-    btn_premium:   "⭐ INFORME PREMIUM (16 ESP.)",
-    btn_buy:       "🛒 COMPRAR (R$ 19,90)",
-    btn_free_load: "Analizando...",
-    btn_prem_load: "Orquestando 16 agentes...",
-    no_prompt:     "✍️ Describe tu situación financiera.",
-    no_credits:    "⭐ Créditos insuficientes. Compra 1 crédito por R$ 19,90.",
-    starting:      "⬡ Iniciando...",
-    agents_running:"AGENTES EN EJECUCIÓN",
-    running:       "RUNNING",
-    done:          "CONCLUIDO",
-    log_free:      "⬡ Análisis gratuito iniciado...",
-    log_premium:   "⬡ Análisis premium iniciado (16 especialistas)...",
-    log_polling:   "⏳ Procesando...",
-    log_done:      "✅ Concluido.",
-    log_error:     "❌ Error en el análisis.",
-    verdict_title: "⚖️ Veredicto del Consultor IA",
-    preview_title: "📋 Análisis — Macroeconomía",
-    lock_title:    "Desbloquea el informe completo",
-    lock_sub:      "Mira los 16 análisis de especialistas + descargas en MD, TXT y HTML",
-    lock_btn_prem: "⭐ Usar Crédito Premium",
-    lock_btn_buy:  "🛒 Comprar — R$ 19,90",
-    report_title:  "WUZO — Informe Financiero",
-    report_sub:    lang => `Generado el ${new Date().toLocaleDateString("es-ES")} — 16 Agentes Especialistas`,
-    dl_md:   "⬇ .MD", dl_txt: "⬇ .TXT", dl_html: "⬇ .HTML",
-    err_backend:   "⚠ Error al conectar con el backend.",
-    err_analysis:  "⚠ Error en el análisis. Inténtalo de nuevo.",
-  },
-};
-
-function T(key){ return (_UI[currentLang]||_UI["pt"])[key] || _UI["pt"][key] || ""; }
-
-function _applyLangUI(){
-  // Botões de idioma
-  ["pt","en","es"].forEach(l=>{
-    const el = document.getElementById("lang-"+l);
-    if(el) el.classList.toggle("active", l === currentLang);
+  // Atualiza botões
+  _VALID_LANGS.forEach(l=>{
+    const el = document.getElementById("lo-"+l);
+    if(el) el.classList.toggle("active", l===lang);
   });
-  // Labels de interface
-  const lbl = document.getElementById("inp-lbl-txt");
-  if(lbl) lbl.textContent = T("inp_lbl");
-  const ta = document.getElementById("txt-input");
-  if(ta) ta.placeholder = T("placeholder");
-  // Botões principais
-  const bf = document.getElementById("btn-free");
-  const bp = document.getElementById("btn-premium");
-  const bb = document.getElementById("btn-buy");
-  if(bf && !bf.disabled) bf.innerHTML = T("btn_free");
-  if(bp && !bp.disabled) bp.innerHTML = T("btn_premium");
-  if(bb) bb.innerHTML = T("btn_buy");
-  // Pipeline label
-  const pl = document.querySelector("#sec-pipeline span[style*='letter-spacing']");
-  if(pl) pl.textContent = T("agents_running");
-  // Lock card
-  const lt = document.querySelector(".lock-title");
-  const ls = document.querySelector(".lock-sub");
-  if(lt) lt.textContent = T("lock_title");
-  if(ls) ls.textContent = T("lock_sub");
 }
+
+document.addEventListener("DOMContentLoaded",()=>{
+  // Aplica idioma detectado nos botões ao carregar
+  setLang(currentLang);
+});
 
 // ════════════════════════════════════════════════════════
 // 16 AGENTES
@@ -564,8 +462,8 @@ let freeMode = false;
 document.addEventListener("DOMContentLoaded", () => {
   buildGrid();
   loadCredits();
+  // Pega token da URL
   getToken();
-  _applyLangUI();
 });
 
 // ════════════════════════════════════════════════════════
@@ -575,317 +473,82 @@ async function loadCredits(){
   const tok = getToken();
   if(!tok){ document.getElementById("cred-num").textContent = "0"; return; }
   try{
-    const r = await fetch(BACKEND_URL+"/api/auth/me",{
+    const r = await fetch(BACKEND_URL+"/credits/balance",{
       headers:{"Authorization":"Bearer "+tok}
     });
     if(r.ok){
       const d = await r.json();
-      const n = d.credits !== undefined ? d.credits : (d.premium_credits||0);
+      const n = d.unlimited ? "∞" : (d.credits||0);
       document.getElementById("cred-num").textContent = n;
-      if(n > 0) document.getElementById("btn-buy").style.opacity = ".5";
+      // Se tem crédito, deixa o btn-premium destaque
+      if(d.credits > 0 || d.unlimited){
+        document.getElementById("btn-buy").style.opacity = ".5";
+      }
     }
   }catch{}
 }
 
 // ════════════════════════════════════════════════════════
-// POLLING HELPER
+// LLM CALL — usa backend ou chave local
 // ════════════════════════════════════════════════════════
-async function _pollJob(url, tok, maxWait=180000, interval=3000){
-  const t0 = Date.now();
-  while(Date.now()-t0 < maxWait){
-    await new Promise(r=>setTimeout(r,interval));
-    try{
-      const headers = tok ? {"Authorization":"Bearer "+tok} : {};
-      const r = await fetch(url, {headers});
-      if(!r.ok) continue;
-      const d = await r.json();
-      if(d.status === "done")   return {ok:true,  data:d};
-      if(d.status === "error")  return {ok:false, data:d};
-      // pending / running → continua polling
-      log(T("log_polling"));
-    }catch(e){ log("⚠ "+e.message); }
-  }
-  return {ok:false, data:{message:"timeout"}};
-}
-
-// ════════════════════════════════════════════════════════
-// FREE ANALYSIS — usa /api/analyze/free + polling
-// ════════════════════════════════════════════════════════
-async function handleFree(){
-  const txt = document.getElementById("txt-input").value.trim();
-  if(!txt){ showAlert("inp-alert","alert-info", T("no_prompt")); return; }
-
-  hideAlert("inp-alert");
-  freeMode = true;
-  agentOutputs = {};
-  resetGrid();
-  document.getElementById("sec-pipeline").style.display="block";
-  document.getElementById("sec-free").style.display="none";
-  document.getElementById("sec-full").style.display="none";
-  setBtns(true);
-
-  log(T("log_free"));
-
-  // Marca agentes que participam da análise gratuita
-  setAc("consultor_senior","thinking");
-  setAc("macroeconomia","thinking");
-
-  const tok = getToken();
-  let verdict = "", preview = "";
-
-  try{
-    // 1. Dispara job no backend com idioma correto
-    const resp = await fetch(BACKEND_URL+"/api/analyze/free",{
-      method:"POST",
-      headers:{"Content-Type":"application/json",
-               ...(tok?{"Authorization":"Bearer "+tok}:{})},
-      body: JSON.stringify({prompt: txt, language: currentLang})
-    });
-
-    if(!resp.ok) throw new Error("HTTP "+resp.status);
-    const job = await resp.json();
-    const jobId = job.job_id;
-
-    log("⬡ Job iniciado — aguardando resultado...");
-
-    // 2. Polling
-    const result = await _pollJob(
-      BACKEND_URL+"/api/job/free/"+jobId, tok
-    );
-
-    if(result.ok){
-      verdict = result.data.verdict || "";
-      preview = result.data.preview || "";
-      agentOutputs["consultor_senior"] = verdict;
-      agentOutputs["macroeconomia"]    = preview;
-      setAc("consultor_senior","done");
-      setAc("macroeconomia","done");
-    } else {
-      throw new Error(result.data.message || "error");
-    }
-
-  } catch(err){
-    log(T("log_error")+" "+err.message,"er");
-    setAc("consultor_senior","error");
-    setAc("macroeconomia","error");
-    showAlert("inp-alert","alert-err", T("err_analysis"));
-    setBtns(false);
-    return;
-  }
-
-  finishPipeline();
-  renderFreeResult(verdict, preview);
-  setBtns(false);
-}
-
-function renderFreeResult(veredito, preview){
-  document.querySelector(".verdict-title").textContent = T("verdict_title");
-  const vBody = document.getElementById("verdict-body");
-  vBody.innerHTML = veredito
-    .replace(/\n/g,"<br>")
-    .replace(/\*\*(.*?)\*\*/g,"<b>$1</b>");
-
-  const pBody = document.getElementById("preview-body");
-  pBody.innerHTML = `<h3>${T("preview_title")}</h3>`+
-    (typeof marked!=="undefined" ? marked.parse(preview) : preview.replace(/\n/g,"<br>"));
-
-  // Lock card
-  document.querySelector(".lock-title").textContent = T("lock_title");
-  document.querySelector(".lock-sub").textContent   = T("lock_sub");
-
-  document.getElementById("sec-free").style.display="block";
-  document.getElementById("sec-free").scrollIntoView({behavior:"smooth"});
-}
-
-// ════════════════════════════════════════════════════════
-// PREMIUM — usa /api/analyze/premium + polling
-// ════════════════════════════════════════════════════════
-async function handlePremium(){
+async function llm(system, user, tokens=600){
+  // 1. Tenta backend FastAPI /agent/run
   const tok = getToken();
   if(tok){
     try{
-      const r=await fetch(BACKEND_URL+"/api/auth/me",{headers:{"Authorization":"Bearer "+tok}});
-      if(r.ok){
-        const d=await r.json();
-        const credits = d.credits !== undefined ? d.credits : (d.premium_credits||0);
-        if(credits < 1){
-          showAlert("inp-alert","alert-err", T("no_credits"));
-          return;
-        }
-      }
-    }catch{}
-  }
-
-  const txt = document.getElementById("txt-input").value.trim();
-  if(!txt){ showAlert("inp-alert","alert-info", T("no_prompt")); return; }
-
-  hideAlert("inp-alert");
-  freeMode = false;
-  agentOutputs = {};
-  resetGrid();
-  document.getElementById("sec-pipeline").style.display="block";
-  document.getElementById("sec-free").style.display="none";
-  document.getElementById("sec-full").style.display="none";
-  setBtns(true);
-
-  log(T("log_premium"));
-  AGENTS.forEach(a=>setAc(a.id,"thinking"));
-
-  let fullData = null;
-
-  try{
-    // 1. Dispara job com idioma correto
-    const resp = await fetch(BACKEND_URL+"/api/analyze/premium",{
-      method:"POST",
-      headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
-      body: JSON.stringify({prompt: txt, language: currentLang})
-    });
-
-    if(!resp.ok){
-      const err = await resp.json().catch(()=>({}));
-      if(resp.status===402){
-        showAlert("inp-alert","alert-err", T("no_credits")); setBtns(false); return;
-      }
-      throw new Error(err.error||"HTTP "+resp.status);
-    }
-
-    const job = await resp.json();
-    log("⬡ Job premium iniciado — 16 especialistas em paralelo...");
-
-    // 2. Polling — análise premium leva até ~90s
-    const result = await _pollJob(
-      BACKEND_URL+"/api/job/"+job.job_id, tok, 180000, 4000
-    );
-
-    if(!result.ok) throw new Error(result.data.message || "error");
-    fullData = result.data;
-
-    // Marca todos os agentes como done
-    const agentList = fullData.agents || [];
-    agentList.forEach(a=>{
-      agentOutputs[a.id] = a.analysis || "";
-      setAc(a.id, "done");
-    });
-    agentOutputs["verdict"] = fullData.verdict || "";
-
-  } catch(err){
-    log(T("log_error")+" "+err.message,"er");
-    AGENTS.forEach(a=>setAc(a.id,"error"));
-    showAlert("inp-alert","alert-err", T("err_analysis"));
-    setBtns(false);
-    await loadCredits(); // recarrega créditos (backend reembolsa em erro)
-    return;
-  }
-
-  finishPipeline();
-  renderFullReport(fullData);
-  setBtns(false);
-  await loadCredits();
-}
-
-function renderFullReport(data){
-  const verdict    = data.verdict    || "";
-  const agentList  = data.agents     || [];
-  const analysisId = data.analysis_id || "";
-
-  // Monta markdown do relatório completo
-  const reportMd = verdict;
-
-  const box = document.getElementById("full-report-box");
-  box.innerHTML = typeof marked!=="undefined" ? marked.parse(reportMd) : reportMd.replace(/\n/g,"<br>");
-
-  // Blocos individuais dos agentes
-  const blocksBox = document.getElementById("agent-blocks-box");
-  blocksBox.innerHTML = "";
-  const skip = new Set(["consultor_senior"]);
-  const agentMeta = {id:"", nm:"Especialista"};
-  agentList.filter(a=>!skip.has(a.id)).forEach(a=>{
-    const meta = AGENTS.find(m=>m.id===a.id)||{em:"⬡",name:a.name||a.id};
-    const div  = document.createElement("div");
-    div.className = "agent-block";
-    const body = a.analysis || "";
-    div.innerHTML =
-      `<div class="agent-block-title">${meta.em} ${a.name||a.id}</div>`+
-      `<div class="agent-block-body">${
-        typeof marked!=="undefined"
-          ? marked.parse(body)
-          : body.replace(/\*\*(.*?)\*\*/g,"<b>$1</b>").replace(/\n/g,"<br>")
-      }</div>`;
-    blocksBox.appendChild(div);
-  });
-
-  // Link para PDF do backend se disponível
-  const tok = getToken();
-  if(analysisId && tok){
-    const pdfUrl = BACKEND_URL+"/api/report/pdf/"+analysisId;
-    const dlRow = document.getElementById("dl-row");
-    if(dlRow && !document.getElementById("dl-pdf")){
-      const pdfLink = document.createElement("a");
-      pdfLink.id = "dl-pdf";
-      pdfLink.className = "dl-btn";
-      pdfLink.href = pdfUrl;
-      pdfLink.target = "_blank";
-      pdfLink.textContent = "⬇ PDF";
-      dlRow.prepend(pdfLink);
-    }
-  }
-
-  // Downloads locais
-  const ds = new Date().toISOString().slice(0,10).replace(/-/g,"");
-  const bMd   = new Blob([reportMd],{type:"text/markdown"});
-  const bTxt  = new Blob([reportMd],{type:"text/plain"});
-  const htmlContent = `<!DOCTYPE html><html><head><meta charset="UTF-8">
-<title>${T("report_title")}</title>
-<style>body{font-family:Georgia,serif;max-width:820px;margin:40px auto;padding:0 20px;line-height:1.85;color:#1a1a1a;background:#fafaf8;}
-h1,h2{color:#7a5200;border-bottom:1px solid #e0d0a0;padding-bottom:6px;margin:22px 0 10px;}
-h3{color:#3a3a3a;margin:16px 0 6px;}table{border-collapse:collapse;width:100%;margin:14px 0;}
-th{background:#f9f0dc;padding:8px 12px;text-align:left;border:1px solid #ddd;font-size:.85em;}
-td{padding:7px 12px;border:1px solid #eee;}tr:nth-child(even) td{background:#fafafa;}
-code{background:#f5f0e0;padding:2px 6px;border-radius:3px;font-family:monospace;font-size:.9em;}</style>
-</head><body><h1>${T("report_title")}</h1>
-<p style="color:#888;font-size:.85em;">${T("report_sub")(currentLang)}</p>
-${typeof marked!=="undefined" ? marked.parse(reportMd) : reportMd.replace(/\n/g,"<br>")}
-</body></html>`;
-  const bHtml = new Blob([htmlContent],{type:"text/html"});
-
-  document.getElementById("dl-md").href   = URL.createObjectURL(bMd);
-  document.getElementById("dl-txt").href  = URL.createObjectURL(bTxt);
-  document.getElementById("dl-html").href = URL.createObjectURL(bHtml);
-  document.getElementById("dl-md").download   = `relatorio_wuzo_${ds}.md`;
-  document.getElementById("dl-txt").download  = `relatorio_wuzo_${ds}.txt`;
-  document.getElementById("dl-html").download = `relatorio_wuzo_${ds}.html`;
-
-  document.getElementById("dl-md").textContent   = T("dl_md");
-  document.getElementById("dl-txt").textContent  = T("dl_txt");
-  document.getElementById("dl-html").textContent = T("dl_html");
-
-  document.getElementById("sec-full").style.display = "block";
-  document.getElementById("sec-full").scrollIntoView({behavior:"smooth"});
-}
-
-// ════════════════════════════════════════════════════════
-// BUY
-// ════════════════════════════════════════════════════════
-async function handleBuy(){
-  const tok = getToken();
-  if(tok){
-    try{
-      const r = await fetch(BACKEND_URL+"/api/credits/checkout",{
+      const r = await fetch(BACKEND_URL+"/agent/run",{
         method:"POST",
         headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
-        body:JSON.stringify({quantity:1})
+        body: JSON.stringify({system, user, max_tokens: tokens, language: currentLang})
       });
-      if(r.ok){
-        const d = await r.json();
-        if(d.checkout_url){ window.open(d.checkout_url,"_blank"); return; }
-      }
+      if(r.ok){ const d=await r.json(); return d.result||d.content||""; }
     }catch{}
   }
-  window.open(BACKEND_URL+"/","_blank");
+
+  // 2. Tenta chave local direta
+  if(LOCAL_LLM_KEY){
+    return await llmDirect(system, user, tokens);
+  }
+
+  // 3. Usa APIs do Render via endpoint público do Streamlit
+  // O app.py expõe /agent via query param ?agent_run=1
+  try{
+    const r = await fetch(BACKEND_URL+`/?agent_run=1`,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({system, user, max_tokens: tokens})
+    });
+    if(r.ok){ const d=await r.json(); return d.result||""; }
+  }catch{}
+
+  return "⚠ Sem conexão com o backend. Configure a API key local.";
+}
+
+async function llmDirect(system, user, tokens){
+  const PROVIDERS = {
+    sambanova:{url:"https://api.sambanova.ai/v1/chat/completions",  model:"Meta-Llama-3.3-70B-Instruct"},
+    openai:   {url:"https://api.openai.com/v1/chat/completions",    model:"gpt-4o-mini"},
+    groq:     {url:"https://api.groq.com/openai/v1/chat/completions",model:"llama-3.3-70b-versatile"},
+    gemini:   {url:"https://generativelanguage.googleapis.com/v1beta/openai/chat/completions",model:"gemini-2.0-flash"},
+    cerebras: {url:"https://api.cerebras.ai/v1/chat/completions",   model:"llama3.1-8b"},
+  };
+  const ep = PROVIDERS[LOCAL_LLM_PROVIDER] || PROVIDERS.groq;
+  try{
+    const r = await fetch(ep.url,{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+LOCAL_LLM_KEY},
+      body:JSON.stringify({model:ep.model,max_tokens:tokens,temperature:.3,
+        messages:[{role:"system",content:system},{role:"user",content:user}]
+      })
+    });
+    if(!r.ok) return "❌ HTTP "+r.status;
+    const d = await r.json();
+    return d.choices?.[0]?.message?.content?.trim()||"";
+  }catch(e){ return "❌ "+e.message; }
 }
 
 // ════════════════════════════════════════════════════════
-// HELPERS
+// AGENT GRID
 // ════════════════════════════════════════════════════════
 function buildGrid(){
   const g = document.getElementById("agent-grid");
@@ -911,26 +574,347 @@ function log(msg,cls=""){
   const f=document.getElementById("log-feed");
   const d=document.createElement("div");
   d.className="ll "+cls;
-  const locale = currentLang==="en"?"en-US":currentLang==="es"?"es-ES":"pt-BR";
-  d.textContent="["+new Date().toLocaleTimeString(locale)+"] "+msg;
+  d.textContent="["+new Date().toLocaleTimeString(locale())+"] "+msg;
   f.appendChild(d); f.scrollTop=f.scrollHeight;
 }
 
+// ════════════════════════════════════════════════════════
+// FREE ANALYSIS
+// ════════════════════════════════════════════════════════
+async function handleFree(){
+  const txt = document.getElementById("txt-input").value.trim();
+  if(!txt){ showAlert("inp-alert","alert-info","✍️ Descreva sua situação financeira."); return; }
+
+  hideAlert("inp-alert");
+  freeMode = true;
+  agentOutputs = {};
+  resetGrid();
+  document.getElementById("sec-pipeline").style.display="block";
+  document.getElementById("sec-free").style.display="none";
+  document.getElementById("sec-full").style.display="none";
+  setBtns(true);
+
+  log("⬡ Análise gratuita iniciada...");
+
+  const now = new Date().toLocaleDateString(locale(),{day:"2-digit",month:"long",year:"numeric"});
+
+  // ── 1. Veredito rápido (Consultor Sênior) ──────────────
+  setAc("consultor_senior","thinking");
+  log("👔 Consultor Sênior: analisando veredito...");
+
+  const veredito = await llm(
+    "Você é um Consultor Financeiro Sênior com 20 anos de experiência. "+
+    "Analise a situação do usuário e responda em formato estruturado em português. "+
+    "Seja objetivo e direto. Use dados concretos.",
+    `DATA: ${now}\nSITUAÇÃO DO USUÁRIO:\n${txt}\n\n`+
+    `Responda EXATAMENTE neste formato (sem markdown, sem asteriscos, texto limpo):\n`+
+    `VEREDITO: [Favorável/Desfavorável/Atenção Necessária]\n`+
+    `SAÚDE FINANCEIRA: [0-100]%\n`+
+    `URGÊNCIA: [Alta/Média/Baixa]\n`+
+    `ÁREAS CRÍTICAS:\n1. [área]\n2. [área]\n3. [área]\n`+
+    `FUNDAMENTO: [2-3 frases explicando o diagnóstico principal]\n`+
+    `SÍNTESE: [2 frases sobre o que foi identificado]\n`+
+    `RISCOS:\n1. [risco com impacto]\n2. [risco]\n3. [risco]\n`+
+    `PRÓXIMOS PASSOS:\n1. [ação concreta]\n2. [ação]\n3. [ação]`,
+    500
+  );
+  agentOutputs["consultor_senior"] = veredito;
+  setAc("consultor_senior","done");
+  log("✓ Consultor Sênior concluído","ok");
+
+  // ── 2. Preview de 1 especialista (Macroeconomia) ───────
+  setAc("macroeconomia","thinking");
+  log("🌐 Macroeconomia: iniciando análise...");
+
+  const macroPreview = await llm(
+    "Você é um economista-chefe especializado em Brasil. "+langInstr()+"",
+    `DATA: ${now}\nSITUAÇÃO DO USUÁRIO: ${txt}\n\n`+
+    `ANÁLISE MACROECONÔMICA DETALHADA:\n`+
+    `Considerando Selic atual, IPCA, câmbio e cenário de juros globais, analise:\n`+
+    `1. Como o cenário macro impacta especificamente esta situação\n`+
+    `2. Oportunidades em renda fixa no contexto atual\n`+
+    `3. Timing ideal para os investimentos descritos\n`+
+    `Seja técnico, use números reais de 2024-2025, mínimo 200 palavras.`,
+    400
+  );
+  agentOutputs["macroeconomia"] = macroPreview;
+  setAc("macroeconomia","done");
+  log("✓ Macroeconomia concluída","ok");
+
+  // ── Finaliza ───────────────────────────────────────────
+  finishPipeline();
+  renderFreeResult(veredito, macroPreview);
+  setBtns(false);
+}
+
+function renderFreeResult(veredito, preview){
+  // Renderiza veredito
+  const vBody = document.getElementById("verdict-body");
+  // Formata o texto estruturado em HTML
+  vBody.innerHTML = veredito
+    .replace(/^(VEREDITO|SAÚDE FINANCEIRA|URGÊNCIA|ÁREAS CRÍTICAS|FUNDAMENTO|SÍNTESE|RISCOS|PRÓXIMOS PASSOS):/gm,
+      m=>`<div style="color:var(--g);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;margin-top:10px;margin-bottom:2px;">${m}</div>`)
+    .replace(/\n/g,"<br>");
+
+  // Renderiza preview parcial
+  const pBody = document.getElementById("preview-body");
+  pBody.innerHTML = `<h3>📋 Análise — Macroeconomia</h3>`+
+    (typeof marked!=="undefined" ? marked.parse(preview) : preview.replace(/\n/g,"<br>"));
+
+  document.getElementById("sec-free").style.display="block";
+  document.getElementById("sec-free").scrollIntoView({behavior:"smooth"});
+}
+
+// ════════════════════════════════════════════════════════
+// PREMIUM — 16 AGENTES
+// ════════════════════════════════════════════════════════
+async function handlePremium(){
+  // Verifica crédito
+  const tok = getToken();
+  if(tok){
+    try{
+      const r=await fetch(BACKEND_URL+"/credits/balance",{headers:{"Authorization":"Bearer "+tok}});
+      if(r.ok){
+        const d=await r.json();
+        if(!d.unlimited && (d.credits||0)<1){
+          showAlert("inp-alert","alert-err","⭐ Créditos insuficientes. Compre 1 crédito por R$ 19,90.");
+          return;
+        }
+      }
+    }catch{}
+  }
+
+  const txt = document.getElementById("txt-input").value.trim();
+  if(!txt){ showAlert("inp-alert","alert-info","✍️ Descreva sua situação financeira."); return; }
+
+  hideAlert("inp-alert");
+  freeMode = false;
+  agentOutputs = {};
+  resetGrid();
+  document.getElementById("sec-pipeline").style.display="block";
+  document.getElementById("sec-free").style.display="none";
+  document.getElementById("sec-full").style.display="none";
+  setBtns(true);
+
+  const now = new Date().toLocaleDateString(locale(),{day:"2-digit",month:"long",year:"numeric"});
+
+  async function ag(id,sys,usr,tokens=500){
+    setAc(id,"thinking");
+    log(`${AGENTS.find(a=>a.id===id)?.em||"⬡"} ${id}...`);
+    const out = await llm(sys,usr,tokens);
+    agentOutputs[id] = out;
+    setAc(id, out.startsWith("❌")||out.startsWith("⚠")?"error":"done");
+    log(`✓ ${id}`,"ok");
+    return out;
+  }
+
+  // ── RAMO B — paralelo ──────────────────────────────────
+  log("▶ Ramo B: Contexto Macro");
+  await Promise.all([
+    ag("noticias_realtime",
+      "Analista de inteligência de mercado financeiro. "+langInstr()+" Max 250 words.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nPrincipais eventos macro recentes impactando investidores BR. Ativos mais afetados. Oportunidades e alertas.`),
+    ag("macroeconomia",
+      "Economista-chefe Brasil/EUA. "+langInstr()+" Max 280 words.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nSelic,IPCA,câmbio,Fed. Cenário macro atual BR. Projeções 6 meses. Impacto para esta situação específica.`),
+    ag("sentimento_mercado",
+      "Analista de sentimento de mercado. "+langInstr()+" Max 220 words.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nSentimento dominante (bullish/bearish/neutro). Fear&Greed. Indicadores contrários. Recomendação de posicionamento.`),
+  ]);
+
+  // ── RAMO A — paralelo ──────────────────────────────────
+  log("▶ Ramo A: Mercado");
+  const macro = (agentOutputs["macroeconomia"]||"").slice(0,200);
+  await Promise.all([
+    ag("criptomoedas",
+      "Analista sênior de criptoativos. "+langInstr()+" Max 250 words.",
+      `DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nBTC,ETH,SOL. Oportunidades com preço-alvo. Riscos. % alocação sugerida para este perfil.`),
+    ag("acoes_equity",
+      "Analista de equity B3 e NYSE. "+langInstr()+" Max 260 words.",
+      `DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nSetores promissores. Ações-destaque com tickers BR e EUA. Riscos. Estratégia para este perfil.`),
+    ag("derivativos",
+      "Especialista em derivativos e hedge. "+langInstr()+" Max 200 words.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nDerivativos para proteção desta carteira. Estratégias de opções adequadas ao perfil. Riscos de alavancagem.`),
+    ag("rwa",
+      "Especialista em RWA tokenizados. "+langInstr()+" Max 200 words.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nOportunidades RWA para este perfil. Plataformas BR relevantes. Riscos regulatórios e de liquidez.`),
+    ag("renda_fixa",
+      "Especialista renda fixa BR. "+langInstr()+" Max 260 words.",
+      `DATA:${now}\nMACRO:${macro}\nUSUÁRIO:${txt}\n\nTesouro,CDB,LCI,LCA,CRI. Produtos mais adequados. Duration recomendada. IPCA+ vs prefixado vs CDI agora.`),
+    ag("imoveis_fiis",
+      "Especialista FIIs e imóveis. "+langInstr()+" Max 220 words.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nSegmentos FII mais atrativos. Melhores DY/VP. FII vs imóvel direto para este perfil.`),
+  ]);
+
+  // ── RAMO C — paralelo ──────────────────────────────────
+  log("▶ Ramo C: Finanças Pessoais");
+  await Promise.all([
+    ag("quitacao_dividas",
+      "Especialista em quitação de dívidas. "+langInstr()+" Max 230 words.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nPriorização de dívidas. Método avalanche vs bola de neve para esta situação. Liberação de fluxo mensal.`),
+    ag("credito_financiamento",
+      "Especialista em crédito e financiamentos. "+langInstr()+" Max 220 words.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nCapacidade atual de crédito. Oportunidades de refinanciamento. Estratégias para melhorar score. Crédito imobiliário vs investimento.`),
+    ag("planejamento_tributario",
+      "Especialista IR e tributário PF Brasil. "+langInstr()+" Max 220 words.",
+      `DATA:${now}\nUSUÁRIO:${txt}\n\nEficiência tributária. Deduções IR disponíveis. PGBL vs VGBL para esta renda. Alertas de obrigações fiscais.`),
+  ]);
+
+  // ── GUARDIÕES — paralelo ───────────────────────────────
+  log("▶ Guardiões: Compliance + Auditor");
+  const allOut = Object.entries(agentOutputs).map(([k,v])=>`[${k}]:${v.slice(0,150)}`).join("\n");
+  await Promise.all([
+    ag("compliance_risco",
+      "Diretor de Compliance e Gestão de Riscos. "+langInstr()+" Max 200 words.",
+      `ANÁLISES:\n${allOut.slice(0,1800)}\nUSUÁRIO:${txt}\n\nFlags de risco identificados. Inconsistências entre análises. Ajustes obrigatórios.`),
+    ag("auditor_dados",
+      "Auditor de Dados e Qualidade. "+langInstr()+" Max 160 words.",
+      `ANÁLISES:\n${allOut.slice(0,1800)}\n\nConsistência dos dados. Contradições. Confiabilidade geral (Alta/Média/Baixa) com justificativa.`),
+  ]);
+
+  // ── CONSULTOR SÊNIOR ───────────────────────────────────
+  log("▶ Consultor Sênior: veredito consolidado");
+  const comp = (agentOutputs["compliance_risco"]||"").slice(0,300);
+  await ag("consultor_senior",
+    "Consultor Financeiro Sênior responsável pelo veredito final. "+langInstr()+"",
+    `DATA:${now}\nUSUÁRIO:${txt}\n\nANÁLISES DOS 13 ESPECIALISTAS:\n${allOut.slice(0,2500)}\n\nCOMPLIANCE:${comp}\n\n`+
+    `Emita:\n1. Veredito consolidado (diagnóstico final da situação)\n`+
+    `2. Alocação de portfólio recomendada em % (soma=100%)\n`+
+    `3. Top 3 prioridades para os próximos 30 dias com valores específicos\n`+
+    `4. Nível de risco global: Conservador/Moderado/Arrojado\n`+
+    `5. Projeção patrimônio em 12 meses se seguir as recomendações`,
+    650);
+
+  // ── REDATOR ────────────────────────────────────────────
+  log("▶ Redator: gerando relatório completo...");
+  const vfinal = (agentOutputs["consultor_senior"]||"").slice(0,500);
+  const fullReport = await ag("redator_relatorios",
+    "Redator-sênior de relatórios financeiros. Produza relatório em Markdown. "+langInstr()+" Mínimo 900 palavras.",
+    `DATA:${now}\nUSUÁRIO:${txt}\n\nVEREDITO DO CONSULTOR:\n${vfinal}\n\nANÁLISES:\n${allOut.slice(0,2800)}\n\n`+
+    `Produza relatório com estas seções (use ## para headers, **negrito** para destaques, tabelas Markdown):\n`+
+    `## 📊 Sumário Executivo\n`+
+    `## 🌐 Panorama Macroeconômico\n`+
+    `## 📈 Análise de Mercado e Oportunidades\n`+
+    `## 💼 Portfólio Recomendado\n`+
+    `## 💳 Gestão de Dívidas e Crédito\n`+
+    `## 📋 Planejamento Tributário\n`+
+    `## ⚠️ Riscos e Alertas\n`+
+    `## 🎯 Plano de Ação — Próximos 30 Dias\n\n`+
+    `Inclua números concretos, percentuais, benchmarks (CDI, IPCA, Selic) e tabelas comparativas.`,
+    1800);
+
+  // Consome crédito
+  await consumeCredit();
+
+  finishPipeline();
+  renderFullReport(fullReport);
+}
+
+async function consumeCredit(){
+  const tok = getToken();
+  if(!tok) return;
+  // O crédito é consumido automaticamente pelo backend ao chamar /reports/generate
+  // ou podemos chamar explicitamente:
+  try{
+    await fetch(BACKEND_URL+"/credits/consume",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok}
+    });
+  }catch{}
+  await loadCredits();
+}
+
+function renderFullReport(md){
+  const box = document.getElementById("full-report-box");
+  box.innerHTML = typeof marked!=="undefined" ? marked.parse(md) : md.replace(/\n/g,"<br>");
+
+  // Blocos individuais dos agentes
+  const blocksBox = document.getElementById("agent-blocks-box");
+  blocksBox.innerHTML = "";
+  const skip = new Set(["consultor_senior","redator_relatorios","compliance_risco","auditor_dados"]);
+  AGENTS.filter(a=>!skip.has(a.id) && agentOutputs[a.id]).forEach(a=>{
+    const div = document.createElement("div");
+    div.className = "agent-block";
+    const body = agentOutputs[a.id]||"";
+    div.innerHTML = `<div class="agent-block-title">${a.em} Análise — ${a.nm}</div>`+
+      `<div class="agent-block-body">${
+        typeof marked!=="undefined"
+          ? marked.parse(body)
+          : body.replace(/\*\*(.*?)\*\*/g,"<b>$1</b>").replace(/\n/g,"<br>")
+      }</div>`;
+    blocksBox.appendChild(div);
+  });
+
+  // Downloads
+  const ds = new Date().toISOString().slice(0,10).replace(/-/g,"");
+  const bMd   = new Blob([md],{type:"text/markdown"});
+  const bTxt  = new Blob([md],{type:"text/plain"});
+  const htmlContent = `<!DOCTYPE html><html><head><meta charset="UTF-8">
+<title>Relatório WUZO</title>
+<style>body{font-family:Georgia,serif;max-width:820px;margin:40px auto;padding:0 20px;line-height:1.85;color:#1a1a1a;background:#fafaf8;}
+h1,h2{color:#7a5200;border-bottom:1px solid #e0d0a0;padding-bottom:6px;margin:22px 0 10px;}
+h3{color:#3a3a3a;margin:16px 0 6px;}table{border-collapse:collapse;width:100%;margin:14px 0;}
+th{background:#f9f0dc;padding:8px 12px;text-align:left;border:1px solid #ddd;font-size:.85em;}
+td{padding:7px 12px;border:1px solid #eee;}tr:nth-child(even) td{background:#fafafa;}
+blockquote{border-left:3px solid #c9a84c;padding-left:14px;color:#666;margin:12px 0;}
+code{background:#f5f0e0;padding:2px 6px;border-radius:3px;font-family:monospace;font-size:.9em;}</style>
+</head><body><h1>WUZO — Relatório Financeiro</h1>
+<p style="color:#888;font-size:.85em;">Gerado em ${new Date().toLocaleDateString(locale())} — 16 Agentes Especialistas</p>
+${typeof marked!=="undefined" ? marked.parse(md) : md.replace(/\n/g,"<br>")}
+</body></html>`;
+  const bHtml = new Blob([htmlContent],{type:"text/html"});
+
+  document.getElementById("dl-md").href   = URL.createObjectURL(bMd);
+  document.getElementById("dl-txt").href  = URL.createObjectURL(bTxt);
+  document.getElementById("dl-html").href = URL.createObjectURL(bHtml);
+  document.getElementById("dl-md").download   = `relatorio_wuzo_${ds}.md`;
+  document.getElementById("dl-txt").download  = `relatorio_wuzo_${ds}.txt`;
+  document.getElementById("dl-html").download = `relatorio_wuzo_${ds}.html`;
+
+  document.getElementById("sec-full").style.display = "block";
+  document.getElementById("sec-full").scrollIntoView({behavior:"smooth"});
+}
+
+// ════════════════════════════════════════════════════════
+// BUY
+// ════════════════════════════════════════════════════════
+async function handleBuy(){
+  const tok = getToken();
+  if(tok){
+    try{
+      const r = await fetch(BACKEND_URL+"/credits/purchase",{
+        method:"POST",
+        headers:{"Content-Type":"application/json","Authorization":"Bearer "+tok},
+        body:JSON.stringify({quantity:1})
+      });
+      if(r.ok){
+        const d = await r.json();
+        if(d.checkout_url){ window.open(d.checkout_url,"_blank"); return; }
+      }
+    }catch{}
+  }
+  // Fallback: abre o Streamlit que tem o checkout
+  window.open(BACKEND_URL+"/?show_upgrade=1","_blank");
+}
+
+// ════════════════════════════════════════════════════════
+// HELPERS
+// ════════════════════════════════════════════════════════
 function resetGrid(){
   agentOutputs={};
   AGENTS.forEach(a=>setAc(a.id,"idle"));
   document.getElementById("prog-fill").style.width="0%";
-  document.getElementById("log-feed").innerHTML=`<div class="ll">${T("starting")}</div>`;
-  document.getElementById("pip-pill").textContent=T("running");
+  document.getElementById("log-feed").innerHTML='<div class="ll">⬡ Iniciando...</div>';
+  document.getElementById("pip-pill").textContent="RUNNING";
   document.getElementById("pip-pill").className="pill pill-run";
 }
 
 function finishPipeline(){
   AGENTS.forEach(a=>{ if(!agentOutputs[a.id]) setAc(a.id,"done"); });
   document.getElementById("prog-fill").style.width="100%";
-  document.getElementById("pip-pill").textContent=T("done");
+  document.getElementById("pip-pill").textContent="CONCLUÍDO";
   document.getElementById("pip-pill").className="pill pill-done";
-  log(T("log_done"),"ok");
+  log("✅ Concluído.","ok");
 }
 
 function setBtns(loading){
@@ -938,12 +922,11 @@ function setBtns(loading){
     document.getElementById(id).disabled = loading;
   });
   if(loading){
-    document.getElementById("btn-free").innerHTML='<div class="spin"></div> '+T("btn_free_load");
-    document.getElementById("btn-premium").innerHTML='<div class="spin"></div> '+T("btn_prem_load");
+    document.getElementById("btn-free").innerHTML='<div class="spin"></div> Analisando...';
+    document.getElementById("btn-premium").innerHTML='<div class="spin"></div> Orquestrando 16 agentes...';
   } else {
-    document.getElementById("btn-free").innerHTML    = T("btn_free");
-    document.getElementById("btn-premium").innerHTML = T("btn_premium");
-    document.getElementById("btn-buy").innerHTML     = T("btn_buy");
+    document.getElementById("btn-free").innerHTML='⚡ ANÁLISE GRATUITA';
+    document.getElementById("btn-premium").innerHTML='⭐ RELATÓRIO PREMIUM (16 ESP.)';
   }
 }
 
@@ -953,6 +936,10 @@ function showAlert(id,cls,msg){
 }
 function hideAlert(id){ document.getElementById(id).style.display="none"; }
 
+// ════════════════════════════════════════════════════════
+// SETUP LOCAL KEY (para debug — abre console e rode:
+//   window.setLocalKey("gsk_xxx", "groq")
+// ════════════════════════════════════════════════════════
 window.setLocalKey = (key, provider="groq") => {
   localStorage.setItem("wuzo_llm_key", key);
   localStorage.setItem("wuzo_llm_prov", provider);
@@ -962,8 +949,6 @@ window.setToken = (tok) => {
   localStorage.setItem("wuzo_token", tok);
   location.reload();
 };
-
-
 </script>
 </body>
 </html>
