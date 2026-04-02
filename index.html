@@ -829,6 +829,7 @@ function resetPipeline(){
 }
 
 // ── ANALISE GRATUITA ──────────────────────────────────────────
+// Usa background job + polling para evitar timeout de 30s do Render.
 async function handleFree(){
   if(!_online){showAlert("inp-alert","alert-info",t("err_server_wake"));return;}
   var txt=document.getElementById("txt-input").value.trim();
@@ -839,16 +840,50 @@ async function handleFree(){
   document.getElementById("sec-pipeline").style.display="block";
   resetPipeline();setBtns(true);
   addLog(t("log_starting"));
-  ["consultor_senior","macroeconomia"].forEach(function(id){var c=document.getElementById("ac-"+id);if(c){c.className="ac thinking";}});
+  ["consultor_senior","macroeconomia"].forEach(function(id){
+    var c=document.getElementById("ac-"+id);if(c){c.className="ac thinking";}
+  });
   animateProg();
+
+  // ── Passo 1: inicia job (retorna em <1s, evita timeout Render) ──
+  var jobId=null;
   try{
-    var r=await fetch(BACKEND+"/api/analyze/free",{method:"POST",headers:authHeader(),body:JSON.stringify({prompt:txt,language:_lang}),signal:aborter(90000)});
+    var r=await fetch(BACKEND+"/api/analyze/free",{
+      method:"POST",headers:authHeader(),
+      body:JSON.stringify({prompt:txt,language:_lang}),
+      signal:aborter(15000)
+    });
     var d=await r.json().catch(function(){return {};});
     if(!r.ok){showAlert("inp-alert","alert-err",d.error||"Erro na analise.");clearInterval(_progInt);setBtns(false);return;}
-    finishGrid([{id:"consultor_senior"},{id:"macroeconomia"}]);
-    renderFreeResult(d.verdict,d.preview);
-  }catch(e){showAlert("inp-alert","alert-err","Erro: "+e.message);clearInterval(_progInt);}
-  finally{setBtns(false);}
+    jobId=d.job_id;
+    addLog(t("log_fetching"));
+  }catch(e){
+    showAlert("inp-alert","alert-err","Erro: "+e.message);
+    clearInterval(_progInt);setBtns(false);return;
+  }
+
+  // ── Passo 2: polling até resultado (máx 120s = 40 × 3s) ─────────
+  var maxTries=40;
+  for(var i=0;i<maxTries;i++){
+    await new Promise(function(res){setTimeout(res,3000);});
+    try{
+      var pr=await fetch(BACKEND+"/api/job/free/"+jobId,{signal:aborter(8000)});
+      var pd=await pr.json().catch(function(){return {};});
+      if(pd.status==="done"){
+        finishGrid([{id:"consultor_senior"},{id:"macroeconomia"}]);
+        renderFreeResult(pd.verdict,pd.preview);
+        setBtns(false);
+        return;
+      }
+      if(pd.status==="error"){
+        showAlert("inp-alert","alert-err",pd.message||"Erro.");
+        clearInterval(_progInt);setBtns(false);return;
+      }
+      if(i%4===0)addLog(t("log_processing")+" ("+(((i+1)*3))+"s)");
+    }catch(e){}
+  }
+  showAlert("inp-alert","alert-err","Timeout. Tente novamente.");
+  clearInterval(_progInt);setBtns(false);
 }
 
 function renderFreeResult(verdict,preview){
