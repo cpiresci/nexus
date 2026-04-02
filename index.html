@@ -945,10 +945,29 @@ function renderFullReport(verdict,agents){
 }
 
 // ── PDF DOWNLOAD ──────────────────────────────────────────────
+// Detecta se está rodando dentro do APK (Capacitor/Android WebView)
+var _isCapacitor = !!(window.Capacitor) || navigator.userAgent.indexOf("WuzoApp") !== -1;
+
 async function downloadPDF(){
   if(!_currentAnalysisId){showAlert("inp-alert","alert-err","Analise nao disponivel.");return;}
   var tok=getToken();if(!tok){openModal("login");return;}
   var btn=document.getElementById("btn-dl-pdf");btn.disabled=true;btn.innerHTML=t("btn_pdf_gen");
+
+  // ── Capacitor / Android WebView ───────────────────────────────
+  // URL.createObjectURL(blob) e a.download não funcionam no WebView Android.
+  // Solução: abre a URL do PDF diretamente com o token como query param.
+  // O backend aceita ?token= para este endpoint.
+  // O MainActivity.java intercepta a URL e abre no app de PDF do sistema.
+  if(_isCapacitor){
+    try{
+      var pdfUrl=BACKEND+"/api/report/pdf/"+_currentAnalysisId+"?token="+encodeURIComponent(tok);
+      window.open(pdfUrl,"_blank");
+    }catch(e){showAlert("inp-alert","alert-err","Erro ao abrir PDF: "+e.message);}
+    finally{btn.disabled=false;btn.innerHTML=t("btn_pdf_dl");}
+    return;
+  }
+
+  // ── Web browser padrão ────────────────────────────────────────
   try{
     var r=await fetch(BACKEND+"/api/report/pdf/"+_currentAnalysisId,{headers:{"Authorization":"Bearer "+tok},signal:aborter(45000)});
     if(!r.ok){var e=await r.json().catch(function(){return {};});showAlert("inp-alert","alert-err",e.error||"Erro ao gerar PDF.");return;}
