@@ -565,7 +565,21 @@ function applyTranslations(){
   }
 }
 
-function aborter(ms){var c=new AbortController();setTimeout(function(){c.abort();},ms);return c.signal;}
+function aborter(ms){
+  var c=new AbortController();
+  setTimeout(function(){
+    try{c.abort(new DOMException("Request timed out after "+ms+"ms","AbortError"));}
+    catch(e){c.abort();}
+  },ms);
+  return c.signal;
+}
+// Detecta erros de abort/timeout para não exibir ao usuário
+function _isAbortError(e){
+  if(!e)return false;
+  if(e.name==="AbortError")return true;
+  var m=(e.message||"").toLowerCase();
+  return m.indexOf("abort")!==-1||m.indexOf("timeout")!==-1||m.indexOf("signal")!==-1||m.indexOf("timed out")!==-1;
+}
 var LS={TOKEN:"wuzo_token",EMAIL:"wuzo_email",PROMPT:"wuzo_pending_prompt"};
 function getSaved(k){return localStorage.getItem(k)||"";}
 function save(k,v){localStorage.setItem(k,v);}
@@ -812,7 +826,7 @@ async function doLogin(){
     var d=await r.json().catch(function(){return {};});
     if(r.ok&&d.token){save(LS.TOKEN,d.token);save(LS.EMAIL,email);closeModal("login");await updateUI();}
     else showModalErr("login-err",d.error||"Email ou senha incorretos.");
-  }catch(e){showModalErr("login-err","Sem conexão: "+e.message);}
+  }catch(e){if(!_isAbortError(e))showModalErr("login-err","Sem conexão: "+e.message);}
   finally{btn.textContent="ENTRAR";btn.disabled=false;}
 }
 
@@ -830,7 +844,7 @@ async function doRegister(){
       save(LS.TOKEN,d.token);save(LS.EMAIL,email);closeModal("register");await updateUI();
       if(getSaved(LS.PROMPT)){await startCheckout();}
     }else showModalErr("reg-err",d.error||"Erro ao criar conta.");
-  }catch(e){showModalErr("reg-err","Sem conexão: "+e.message);}
+  }catch(e){if(!_isAbortError(e))showModalErr("reg-err","Sem conexão: "+e.message);}
   finally{btn.textContent="CRIAR CONTA GRÁTIS";btn.disabled=false;}
 }
 
@@ -921,7 +935,7 @@ async function handleFree(){
     jobId=d.job_id;
     addLog(t("log_fetching"));
   }catch(e){
-    showAlert("inp-alert","alert-err","Erro: "+e.message);
+    if(!_isAbortError(e))showAlert("inp-alert","alert-err","Erro: "+e.message);
     clearInterval(_progInt);setBtns(false);return;
   }
 
@@ -984,7 +998,7 @@ async function startCheckout(){
     var d=await r.json().catch(function(){return {};});
     if(r.ok&&(d.checkout_url||d.url)){window.location.href=d.checkout_url||d.url;}
     else showAlert("inp-alert","alert-err",d.error||"Erro ao iniciar pagamento.");
-  }catch(e){showAlert("inp-alert","alert-err","Erro de conexao.");}
+  }catch(e){if(!_isAbortError(e))showAlert("inp-alert","alert-err","Erro de conexao.");}
 }
 
 async function runPremiumAnalysis(){
@@ -1002,7 +1016,7 @@ async function runPremiumAnalysis(){
     var d=await r.json().catch(function(){return {};});
     if(!r.ok){showAlert("inp-alert","alert-err",d.error||"Erro ao iniciar.");clearInterval(_progInt);setBtns(false);return;}
     jobId=d.job_id;addLog(t("log_fetching"));
-  }catch(e){showAlert("inp-alert","alert-err","Erro: "+e.message);clearInterval(_progInt);setBtns(false);return;}
+  }catch(e){if(!_isAbortError(e))showAlert("inp-alert","alert-err","Erro: "+e.message);clearInterval(_progInt);setBtns(false);return;}
 
   var maxTries=80;
   for(var i=0;i<maxTries;i++){
@@ -1060,7 +1074,7 @@ async function downloadPDF(){
     try{
       var pdfUrl=BACKEND+"/api/report/pdf/"+_currentAnalysisId+"?token="+encodeURIComponent(tok);
       window.open(pdfUrl,"_blank");
-    }catch(e){showAlert("inp-alert","alert-err","Erro ao abrir PDF: "+e.message);}
+    }catch(e){if(!_isAbortError(e))showAlert("inp-alert","alert-err","Erro ao abrir PDF: "+e.message);}
     finally{btn.disabled=false;btn.innerHTML=t("btn_pdf_dl");}
     return;
   }
@@ -1073,7 +1087,7 @@ async function downloadPDF(){
     var url=URL.createObjectURL(blob);
     var a=document.createElement("a");a.href=url;a.download="wuzo_relatorio_"+_currentAnalysisId+".pdf";
     document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
-  }catch(e){showAlert("inp-alert","alert-err","Erro ao baixar: "+e.message);}
+  }catch(e){if(!_isAbortError(e))showAlert("inp-alert","alert-err","Erro ao baixar: "+e.message);}
   finally{btn.disabled=false;btn.innerHTML=t("btn_pdf_dl");}
 }
 
@@ -1116,7 +1130,7 @@ async function adminLoadPDFFiles(){
     summary.style.cssText="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--dm);padding:8px 4px;border-top:1px solid var(--bd);margin-top:8px;";
     summary.textContent="Total: "+total+" | Expirando em 24h: "+expiring+" | Expirados: "+expired;
     box.appendChild(summary);
-  }catch(e){box.textContent="Erro: "+e.message;}
+  }catch(e){if(!_isAbortError(e))box.textContent="Erro: "+e.message;}
 }
 
 
@@ -1131,7 +1145,7 @@ async function adminDownloadPDF(analysisId){
     var url=URL.createObjectURL(blob);
     var a=document.createElement("a");a.href=url;a.download="wuzo_admin_pdf_"+analysisId+".pdf";
     document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
-  }catch(e){alert("Erro: "+e.message);}
+  }catch(e){if(!_isAbortError(e))alert("Erro: "+e.message);}
   finally{btn.disabled=false;btn.innerHTML="&#11015; PDF";}
 }
 
@@ -1180,7 +1194,7 @@ async function adminCredit(action){
     var d=await r.json();
     if(r.ok){adminShowMsg(d.message+(d.new_balance!==undefined?" · Saldo: "+d.new_balance:""),true);await updateUI();}
     else adminShowMsg(d.error||"Erro.",false);
-  }catch(e){adminShowMsg("Erro: "+e.message,false);}
+  }catch(e){if(!_isAbortError(e))adminShowMsg("Erro: "+e.message,false);}
 }
 
 async function adminLoadUsers(){
@@ -1200,7 +1214,7 @@ async function adminLoadUsers(){
       box.appendChild(row);
     });
     if(!users.length)box.innerHTML='<div style="color:var(--dm);font-size:.7rem;">Nenhum usuário.</div>';
-  }catch(e){box.textContent="Erro: "+e.message;}
+  }catch(e){if(!_isAbortError(e))box.textContent="Erro: "+e.message;}
 }
 
 async function quickAddCredit(userId,email){
@@ -1213,7 +1227,7 @@ async function quickAddCredit(userId,email){
     var d=await r.json();
     if(r.ok){adminShowMsg("+1 crédito para "+email+" · Saldo: "+d.new_balance,true);adminLoadUsers();}
     else adminShowMsg(d.error||"Erro.",false);
-  }catch(e){adminShowMsg("Erro: "+e.message,false);}
+  }catch(e){if(!_isAbortError(e))adminShowMsg("Erro: "+e.message,false);}
 }
 
 async function adminLoadStats(){
@@ -1235,7 +1249,7 @@ async function adminLoadStats(){
       "Providers: "+d.providers_active.join(" → "),
       "Stripe ID: "+d.stripe_price_id,
     ].map(function(l){return '<div style="border-bottom:1px solid var(--bd);padding:3px 0;">'+l+'</div>';}).join("");
-  }catch(e){box.textContent="Erro: "+e.message;}
+  }catch(e){if(!_isAbortError(e))box.textContent="Erro: "+e.message;}
 }
 
 async function adminClearPDFCache(){
@@ -1248,7 +1262,7 @@ async function adminClearPDFCache(){
     });
     var d=await r.json();
     alert(r.ok?d.message:d.error||"Erro.");
-  }catch(e){alert("Erro: "+e.message);}
+  }catch(e){if(!_isAbortError(e))alert("Erro: "+e.message);}
 }
 
 // ── HELPERS ───────────────────────────────────────────────────
