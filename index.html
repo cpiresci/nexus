@@ -165,22 +165,13 @@ textarea::placeholder{color:var(--dm2);}
 </head>
 <body>
 
-<!-- CRYPTO TICKER (tempo real — atualiza a cada 30s) -->
+<!-- ULTRA TICKER v5.0 (Cripto + US Stocks + Índices + F&G — atualiza a cada 30s) -->
 <div id="crypto-ticker">
-  <div class="ticker-track" id="ticker-track">
+  <div class="ticker-track">
     <div class="ticker-item">⬡ <span style="color:var(--dm);font-size:.55rem;letter-spacing:2px;" data-i18n="live">AO VIVO</span></div>
-    <div class="ticker-item"><span class="ticker-sym">BTC</span>&nbsp;<span class="ticker-price" id="t-btc-p">---</span>&nbsp;<span class="ticker-chg" id="t-btc-c">--</span></div>
-    <div class="ticker-item"><span class="ticker-sym">ETH</span>&nbsp;<span class="ticker-price" id="t-eth-p">---</span>&nbsp;<span class="ticker-chg" id="t-eth-c">--</span></div>
-    <div class="ticker-item"><span class="ticker-sym">SOL</span>&nbsp;<span class="ticker-price" id="t-sol-p">---</span>&nbsp;<span class="ticker-chg" id="t-sol-c">--</span></div>
-    <div class="ticker-item"><span class="ticker-sym">BNB</span>&nbsp;<span class="ticker-price" id="t-bnb-p">---</span>&nbsp;<span class="ticker-chg" id="t-bnb-c">--</span></div>
-    <div class="ticker-item"><span class="ticker-sym">DOGE</span>&nbsp;<span class="ticker-price" id="t-doge-p">---</span>&nbsp;<span class="ticker-chg" id="t-doge-c">--</span></div>
-    <!-- Duplicado para loop contínuo -->
-    <div class="ticker-item">⬡ <span style="color:var(--dm);font-size:.55rem;letter-spacing:2px;" data-i18n="live">AO VIVO</span></div>
-    <div class="ticker-item"><span class="ticker-sym">BTC</span>&nbsp;<span class="ticker-price" id="t-btc-p2">---</span>&nbsp;<span class="ticker-chg" id="t-btc-c2">--</span></div>
-    <div class="ticker-item"><span class="ticker-sym">ETH</span>&nbsp;<span class="ticker-price" id="t-eth-p2">---</span>&nbsp;<span class="ticker-chg" id="t-eth-c2">--</span></div>
-    <div class="ticker-item"><span class="ticker-sym">SOL</span>&nbsp;<span class="ticker-price" id="t-sol-p2">---</span>&nbsp;<span class="ticker-chg" id="t-sol-c2">--</span></div>
-    <div class="ticker-item"><span class="ticker-sym">BNB</span>&nbsp;<span class="ticker-price" id="t-bnb-p2">---</span>&nbsp;<span class="ticker-chg" id="t-bnb-c2">--</span></div>
-    <div class="ticker-item"><span class="ticker-sym">DOGE</span>&nbsp;<span class="ticker-price" id="t-doge-p2">---</span>&nbsp;<span class="ticker-chg" id="t-doge-c2">--</span></div>
+    <div class="ticker-item"><span class="ticker-sym">BTC</span>&nbsp;<span class="ticker-price">---</span></div>
+    <div class="ticker-item"><span class="ticker-sym">ETH</span>&nbsp;<span class="ticker-price">---</span></div>
+    <div class="ticker-item"><span class="ticker-sym">S&amp;P500</span>&nbsp;<span class="ticker-price">---</span></div>
   </div>
 </div>
 
@@ -588,68 +579,140 @@ function getToken(){
 function authHeader(){var t=getToken();return t?{"Content-Type":"application/json","Authorization":"Bearer "+t}:{"Content-Type":"application/json"};}
 var _online=false,_currentAnalysisId=null;
 
-// ── CRYPTO TICKER ────────────────────────────────────────────
-var TICKER_COINS={
-  BTC:{p:"t-btc-p",c:"t-btc-c",p2:"t-btc-p2",c2:"t-btc-c2"},
-  ETH:{p:"t-eth-p",c:"t-eth-c",p2:"t-eth-p2",c2:"t-eth-c2"},
-  SOL:{p:"t-sol-p",c:"t-sol-c",p2:"t-sol-p2",c2:"t-sol-c2"},
-  BNB:{p:"t-bnb-p",c:"t-bnb-c",p2:"t-bnb-p2",c2:"t-bnb-c2"},
-  DOGE:{p:"t-doge-p",c:"t-doge-c",p2:"t-doge-p2",c2:"t-doge-c2"},
-};
+// ── ULTRA TICKER v5.0 — Cripto + US Stocks + Índices + F&G ─────────────────
+var _tickerData    = [];
+var _tickerPos     = 0;
+var _tickerAnimReq = null;
 
-// Ticker: backend proxy primeiro (cache compartilhado) → fallback CoinGecko direto
-// CORRIGE AbortSignal: não passa signal no fetch do ticker (evita erro de clone em iframes/sandbox)
-function _tickerFetch(url, opts){
-  // Usa Promise.race com setTimeout puro para timeout seguro, sem AbortSignal
-  var ms=opts&&opts.ms||10000;
+function _buildTickerItems(data){
+  var items = [];
+
+  // Fear & Greed — primeiro item destacado
+  if(data.fear_greed){
+    var fg = data.fear_greed;
+    var fgClsLow = (fg.cls||"").toLowerCase();
+    var fgColor  = fgClsLow.indexOf("extreme fear")!==-1 ? "#e05252"
+                 : fgClsLow.indexOf("fear")!==-1          ? "#e08060"
+                 : fgClsLow.indexOf("extreme greed")!==-1 ? "#4aaf78"
+                 : fgClsLow.indexOf("greed")!==-1         ? "#a0e060"
+                 : "var(--g)";
+    items.push({
+      html: '<span class="ticker-sym" style="color:'+fgColor+'">'+(fg.emoji||"📊")+' FEAR&GREED</span> '+
+            '<span class="ticker-price" style="color:'+fgColor+'">'+fg.price+'/100</span> '+
+            '<span class="ticker-chg" style="color:'+fgColor+'">'+fg.cls+'</span>'
+    });
+  }
+
+  // Market status — NYSE e B3
+  var ms   = data.market_status || {};
+  var usCol = ms.us_session==="ABERTO" ? "#4aaf78" : "var(--dm2)";
+  var brCol = ms.br_session==="ABERTO" ? "#4aaf78" : "var(--dm2)";
+  items.push({
+    html: '<span class="ticker-sym">MERCADOS</span> '+
+          '<span style="color:'+usCol+';font-size:.62rem">NYSE '+(ms.us_session||"--")+'</span> '+
+          '<span style="color:var(--dm2);font-size:.55rem"> | </span>'+
+          '<span style="color:'+brCol+';font-size:.62rem">B3 '+(ms.br_session||"--")+'</span>'
+  });
+
+  // Índices globais
+  (data.indices||[]).forEach(function(idx){
+    var chg   = parseFloat(idx.chg)||0;
+    var arrow = chg>=0 ? "▲" : "▼";
+    var cls   = chg>=0 ? "ticker-up" : "ticker-dn";
+    var price = parseFloat(idx.price);
+    var pfmt  = price>=1000 ? price.toLocaleString("en-US",{maximumFractionDigits:0})
+                            : price.toLocaleString("en-US",{maximumFractionDigits:2});
+    items.push({
+      html: '<span class="ticker-sym">'+idx.label+'</span> '+
+            '<span class="ticker-price">'+pfmt+'</span> '+
+            '<span class="'+cls+' ticker-chg">'+arrow+Math.abs(chg).toFixed(2)+'%</span>'
+    });
+  });
+
+  // US Stocks
+  (data.stocks||[]).forEach(function(s){
+    var chg   = parseFloat(s.chg)||0;
+    var arrow = chg>=0 ? "▲" : "▼";
+    var cls   = chg>=0 ? "ticker-up" : "ticker-dn";
+    var price = parseFloat(s.price);
+    var pfmt  = "US$"+price.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+    items.push({
+      html: '<span class="ticker-sym">'+s.label+'</span> '+
+            '<span class="ticker-price">'+pfmt+'</span> '+
+            '<span class="'+cls+' ticker-chg">'+arrow+Math.abs(chg).toFixed(2)+'%</span>'
+    });
+  });
+
+  // Cripto
+  (data.crypto||[]).forEach(function(c){
+    var chg   = parseFloat(c.chg)||0;
+    var arrow = chg>=0 ? "▲" : "▼";
+    var cls   = chg>=0 ? "ticker-up" : "ticker-dn";
+    var price = parseFloat(c.price);
+    var pfmt;
+    if(price>=100)       pfmt = "US$"+price.toLocaleString("en-US",{maximumFractionDigits:0});
+    else if(price>=1)    pfmt = "US$"+price.toFixed(4);
+    else                 pfmt = "US$"+price.toFixed(8);
+    items.push({
+      html: '<span class="ticker-sym">'+c.label+'</span> '+
+            '<span class="ticker-price">'+pfmt+'</span> '+
+            '<span class="'+cls+' ticker-chg">'+arrow+Math.abs(chg).toFixed(2)+'%</span>'
+    });
+  });
+
+  return items;
+}
+
+function _renderTicker(){
+  var track = document.querySelector(".ticker-track");
+  if(!track || !_tickerData.length) return;
+  // Duplica para loop contínuo sem salto
+  var html = "";
+  var all  = _tickerData.concat(_tickerData);
+  all.forEach(function(item){
+    html += '<div class="ticker-item">'+item.html+'</div>';
+  });
+  track.innerHTML = html;
+}
+
+// Fetch seguro para o ticker: usa Promise.race + setTimeout puro
+// NÃO usa AbortSignal — incompatível com WebView/sandbox (cloning error)
+function _tickerFetch(url, ms){
+  ms = ms || 10000;
   return Promise.race([
     fetch(url),
     new Promise(function(_,rej){setTimeout(function(){rej(new Error("timeout"));},ms);})
   ]);
 }
 
-function _applyTickerData(d, mode){
-  // mode="backend": {BTC:{usd,chg24h},...}  mode="cg": {bitcoin:{usd,usd_24h_change},...}
-  var cgMap={BTC:"bitcoin",ETH:"ethereum",SOL:"solana",BNB:"binancecoin",DOGE:"dogecoin"};
-  Object.keys(TICKER_COINS).forEach(function(sym){
-    var coin=mode==="backend"?d[sym]:d[cgMap[sym]];
-    if(!coin)return;
-    var ids=TICKER_COINS[sym];
-    var price=mode==="backend"?(coin.usd||0):(coin.usd||0);
-    var chg  =mode==="backend"?(coin.chg24h||0):(coin.usd_24h_change||0);
-    if(!price)return;
-    var priceStr=price>=100
-      ?"$"+price.toLocaleString("en-US",{maximumFractionDigits:0})
-      :price>=1
-        ?"$"+price.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})
-        :"$"+price.toFixed(5);
-    var chgStr=chg>=0?"▲ "+Math.abs(chg).toFixed(2)+"%":"▼ "+Math.abs(chg).toFixed(2)+"%";
-    var cls=chg>=0?"ticker-up":"ticker-dn";
-    [ids.p,ids.p2].forEach(function(id){var el=document.getElementById(id);if(el){el.textContent=priceStr;el.className="ticker-price";}});
-    [ids.c,ids.c2].forEach(function(id){var el=document.getElementById(id);if(el){el.textContent=chgStr;el.className="ticker-chg "+cls;}});
-  });
-}
-
 async function updateTicker(){
-  // 1ª tentativa: backend proxy (compartilha cache de 2min, não consome rate limit)
   try{
-    var r=await _tickerFetch(BACKEND+"/api/market/crypto",{ms:8000});
-    if(!r.ok)throw new Error("HTTP "+r.status);
-    var d=await r.json();
-    if(d.BTC&&d.BTC.usd>1000){_applyTickerData(d,"backend");return;}
-    throw new Error("dados invalidos");
-  }catch(e1){
-    // 2ª tentativa: CoinGecko direto (fallback quando backend está acordando)
+    var r = await _tickerFetch(BACKEND+"/api/market/ticker", 12000);
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    var data = await r.json();
+    _tickerData = _buildTickerItems(data);
+    _renderTicker();
+  }catch(e){
+    // Fallback silencioso: tenta /api/market/crypto para manter ao menos cripto
     try{
-      var r2=await _tickerFetch(
-        "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin,dogecoin&vs_currencies=usd&include_24hr_change=true",
-        {ms:9000}
-      );
-      if(!r2.ok)throw new Error("CG HTTP "+r2.status);
-      var d2=await r2.json();
-      _applyTickerData(d2,"cg");
+      var r2 = await _tickerFetch(BACKEND+"/api/market/crypto", 8000);
+      if(!r2.ok) throw new Error("HTTP "+r2.status);
+      var d2 = await r2.json();
+      if(d2.BTC && d2.BTC.usd>100){
+        var prio=["BTC","ETH","SOL","BNB","DOGE","XRP","ADA","AVAX","LINK"];
+        var items=[];
+        prio.forEach(function(sym){
+          if(!d2[sym])return;
+          var price=d2[sym].usd||0;var chg=d2[sym].chg24h||0;
+          var arrow=chg>=0?"▲":"▼";var cls=chg>=0?"ticker-up":"ticker-dn";
+          var pfmt=price>=100?"US$"+price.toLocaleString("en-US",{maximumFractionDigits:0})
+                 :price>=1?"US$"+price.toFixed(4):"US$"+price.toFixed(8);
+          items.push({html:'<span class="ticker-sym">'+sym+'</span> <span class="ticker-price">'+pfmt+'</span> <span class="'+cls+' ticker-chg">'+arrow+Math.abs(chg).toFixed(2)+'%</span>'});
+        });
+        if(items.length){_tickerData=items;_renderTicker();}
+      }
     }catch(e2){
-      // Ambos falharam — ticker mantém "---" até próximo ciclo (30s)
+      // Ambos falharam — ticker mantém estado anterior até próximo ciclo (30s)
     }
   }
 }
