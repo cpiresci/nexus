@@ -349,7 +349,7 @@ textarea::placeholder{color:var(--dm2);}
     <div class="modal-title" data-i18n="modal_reg_title">&#11041; Criar Conta Grátis</div>
     <input class="modal-inp" type="email" id="reg-email" placeholder="seu@email.com"
       onkeydown="if(event.key==='Enter')document.getElementById('reg-pass').focus()">
-    <input class="modal-inp" type="password" id="reg-pass" placeholder="Senha (mínimo 4 caracteres)"
+    <input class="modal-inp" type="password" id="reg-pass" placeholder="Senha (mínimo 8 caracteres)"
       onkeydown="if(event.key==='Enter')doRegister()">
     <button class="modal-submit" id="btn-reg-sub" onclick="doRegister()" data-i18n="btn_reg_sub">CRIAR CONTA GRÁTIS</button>
     <div class="modal-err" id="reg-err"></div>
@@ -699,36 +699,65 @@ function _tickerFetch(url, ms){
   ]);
 }
 
+// Busca cripto direto da Binance — sem backend, sem auth, instantâneo
+async function _fetchBinanceDirect(){
+  var syms='["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT","XRPUSDT","DOGEUSDT","ADAUSDT","AVAXUSDT","LINKUSDT","MATICUSDT","TONUSDT","SHIBUSDT"]';
+  var r=await _tickerFetch("https://api.binance.com/api/v3/ticker/24hr?symbols="+encodeURIComponent(syms),6000);
+  if(!r.ok)throw new Error("Binance "+r.status);
+  var data=await r.json();
+  var MAP={BTCUSDT:"BTC",ETHUSDT:"ETH",SOLUSDT:"SOL",BNBUSDT:"BNB",XRPUSDT:"XRP",
+           DOGEUSDT:"DOGE",ADAUSDT:"ADA",AVAXUSDT:"AVAX",LINKUSDT:"LINK",
+           MATICUSDT:"MATIC",TONUSDT:"TON",SHIBUSDT:"SHIB"};
+  var items=[];
+  data.forEach(function(d){
+    var sym=MAP[d.symbol];if(!sym)return;
+    var price=parseFloat(d.lastPrice);var chg=parseFloat(d.priceChangePercent);
+    var arrow=chg>=0?"▲":"▼";var cls=chg>=0?"ticker-up":"ticker-dn";
+    var pfmt=price>=100?"US$"+price.toLocaleString("en-US",{maximumFractionDigits:0})
+            :price>=1?"US$"+price.toFixed(4):"US$"+price.toFixed(8);
+    items.push({html:'<span class="ticker-sym">'+sym+'</span> <span class="ticker-price">'+pfmt+'</span> <span class="'+cls+' ticker-chg">'+arrow+Math.abs(chg).toFixed(2)+'%</span>'});
+  });
+  return items;
+}
+
 async function updateTicker(){
+  // 1) Tenta backend unificado (stocks + indices + F&G + cripto)
   try{
-    var r = await _tickerFetch(BACKEND+"/api/market/ticker", 12000);
-    if(!r.ok) throw new Error("HTTP "+r.status);
-    var data = await r.json();
-    _tickerData = _buildTickerItems(data);
-    _renderTicker();
-  }catch(e){
-    // Fallback silencioso: tenta /api/market/crypto para manter ao menos cripto
-    try{
-      var r2 = await _tickerFetch(BACKEND+"/api/market/crypto", 8000);
-      if(!r2.ok) throw new Error("HTTP "+r2.status);
-      var d2 = await r2.json();
-      if(d2.BTC && d2.BTC.usd>100){
+    var r=await _tickerFetch(BACKEND+"/api/market/ticker",12000);
+    if(r.ok){
+      var data=await r.json();
+      var items=_buildTickerItems(data);
+      if(items.length){_tickerData=items;_renderTicker();return;}
+    }
+  }catch(e){}
+
+  // 2) Fallback A: Binance direto para cripto (sem backend, instantâneo)
+  try{
+    var bItems=await _fetchBinanceDirect();
+    if(bItems.length){_tickerData=bItems;_renderTicker();return;}
+  }catch(e){}
+
+  // 3) Fallback B: endpoint /api/market/crypto do backend
+  try{
+    var r2=await _tickerFetch(BACKEND+"/api/market/crypto",8000);
+    if(r2.ok){
+      var d2=await r2.json();
+      if(d2.BTC&&d2.BTC.usd>100){
         var prio=["BTC","ETH","SOL","BNB","DOGE","XRP","ADA","AVAX","LINK"];
-        var items=[];
+        var items2=[];
         prio.forEach(function(sym){
           if(!d2[sym])return;
           var price=d2[sym].usd||0;var chg=d2[sym].chg24h||0;
           var arrow=chg>=0?"▲":"▼";var cls=chg>=0?"ticker-up":"ticker-dn";
           var pfmt=price>=100?"US$"+price.toLocaleString("en-US",{maximumFractionDigits:0})
                  :price>=1?"US$"+price.toFixed(4):"US$"+price.toFixed(8);
-          items.push({html:'<span class="ticker-sym">'+sym+'</span> <span class="ticker-price">'+pfmt+'</span> <span class="'+cls+' ticker-chg">'+arrow+Math.abs(chg).toFixed(2)+'%</span>'});
+          items2.push({html:'<span class="ticker-sym">'+sym+'</span> <span class="ticker-price">'+pfmt+'</span> <span class="'+cls+' ticker-chg">'+arrow+Math.abs(chg).toFixed(2)+'%</span>'});
         });
-        if(items.length){_tickerData=items;_renderTicker();}
+        if(items2.length){_tickerData=items2;_renderTicker();}
       }
-    }catch(e2){
-      // Ambos falharam — ticker mantém estado anterior até próximo ciclo (30s)
     }
-  }
+  }catch(e2){}
+  // Todos falharam — ticker mantém estado anterior até próximo ciclo (30s)
 }
 
 // ── STATUS ───────────────────────────────────────────────────
@@ -835,7 +864,7 @@ async function doRegister(){
   var email=document.getElementById("reg-email").value.trim();
   var pass=document.getElementById("reg-pass").value;
   if(!email||!pass){showModalErr("reg-err","Preencha email e senha.");return;}
-  if(pass.length<4){showModalErr("reg-err","Senha mínimo 4 caracteres.");return;}
+  if(pass.length<8){showModalErr("reg-err","Senha mínimo 8 caracteres.");return;}
   var btn=document.getElementById("btn-reg-sub");btn.textContent="Criando conta...";btn.disabled=true;
   try{
     var r=await fetch(BACKEND+"/api/auth/register",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:email,password:pass}),signal:aborter(12000)});
