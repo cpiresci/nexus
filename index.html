@@ -1085,42 +1085,79 @@ function renderFullReport(verdict,agents){
   document.getElementById("sec-full").scrollIntoView({behavior:"smooth"});
 }
 
-// ── PDF DOWNLOAD ──────────────────────────────────────────────
-// v11.1 — fetch+blob+a.click para TODOS os ambientes.
-// window.open(url,"_blank") era bloqueado silenciosamente pelo Android WebView;
-// fetch+blob funciona corretamente tanto no Capacitor quanto no browser desktop.
-// Timeout elevado para 90s — primeira geração v11.0 pode ser mais lenta.
+// ── PDF DOWNLOAD v2.0 — funciona em Web + Capacitor/Android ──────────────────
+// [BUG-1] Capacitor: window.open("url","_blank") era bloqueado silenciosamente
+//         pelo WebView Android. Substituído por fetch() + blob URL.
+// [BUG-2] Erros do servidor retornavam HTML 500 (não JSON) causando falha
+//         silenciosa. Agora tratados explicitamente.
+// Authorization header unificado para Web e Capacitor.
+// Timeout 90s — PDF grande pode demorar na 1ª geração.
 var _isCapacitor = !!(window.Capacitor) || navigator.userAgent.indexOf("WuzoApp") !== -1;
 
 async function downloadPDF(){
-  if(!_currentAnalysisId){showAlert("inp-alert","alert-err","Analise nao disponivel.");return;}
-  var tok=getToken();if(!tok){openModal("login");return;}
-  var btn=document.getElementById("btn-dl-pdf");btn.disabled=true;btn.innerHTML=t("btn_pdf_gen");
+  if(!_currentAnalysisId){
+    showAlert("inp-alert","alert-err","Análise não disponível. Execute uma análise premium primeiro.");
+    return;
+  }
+  var tok = getToken();
+  if(!tok){ openModal("login"); return; }
+
+  var btn = document.getElementById("btn-dl-pdf");
+  if(btn){ btn.disabled = true; btn.innerHTML = t("btn_pdf_gen"); }
+
   try{
-    // Capacitor: token via query param (evita preflight CORS em alguns builds Android).
-    // Web: token via Authorization header (padrão).
-    var fetchUrl = _isCapacitor
-      ? BACKEND+"/api/report/pdf/"+_currentAnalysisId+"?token="+encodeURIComponent(tok)
-      : BACKEND+"/api/report/pdf/"+_currentAnalysisId;
-    var fetchHeaders = _isCapacitor
-      ? {}
-      : {"Authorization":"Bearer "+tok};
-    var r=await fetch(fetchUrl,{headers:fetchHeaders,signal:aborter(90000)});
+    // Fetch do PDF via Authorization header — funciona em Web e Capacitor
+    var pdfUrl = BACKEND + "/api/report/pdf/" + _currentAnalysisId;
+    var r = await fetch(pdfUrl, {
+      headers: { "Authorization": "Bearer " + tok },
+      signal: aborter(90000)   // 90s — PDF grande pode demorar na 1ª geração
+    });
+
     if(!r.ok){
-      var ed=await r.json().catch(function(){return {};});
-      showAlert("inp-alert","alert-err",ed.error||"Erro ao gerar PDF.");return;
+      var errData = await r.json().catch(function(){ return {}; });
+      var errMsg = errData.error || ("Erro HTTP " + r.status + " ao gerar PDF.");
+      showAlert("inp-alert","alert-err", errMsg);
+      return;
     }
-    var blob=await r.blob();
-    var blobUrl=URL.createObjectURL(blob);
-    var a=document.createElement("a");
-    a.href=blobUrl;
-    a.download="wuzo_relatorio_"+_currentAnalysisId+".pdf";
-    document.body.appendChild(a);
-    a.click();
-    // Delay antes de revogar para garantir que o download iniciou
-    setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(blobUrl);},2000);
-  }catch(e){if(!_isAbortError(e))showAlert("inp-alert","alert-err","Erro ao baixar: "+e.message);}
-  finally{btn.disabled=false;btn.innerHTML=t("btn_pdf_dl");}
+
+    var blob = await r.blob();
+    var blobUrl = URL.createObjectURL(blob);
+    var filename = "wuzo_relatorio_" + _currentAnalysisId + ".pdf";
+
+    if(_isCapacitor){
+      // Android WebView: cria link temporário e dispara click
+      // (mais confiável que window.open num WebView)
+      var a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = filename;
+      a.style.display = "none";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function(){
+        document.body.removeChild(a);
+        URL.revokeObjectURL(blobUrl);
+      }, 2000);
+    } else {
+      // Web browser padrão
+      var a = document.createElement("a");
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+    }
+
+    showAlert("inp-alert","alert-ok","PDF gerado com sucesso!");
+    setTimeout(function(){ hideAlert("inp-alert"); }, 3000);
+
+  } catch(e) {
+    if(!_isAbortError(e)){
+      showAlert("inp-alert","alert-err","Erro ao baixar PDF: " + e.message);
+    }
+  } finally {
+    if(btn){ btn.disabled = false; btn.innerHTML = t("btn_pdf_dl"); }
+  }
 }
 
 // ── ADMIN ─────────────────────────────────────────────────────
