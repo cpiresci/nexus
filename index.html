@@ -1086,36 +1086,39 @@ function renderFullReport(verdict,agents){
 }
 
 // ── PDF DOWNLOAD ──────────────────────────────────────────────
-// Detecta se está rodando dentro do APK (Capacitor/Android WebView)
+// v11.1 — fetch+blob+a.click para TODOS os ambientes.
+// window.open(url,"_blank") era bloqueado silenciosamente pelo Android WebView;
+// fetch+blob funciona corretamente tanto no Capacitor quanto no browser desktop.
+// Timeout elevado para 90s — primeira geração v11.0 pode ser mais lenta.
 var _isCapacitor = !!(window.Capacitor) || navigator.userAgent.indexOf("WuzoApp") !== -1;
 
 async function downloadPDF(){
   if(!_currentAnalysisId){showAlert("inp-alert","alert-err","Analise nao disponivel.");return;}
   var tok=getToken();if(!tok){openModal("login");return;}
   var btn=document.getElementById("btn-dl-pdf");btn.disabled=true;btn.innerHTML=t("btn_pdf_gen");
-
-  // ── Capacitor / Android WebView ───────────────────────────────
-  // URL.createObjectURL(blob) e a.download não funcionam no WebView Android.
-  // Solução: abre a URL do PDF diretamente com o token como query param.
-  // O backend aceita ?token= para este endpoint.
-  // O MainActivity.java intercepta a URL e abre no app de PDF do sistema.
-  if(_isCapacitor){
-    try{
-      var pdfUrl=BACKEND+"/api/report/pdf/"+_currentAnalysisId+"?token="+encodeURIComponent(tok);
-      window.open(pdfUrl,"_blank");
-    }catch(e){if(!_isAbortError(e))showAlert("inp-alert","alert-err","Erro ao abrir PDF: "+e.message);}
-    finally{btn.disabled=false;btn.innerHTML=t("btn_pdf_dl");}
-    return;
-  }
-
-  // ── Web browser padrão ────────────────────────────────────────
   try{
-    var r=await fetch(BACKEND+"/api/report/pdf/"+_currentAnalysisId,{headers:{"Authorization":"Bearer "+tok},signal:aborter(45000)});
-    if(!r.ok){var e=await r.json().catch(function(){return {};});showAlert("inp-alert","alert-err",e.error||"Erro ao gerar PDF.");return;}
+    // Capacitor: token via query param (evita preflight CORS em alguns builds Android).
+    // Web: token via Authorization header (padrão).
+    var fetchUrl = _isCapacitor
+      ? BACKEND+"/api/report/pdf/"+_currentAnalysisId+"?token="+encodeURIComponent(tok)
+      : BACKEND+"/api/report/pdf/"+_currentAnalysisId;
+    var fetchHeaders = _isCapacitor
+      ? {}
+      : {"Authorization":"Bearer "+tok};
+    var r=await fetch(fetchUrl,{headers:fetchHeaders,signal:aborter(90000)});
+    if(!r.ok){
+      var ed=await r.json().catch(function(){return {};});
+      showAlert("inp-alert","alert-err",ed.error||"Erro ao gerar PDF.");return;
+    }
     var blob=await r.blob();
-    var url=URL.createObjectURL(blob);
-    var a=document.createElement("a");a.href=url;a.download="wuzo_relatorio_"+_currentAnalysisId+".pdf";
-    document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+    var blobUrl=URL.createObjectURL(blob);
+    var a=document.createElement("a");
+    a.href=blobUrl;
+    a.download="wuzo_relatorio_"+_currentAnalysisId+".pdf";
+    document.body.appendChild(a);
+    a.click();
+    // Delay antes de revogar para garantir que o download iniciou
+    setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(blobUrl);},2000);
   }catch(e){if(!_isAbortError(e))showAlert("inp-alert","alert-err","Erro ao baixar: "+e.message);}
   finally{btn.disabled=false;btn.innerHTML=t("btn_pdf_dl");}
 }
