@@ -1105,48 +1105,39 @@ async function downloadPDF(){
   var btn = document.getElementById("btn-dl-pdf");
   if(btn){ btn.disabled = true; btn.innerHTML = t("btn_pdf_gen"); }
 
+  var pdfUrl = BACKEND + "/api/report/pdf/" + _currentAnalysisId;
+
   try{
-    // Fetch do PDF via Authorization header — funciona em Web e Capacitor
-    var pdfUrl = BACKEND + "/api/report/pdf/" + _currentAnalysisId;
+    if(_isCapacitor){
+      // Android WebView não suporta blob download.
+      // Abre no browser nativo (_system) com token via query param.
+      window.open(pdfUrl + "?token=" + encodeURIComponent(tok), "_system");
+      showAlert("inp-alert","alert-ok","PDF abrindo no navegador...");
+      setTimeout(function(){ hideAlert("inp-alert"); }, 3000);
+      return;
+    }
+
+    // Web browser padrão — fetch + blob
     var r = await fetch(pdfUrl, {
       headers: { "Authorization": "Bearer " + tok },
-      signal: aborter(90000)   // 90s — PDF grande pode demorar na 1ª geração
+      signal: aborter(90000)
     });
 
     if(!r.ok){
       var errData = await r.json().catch(function(){ return {}; });
-      var errMsg = errData.error || ("Erro HTTP " + r.status + " ao gerar PDF.");
-      showAlert("inp-alert","alert-err", errMsg);
+      showAlert("inp-alert","alert-err", errData.error || ("Erro HTTP " + r.status + " ao gerar PDF."));
       return;
     }
 
     var blob = await r.blob();
     var blobUrl = URL.createObjectURL(blob);
-    var filename = "wuzo_relatorio_" + _currentAnalysisId + ".pdf";
-
-    if(_isCapacitor){
-      // Android WebView: cria link temporário e dispara click
-      // (mais confiável que window.open num WebView)
-      var a = document.createElement("a");
-      a.href = blobUrl;
-      a.download = filename;
-      a.style.display = "none";
-      document.body.appendChild(a);
-      a.click();
-      setTimeout(function(){
-        document.body.removeChild(a);
-        URL.revokeObjectURL(blobUrl);
-      }, 2000);
-    } else {
-      // Web browser padrão
-      var a = document.createElement("a");
-      a.href = blobUrl;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(blobUrl);
-    }
+    var a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = "wuzo_relatorio_" + _currentAnalysisId + ".pdf";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(blobUrl);
 
     showAlert("inp-alert","alert-ok","PDF gerado com sucesso!");
     setTimeout(function(){ hideAlert("inp-alert"); }, 3000);
