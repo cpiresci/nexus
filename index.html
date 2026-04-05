@@ -21,7 +21,7 @@ body{background-image:radial-gradient(ellipse 80% 50% at 0% 10%,rgba(201,168,76,
 
 /* CRYPTO TICKER */
 #crypto-ticker{width:100%;background:rgba(3,3,2,.95);border-bottom:1px solid var(--bd2);overflow:hidden;padding:7px 0;position:sticky;top:0;z-index:300;backdrop-filter:blur(10px);}
-.ticker-track{display:flex;gap:0;animation:ticker-scroll 57.5s linear infinite;width:max-content;}
+.ticker-track{display:flex;gap:0;animation:ticker-scroll 57.5s linear infinite;width:max-content;will-change:transform;}
 .ticker-track:hover{animation-play-state:paused;}
 .ticker-item{display:inline-flex;align-items:center;gap:8px;padding:0 22px;border-right:1px solid rgba(201,168,76,.18);white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:.67rem;}
 .ticker-sym{font-weight:700;color:var(--g);letter-spacing:1.5px;}
