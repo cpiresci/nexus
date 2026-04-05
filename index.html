@@ -59,7 +59,7 @@ textarea{width:100%;background:rgba(0,0,0,.35);border:1px solid var(--bd);border
 textarea:focus{border-color:rgba(201,168,76,.4);box-shadow:0 0 0 3px rgba(201,168,76,.07);}
 textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.65;font-style:italic;}
 .btn-row{display:flex;flex-direction:column;gap:12px;margin-top:22px;padding-top:6px;}
-.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px 20px;border-radius:50px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:800;font-size:.85rem;letter-spacing:1px;transition:all .2s;}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px 16px;border-radius:50px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:800;font-size:.76rem;letter-spacing:.5px;transition:all .2s;}
 .btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important;}
 .btn-free{background:linear-gradient(135deg,#1a3a8a,#2255cc);color:#fff;box-shadow:0 4px 20px rgba(34,85,204,.4);position:relative;overflow:hidden;}
 .btn-free::after{content:"";position:absolute;inset:0;border-radius:50px;border:2px solid rgba(100,160,255,.45);animation:free-pulse 2.2s ease-in-out infinite;pointer-events:none;}
@@ -87,7 +87,7 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
 .ac.done{border-color:var(--gr);}
 @keyframes pg{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,.4);}50%{box-shadow:0 0 10px rgba(201,168,76,.2);}}
 .ac-em{font-size:1.2rem;line-height:1;}
-.ac-nm{font-size:.45rem;color:#c0b89e;letter-spacing:.5px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;}
+.ac-nm{font-size:.45rem;color:rgba(240,204,112,.85);letter-spacing:.5px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 2px;}
 .ac-st{font-size:.55rem;font-weight:700;margin-top:4px;}
 .ac.thinking .ac-st{color:var(--g);}.ac.done .ac-st{color:var(--gr);}
 .prog{background:rgba(201,168,76,.07);border-radius:3px;height:4px;overflow:hidden;margin:8px 0;}
@@ -219,7 +219,7 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
 <!-- PIPELINE -->
 <div class="card" id="sec-pipeline" style="display:none;">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-    <span style="font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;color:var(--dm2);" data-i18n="pipeline_lbl">16 ESPECIALISTAS · DADOS EM TEMPO REAL</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:2px;color:rgba(212,168,67,.9);" data-i18n="pipeline_lbl">16 ESPECIALISTAS · DADOS EM TEMPO REAL</span>
     <span class="pill pill-run" id="pip-pill">ANALISANDO</span>
   </div>
   <div class="agent-grid" id="agent-grid"></div>
@@ -396,7 +396,7 @@ var I18N = {
     btn_premium_main: "&#11088; RELATÓRIO COMPLETO — 16 IA com Dados Ao Vivo",
     btn_premium_sub:  "&#10003; Cripto em tempo real &nbsp;&#10003; Ações &amp; FIIs &nbsp;&#10003; PDF por 72h &nbsp;&#10003; Acesso imediato",
     btn_buy_main:     "&#128274; LIBERAR ACESSO AGORA — R$&nbsp;19,90",
-    btn_buy_sub:      "&#128179; Pix ou Cartão &nbsp;&#183;&nbsp; Acesso imediato &nbsp;&#183;&nbsp; Sem assinatura &nbsp;&#183;&nbsp; Sem recorrência",
+    btn_buy_sub:      "Acesso imediato &nbsp;&#183;&nbsp; Sem assinatura &nbsp;&#183;&nbsp; Sem recorrência",
     btn_free_popular: "✦ MAIS POPULAR",
     btn_pdf_dl:       "&#9989; BAIXAR MEU RELATÓRIO PDF",
     btn_pdf_gen:      "&#9203; Gerando PDF...",
@@ -447,7 +447,7 @@ var I18N = {
     btn_premium_main: "&#11088; FULL REPORT — 16 AIs with Live Data",
     btn_premium_sub:  "&#10003; Real-time Crypto &nbsp;&#10003; Stocks &amp; REITs &nbsp;&#10003; PDF for 72h &nbsp;&#10003; Instant access",
     btn_buy_main:     "&#128274; UNLOCK ACCESS NOW — R$&nbsp;19.90",
-    btn_buy_sub:      "&#128179; Card or Pix &nbsp;&#183;&nbsp; Instant access &nbsp;&#183;&nbsp; No subscription &nbsp;&#183;&nbsp; One-time",
+    btn_buy_sub:      "Instant access &nbsp;&#183;&nbsp; No subscription &nbsp;&#183;&nbsp; One-time",
     btn_free_popular: "✦ MOST POPULAR",
     btn_pdf_dl:       "&#9989; DOWNLOAD MY PDF REPORT",
     btn_pdf_gen:      "&#9203; Generating PDF...",
@@ -498,7 +498,7 @@ var I18N = {
     btn_premium_main: "&#11088; INFORME COMPLETO — 16 IAs con Datos en Vivo",
     btn_premium_sub:  "&#10003; Cripto en tiempo real &nbsp;&#10003; Acciones &amp; FIIs &nbsp;&#10003; PDF 72h &nbsp;&#10003; Acceso inmediato",
     btn_buy_main:     "&#128274; DESBLOQUEAR ACCESO — R$&nbsp;19,90",
-    btn_buy_sub:      "&#128179; Tarjeta o Pix &nbsp;&#183;&nbsp; Acceso inmediato &nbsp;&#183;&nbsp; Sin suscripción &nbsp;&#183;&nbsp; Sin recurrencia",
+    btn_buy_sub:      "Acceso inmediato &nbsp;&#183;&nbsp; Sin suscripción &nbsp;&#183;&nbsp; Sin recurrencia",
     btn_free_popular: "✦ MÁS POPULAR",
     btn_pdf_dl:       "&#9989; DESCARGAR MI INFORME PDF",
     btn_pdf_gen:      "&#9203; Generando PDF...",
