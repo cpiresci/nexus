@@ -263,6 +263,9 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
     <button class="btn btn-pdf" id="btn-dl-pdf" onclick="downloadPDF()" style="max-width:300px;margin:0 auto;">
       &#9989; BAIXAR MEU RELATÓRIO PDF
     </button>
+    <button class="btn btn-share" id="btn-share" onclick="generateShareImage()" style="max-width:300px;margin:12px auto 0;background:linear-gradient(135deg,#1a1a2e,#6a0dad);color:#fff;box-shadow:0 4px 20px rgba(106,13,173,.4);">
+      &#128248; COMPARTILHAR NOS STORIES
+    </button>
   </div>
 </div>
 
@@ -591,7 +594,7 @@ function getToken(){
   return getSaved(LS.TOKEN);
 }
 function authHeader(){var t=getToken();return t?{"Content-Type":"application/json","Authorization":"Bearer "+t}:{"Content-Type":"application/json"};}
-var _online=false,_currentAnalysisId=null;
+var _online=false,_currentAnalysisId=null,_currentVerdict="";
 
 // ── ULTRA TICKER v5.0 — Cripto + US Stocks + Índices + F&G ─────────────────
 var _tickerData    = [];
@@ -1066,6 +1069,7 @@ async function runPremiumAnalysis(){
 
 // ── RENDER FULL REPORT ────────────────────────────────────────
 function renderFullReport(verdict,agents){
+  _currentVerdict=verdict||"";
   document.getElementById("full-verdict-body").innerHTML=(verdict||"").replace(/\n/g,"<br>").replace(/\*\*(.*?)\*\*/g,"<b>$1</b>");
   var box=document.getElementById("agent-blocks-box");box.innerHTML="";
   var skip={consultor_senior:1};
@@ -1149,6 +1153,196 @@ async function downloadPDF(){
   } finally {
     if(btn){ btn.disabled = false; btn.innerHTML = t("btn_pdf_dl"); }
   }
+}
+
+// ── SHARE IMAGE — Gera card Stories 1080x1920 com top 3 insights ─────────────
+function _extractInsights(verdictText, max){
+  var lines = (verdictText||"").split("\n");
+  var insights = [];
+  for(var i=0;i<lines.length;i++){
+    var l = lines[i].replace(/\*\*/g,"").replace(/#+\s*/g,"").trim();
+    // Pula linhas vazias, cabeçalhos curtos (<25 chars), linhas de identificação
+    if(!l || l.length < 30) continue;
+    if(l.indexOf("IDENTIFIQUE")!==-1) continue;
+    if(l.indexOf("Especialista")===0) continue;
+    insights.push(l.length > 110 ? l.slice(0,107)+"…" : l);
+    if(insights.length >= max) break;
+  }
+  return insights;
+}
+
+function _wrapText(ctx, text, x, y, maxWidth, lineHeight){
+  var words = text.split(" ");
+  var line  = "";
+  var lines = [];
+  for(var i=0;i<words.length;i++){
+    var test = line + (line?" ":"") + words[i];
+    if(ctx.measureText(test).width > maxWidth && line){
+      lines.push(line); line = words[i];
+    } else { line = test; }
+  }
+  if(line) lines.push(line);
+  for(var j=0;j<lines.length;j++){
+    ctx.fillText(lines[j], x, y + j*lineHeight);
+  }
+  return lines.length;
+}
+
+function generateShareImage(){
+  var btn = document.getElementById("btn-share");
+  if(btn){ btn.disabled=true; btn.innerHTML="&#9203; Gerando..."; }
+
+  try{
+    var W=1080, H=1920;
+    var canvas = document.createElement("canvas");
+    canvas.width=W; canvas.height=H;
+    var ctx = canvas.getContext("2d");
+
+    // ── Fundo escuro com gradiente dourado ──────────────────────────────────
+    var bg = ctx.createLinearGradient(0,0,W,H);
+    bg.addColorStop(0,"#030302");
+    bg.addColorStop(0.5,"#0d0c0a");
+    bg.addColorStop(1,"#030302");
+    ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+
+    // Glow dourado top-left
+    var gl = ctx.createRadialGradient(0,0,0,0,0,700);
+    gl.addColorStop(0,"rgba(201,168,76,0.12)");
+    gl.addColorStop(1,"transparent");
+    ctx.fillStyle=gl; ctx.fillRect(0,0,W,H);
+
+    // Glow dourado bottom-right
+    var gl2 = ctx.createRadialGradient(W,H,0,W,H,600);
+    gl2.addColorStop(0,"rgba(201,168,76,0.08)");
+    gl2.addColorStop(1,"transparent");
+    ctx.fillStyle=gl2; ctx.fillRect(0,0,W,H);
+
+    // ── Barra dourada superior ───────────────────────────────────────────────
+    ctx.fillStyle="#c9a84c"; ctx.fillRect(0,0,W,6);
+
+    // ── Logo WUZO ────────────────────────────────────────────────────────────
+    ctx.font="bold 130px 'Arial Black',Arial,sans-serif";
+    ctx.letterSpacing="20px";
+    var lgrd = ctx.createLinearGradient(200,200,800,200);
+    lgrd.addColorStop(0,"#7a5a1c"); lgrd.addColorStop(0.35,"#f5ead0");
+    lgrd.addColorStop(0.55,"#c9a84c"); lgrd.addColorStop(0.75,"#f5ead0");
+    lgrd.addColorStop(1,"#7a5a1c");
+    ctx.fillStyle=lgrd;
+    ctx.textAlign="center"; ctx.fillText("WUZO",W/2,230);
+
+    // Subtítulo
+    ctx.font="500 38px Arial,sans-serif";
+    ctx.letterSpacing="6px";
+    ctx.fillStyle="rgba(240,204,112,0.9)";
+    ctx.fillText("FINANCIAL INTELLIGENCE · IA",W/2,295);
+
+    // ── Linha divisória dourada ───────────────────────────────────────────────
+    ctx.strokeStyle="rgba(201,168,76,0.4)";
+    ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(100,340); ctx.lineTo(W-100,340); ctx.stroke();
+
+    // ── Tag "ANÁLISE PREMIUM" ─────────────────────────────────────────────────
+    ctx.font="bold 28px Arial,sans-serif";
+    ctx.letterSpacing="4px";
+    ctx.fillStyle="rgba(201,168,76,0.7)";
+    ctx.fillText("ANÁLISE FINANCEIRA PERSONALIZADA · 16 ESPECIALISTAS",W/2,400);
+
+    // ── Top 3 insights ────────────────────────────────────────────────────────
+    var insights = _extractInsights(_currentVerdict, 3);
+    var icons    = ["01","02","03"];
+    var startY   = 490;
+    var cardH    = 340;
+    var cardPad  = 40;
+
+    for(var i=0;i<insights.length;i++){
+      var cy = startY + i*(cardH+30);
+
+      // Card background
+      ctx.fillStyle="rgba(201,168,76,0.06)";
+      _roundRect(ctx, 80, cy, W-160, cardH, 20);
+      ctx.fill();
+
+      // Card border
+      ctx.strokeStyle="rgba(201,168,76,0.22)";
+      ctx.lineWidth=1;
+      _roundRect(ctx, 80, cy, W-160, cardH, 20);
+      ctx.stroke();
+
+      // Borda esquerda dourada
+      ctx.fillStyle="#c9a84c";
+      _roundRect(ctx, 80, cy, 6, cardH, 3);
+      ctx.fill();
+
+      // Número
+      ctx.font="bold 52px Arial,sans-serif";
+      ctx.letterSpacing="0px";
+      ctx.fillStyle="rgba(201,168,76,0.35)";
+      ctx.textAlign="left";
+      ctx.fillText(icons[i], 120, cy+75);
+
+      // Texto do insight
+      ctx.font="400 34px Arial,sans-serif";
+      ctx.fillStyle="#ede8dc";
+      ctx.letterSpacing="0px";
+      _wrapText(ctx, insights[i], 120, cy+115, W-280, 48);
+    }
+
+    // ── Linha divisória inferior ──────────────────────────────────────────────
+    var footY = startY + 3*(cardH+30) + 30;
+    ctx.strokeStyle="rgba(201,168,76,0.3)";
+    ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(100,footY); ctx.lineTo(W-100,footY); ctx.stroke();
+
+    // ── CTA ───────────────────────────────────────────────────────────────────
+    ctx.font="bold 44px Arial,sans-serif";
+    ctx.letterSpacing="2px";
+    ctx.fillStyle="#c9a84c";
+    ctx.textAlign="center";
+    ctx.fillText("Faça sua análise grátis em",W/2,footY+80);
+    ctx.font="bold 62px Arial,sans-serif";
+    ctx.letterSpacing="1px";
+    ctx.fillStyle="#f0cc70";
+    ctx.fillText("wuzo.com.br",W/2,footY+160);
+
+    // Tagline
+    ctx.font="400 30px Arial,sans-serif";
+    ctx.letterSpacing="3px";
+    ctx.fillStyle="rgba(192,184,158,0.7)";
+    ctx.fillText("Consultoria financeira por Inteligência Artificial",W/2,footY+220);
+
+    // ── Barra dourada inferior ────────────────────────────────────────────────
+    ctx.fillStyle="#c9a84c"; ctx.fillRect(0,H-6,W,6);
+
+    // ── Download ──────────────────────────────────────────────────────────────
+    var link = document.createElement("a");
+    link.download = "wuzo_stories.png";
+    link.href = canvas.toDataURL("image/png");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    showAlert("inp-alert","alert-ok","Imagem gerada! Compartilhe nos Stories &#128248;");
+    setTimeout(function(){ hideAlert("inp-alert"); }, 4000);
+
+  }catch(e){
+    showAlert("inp-alert","alert-err","Erro ao gerar imagem: "+e.message);
+  }finally{
+    if(btn){ btn.disabled=false; btn.innerHTML="&#128248; COMPARTILHAR NOS STORIES"; }
+  }
+}
+
+function _roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
 }
 
 // ── ADMIN ─────────────────────────────────────────────────────
