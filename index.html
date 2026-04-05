@@ -1393,79 +1393,73 @@ async function generateShareImage(){
     botGrd.addColorStop(0.85,"#c9a84c"); botGrd.addColorStop(1,"transparent");
     ctx.fillStyle=botGrd; ctx.fillRect(0,H-5,W,5);
 
-    // ── Share: Capacitor nativo (Android) ou download web ──
+    // ── Share v3.1: navigator.share primeiro (Android WebView + web), Capacitor como fallback ──
+    // [FIX v3.1] A ordem anterior era: isNative → Capacitor plugins → navigator.share.
+    //   No APK, isNative=true mas os plugins @capacitor/filesystem/@capacitor/share não
+    //   estão instalados → FS/Sh = undefined → erro "Plugin ausente" → função para.
+    //   navigator.share com File funciona nativamente no Android WebView (Chrome-based)
+    //   sem nenhum plugin. Agora é a primeira tentativa para todos os ambientes.
     var dataURL    = canvas.toDataURL("image/png");
     var base64Data = dataURL.split(",")[1];
 
+    if(btn) btn.innerHTML="&#128640; Compartilhando...";
+
+    // Caminho 1: navigator.share com arquivo — funciona no Android WebView e mobile Chrome
+    if(navigator.share && navigator.canShare){
+      try{
+        var blob = await new Promise(function(res){ canvas.toBlob(res,"image/png"); });
+        var file = new File([blob],"wuzo_stories.png",{type:"image/png"});
+        if(navigator.canShare({files:[file]})){
+          await navigator.share({
+            title: "Minha Análise WUZO",
+            text:  "🚀 Minha análise financeira por IA! wuzo.com.br",
+            files: [file]
+          });
+          showAlert("inp-alert","alert-ok","Compartilhado! &#128248;");
+          setTimeout(function(){ hideAlert("inp-alert"); }, 3000);
+          return;
+        }
+      }catch(se){
+        if(se.name==="AbortError") return; // usuário cancelou o diálogo
+        // Outro erro → continua para os fallbacks abaixo
+      }
+    }
+
+    // Caminho 2: Capacitor Filesystem + Share (se plugins estiverem instalados no APK)
     var isNative = !!(
       window.Capacitor &&
       window.Capacitor.isNativePlatform &&
       window.Capacitor.isNativePlatform()
     );
-
     if(isNative){
-      if(btn) btn.innerHTML="&#128640; Compartilhando...";
       var Plugins = window.Capacitor.Plugins;
-      var FS      = Plugins.Filesystem;
-      var Sh      = Plugins.Share;
-
-      if(!FS || !Sh){
-        // Plugins não disponíveis — orienta o usuário
-        showAlert("inp-alert","alert-err",
-          "Plugin @capacitor/filesystem ou @capacitor/share ausente. " +
-          "Execute: npm install @capacitor/filesystem @capacitor/share && npx cap sync android"
-        );
-        return;
-      }
-
-      // Salva em cache (não precisa de permissão no Android 10+)
-      var fname = "wuzo-stories-" + Date.now() + ".png";
-      await FS.writeFile({
-        path:      fname,
-        data:      base64Data,
-        directory: "CACHE"
-      });
-
-      // Obtém URI real do sistema de arquivos
-      var uriResult = await FS.getUri({ path: fname, directory: "CACHE" });
-
-      // Compartilha via intent nativo do Android
-      await Sh.share({
-        title:       "Minha Análise WUZO",
-        text:        "🚀 Minha análise financeira por IA! wuzo.com.br",
-        url:         uriResult.uri,
-        dialogTitle: "Compartilhar análise WUZO"
-      });
-
-      showAlert("inp-alert","alert-ok","Compartilhando... &#128248;");
-      setTimeout(function(){ hideAlert("inp-alert"); }, 3500);
-
-    } else {
-      // Fallback web: tenta navigator.share (mobile web), senão baixa PNG
-      if(navigator.share && navigator.canShare){
+      var FS = Plugins && Plugins.Filesystem;
+      var Sh = Plugins && Plugins.Share;
+      if(FS && Sh){
         try{
-          var blob = await new Promise(function(res){ canvas.toBlob(res,"image/png"); });
-          var file = new File([blob],"wuzo_stories.png",{type:"image/png"});
-          if(navigator.canShare({files:[file]})){
-            await navigator.share({
-              title:"Minha Análise WUZO",
-              text:"🚀 Análise financeira por IA! wuzo.com.br",
-              files:[file]
-            });
-            showAlert("inp-alert","alert-ok","Compartilhado! &#128248;");
-            setTimeout(function(){ hideAlert("inp-alert"); },3000);
-            return;
-          }
-        }catch(se){ if(se.name==="AbortError") return; }
+          var fname = "wuzo-stories-" + Date.now() + ".png";
+          await FS.writeFile({ path: fname, data: base64Data, directory: "CACHE" });
+          var uriResult = await FS.getUri({ path: fname, directory: "CACHE" });
+          await Sh.share({
+            title:       "Minha Análise WUZO",
+            text:        "🚀 Minha análise financeira por IA! wuzo.com.br",
+            url:         uriResult.uri,
+            dialogTitle: "Compartilhar análise WUZO"
+          });
+          showAlert("inp-alert","alert-ok","Compartilhado! &#128248;");
+          setTimeout(function(){ hideAlert("inp-alert"); }, 3500);
+          return;
+        }catch(ce){ /* continua para download */ }
       }
-      // Download direto
-      var link = document.createElement("a");
-      link.download = "wuzo_stories.png";
-      link.href = dataURL;
-      document.body.appendChild(link); link.click(); document.body.removeChild(link);
-      showAlert("inp-alert","alert-ok","Imagem gerada! Compartilhe nos Stories &#128248;");
-      setTimeout(function(){ hideAlert("inp-alert"); }, 4000);
     }
+
+    // Caminho 3: download direto (desktop ou ambiente sem share API)
+    var link = document.createElement("a");
+    link.download = "wuzo_stories.png";
+    link.href = dataURL;
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    showAlert("inp-alert","alert-ok","Imagem gerada! Compartilhe nos Stories &#128248;");
+    setTimeout(function(){ hideAlert("inp-alert"); }, 4000);
 
   }catch(e){
     console.error("[WuzoShare]",e);
