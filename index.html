@@ -1264,12 +1264,6 @@ async function generateShareImage(){
     bg.addColorStop(0,"#030302"); bg.addColorStop(0.5,"#0d0c0a"); bg.addColorStop(1,"#030302");
     ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
 
-    // Ruído sutil dourado
-    for(var n=0;n<12000;n++){
-      ctx.fillStyle="rgba(201,168,76,"+(Math.random()*0.035)+")";
-      ctx.fillRect(Math.random()*W, Math.random()*H, 1, 1);
-    }
-
     // Glow top-left
     var gl=ctx.createRadialGradient(0,0,0,0,0,700);
     gl.addColorStop(0,"rgba(201,168,76,0.11)"); gl.addColorStop(1,"transparent");
