@@ -1090,11 +1090,16 @@ function renderFullReport(verdict,agents){
   document.getElementById("sec-full").scrollIntoView({behavior:"smooth"});
 }
 
-// ── PDF DOWNLOAD v2.0 — funciona em Web + Capacitor/Android ──────────────────
+// ── PDF DOWNLOAD v2.1 — funciona em Web + Capacitor/Android ──────────────────
 // [BUG-1] Capacitor: window.open("url","_blank") era bloqueado silenciosamente
 //         pelo WebView Android. Substituído por fetch() + blob URL.
 // [BUG-2] Erros do servidor retornavam HTML 500 (não JSON) causando falha
 //         silenciosa. Agora tratados explicitamente.
+// [FIX v2.1] Android: window.open(url,"_system") NÃO é interceptado pelo
+//         shouldOverrideUrlLoading do MainActivity — a chamada falha silenciosamente.
+//         Substituído por window.location.href, que SIM dispara
+//         shouldOverrideUrlLoading → isP dfUrl() → Intent.ACTION_VIEW → Chrome/Adobe.
+//         shouldOverrideUrlLoading retorna true → WebView NÃO navega, página fica intacta.
 // Authorization header unificado para Web e Capacitor.
 // Timeout 90s — PDF grande pode demorar na 1ª geração.
 var _isCapacitor = !!(window.Capacitor) || navigator.userAgent.indexOf("WuzoApp") !== -1;
@@ -1114,9 +1119,11 @@ async function downloadPDF(){
 
   try{
     if(_isCapacitor){
-      // Android WebView não suporta blob download.
-      // Abre no browser nativo (_system) com token via query param.
-      window.open(pdfUrl + "?token=" + encodeURIComponent(tok), "_system");
+      // Android: window.location.href dispara shouldOverrideUrlLoading no MainActivity,
+      // que detecta "/api/report/pdf/" via isP dfUrl() e abre via Intent.ACTION_VIEW
+      // no visualizador nativo (Chrome, Adobe, etc.).
+      // Como shouldOverrideUrlLoading retorna true, o WebView NÃO navega — página intacta.
+      window.location.href = pdfUrl + "?token=" + encodeURIComponent(tok);
       showAlert("inp-alert","alert-ok","PDF abrindo no navegador...");
       setTimeout(function(){ hideAlert("inp-alert"); }, 3000);
       return;
