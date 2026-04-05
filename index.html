@@ -1050,7 +1050,7 @@ async function runPremiumAnalysis(){
     jobId=d.job_id;addLog(t("log_fetching"));
   }catch(e){if(!_isAbortError(e))showAlert("inp-alert","alert-err","Erro: "+e.message);clearInterval(_progInt);setBtns(false);return;}
 
-  var maxTries=80;
+  var maxTries=120;  // 120 × 4s = 480s — job pode levar até 400s com 16 agentes + guardian
   for(var i=0;i<maxTries;i++){
     await new Promise(function(r){setTimeout(r,4000);});
     try{
