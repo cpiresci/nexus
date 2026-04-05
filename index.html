@@ -687,7 +687,6 @@ function _renderTicker(){
     html += '<div class="ticker-item">'+item.html+'</div>';
   });
   track.innerHTML = html;
-  track.style.animation="none";track.offsetHeight;track.style.animation="";
 }
 
 // Fetch seguro para o ticker: usa Promise.race + setTimeout puro
