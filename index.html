@@ -263,7 +263,7 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
     <button class="btn btn-pdf" id="btn-dl-pdf" onclick="downloadPDF()" style="max-width:300px;margin:0 auto;">
       &#9989; BAIXAR MEU RELATÓRIO PDF
     </button>
-    <button class="btn btn-share" id="btn-share" onclick="generateShareImage()" style="max-width:300px;margin:12px auto 0;background:linear-gradient(135deg,#1a1a2e,#6a0dad);color:#fff;box-shadow:0 4px 20px rgba(106,13,173,.4);">
+    <button class="btn btn-share" id="btn-share" onclick="generateShareImage().catch(function(e){console.error(e);})" style="max-width:300px;margin:12px auto 0;background:linear-gradient(135deg,#1a1a2e,#6a0dad);color:#fff;box-shadow:0 4px 20px rgba(106,13,173,.4);">
       &#128248; COMPARTILHAR NOS STORIES
     </button>
   </div>
@@ -594,7 +594,7 @@ function getToken(){
   return getSaved(LS.TOKEN);
 }
 function authHeader(){var t=getToken();return t?{"Content-Type":"application/json","Authorization":"Bearer "+t}:{"Content-Type":"application/json"};}
-var _online=false,_currentAnalysisId=null,_currentVerdict="";
+var _online=false,_currentAnalysisId=null,_currentVerdict="",_currentAgents=[];
 
 // ── ULTRA TICKER v5.0 — Cripto + US Stocks + Índices + F&G ─────────────────
 var _tickerData    = [];
@@ -1070,6 +1070,7 @@ async function runPremiumAnalysis(){
 // ── RENDER FULL REPORT ────────────────────────────────────────
 function renderFullReport(verdict,agents){
   _currentVerdict=verdict||"";
+  _currentAgents=agents||[];
   document.getElementById("full-verdict-body").innerHTML=(verdict||"").replace(/\n/g,"<br>").replace(/\*\*(.*?)\*\*/g,"<b>$1</b>");
   var box=document.getElementById("agent-blocks-box");box.innerHTML="";
   var skip={consultor_senior:1};
@@ -1155,17 +1156,71 @@ async function downloadPDF(){
   }
 }
 
-// ── SHARE IMAGE — Gera card Stories 1080x1920 com top 3 insights ─────────────
-function _extractInsights(verdictText, max){
-  var lines = (verdictText||"").split("\n");
+// ── SHARE IMAGE v3.0 — 4 cards compactos + Capacitor nativo Android ──────────
+//
+// FIX-1: _extractInsights — detecta e pula qualquer linha de identificação
+//         de agente (padrão "Nome — Cargo", labels "Justificativa:", emojis
+//         seguidos de nome, markdown ##, etc). Extrai de verdict + agents.
+// FIX-2: Layout compacto (cardH 195px) com 4 cards sem espaço vazio.
+// FIX-3: Share nativo via Capacitor.Plugins.Filesystem + Share.share().
+//         Motivo do bug: Capacitor WebView rejeita <a download> e blob URL.
+//         Solução correta: base64 → writeFile(CACHE) → getUri() → share(uri).
+//
+// Pré-requisitos para Android (executar após npm install):
+//   npm install @capacitor/filesystem @capacitor/share
+//   npx cap sync android
+
+function _shareIsAgentHeader(line){
+  var t = line.trim();
+  if(!t || t.length < 5) return true;
+  return (
+    / — /.test(t)                                                 ||  // "Nome — Cargo"
+    /^[^a-záàâãéêíóôõúç\d]{1,8}$/i.test(t)                       ||  // só emojis/símbolos
+    /^(Consultor|Analista|Especialista|Agente|Auditor|Veredito)/i.test(t) ||
+    /^#{1,4}\s/.test(t)                                            ||  // ## header MD
+    /\*{2,}/.test(t)                                               ||  // **bold** header
+    /^[-=]{3,}$/.test(t)                                           ||  // separador ---
+    /WUZO\s*$/.test(t)                                             ||  // linha termina WUZO
+    /Integrado WUZO/i.test(t)                                      ||
+    /^(Justificativa|O que está|O que precisa|Atenção|Recomendação|Resumo|Conclusão|Diagnóstico|Nota|Observação|Aviso|Veredicto|Final|Síntese)\s*:/i.test(t)
+  );
+}
+
+function _extractInsights(max){
+  // Combina verdict + análises dos agentes para pool maior
+  var pool = _currentVerdict || "";
+  if(_currentAgents && _currentAgents.length){
+    _currentAgents.forEach(function(a){
+      if(a.id === "consultor_senior") return;
+      if(a.analysis) pool += "\n" + a.analysis;
+    });
+  }
+
+  var lines = pool.split(/\n+/);
   var insights = [];
-  for(var i=0;i<lines.length;i++){
-    var l = lines[i].replace(/\*\*/g,"").replace(/#+\s*/g,"").trim();
-    // Pula linhas vazias, cabeçalhos curtos (<25 chars), linhas de identificação
-    if(!l || l.length < 30) continue;
-    if(l.indexOf("IDENTIFIQUE")!==-1) continue;
-    if(l.indexOf("Especialista")===0) continue;
-    insights.push(l.length > 110 ? l.slice(0,107)+"…" : l);
+  var seen = {};
+
+  for(var i=0; i<lines.length; i++){
+    var raw = lines[i]
+      .replace(/\*{1,2}([^*]+)\*{1,2}/g, "$1")  // bold/italic
+      .replace(/^#{1,4}\s+/, "")                  // ## MD header
+      .replace(/^\s*[-•]\s*/, "")                  // bullet -/•
+      .trim();
+
+    if(_shareIsAgentHeader(raw)) continue;
+    if(raw.length < 28) continue;
+
+    // Trunca elegantemente
+    var display = raw.length > 135
+      ? raw.slice(0,132).replace(/[,;:]\s*$/, "") + "…"
+      : raw;
+
+    // Deduplicação por prefixo
+    var key = display.slice(0, 40).toLowerCase();
+    if(seen[key]) continue;
+    seen[key] = 1;
+
+    insights.push(display);
     if(insights.length >= max) break;
   }
   return insights;
@@ -1188,160 +1243,246 @@ function _wrapText(ctx, text, x, y, maxWidth, lineHeight){
   return lines.length;
 }
 
-function generateShareImage(){
+async function generateShareImage(){
   var btn = document.getElementById("btn-share");
   if(btn){ btn.disabled=true; btn.innerHTML="&#9203; Gerando..."; }
 
   try{
+    var insights = _extractInsights(4);
+    if(!insights.length){
+      showAlert("inp-alert","alert-err","Execute uma análise premium primeiro.");
+      return;
+    }
+
     var W=1080, H=1920;
     var canvas = document.createElement("canvas");
     canvas.width=W; canvas.height=H;
     var ctx = canvas.getContext("2d");
 
-    // ── Fundo escuro com gradiente dourado ──────────────────────────────────
+    // ── Fundo ──
     var bg = ctx.createLinearGradient(0,0,W,H);
-    bg.addColorStop(0,"#030302");
-    bg.addColorStop(0.5,"#0d0c0a");
-    bg.addColorStop(1,"#030302");
+    bg.addColorStop(0,"#030302"); bg.addColorStop(0.5,"#0d0c0a"); bg.addColorStop(1,"#030302");
     ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
 
-    // Glow dourado top-left
-    var gl = ctx.createRadialGradient(0,0,0,0,0,700);
-    gl.addColorStop(0,"rgba(201,168,76,0.12)");
-    gl.addColorStop(1,"transparent");
-    ctx.fillStyle=gl; ctx.fillRect(0,0,W,H);
-
-    // Glow dourado bottom-right
-    var gl2 = ctx.createRadialGradient(W,H,0,W,H,600);
-    gl2.addColorStop(0,"rgba(201,168,76,0.08)");
-    gl2.addColorStop(1,"transparent");
-    ctx.fillStyle=gl2; ctx.fillRect(0,0,W,H);
-
-    // ── Barra dourada superior ───────────────────────────────────────────────
-    ctx.fillStyle="#c9a84c"; ctx.fillRect(0,0,W,6);
-
-    // ── Logo WUZO ────────────────────────────────────────────────────────────
-    ctx.font="bold 130px 'Arial Black',Arial,sans-serif";
-    ctx.letterSpacing="20px";
-    var lgrd = ctx.createLinearGradient(200,200,800,200);
-    lgrd.addColorStop(0,"#7a5a1c"); lgrd.addColorStop(0.35,"#f5ead0");
-    lgrd.addColorStop(0.55,"#c9a84c"); lgrd.addColorStop(0.75,"#f5ead0");
-    lgrd.addColorStop(1,"#7a5a1c");
-    ctx.fillStyle=lgrd;
-    ctx.textAlign="center"; ctx.fillText("WUZO",W/2,230);
-
-    // Subtítulo
-    ctx.font="500 38px Arial,sans-serif";
-    ctx.letterSpacing="6px";
-    ctx.fillStyle="rgba(240,204,112,0.9)";
-    ctx.fillText("FINANCIAL INTELLIGENCE · IA",W/2,295);
-
-    // ── Linha divisória dourada ───────────────────────────────────────────────
-    ctx.strokeStyle="rgba(201,168,76,0.4)";
-    ctx.lineWidth=1.5;
-    ctx.beginPath(); ctx.moveTo(100,340); ctx.lineTo(W-100,340); ctx.stroke();
-
-    // ── Tag "ANÁLISE PREMIUM" ─────────────────────────────────────────────────
-    ctx.font="bold 28px Arial,sans-serif";
-    ctx.letterSpacing="4px";
-    ctx.fillStyle="rgba(201,168,76,0.7)";
-    ctx.fillText("ANÁLISE FINANCEIRA PERSONALIZADA · 16 ESPECIALISTAS",W/2,400);
-
-    // ── Top 3 insights ────────────────────────────────────────────────────────
-    var insights = _extractInsights(_currentVerdict, 3);
-    var icons    = ["01","02","03"];
-    var startY   = 490;
-    var cardH    = 340;
-    var cardPad  = 40;
-
-    for(var i=0;i<insights.length;i++){
-      var cy = startY + i*(cardH+30);
-
-      // Card background
-      ctx.fillStyle="rgba(201,168,76,0.06)";
-      _roundRect(ctx, 80, cy, W-160, cardH, 20);
-      ctx.fill();
-
-      // Card border
-      ctx.strokeStyle="rgba(201,168,76,0.22)";
-      ctx.lineWidth=1;
-      _roundRect(ctx, 80, cy, W-160, cardH, 20);
-      ctx.stroke();
-
-      // Borda esquerda dourada
-      ctx.fillStyle="#c9a84c";
-      _roundRect(ctx, 80, cy, 6, cardH, 3);
-      ctx.fill();
-
-      // Número
-      ctx.font="bold 52px Arial,sans-serif";
-      ctx.letterSpacing="0px";
-      ctx.fillStyle="rgba(201,168,76,0.35)";
-      ctx.textAlign="left";
-      ctx.fillText(icons[i], 120, cy+75);
-
-      // Texto do insight
-      ctx.font="400 34px Arial,sans-serif";
-      ctx.fillStyle="#ede8dc";
-      ctx.letterSpacing="0px";
-      _wrapText(ctx, insights[i], 120, cy+115, W-280, 48);
+    // Ruído sutil dourado
+    for(var n=0;n<12000;n++){
+      ctx.fillStyle="rgba(201,168,76,"+(Math.random()*0.035)+")";
+      ctx.fillRect(Math.random()*W, Math.random()*H, 1, 1);
     }
 
-    // ── Linha divisória inferior ──────────────────────────────────────────────
-    var footY = startY + 3*(cardH+30) + 30;
-    ctx.strokeStyle="rgba(201,168,76,0.3)";
-    ctx.lineWidth=1;
+    // Glow top-left
+    var gl=ctx.createRadialGradient(0,0,0,0,0,700);
+    gl.addColorStop(0,"rgba(201,168,76,0.11)"); gl.addColorStop(1,"transparent");
+    ctx.fillStyle=gl; ctx.fillRect(0,0,W,H);
+
+    // Glow bottom-right
+    var gl2=ctx.createRadialGradient(W,H,0,W,H,600);
+    gl2.addColorStop(0,"rgba(201,168,76,0.07)"); gl2.addColorStop(1,"transparent");
+    ctx.fillStyle=gl2; ctx.fillRect(0,0,W,H);
+
+    // ── Barra dourada topo ──
+    var topGrd=ctx.createLinearGradient(0,0,W,0);
+    topGrd.addColorStop(0,"transparent"); topGrd.addColorStop(0.15,"#c9a84c");
+    topGrd.addColorStop(0.85,"#c9a84c"); topGrd.addColorStop(1,"transparent");
+    ctx.fillStyle=topGrd; ctx.fillRect(0,0,W,5);
+
+    // ── Logo WUZO ──
+    ctx.textAlign="center";
+    ctx.font="bold 130px 'Arial Black',Arial,sans-serif";
+    ctx.letterSpacing="20px";
+    var lgrd=ctx.createLinearGradient(200,180,800,180);
+    lgrd.addColorStop(0,"#7a5a1c"); lgrd.addColorStop(0.3,"#f5ead0");
+    lgrd.addColorStop(0.5,"#ffffff"); lgrd.addColorStop(0.7,"#f5ead0");
+    lgrd.addColorStop(1,"#7a5a1c");
+    ctx.fillStyle=lgrd; ctx.fillText("WUZO",W/2,220);
+    ctx.letterSpacing="0px";
+
+    // Subtítulo
+    ctx.font="500 34px Arial,sans-serif"; ctx.letterSpacing="6px";
+    ctx.fillStyle="rgba(240,204,112,0.92)";
+    ctx.fillText("FINANCIAL INTELLIGENCE · IA",W/2,278);
+    ctx.letterSpacing="0px";
+
+    // Divisor
+    ctx.strokeStyle="rgba(201,168,76,0.4)"; ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.moveTo(100,308); ctx.lineTo(W-100,308); ctx.stroke();
+
+    // Tag
+    ctx.font="bold 24px Arial,sans-serif"; ctx.letterSpacing="3px";
+    ctx.fillStyle="rgba(201,168,76,0.75)";
+    ctx.fillText("ANÁLISE FINANCEIRA PERSONALIZADA · 16 ESPECIALISTAS",W/2,355);
+    ctx.letterSpacing="0px";
+
+    // ── 4 Cards compactos ──
+    var cardH   = 195;  // compacto para caber 4
+    var cardGap = 20;
+    var startY  = 405;
+    var cardX   = 72;
+    var cardW   = W - cardX*2;
+
+    for(var i=0; i<insights.length && i<4; i++){
+      var cy = startY + i*(cardH+cardGap);
+
+      // Sombra sutil
+      ctx.shadowColor="rgba(201,168,76,0.12)";
+      ctx.shadowBlur=22; ctx.shadowOffsetY=5;
+
+      // Fundo card
+      ctx.fillStyle="rgba(20,16,8,0.88)";
+      _roundRect(ctx, cardX, cy, cardW, cardH, 16); ctx.fill();
+
+      ctx.shadowColor="transparent"; ctx.shadowBlur=0; ctx.shadowOffsetY=0;
+
+      // Borda card
+      ctx.strokeStyle="rgba(201,168,76,0.20)"; ctx.lineWidth=1;
+      _roundRect(ctx, cardX, cy, cardW, cardH, 16); ctx.stroke();
+
+      // Accent esquerdo dourado
+      var accGrd=ctx.createLinearGradient(0,cy,0,cy+cardH);
+      accGrd.addColorStop(0,"#f0cc70"); accGrd.addColorStop(1,"#7a5a1c");
+      ctx.fillStyle=accGrd;
+      _roundRect(ctx, cardX, cy, 5, cardH, [16,0,0,16]); ctx.fill();
+
+      // Número
+      ctx.textAlign="left";
+      ctx.font="bold 40px 'Courier New',monospace"; ctx.letterSpacing="0px";
+      ctx.fillStyle="rgba(201,168,76,0.40)";
+      ctx.fillText(String(i+1).padStart(2,"0"), cardX+36, cy+52);
+
+      // Texto insight — máx 3 linhas
+      ctx.font="400 30px Arial,sans-serif"; ctx.fillStyle="#ede8dc";
+      var textX  = cardX+36;
+      var textW  = cardW - 70;
+      var words  = insights[i].split(" ");
+      var line   = ""; var lCount = 0; var lY = cy+90;
+      for(var w=0; w<words.length; w++){
+        var test = line + (line?" ":"") + words[w];
+        if(ctx.measureText(test).width > textW && line){
+          if(lCount<3){ ctx.fillText(line, textX, lY); lY+=42; lCount++; }
+          line = words[w];
+        } else { line=test; }
+      }
+      if(line && lCount<3) ctx.fillText(line, textX, lY);
+    }
+
+    // ── Divisor inferior ──
+    var footY = startY + insights.length*(cardH+cardGap) + 18;
+    ctx.strokeStyle="rgba(201,168,76,0.28)"; ctx.lineWidth=1;
     ctx.beginPath(); ctx.moveTo(100,footY); ctx.lineTo(W-100,footY); ctx.stroke();
 
-    // ── CTA ───────────────────────────────────────────────────────────────────
-    ctx.font="bold 44px Arial,sans-serif";
-    ctx.letterSpacing="2px";
-    ctx.fillStyle="#c9a84c";
+    // ── CTA ──
     ctx.textAlign="center";
-    ctx.fillText("Faça sua análise grátis em",W/2,footY+80);
-    ctx.font="bold 62px Arial,sans-serif";
-    ctx.letterSpacing="1px";
-    ctx.fillStyle="#f0cc70";
-    ctx.fillText("wuzo.com.br",W/2,footY+160);
+    ctx.font="bold 40px Arial,sans-serif"; ctx.letterSpacing="2px";
+    ctx.fillStyle="#c9a84c";
+    ctx.fillText("Faça sua análise grátis em",W/2,footY+68);
+    ctx.letterSpacing="0px";
+    ctx.font="bold 60px Arial,sans-serif";
+    var urlGrd=ctx.createLinearGradient(W/2-240,0,W/2+240,0);
+    urlGrd.addColorStop(0,"#c9a84c"); urlGrd.addColorStop(0.5,"#fff5d6"); urlGrd.addColorStop(1,"#c9a84c");
+    ctx.fillStyle=urlGrd;
+    ctx.fillText("wuzo.com.br",W/2,footY+142);
+    ctx.font="400 26px Arial,sans-serif"; ctx.letterSpacing="3px";
+    ctx.fillStyle="rgba(192,184,158,0.65)";
+    ctx.fillText("Consultoria financeira por Inteligência Artificial",W/2,footY+194);
+    ctx.letterSpacing="0px";
 
-    // Tagline
-    ctx.font="400 30px Arial,sans-serif";
-    ctx.letterSpacing="3px";
-    ctx.fillStyle="rgba(192,184,158,0.7)";
-    ctx.fillText("Consultoria financeira por Inteligência Artificial",W/2,footY+220);
+    // ── Barra dourada base ──
+    var botGrd=ctx.createLinearGradient(0,0,W,0);
+    botGrd.addColorStop(0,"transparent"); botGrd.addColorStop(0.15,"#c9a84c");
+    botGrd.addColorStop(0.85,"#c9a84c"); botGrd.addColorStop(1,"transparent");
+    ctx.fillStyle=botGrd; ctx.fillRect(0,H-5,W,5);
 
-    // ── Barra dourada inferior ────────────────────────────────────────────────
-    ctx.fillStyle="#c9a84c"; ctx.fillRect(0,H-6,W,6);
+    // ── Share: Capacitor nativo (Android) ou download web ──
+    var dataURL    = canvas.toDataURL("image/png");
+    var base64Data = dataURL.split(",")[1];
 
-    // ── Download ──────────────────────────────────────────────────────────────
-    var link = document.createElement("a");
-    link.download = "wuzo_stories.png";
-    link.href = canvas.toDataURL("image/png");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    var isNative = !!(
+      window.Capacitor &&
+      window.Capacitor.isNativePlatform &&
+      window.Capacitor.isNativePlatform()
+    );
 
-    showAlert("inp-alert","alert-ok","Imagem gerada! Compartilhe nos Stories &#128248;");
-    setTimeout(function(){ hideAlert("inp-alert"); }, 4000);
+    if(isNative){
+      if(btn) btn.innerHTML="&#128640; Compartilhando...";
+      var Plugins = window.Capacitor.Plugins;
+      var FS      = Plugins.Filesystem;
+      var Sh      = Plugins.Share;
+
+      if(!FS || !Sh){
+        // Plugins não disponíveis — orienta o usuário
+        showAlert("inp-alert","alert-err",
+          "Plugin @capacitor/filesystem ou @capacitor/share ausente. " +
+          "Execute: npm install @capacitor/filesystem @capacitor/share && npx cap sync android"
+        );
+        return;
+      }
+
+      // Salva em cache (não precisa de permissão no Android 10+)
+      var fname = "wuzo-stories-" + Date.now() + ".png";
+      await FS.writeFile({
+        path:      fname,
+        data:      base64Data,
+        directory: "CACHE"
+      });
+
+      // Obtém URI real do sistema de arquivos
+      var uriResult = await FS.getUri({ path: fname, directory: "CACHE" });
+
+      // Compartilha via intent nativo do Android
+      await Sh.share({
+        title:       "Minha Análise WUZO",
+        text:        "🚀 Minha análise financeira por IA! wuzo.com.br",
+        url:         uriResult.uri,
+        dialogTitle: "Compartilhar análise WUZO"
+      });
+
+      showAlert("inp-alert","alert-ok","Compartilhando... &#128248;");
+      setTimeout(function(){ hideAlert("inp-alert"); }, 3500);
+
+    } else {
+      // Fallback web: tenta navigator.share (mobile web), senão baixa PNG
+      if(navigator.share && navigator.canShare){
+        try{
+          var blob = await new Promise(function(res){ canvas.toBlob(res,"image/png"); });
+          var file = new File([blob],"wuzo_stories.png",{type:"image/png"});
+          if(navigator.canShare({files:[file]})){
+            await navigator.share({
+              title:"Minha Análise WUZO",
+              text:"🚀 Análise financeira por IA! wuzo.com.br",
+              files:[file]
+            });
+            showAlert("inp-alert","alert-ok","Compartilhado! &#128248;");
+            setTimeout(function(){ hideAlert("inp-alert"); },3000);
+            return;
+          }
+        }catch(se){ if(se.name==="AbortError") return; }
+      }
+      // Download direto
+      var link = document.createElement("a");
+      link.download = "wuzo_stories.png";
+      link.href = dataURL;
+      document.body.appendChild(link); link.click(); document.body.removeChild(link);
+      showAlert("inp-alert","alert-ok","Imagem gerada! Compartilhe nos Stories &#128248;");
+      setTimeout(function(){ hideAlert("inp-alert"); }, 4000);
+    }
 
   }catch(e){
-    showAlert("inp-alert","alert-err","Erro ao gerar imagem: "+e.message);
+    console.error("[WuzoShare]",e);
+    showAlert("inp-alert","alert-err","Erro ao compartilhar: "+e.message);
   }finally{
     if(btn){ btn.disabled=false; btn.innerHTML="&#128248; COMPARTILHAR NOS STORIES"; }
   }
 }
 
 function _roundRect(ctx,x,y,w,h,r){
+  var tl=Array.isArray(r)?r[0]:r, tr=Array.isArray(r)?r[1]:r,
+      br=Array.isArray(r)?r[2]:r, bl=Array.isArray(r)?r[3]:r;
   ctx.beginPath();
-  ctx.moveTo(x+r,y);
-  ctx.lineTo(x+w-r,y);
-  ctx.quadraticCurveTo(x+w,y,x+w,y+r);
-  ctx.lineTo(x+w,y+h-r);
-  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-  ctx.lineTo(x+r,y+h);
-  ctx.quadraticCurveTo(x,y+h,x,y+h-r);
-  ctx.lineTo(x,y+r);
-  ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.moveTo(x+tl,y);
+  ctx.lineTo(x+w-tr,y); ctx.quadraticCurveTo(x+w,y,x+w,y+tr);
+  ctx.lineTo(x+w,y+h-br); ctx.quadraticCurveTo(x+w,y+h,x+w-br,y+h);
+  ctx.lineTo(x+bl,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-bl);
+  ctx.lineTo(x,y+tl); ctx.quadraticCurveTo(x,y,x+tl,y);
   ctx.closePath();
 }
 
