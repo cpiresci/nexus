@@ -36,7 +36,7 @@ body{background-image:radial-gradient(ellipse 80% 50% at 0% 10%,rgba(201,168,76,
 .hdr{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 0 14px;border-bottom:1px solid var(--bd);margin-bottom:20px;gap:12px;flex-wrap:wrap;background:var(--bg);}
 .logo{font-size:1.6rem;font-weight:900;letter-spacing:8px;background:linear-gradient(135deg,#7a5a1c,#f5ead0 35%,#c9a84c 55%,#f5ead0 75%,#7a5a1c);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
 @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
-.logo-sub{font-family:'JetBrains Mono',monospace;font-size:.42rem;letter-spacing:3px;color:var(--dm2);margin-top:2px;}
+.logo-sub{font-family:'JetBrains Mono',monospace;font-size:.42rem;letter-spacing:3px;color:rgba(240,204,112,.95);margin-top:2px;}
 .hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
 .credit-badge{background:rgba(201,168,76,.08);border:1px solid var(--bd);border-radius:20px;padding:5px 12px;font-size:.68rem;font-weight:700;letter-spacing:1px;color:var(--g);font-family:'JetBrains Mono',monospace;}
 .status-pill{display:flex;align-items:center;gap:5px;font-size:.6rem;letter-spacing:1px;}
@@ -54,10 +54,10 @@ body{background-image:radial-gradient(ellipse 80% 50% at 0% 10%,rgba(201,168,76,
 /* CARDS */
 .card{background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));border:1px solid var(--bd);border-radius:var(--r);padding:18px 16px;margin-bottom:14px;position:relative;overflow:hidden;}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.28),transparent);}
-.inp-lbl{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:2px;color:var(--dm2);text-transform:uppercase;margin-bottom:5px;}
+.inp-lbl{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:2px;color:rgba(212,168,67,.85);text-transform:uppercase;margin-bottom:5px;}
 textarea{width:100%;background:rgba(0,0,0,.35);border:1px solid var(--bd);border-radius:var(--r2);color:var(--tx);font-family:'Outfit',sans-serif;font-size:.92rem;padding:14px 16px;resize:vertical;min-height:256px;outline:none;line-height:1.8;transition:border-color .2s,box-shadow .2s;margin-bottom:4px;}
 textarea:focus{border-color:rgba(201,168,76,.4);box-shadow:0 0 0 3px rgba(201,168,76,.07);}
-textarea::placeholder{color:var(--dm2);}
+textarea::placeholder{color:rgba(212,168,67,.82);font-size:.88rem;line-height:1.9;font-style:normal;}
 .btn-row{display:flex;flex-direction:column;gap:12px;margin-top:22px;padding-top:6px;}
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px 20px;border-radius:50px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:800;font-size:.85rem;letter-spacing:1px;transition:all .2s;}
 .btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important;}
@@ -110,7 +110,7 @@ textarea::placeholder{color:var(--dm2);}
 .lock-card{background:linear-gradient(135deg,rgba(201,168,76,.06),rgba(201,168,76,.02));border:1px solid var(--bd2);border-radius:var(--r);padding:22px 18px;text-align:center;margin-top:-4px;}
 .lock-icon{font-size:1.8rem;margin-bottom:8px;}
 .lock-title{color:var(--g);font-size:1rem;font-weight:800;margin-bottom:4px;}
-.lock-sub{color:var(--dm);font-size:.8rem;margin-bottom:16px;}
+.lock-sub{color:var(--tx);font-size:.82rem;margin-bottom:16px;line-height:1.7;}
 #sec-full{display:none;}
 .agent-block{background:linear-gradient(135deg,rgba(180,140,50,.04),rgba(180,140,50,.01));border:1px solid var(--bd);border-radius:var(--r);border-left:3px solid var(--g);padding:14px 16px;margin-bottom:8px;}
 .agent-block-title{color:var(--g2);font-size:.72rem;font-weight:700;margin-bottom:6px;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;border-bottom:1px solid var(--bd);padding-bottom:4px;}
@@ -235,7 +235,7 @@ textarea::placeholder{color:var(--dm2);}
     <div class="verdict-body" id="verdict-body"></div>
   </div>
   <div class="lock-card">
-    <div class="lock-icon">&#128274;</div>
+    <div class="lock-icon">⚠️</div>
     <div class="lock-title" data-i18n="lock_title">Desbloqueie o Relatório Completo — 16 Especialistas</div>
     <div class="lock-sub" data-i18n="lock_sub">Análise completa de Cripto (preços ao vivo), Ações, Renda Fixa, FIIs, Dívidas, Tributário, Compliance e mais — com PDF executivo disponível por 72h.</div>
     <button class="btn btn-premium" onclick="handlePremiumFromFree()" style="max-width:400px;margin:0 auto;">
@@ -368,10 +368,10 @@ var I18N = {
   pt: {
     live:             "AO VIVO",
     inp_lbl:          "Descreva sua situação financeira",
-    inp_placeholder:  "Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado.",
+    inp_placeholder:  "💰 Ex: Tenho R$ 50.000 parados na poupança perdendo para a inflação. Tenho dívida no cartão de R$ 8.000 a 12% ao mês me destruindo. Ganho R$ 6.000/mês e não sei por onde começar. Quero em 5 anos ter patrimônio real, sair do aluguel e parar de perder dinheiro. Me diga exatamente o que fazer.",
     pipeline_lbl:     "16 ESPECIALISTAS · DADOS EM TEMPO REAL",
-    lock_title:       "Desbloqueie o Relatório Completo — 16 Especialistas",
-    lock_sub:         "Análise completa de Cripto (preços ao vivo), Ações, Renda Fixa, FIIs, Dívidas, Tributário, Compliance e mais — com PDF executivo disponível por 72h.",
+    lock_title:       "⚠️ Sua análise está incompleta — 14 especialistas ainda não falaram",
+    lock_sub:         "Você recebeu apenas o diagnóstico inicial. Os 14 especialistas restantes — Cripto, Ações, Renda Fixa, FIIs, Tributário, Compliance e mais — identificaram pontos críticos na sua situação que ainda estão bloqueados. Desbloqueie agora por R$ 19,90.",
     pdf_title:        "&#128196; Relatório PDF Profissional",
     pdf_sub:          "Todos os 16 especialistas com dados em tempo real — formato PDF executivo.",
     pdf_timer:        "Este relatório fica disponível por <strong>72 horas</strong> — baixe agora",
@@ -391,8 +391,8 @@ var I18N = {
     status_waking:    "Acordando...",
     status_online:    "Motor Online",
     status_offline:   "Servidor offline",
-    btn_free_main:    "&#9889; ANALISAR GRÁTIS AGORA",
-    btn_free_sub:     "Sem cadastro · Resultado em segundos · Sem cartão",
+    btn_free_main:    "&#9889; ANALISAR GRÁTIS AGORA — Ver Diagnóstico",
+    btn_free_sub:     "2 especialistas analisam agora · Sem cadastro · Sem cartão",
     btn_premium_main: "&#11088; RELATÓRIO COMPLETO — 16 IA com Dados Ao Vivo",
     btn_premium_sub:  "&#10003; Cripto em tempo real &nbsp;&#10003; Ações &amp; FIIs &nbsp;&#10003; PDF por 72h &nbsp;&#10003; Acesso imediato",
     btn_buy_main:     "&#128274; LIBERAR ACESSO AGORA — R$&nbsp;19,90",
@@ -419,10 +419,10 @@ var I18N = {
   en: {
     live:             "LIVE",
     inp_lbl:          "Describe your financial situation",
-    inp_placeholder:  "E.g.: I have $10,000 to invest, $2,000 credit card debt at 12% monthly interest, $2,500/mo income. I want to build wealth over the next 5 years with a moderate risk profile.",
+    inp_placeholder:  "💰 E.g.: I have $10,000 sitting idle losing to inflation. I carry $2,000 in credit card debt at 12%/month destroying my finances. I earn $2,500/mo and have no idea where to start. In 5 years I want real wealth, my own home and to stop bleeding money. Tell me exactly what to do.",
     pipeline_lbl:     "16 SPECIALISTS · REAL-TIME DATA",
-    lock_title:       "Unlock the Full Report — 16 Specialists",
-    lock_sub:         "Full analysis of Crypto (live prices), Stocks, Fixed Income, REITs, Debt, Tax Planning, Compliance and more — with executive PDF available for 72h.",
+    lock_title:       "⚠️ Your analysis is incomplete — 14 specialists haven't spoken yet",
+    lock_sub:         "You only received the initial diagnosis. The remaining 14 specialists — Crypto, Stocks, Fixed Income, REITs, Tax, Compliance and more — identified critical issues in your situation that are still locked. Unlock now for R$ 19.90.",
     pdf_title:        "&#128196; Professional PDF Report",
     pdf_sub:          "All 16 specialists with real-time data — executive PDF format.",
     pdf_timer:        "This report is available for <strong>72 hours</strong> — download now",
@@ -442,8 +442,8 @@ var I18N = {
     status_waking:    "Starting up...",
     status_online:    "Engine Online",
     status_offline:   "Server offline",
-    btn_free_main:    "&#9889; ANALYZE FOR FREE NOW",
-    btn_free_sub:     "No signup · Results in seconds · No card",
+    btn_free_main:    "&#9889; ANALYZE FOR FREE — Get My Diagnosis",
+    btn_free_sub:     "2 AI specialists analyze now · No signup · No card",
     btn_premium_main: "&#11088; FULL REPORT — 16 AIs with Live Data",
     btn_premium_sub:  "&#10003; Real-time Crypto &nbsp;&#10003; Stocks &amp; REITs &nbsp;&#10003; PDF for 72h &nbsp;&#10003; Instant access",
     btn_buy_main:     "&#128274; UNLOCK ACCESS NOW — R$&nbsp;19.90",
@@ -470,10 +470,10 @@ var I18N = {
   es: {
     live:             "EN VIVO",
     inp_lbl:          "Describe tu situación financiera",
-    inp_placeholder:  "Ej.: Tengo $10.000 para invertir, deuda en tarjeta de $2.000 al 12% mensual, ingreso de $2.500/mes. Quiero construir patrimonio en los próximos 5 años con perfil moderado.",
+    inp_placeholder:  "💰 Ej.: Tengo $10.000 parados perdiendo contra la inflación. Tengo $2.000 en deuda de tarjeta al 12% mensual destruyendo mis finanzas. Gano $2.500/mes y no sé por dónde empezar. En 5 años quiero patrimonio real, casa propia y dejar de perder dinero. Dime exactamente qué hacer.",
     pipeline_lbl:     "16 ESPECIALISTAS · DATOS EN TIEMPO REAL",
-    lock_title:       "Desbloquea el Informe Completo — 16 Especialistas",
-    lock_sub:         "Análisis completo de Cripto (precios en vivo), Acciones, Renta Fija, FIIs, Deudas, Tributario, Compliance y más — con PDF ejecutivo disponible por 72h.",
+    lock_title:       "⚠️ Tu análisis está incompleto — 14 especialistas aún no hablaron",
+    lock_sub:         "Solo recibiste el diagnóstico inicial. Los 14 especialistas restantes — Cripto, Acciones, Renta Fija, FIIs, Tributario, Compliance y más — identificaron puntos críticos en tu situación que aún están bloqueados. Desbloquea ahora por R$ 19,90.",
     pdf_title:        "&#128196; Informe PDF Profesional",
     pdf_sub:          "Los 16 especialistas con datos en tiempo real — formato PDF ejecutivo.",
     pdf_timer:        "Este informe está disponible por <strong>72 horas</strong> — descárgalo ahora",
@@ -494,7 +494,7 @@ var I18N = {
     status_online:    "Motor Online",
     status_offline:   "Servidor offline",
     btn_free_main:    "&#9889; ANALIZAR GRATIS AHORA",
-    btn_free_sub:     "Sin registro · Resultado en segundos · Sin tarjeta",
+    btn_free_sub:     "2 especialistas analizan ahora · Sin registro · Sin tarjeta",
     btn_premium_main: "&#11088; INFORME COMPLETO — 16 IAs con Datos en Vivo",
     btn_premium_sub:  "&#10003; Cripto en tiempo real &nbsp;&#10003; Acciones &amp; FIIs &nbsp;&#10003; PDF 72h &nbsp;&#10003; Acceso inmediato",
     btn_buy_main:     "&#128274; DESBLOQUEAR ACCESO — R$&nbsp;19,90",
