@@ -1393,73 +1393,66 @@ async function generateShareImage(){
     botGrd.addColorStop(0.85,"#c9a84c"); botGrd.addColorStop(1,"transparent");
     ctx.fillStyle=botGrd; ctx.fillRect(0,H-5,W,5);
 
-    // ── Share v3.1: navigator.share primeiro (Android WebView + web), Capacitor como fallback ──
-    // [FIX v3.1] A ordem anterior era: isNative → Capacitor plugins → navigator.share.
-    //   No APK, isNative=true mas os plugins @capacitor/filesystem/@capacitor/share não
-    //   estão instalados → FS/Sh = undefined → erro "Plugin ausente" → função para.
-    //   navigator.share com File funciona nativamente no Android WebView (Chrome-based)
-    //   sem nenhum plugin. Agora é a primeira tentativa para todos os ambientes.
-    var dataURL    = canvas.toDataURL("image/png");
+    // ── Share v5.0: JavascriptInterface bridge (Android) + fallback web ──────────
+    // Arquitetura definitiva:
+    //   Android APK → window.Android.shareImage(base64) → Java WuzoShareBridge
+    //               → FileProvider URI → ACTION_SEND → seletor nativo do sistema
+    //   Web/desktop → navigator.share (texto) ou modal overlay com long-press
+    //
+    // Sem plugin Capacitor, sem user gesture timeout, sem <a download> ignorado.
+    // Requer: MainActivity.java com @JavascriptInterface + FileProvider no Manifest.
+    var dataURL = canvas.toDataURL("image/png");
+
+    // ── Constrói o modal overlay ──────────────────────────────────────────────
     var base64Data = dataURL.split(",")[1];
 
-    if(btn) btn.innerHTML="&#128640; Compartilhando...";
+    // ── Android APK: bridge nativa ────────────────────────────────────────────
+    if(window.Android && typeof window.Android.shareImage === "function"){
+      window.Android.shareImage(base64Data);
+      showAlert("inp-alert","alert-ok","&#128248; Abrindo compartilhamento...");
+      setTimeout(function(){ hideAlert("inp-alert"); }, 3000);
+      return;
+    }
 
-    // Caminho 1: navigator.share com arquivo — funciona no Android WebView e mobile Chrome
-    if(navigator.share && navigator.canShare){
+    // ── Fallback web: navigator.share (mobile browser) ou modal overlay ───────
+    if(navigator.share){
       try{
-        var blob = await new Promise(function(res){ canvas.toBlob(res,"image/png"); });
-        var file = new File([blob],"wuzo_stories.png",{type:"image/png"});
-        if(navigator.canShare({files:[file]})){
-          await navigator.share({
-            title: "Minha Análise WUZO",
-            text:  "🚀 Minha análise financeira por IA! wuzo.com.br",
-            files: [file]
-          });
-          showAlert("inp-alert","alert-ok","Compartilhado! &#128248;");
-          setTimeout(function(){ hideAlert("inp-alert"); }, 3000);
-          return;
-        }
+        // Tenta com arquivo primeiro; se falhar, tenta só texto+url
+        var blob2 = await new Promise(function(res){ canvas.toBlob(res,"image/png"); });
+        var file2 = new File([blob2],"wuzo_stories.png",{type:"image/png"});
+        var payload = (navigator.canShare && navigator.canShare({files:[file2]}))
+          ? {title:"Minha Análise WUZO", text:"🚀 wuzo.com.br", files:[file2]}
+          : {title:"Minha Análise WUZO", text:"🚀 Minha análise financeira por IA! wuzo.com.br", url:"https://wuzo.com.br"};
+        await navigator.share(payload);
+        showAlert("inp-alert","alert-ok","Compartilhado! &#128248;");
+        setTimeout(function(){ hideAlert("inp-alert"); }, 3000);
+        return;
       }catch(se){
-        if(se.name==="AbortError") return; // usuário cancelou o diálogo
-        // Outro erro → continua para os fallbacks abaixo
+        if(se.name==="AbortError") return;
+        // Se falhou (não foi AbortError), cai no modal abaixo
       }
     }
 
-    // Caminho 2: Capacitor Filesystem + Share (se plugins estiverem instalados no APK)
-    var isNative = !!(
-      window.Capacitor &&
-      window.Capacitor.isNativePlatform &&
-      window.Capacitor.isNativePlatform()
-    );
-    if(isNative){
-      var Plugins = window.Capacitor.Plugins;
-      var FS = Plugins && Plugins.Filesystem;
-      var Sh = Plugins && Plugins.Share;
-      if(FS && Sh){
-        try{
-          var fname = "wuzo-stories-" + Date.now() + ".png";
-          await FS.writeFile({ path: fname, data: base64Data, directory: "CACHE" });
-          var uriResult = await FS.getUri({ path: fname, directory: "CACHE" });
-          await Sh.share({
-            title:       "Minha Análise WUZO",
-            text:        "🚀 Minha análise financeira por IA! wuzo.com.br",
-            url:         uriResult.uri,
-            dialogTitle: "Compartilhar análise WUZO"
-          });
-          showAlert("inp-alert","alert-ok","Compartilhado! &#128248;");
-          setTimeout(function(){ hideAlert("inp-alert"); }, 3500);
-          return;
-        }catch(ce){ /* continua para download */ }
-      }
-    }
-
-    // Caminho 3: download direto (desktop ou ambiente sem share API)
-    var link = document.createElement("a");
-    link.download = "wuzo_stories.png";
-    link.href = dataURL;
-    document.body.appendChild(link); link.click(); document.body.removeChild(link);
-    showAlert("inp-alert","alert-ok","Imagem gerada! Compartilhe nos Stories &#128248;");
-    setTimeout(function(){ hideAlert("inp-alert"); }, 4000);
+    // ── Modal overlay: fallback desktop / browsers sem Web Share API ──────────
+    var ov = document.createElement("div");
+    ov.id = "wuzo-share-overlay";
+    ov.style.cssText = "position:fixed;inset:0;z-index:9999;background:rgba(3,3,2,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:14px;";
+    var imgEl = document.createElement("img");
+    imgEl.src = dataURL;
+    imgEl.style.cssText = "max-width:100%;max-height:65vh;border-radius:14px;box-shadow:0 0 48px rgba(201,168,76,.25);display:block;";
+    var hint = document.createElement("div");
+    hint.style.cssText = "color:rgba(240,204,112,.85);font-size:.72rem;font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-align:center;";
+    hint.textContent = "Clique com botão direito → Salvar imagem";
+    var link2 = document.createElement("a");
+    link2.href = dataURL; link2.download = "wuzo_stories.png";
+    link2.style.cssText = "padding:10px 24px;border-radius:50px;border:1px solid rgba(201,168,76,.4);background:rgba(201,168,76,.1);color:#f0cc70;font-family:'Outfit',sans-serif;font-weight:700;font-size:.8rem;text-decoration:none;";
+    link2.textContent = "⬇ Baixar imagem";
+    var closeBtn = document.createElement("button");
+    closeBtn.style.cssText = "padding:9px 24px;border-radius:50px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(192,184,158,.6);font-family:'Outfit',sans-serif;font-size:.75rem;cursor:pointer;";
+    closeBtn.innerHTML = "&#10005; Fechar";
+    closeBtn.onclick = function(){ var el=document.getElementById("wuzo-share-overlay"); if(el) document.body.removeChild(el); };
+    ov.appendChild(imgEl); ov.appendChild(hint); ov.appendChild(link2); ov.appendChild(closeBtn);
+    document.body.appendChild(ov);
 
   }catch(e){
     console.error("[WuzoShare]",e);
