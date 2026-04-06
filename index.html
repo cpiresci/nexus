@@ -360,6 +360,7 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <script>
 var BACKEND = "https://app.wuzo.com.br";
@@ -1163,315 +1164,177 @@ async function downloadPDF(){
   }
 }
 
-// ── SHARE IMAGE v3.0 — 4 cards compactos + Capacitor nativo Android ──────────
-//
-// FIX-1: _extractInsights — detecta e pula qualquer linha de identificação
-//         de agente (padrão "Nome — Cargo", labels "Justificativa:", emojis
-//         seguidos de nome, markdown ##, etc). Extrai de verdict + agents.
-// FIX-2: Layout compacto (cardH 195px) com 4 cards sem espaço vazio.
-// FIX-3: Share nativo via Capacitor.Plugins.Filesystem + Share.share().
-//         Motivo do bug: Capacitor WebView rejeita <a download> e blob URL.
-//         Solução correta: base64 → writeFile(CACHE) → getUri() → share(uri).
-//
-// Pré-requisitos para Android (executar após npm install):
-//   npm install @capacitor/filesystem @capacitor/share
-//   npx cap sync android
+// ── SHARE IMAGE v4.0 — Card HTML elegante (Cinzel/Cormorant) + html2canvas ──
 
-function _shareIsAgentHeader(line){
-  var t = line.trim();
-  if(!t || t.length < 5) return true;
-  return (
-    / — /.test(t)                                                 ||  // "Nome — Cargo"
-    /^[^a-záàâãéêíóôõúç\d]{1,8}$/i.test(t)                       ||  // só emojis/símbolos
-    /^(Consultor|Analista|Especialista|Agente|Auditor|Veredito)/i.test(t) ||
-    /^#{1,4}\s/.test(t)                                            ||  // ## header MD
-    /\*{2,}/.test(t)                                               ||  // **bold** header
-    /^[-=]{3,}$/.test(t)                                           ||  // separador ---
-    /WUZO\s*$/.test(t)                                             ||  // linha termina WUZO
-    /Integrado WUZO/i.test(t)                                      ||
-    /^(Justificativa|O que está|O que precisa|Atenção|Recomendação|Resumo|Conclusão|Diagnóstico|Nota|Observação|Aviso|Veredicto|Final|Síntese)\s*:/i.test(t)
-  );
+function _extractScoreFromVerdict(text){
+  var m=text.match(/\b([4-9]\d|100)\/100\b/);if(m)return m[1];
+  m=text.match(/sa[uú]de[^0-9]{0,20}([4-9]\d|100)/i);if(m)return m[1];
+  return null;
 }
-
-function _extractInsights(max){
-  // Combina verdict + análises dos agentes para pool maior
-  var pool = _currentVerdict || "";
-  if(_currentAgents && _currentAgents.length){
-    _currentAgents.forEach(function(a){
-      if(a.id === "consultor_senior") return;
-      if(a.analysis) pool += "\n" + a.analysis;
-    });
-  }
-
-  var lines = pool.split(/\n+/);
-  var insights = [];
-  var seen = {};
-
-  for(var i=0; i<lines.length; i++){
-    var raw = lines[i]
-      .replace(/\*{1,2}([^*]+)\*{1,2}/g, "$1")  // bold/italic
-      .replace(/^#{1,4}\s+/, "")                  // ## MD header
-      .replace(/^\s*[-•]\s*/, "")                  // bullet -/•
-      .trim();
-
-    if(_shareIsAgentHeader(raw)) continue;
-    if(raw.length < 28) continue;
-
-    // Trunca elegantemente
-    var display = raw.length > 135
-      ? raw.slice(0,132).replace(/[,;:]\s*$/, "") + "…"
-      : raw;
-
-    // Deduplicação por prefixo
-    var key = display.slice(0, 40).toLowerCase();
-    if(seen[key]) continue;
-    seen[key] = 1;
-
-    insights.push(display);
-    if(insights.length >= max) break;
-  }
-  return insights;
-}
-
-function _wrapText(ctx, text, x, y, maxWidth, lineHeight){
-  var words = text.split(" ");
-  var line  = "";
-  var lines = [];
-  for(var i=0;i<words.length;i++){
-    var test = line + (line?" ":"") + words[i];
-    if(ctx.measureText(test).width > maxWidth && line){
-      lines.push(line); line = words[i];
-    } else { line = test; }
-  }
-  if(line) lines.push(line);
-  for(var j=0;j<lines.length;j++){
-    ctx.fillText(lines[j], x, y + j*lineHeight);
-  }
-  return lines.length;
+function _extractRiskFromVerdict(text){
+  var lower=text.toLowerCase();
+  if(lower.indexOf("arrojado")!==-1||lower.indexOf("agressivo")!==-1)return{label:"Alto",sub:"Arrojado"};
+  if(lower.indexOf("conservador")!==-1)return{label:"Baixo",sub:"Conservador"};
+  return{label:"Mod.",sub:"Moderado"};
 }
 
 async function generateShareImage(){
-  var btn = document.getElementById("btn-share");
-  if(btn){ btn.disabled=true; btn.innerHTML="&#9203; Gerando..."; }
+  var btn=document.getElementById("btn-share");
+  if(btn){btn.disabled=true;btn.innerHTML="&#9203; Gerando...";}
 
   try{
-    var insights = _extractInsights(4);
-    if(!insights.length){
-      showAlert("inp-alert","alert-err","Execute uma análise premium primeiro.");
-      return;
-    }
+    var insights=_extractInsights(4);
+    if(!insights.length){showAlert("inp-alert","alert-err","Execute uma análise premium primeiro.");return;}
 
-    var W=1080, H=1920;
-    var canvas = document.createElement("canvas");
-    canvas.width=W; canvas.height=H;
-    var ctx = canvas.getContext("2d");
+    var score=_extractScoreFromVerdict(_currentVerdict||"");
+    var risk=_extractRiskFromVerdict(_currentVerdict||"");
 
-    // ── Fundo ──
-    var bg = ctx.createLinearGradient(0,0,W,H);
-    bg.addColorStop(0,"#030302"); bg.addColorStop(0.5,"#0d0c0a"); bg.addColorStop(1,"#030302");
-    ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+    var scoreHtml=score
+      ? score+'<span style="font-size:13px">/100</span>'
+      : '<span style="font-size:18px">—</span>';
 
-    // Glow top-left
-    var gl=ctx.createRadialGradient(0,0,0,0,0,700);
-    gl.addColorStop(0,"rgba(201,168,76,0.11)"); gl.addColorStop(1,"transparent");
-    ctx.fillStyle=gl; ctx.fillRect(0,0,W,H);
+    var insightsHtml=insights.map(function(txt,i){
+      var num=String(i+1).padStart(2,"0");
+      return '<div class="sc-insight"><div class="sc-num">'+num+'</div><div class="sc-txt">'+txt+'</div></div>';
+    }).join("");
 
-    // Glow bottom-right
-    var gl2=ctx.createRadialGradient(W,H,0,W,H,600);
-    gl2.addColorStop(0,"rgba(201,168,76,0.07)"); gl2.addColorStop(1,"transparent");
-    ctx.fillStyle=gl2; ctx.fillRect(0,0,W,H);
+    var cardHtml=
+      '<div id="_sc_card" style="position:absolute;left:-9999px;top:0;width:420px;background:#0E1117;border-radius:4px;overflow:hidden;border:1px solid #8B6E2E;">'+
+      '<style>'+
+      '@import url(\'https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400&display=swap\');'+
+      '#_sc_card *{box-sizing:border-box;margin:0;padding:0;}'+
+      '.sc-hdr{padding:36px 32px 28px;text-align:center;background:linear-gradient(180deg,#0A0D14 0%,#0E1117 100%);border-bottom:1px solid #8B6E2E;position:relative;}'+
+      '.sc-glow{position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:280px;height:160px;background:radial-gradient(ellipse,rgba(201,168,76,.18) 0%,transparent 70%);pointer-events:none;}'+
+      '.sc-corner{position:absolute;width:18px;height:18px;}'+
+      '.sc-tl{top:10px;left:10px;border-top:1.5px solid #C9A84C;border-left:1.5px solid #C9A84C;}'+
+      '.sc-tr{top:10px;right:10px;border-top:1.5px solid #C9A84C;border-right:1.5px solid #C9A84C;}'+
+      '.sc-bl{bottom:10px;left:10px;border-bottom:1.5px solid #C9A84C;border-left:1.5px solid #C9A84C;}'+
+      '.sc-br{bottom:10px;right:10px;border-bottom:1.5px solid #C9A84C;border-right:1.5px solid #C9A84C;}'+
+      '.sc-eyebrow{font-family:\'JetBrains Mono\',monospace;font-size:9px;font-weight:300;letter-spacing:.35em;color:#8B6E2E;text-transform:uppercase;margin-bottom:12px;}'+
+      '.sc-brand{font-family:\'Cinzel\',serif;font-size:52px;font-weight:900;letter-spacing:.18em;line-height:1;color:#C9A84C;margin-bottom:8px;}'+
+      '.sc-divider{display:flex;align-items:center;gap:12px;margin:12px auto;width:fit-content;}'+
+      '.sc-line{width:48px;height:1px;background:#8B6E2E;}'+
+      '.sc-diamond{width:5px;height:5px;background:#C9A84C;transform:rotate(45deg);}'+
+      '.sc-tagline{font-family:\'Cinzel\',serif;font-size:9.5px;font-weight:400;letter-spacing:.22em;color:#8B6E2E;text-transform:uppercase;}'+
+      '.sc-band{display:flex;background:#161C26;border-bottom:1px solid rgba(201,168,76,.12);}'+
+      '.sc-si{flex:1;padding:16px 12px;text-align:center;border-right:1px solid rgba(201,168,76,.15);}'+
+      '.sc-si:last-child{border-right:none;}'+
+      '.sc-sl{font-family:\'JetBrains Mono\',monospace;font-size:8px;letter-spacing:.2em;color:#8B6E2E;text-transform:uppercase;margin-bottom:4px;}'+
+      '.sc-sv{font-family:\'Cinzel\',serif;font-size:22px;font-weight:700;color:#E8CC7A;line-height:1;}'+
+      '.sc-ss{font-family:\'Cormorant Garamond\',serif;font-size:10px;color:rgba(244,240,232,.55);margin-top:2px;font-style:italic;}'+
+      '.sc-body{padding:28px 28px 24px;}'+
+      '.sc-lbl{font-family:\'JetBrains Mono\',monospace;font-size:8px;letter-spacing:.28em;color:#8B6E2E;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px;}'+
+      '.sc-lbl::after{content:\'\';flex:1;height:1px;background:linear-gradient(90deg,rgba(201,168,76,.25),transparent);}'+
+      '.sc-insights{display:flex;flex-direction:column;gap:10px;}'+
+      '.sc-insight{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;background:linear-gradient(135deg,#161C26 0%,#1E2736 100%);border:1px solid rgba(201,168,76,.1);border-left:2px solid #8B6E2E;border-radius:2px;}'+
+      '.sc-num{font-family:\'Cinzel\',serif;font-size:11px;font-weight:700;color:#C9A84C;opacity:.5;line-height:1.6;flex-shrink:0;min-width:18px;}'+
+      '.sc-txt{font-family:\'Cormorant Garamond\',serif;font-size:13px;font-weight:400;color:#F4F0E8;line-height:1.55;flex:1;}'+
+      '.sc-footer{padding:18px 28px 22px;border-top:1px solid rgba(201,168,76,.12);background:linear-gradient(180deg,#0E1117 0%,#09090F 100%);text-align:center;}'+
+      '.sc-fcta{font-family:\'Cormorant Garamond\',serif;font-size:13px;font-style:italic;color:rgba(244,240,232,.55);margin-bottom:4px;}'+
+      '.sc-furl{font-family:\'Cinzel\',serif;font-size:15px;font-weight:600;letter-spacing:.12em;color:#C9A84C;}'+
+      '.sc-fsub{font-family:\'JetBrains Mono\',monospace;font-size:8px;letter-spacing:.18em;color:rgba(201,168,76,.3);margin-top:6px;text-transform:uppercase;}'+
+      '</style>'+
+      '<div class="sc-corner sc-tl"></div>'+
+      '<div class="sc-corner sc-tr"></div>'+
+      '<div class="sc-corner sc-bl"></div>'+
+      '<div class="sc-corner sc-br"></div>'+
+      '<div class="sc-hdr">'+
+        '<div class="sc-glow"></div>'+
+        '<div class="sc-eyebrow">Análise por Inteligência Artificial</div>'+
+        '<div class="sc-brand">WUZO</div>'+
+        '<div class="sc-divider"><div class="sc-line"></div><div class="sc-diamond"></div><div class="sc-line"></div></div>'+
+        '<div class="sc-tagline">Financial Intelligence · 16 Especialistas</div>'+
+      '</div>'+
+      '<div class="sc-band">'+
+        '<div class="sc-si"><div class="sc-sl">Saúde</div><div class="sc-sv">'+scoreHtml+'</div><div class="sc-ss">Financeira</div></div>'+
+        '<div class="sc-si"><div class="sc-sl">Risco</div><div class="sc-sv">'+risk.label+'</div><div class="sc-ss">'+risk.sub+'</div></div>'+
+        '<div class="sc-si"><div class="sc-sl">Agentes</div><div class="sc-sv">16</div><div class="sc-ss">Especialistas</div></div>'+
+      '</div>'+
+      '<div class="sc-body">'+
+        '<div class="sc-lbl">Diagnóstico Executivo</div>'+
+        '<div class="sc-insights">'+insightsHtml+'</div>'+
+      '</div>'+
+      '<div class="sc-footer">'+
+        '<div class="sc-fcta">Faça sua análise gratuita em</div>'+
+        '<div class="sc-furl">wuzo.com.br</div>'+
+        '<div class="sc-fsub">Consultoria financeira por inteligência artificial · 16 especialistas</div>'+
+      '</div>'+
+      '</div>';
 
-    // ── Barra dourada topo ──
-    var topGrd=ctx.createLinearGradient(0,0,W,0);
-    topGrd.addColorStop(0,"transparent"); topGrd.addColorStop(0.15,"#c9a84c");
-    topGrd.addColorStop(0.85,"#c9a84c"); topGrd.addColorStop(1,"transparent");
-    ctx.fillStyle=topGrd; ctx.fillRect(0,0,W,5);
+    // Injeta card no DOM (offscreen)
+    var wrapper=document.createElement("div");
+    wrapper.innerHTML=cardHtml;
+    var cardEl=wrapper.firstElementChild;
+    document.body.appendChild(cardEl);
 
-    // ── Logo WUZO ──
-    ctx.textAlign="center";
-    ctx.font="bold 130px 'Arial Black',Arial,sans-serif";
-    ctx.letterSpacing="20px";
-    var lgrd=ctx.createLinearGradient(200,180,800,180);
-    lgrd.addColorStop(0,"#7a5a1c"); lgrd.addColorStop(0.3,"#f5ead0");
-    lgrd.addColorStop(0.5,"#ffffff"); lgrd.addColorStop(0.7,"#f5ead0");
-    lgrd.addColorStop(1,"#7a5a1c");
-    ctx.fillStyle=lgrd; ctx.fillText("WUZO",W/2,220);
-    ctx.letterSpacing="0px";
+    // Aguarda fontes
+    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+    await new Promise(function(r){setTimeout(r,400);});
 
-    // Subtítulo
-    ctx.font="500 34px Arial,sans-serif"; ctx.letterSpacing="6px";
-    ctx.fillStyle="rgba(240,204,112,0.92)";
-    ctx.fillText("FINANCIAL INTELLIGENCE · IA",W/2,278);
-    ctx.letterSpacing="0px";
+    // Captura com html2canvas
+    var canvas=await html2canvas(cardEl,{
+      scale:3,
+      backgroundColor:"#0E1117",
+      useCORS:true,
+      logging:false,
+      allowTaint:true,
+    });
 
-    // Divisor
-    ctx.strokeStyle="rgba(201,168,76,0.4)"; ctx.lineWidth=1.2;
-    ctx.beginPath(); ctx.moveTo(100,308); ctx.lineTo(W-100,308); ctx.stroke();
+    document.body.removeChild(cardEl);
 
-    // Tag
-    ctx.font="bold 24px Arial,sans-serif"; ctx.letterSpacing="3px";
-    ctx.fillStyle="rgba(201,168,76,0.75)";
-    ctx.fillText("ANÁLISE FINANCEIRA PERSONALIZADA · 16 ESPECIALISTAS",W/2,355);
-    ctx.letterSpacing="0px";
-
-    // ── 4 Cards compactos ──
-    var cardH   = 195;  // compacto para caber 4
-    var cardGap = 20;
-    var startY  = 405;
-    var cardX   = 72;
-    var cardW   = W - cardX*2;
-
-    for(var i=0; i<insights.length && i<4; i++){
-      var cy = startY + i*(cardH+cardGap);
-
-      // Sombra sutil
-      ctx.shadowColor="rgba(201,168,76,0.12)";
-      ctx.shadowBlur=22; ctx.shadowOffsetY=5;
-
-      // Fundo card
-      ctx.fillStyle="rgba(20,16,8,0.88)";
-      _roundRect(ctx, cardX, cy, cardW, cardH, 16); ctx.fill();
-
-      ctx.shadowColor="transparent"; ctx.shadowBlur=0; ctx.shadowOffsetY=0;
-
-      // Borda card
-      ctx.strokeStyle="rgba(201,168,76,0.20)"; ctx.lineWidth=1;
-      _roundRect(ctx, cardX, cy, cardW, cardH, 16); ctx.stroke();
-
-      // Accent esquerdo dourado
-      var accGrd=ctx.createLinearGradient(0,cy,0,cy+cardH);
-      accGrd.addColorStop(0,"#f0cc70"); accGrd.addColorStop(1,"#7a5a1c");
-      ctx.fillStyle=accGrd;
-      _roundRect(ctx, cardX, cy, 5, cardH, [16,0,0,16]); ctx.fill();
-
-      // Número
-      ctx.textAlign="left";
-      ctx.font="bold 40px 'Courier New',monospace"; ctx.letterSpacing="0px";
-      ctx.fillStyle="rgba(201,168,76,0.40)";
-      ctx.fillText(String(i+1).padStart(2,"0"), cardX+36, cy+52);
-
-      // Texto insight — máx 3 linhas
-      ctx.font="400 30px Arial,sans-serif"; ctx.fillStyle="#ede8dc";
-      var textX  = cardX+36;
-      var textW  = cardW - 70;
-      var words  = insights[i].split(" ");
-      var line   = ""; var lCount = 0; var lY = cy+90;
-      for(var w=0; w<words.length; w++){
-        var test = line + (line?" ":"") + words[w];
-        if(ctx.measureText(test).width > textW && line){
-          if(lCount<3){ ctx.fillText(line, textX, lY); lY+=42; lCount++; }
-          line = words[w];
-        } else { line=test; }
-      }
-      if(line && lCount<3) ctx.fillText(line, textX, lY);
-    }
-
-    // ── Divisor inferior ──
-    var footY = startY + insights.length*(cardH+cardGap) + 18;
-    ctx.strokeStyle="rgba(201,168,76,0.28)"; ctx.lineWidth=1;
-    ctx.beginPath(); ctx.moveTo(100,footY); ctx.lineTo(W-100,footY); ctx.stroke();
-
-    // ── CTA ──
-    ctx.textAlign="center";
-    ctx.font="bold 40px Arial,sans-serif"; ctx.letterSpacing="2px";
-    ctx.fillStyle="#c9a84c";
-    ctx.fillText("Faça sua análise grátis em",W/2,footY+68);
-    ctx.letterSpacing="0px";
-    ctx.font="bold 60px Arial,sans-serif";
-    var urlGrd=ctx.createLinearGradient(W/2-240,0,W/2+240,0);
-    urlGrd.addColorStop(0,"#c9a84c"); urlGrd.addColorStop(0.5,"#fff5d6"); urlGrd.addColorStop(1,"#c9a84c");
-    ctx.fillStyle=urlGrd;
-    ctx.fillText("wuzo.com.br",W/2,footY+142);
-    ctx.font="400 26px Arial,sans-serif"; ctx.letterSpacing="3px";
-    ctx.fillStyle="rgba(192,184,158,0.65)";
-    ctx.fillText("Consultoria financeira por Inteligência Artificial",W/2,footY+194);
-    ctx.letterSpacing="0px";
-
-    // ── Barra dourada base ──
-    var botGrd=ctx.createLinearGradient(0,0,W,0);
-    botGrd.addColorStop(0,"transparent"); botGrd.addColorStop(0.15,"#c9a84c");
-    botGrd.addColorStop(0.85,"#c9a84c"); botGrd.addColorStop(1,"transparent");
-    ctx.fillStyle=botGrd; ctx.fillRect(0,H-5,W,5);
-
-    // ── Share v5.0: JavascriptInterface bridge (Android) + fallback web ──────────
-    // Arquitetura definitiva:
-    //   Android APK → window.Android.shareImage(base64) → Java WuzoShareBridge
-    //               → FileProvider URI → ACTION_SEND → seletor nativo do sistema
-    //   Web/desktop → navigator.share (texto) ou modal overlay com long-press
-    //
-    // Sem plugin Capacitor, sem user gesture timeout, sem <a download> ignorado.
-    // Requer: MainActivity.java com @JavascriptInterface + FileProvider no Manifest.
-    var dataURL = canvas.toDataURL("image/png");
-
-    // ── Constrói o modal overlay ──────────────────────────────────────────────
-    var base64Data = dataURL.split(",")[1];
+    var dataURL=canvas.toDataURL("image/png");
+    var base64Data=dataURL.split(",")[1];
 
     // ── Android APK: bridge nativa ────────────────────────────────────────────
-    if(window.Android && typeof window.Android.shareImage === "function"){
+    if(window.Android&&typeof window.Android.shareImage==="function"){
       window.Android.shareImage(base64Data);
       showAlert("inp-alert","alert-ok","&#128248; Abrindo compartilhamento...");
-      setTimeout(function(){ hideAlert("inp-alert"); }, 3000);
+      setTimeout(function(){hideAlert("inp-alert");},3000);
       return;
     }
 
-    // ── Fallback web: navigator.share (mobile browser) ou modal overlay ───────
+    // ── Fallback web: navigator.share (mobile) ou modal overlay ───────────────
     if(navigator.share){
       try{
-        // Tenta com arquivo primeiro; se falhar, tenta só texto+url
-        var blob2 = await new Promise(function(res){ canvas.toBlob(res,"image/png"); });
-        var file2 = new File([blob2],"wuzo_stories.png",{type:"image/png"});
-        var payload = (navigator.canShare && navigator.canShare({files:[file2]}))
-          ? {title:"Minha Análise WUZO", text:"🚀 wuzo.com.br", files:[file2]}
-          : {title:"Minha Análise WUZO", text:"🚀 Minha análise financeira por IA! wuzo.com.br", url:"https://wuzo.com.br"};
+        var blob2=await new Promise(function(res){canvas.toBlob(res,"image/png");});
+        var file2=new File([blob2],"wuzo_stories.png",{type:"image/png"});
+        var payload=(navigator.canShare&&navigator.canShare({files:[file2]}))
+          ?{title:"Minha Análise WUZO",text:"🚀 wuzo.com.br",files:[file2]}
+          :{title:"Minha Análise WUZO",text:"🚀 Minha análise financeira por IA! wuzo.com.br",url:"https://wuzo.com.br"};
         await navigator.share(payload);
         showAlert("inp-alert","alert-ok","Compartilhado! &#128248;");
-        setTimeout(function(){ hideAlert("inp-alert"); }, 3000);
+        setTimeout(function(){hideAlert("inp-alert");},3000);
         return;
-      }catch(se){
-        if(se.name==="AbortError") return;
-        // Se falhou (não foi AbortError), cai no modal abaixo
-      }
+      }catch(se){if(se.name==="AbortError")return;}
     }
 
     // ── Modal overlay: fallback desktop / browsers sem Web Share API ──────────
-    var ov = document.createElement("div");
-    ov.id = "wuzo-share-overlay";
-    ov.style.cssText = "position:fixed;inset:0;z-index:9999;background:rgba(3,3,2,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:14px;";
-    var imgEl = document.createElement("img");
-    imgEl.src = dataURL;
-    imgEl.style.cssText = "max-width:100%;max-height:65vh;border-radius:14px;box-shadow:0 0 48px rgba(201,168,76,.25);display:block;";
-    var hint = document.createElement("div");
-    hint.style.cssText = "color:rgba(240,204,112,.85);font-size:.72rem;font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-align:center;";
-    hint.textContent = "Clique com botão direito → Salvar imagem";
-    var link2 = document.createElement("a");
-    link2.href = dataURL; link2.download = "wuzo_stories.png";
-    link2.style.cssText = "padding:10px 24px;border-radius:50px;border:1px solid rgba(201,168,76,.4);background:rgba(201,168,76,.1);color:#f0cc70;font-family:'Outfit',sans-serif;font-weight:700;font-size:.8rem;text-decoration:none;";
-    link2.textContent = "⬇ Baixar imagem";
-    var closeBtn = document.createElement("button");
-    closeBtn.style.cssText = "padding:9px 24px;border-radius:50px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(192,184,158,.6);font-family:'Outfit',sans-serif;font-size:.75rem;cursor:pointer;";
-    closeBtn.innerHTML = "&#10005; Fechar";
-    closeBtn.onclick = function(){ var el=document.getElementById("wuzo-share-overlay"); if(el) document.body.removeChild(el); };
-    ov.appendChild(imgEl); ov.appendChild(hint); ov.appendChild(link2); ov.appendChild(closeBtn);
+    var ov=document.createElement("div");
+    ov.id="wuzo-share-overlay";
+    ov.style.cssText="position:fixed;inset:0;z-index:9999;background:rgba(3,3,2,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:14px;";
+    var imgEl=document.createElement("img");
+    imgEl.src=dataURL;
+    imgEl.style.cssText="max-width:100%;max-height:65vh;border-radius:14px;box-shadow:0 0 48px rgba(201,168,76,.25);display:block;";
+    var hint=document.createElement("div");
+    hint.style.cssText="color:rgba(240,204,112,.85);font-size:.72rem;font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-align:center;";
+    hint.textContent="Clique com botão direito → Salvar imagem";
+    var link2=document.createElement("a");
+    link2.href=dataURL;link2.download="wuzo_stories.png";
+    link2.style.cssText="padding:10px 24px;border-radius:50px;border:1px solid rgba(201,168,76,.4);background:rgba(201,168,76,.1);color:#f0cc70;font-family:'Outfit',sans-serif;font-weight:700;font-size:.8rem;text-decoration:none;";
+    link2.textContent="⬇ Baixar imagem";
+    var closeBtn=document.createElement("button");
+    closeBtn.style.cssText="padding:9px 24px;border-radius:50px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(192,184,158,.6);font-family:'Outfit',sans-serif;font-size:.75rem;cursor:pointer;";
+    closeBtn.innerHTML="&#10005; Fechar";
+    closeBtn.onclick=function(){var el=document.getElementById("wuzo-share-overlay");if(el)document.body.removeChild(el);};
+    ov.appendChild(imgEl);ov.appendChild(hint);ov.appendChild(link2);ov.appendChild(closeBtn);
     document.body.appendChild(ov);
 
   }catch(e){
     console.error("[WuzoShare]",e);
     showAlert("inp-alert","alert-err","Erro ao compartilhar: "+e.message);
   }finally{
-    if(btn){ btn.disabled=false; btn.innerHTML="&#128248; COMPARTILHAR NOS STORIES"; }
+    if(btn){btn.disabled=false;btn.innerHTML="&#128248; COMPARTILHAR NOS STORIES";}
   }
-}
-
-function _roundRect(ctx,x,y,w,h,r){
-  var tl=Array.isArray(r)?r[0]:r, tr=Array.isArray(r)?r[1]:r,
-      br=Array.isArray(r)?r[2]:r, bl=Array.isArray(r)?r[3]:r;
-  ctx.beginPath();
-  ctx.moveTo(x+tl,y);
-  ctx.lineTo(x+w-tr,y); ctx.quadraticCurveTo(x+w,y,x+w,y+tr);
-  ctx.lineTo(x+w,y+h-br); ctx.quadraticCurveTo(x+w,y+h,x+w-br,y+h);
-  ctx.lineTo(x+bl,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-bl);
-  ctx.lineTo(x,y+tl); ctx.quadraticCurveTo(x,y,x+tl,y);
-  ctx.closePath();
 }
 
 // ── ADMIN ─────────────────────────────────────────────────────
