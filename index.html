@@ -1166,6 +1166,50 @@ async function downloadPDF(){
 
 // ── SHARE IMAGE v4.0 — Card HTML elegante (Cinzel/Cormorant) + html2canvas ──
 
+function _shareIsAgentHeader(line){
+  var t=line.trim();
+  if(!t||t.length<5)return true;
+  return(
+    / — /.test(t)||
+    /^[^a-záàâãéêíóôõúç\d]{1,8}$/i.test(t)||
+    /^(Consultor|Analista|Especialista|Agente|Auditor|Veredito)/i.test(t)||
+    /^#{1,4}\s/.test(t)||
+    /\*{2,}/.test(t)||
+    /^[-=]{3,}$/.test(t)||
+    /WUZO\s*$/.test(t)||
+    /Integrado WUZO/i.test(t)||
+    /^(Justificativa|O que está|O que precisa|Atenção|Recomendação|Resumo|Conclusão|Diagnóstico|Nota|Observação|Aviso|Veredicto|Final|Síntese)\s*:/i.test(t)
+  );
+}
+
+function _extractInsights(max){
+  var pool=_currentVerdict||"";
+  if(_currentAgents&&_currentAgents.length){
+    _currentAgents.forEach(function(a){
+      if(a.id==="consultor_senior")return;
+      if(a.analysis)pool+="\n"+a.analysis;
+    });
+  }
+  var lines=pool.split(/\n+/);
+  var insights=[];var seen={};
+  for(var i=0;i<lines.length;i++){
+    var raw=lines[i]
+      .replace(/\*{1,2}([^*]+)\*{1,2}/g,"$1")
+      .replace(/^#{1,4}\s+/,"")
+      .replace(/^\s*[-•]\s*/,"")
+      .trim();
+    if(_shareIsAgentHeader(raw))continue;
+    if(raw.length<28)continue;
+    var display=raw.length>135?raw.slice(0,132).replace(/[,;:]\s*$/,"")+"\u2026":raw;
+    var key=display.slice(0,40).toLowerCase();
+    if(seen[key])continue;
+    seen[key]=1;
+    insights.push(display);
+    if(insights.length>=max)break;
+  }
+  return insights;
+}
+
 function _extractScoreFromVerdict(text){
   var m=text.match(/\b([4-9]\d|100)\/100\b/);if(m)return m[1];
   m=text.match(/sa[uú]de[^0-9]{0,20}([4-9]\d|100)/i);if(m)return m[1];
