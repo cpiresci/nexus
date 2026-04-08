@@ -112,7 +112,7 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
 .lock-title{color:var(--g);font-size:1rem;font-weight:800;margin-bottom:4px;}
 .lock-sub{color:var(--tx);font-size:.82rem;margin-bottom:16px;line-height:1.7;}
 #sec-full{display:none;}
-.agent-block{background:linear-gradient(135deg,rgba(180,140,50,.04),rgba(180,140,50,.01));border:1px solid var(--bd);border-radius:var(--r);border-left:3px solid var(--g);padding:14px 16px;margin-bottom:8px;}
+.agent-block{background:linear-gradient(135deg,rgba(180,140,50,.04),rgba(180,140,50,.01));border:1px solid var(--bd2);border-radius:var(--r);border-left:3px solid var(--g);padding:14px 16px;margin-bottom:8px;}
 .agent-block-title{color:var(--g2);font-size:.72rem;font-weight:700;margin-bottom:6px;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;border-bottom:1px solid var(--bd);padding-bottom:4px;}
 .agent-block-body{font-size:.84rem;line-height:1.75;color:var(--tx);}
 .agent-block-body strong{color:var(--g2);}
@@ -1124,7 +1124,9 @@ async function downloadPDF(){
       // que detecta "/api/report/pdf/" via isP dfUrl() e abre via Intent.ACTION_VIEW
       // no visualizador nativo (Chrome, Adobe, etc.).
       // Como shouldOverrideUrlLoading retorna true, o WebView NÃO navega — página intacta.
-      window.location.href = pdfUrl + "?token=" + encodeURIComponent(tok);
+      // [FIX-CACHE] &_t=Date.now() quebra cache HTTP do Android/Chrome — sem isso PDFs
+      // em cache no servidor retornam resposta cacheada vazia no DownloadManager.
+      window.location.href = pdfUrl + "?token=" + encodeURIComponent(tok) + "&_t=" + Date.now();
       showAlert("inp-alert","alert-ok","PDF abrindo no navegador...");
       setTimeout(function(){ hideAlert("inp-alert"); }, 3000);
       return;
