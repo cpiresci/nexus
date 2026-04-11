@@ -207,7 +207,7 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
 <!-- INPUT CARD -->
 <div class="card" id="card-input">
   <div class="inp-lbl" data-i18n="inp_lbl">Descreva sua situação financeira</div>
-  <textarea id="txt-input" id="txt-input" placeholder="Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado."></textarea>
+  <textarea id="txt-input" placeholder="Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado."></textarea>
   <div class="btn-row">
     <button class="btn btn-free"    id="btn-free"    onclick="handleFree()">&#9889; ANALISAR GRÁTIS AGORA<br><span class="btn-sub">Sem cadastro · Resultado em segundos · Sem cartão</span></button>
     <button class="btn btn-premium" id="btn-premium" onclick="handlePremium()">&#11088; RELATÓRIO COMPLETO — 16 IA com Dados Ao Vivo<br><span class="btn-sub">&#10003; Cripto em tempo real &nbsp;&#10003; Ações &amp; FIIs &nbsp;&#10003; PDF por 72h &nbsp;&#10003; Acesso imediato</span></button>
@@ -271,7 +271,6 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
 
 </div><!-- /shell -->
 
-<!-- ADMIN PANEL -->
 <!-- ADMIN PANEL -->
 <div id="admin-panel">
   <button class="admin-btn pdf-btn" onclick="openPDFFilesModal()">&#128196; PDFs</button>
@@ -375,7 +374,7 @@ var I18N = {
     inp_placeholder:  "Ex: Tenho R$50k na poupança perdendo pra inflação, dívida no cartão me destruindo e ganho R$6k/mês. Quero sair do aluguel em 5 anos. Me diga o que fazer.",
     pipeline_lbl:     "16 ESPECIALISTAS · DADOS EM TEMPO REAL",
     lock_title:       "⚠️ Sua análise está incompleta — 14 especialistas ainda não falaram",
-    lock_sub:         "Você recebeu apenas o diagnóstico inicial. Os 14 especialistas restantes — Cripto, Ações, Renda Fixa, FIIs, Tributário, Compliance e mais — identificaram pontos críticos na sua situação que ainda estão bloqueados. Desbloqueie agora por R$ 19,90.",
+    lock_sub:         "Você recebeu apenas o diagnóstico inicial. Os 14 especialistas restantes — Cripto, Ações, Renda Fixa, FIIs, Tributário, Compliance e mais — identificaram pontos críticos na sua situação que ainda estão bloqueados. Desbloqueie agora por R$ 19,90.",
     pdf_title:        "&#128196; Relatório PDF Profissional",
     pdf_sub:          "Todos os 16 especialistas com dados em tempo real — formato PDF executivo.",
     pdf_timer:        "Este relatório fica disponível por <strong>72 horas</strong> — baixe agora",
@@ -426,7 +425,7 @@ var I18N = {
     inp_placeholder:  "E.g.: I have $10k losing to inflation, $2k credit card debt killing me, earn $2,500/mo. I want my own home in 5 years. Tell me exactly what to do.",
     pipeline_lbl:     "16 SPECIALISTS · REAL-TIME DATA",
     lock_title:       "⚠️ Your analysis is incomplete — 14 specialists haven't spoken yet",
-    lock_sub:         "You only received the initial diagnosis. The remaining 14 specialists — Crypto, Stocks, Fixed Income, REITs, Tax, Compliance and more — identified critical issues in your situation that are still locked. Unlock now for R$ 19.90.",
+    lock_sub:         "You only received the initial diagnosis. The remaining 14 specialists — Crypto, Stocks, Fixed Income, REITs, Tax, Compliance and more — identified critical issues in your situation that are still locked. Unlock now for R$ 19.90.",
     pdf_title:        "&#128196; Professional PDF Report",
     pdf_sub:          "All 16 specialists with real-time data — executive PDF format.",
     pdf_timer:        "This report is available for <strong>72 hours</strong> — download now",
@@ -477,7 +476,7 @@ var I18N = {
     inp_placeholder:  "Ej.: Tengo $10k perdiendo contra la inflación, $2k de deuda en tarjeta destruyéndome, gano $2.500/mes. Quiero casa propia en 5 años. Dime exactamente qué hacer.",
     pipeline_lbl:     "16 ESPECIALISTAS · DATOS EN TIEMPO REAL",
     lock_title:       "⚠️ Tu análisis está incompleto — 14 especialistas aún no hablaron",
-    lock_sub:         "Solo recibiste el diagnóstico inicial. Los 14 especialistas restantes — Cripto, Acciones, Renta Fija, FIIs, Tributario, Compliance y más — identificaron puntos críticos en tu situación que aún están bloqueados. Desbloquea ahora por R$ 19,90.",
+    lock_sub:         "Solo recibiste el diagnóstico inicial. Los 14 especialistas restantes — Cripto, Acciones, Renta Fija, FIIs, Tributario, Compliance y más — identificaron puntos críticos en tu situación que aún están bloqueados. Desbloquea ahora por R$ 19,90.",
     pdf_title:        "&#128196; Informe PDF Profesional",
     pdf_sub:          "Los 16 especialistas con datos en tiempo real — formato PDF ejecutivo.",
     pdf_timer:        "Este informe está disponible por <strong>72 horas</strong> — descárgalo ahora",
@@ -530,7 +529,6 @@ function setLang(lang){
   _lang = lang;
   localStorage.setItem("wuzo_lang", lang);
   document.documentElement.lang = lang==="pt"?"pt-BR":lang;
-  // Highlight botão ativo
   ["pt","en","es"].forEach(function(l){
     var btn=document.getElementById("lang-"+l);
     if(btn) btn.className="lang-btn"+(l===lang?" active":"");
@@ -539,11 +537,9 @@ function setLang(lang){
 }
 
 function applyTranslations(){
-  // Elementos com data-i18n
   document.querySelectorAll("[data-i18n]").forEach(function(el){
     el.innerHTML = t(el.getAttribute("data-i18n"));
   });
-  // Placeholders dinâmicos
   var ti=document.getElementById("txt-input");
   if(ti) ti.placeholder = t("inp_placeholder");
   var le=document.getElementById("login-email");
@@ -554,13 +550,10 @@ function applyTranslations(){
   if(re) re.placeholder = t("login_placeholder_email");
   var rp=document.getElementById("reg-pass");
   if(rp) rp.placeholder = t("reg_placeholder_pass");
-  // Botões principais (reconstruídos pelo setBtns)
   setBtns(false);
-  // Ticker AO VIVO
   document.querySelectorAll("[data-i18n='live']").forEach(function(el){
     el.innerHTML = t("live");
   });
-  // Pipeline pill
   var pill=document.getElementById("pip-pill");
   if(pill && pill.textContent.trim()==="ANALISANDO"||
      pill && pill.textContent.trim()==="ANALYZING"||
@@ -577,7 +570,6 @@ function aborter(ms){
   },ms);
   return c.signal;
 }
-// Detecta erros de abort/timeout para não exibir ao usuário
 function _isAbortError(e){
   if(!e)return false;
   if(e.name==="AbortError")return true;
@@ -597,15 +589,16 @@ function getToken(){
 function authHeader(){var t=getToken();return t?{"Content-Type":"application/json","Authorization":"Bearer "+t}:{"Content-Type":"application/json"};}
 var _online=false,_currentAnalysisId=null,_currentVerdict="",_currentAgents=[];
 
-// ── ULTRA TICKER v5.0 — Cripto + US Stocks + Índices + F&G ─────────────────
+// ── Detecção de ambiente Capacitor/APK ──────────────────────────────────────
+var _isCapacitor = !!(window.Capacitor) || navigator.userAgent.indexOf("WuzoApp") !== -1;
+
+// ── ULTRA TICKER v5.0 ────────────────────────────────────────────────────────
 var _tickerData    = [];
 var _tickerPos     = 0;
 var _tickerAnimReq = null;
 
 function _buildTickerItems(data){
   var items = [];
-
-  // Fear & Greed — primeiro item destacado
   if(data.fear_greed){
     var fg = data.fear_greed;
     var fgClsLow = (fg.cls||"").toLowerCase();
@@ -620,8 +613,6 @@ function _buildTickerItems(data){
             '<span class="ticker-chg" style="color:'+fgColor+'">'+fg.cls+'</span>'
     });
   }
-
-  // Market status — NYSE e B3
   var ms   = data.market_status || {};
   var usCol = ms.us_session==="ABERTO" ? "#4aaf78" : "var(--dm2)";
   var brCol = ms.br_session==="ABERTO" ? "#4aaf78" : "var(--dm2)";
@@ -631,8 +622,6 @@ function _buildTickerItems(data){
           '<span style="color:var(--dm2);font-size:.55rem"> | </span>'+
           '<span style="color:'+brCol+';font-size:.62rem">B3 '+(ms.br_session||"--")+'</span>'
   });
-
-  // Índices globais
   (data.indices||[]).forEach(function(idx){
     var chg   = parseFloat(idx.chg)||0;
     var arrow = chg>=0 ? "▲" : "▼";
@@ -646,8 +635,6 @@ function _buildTickerItems(data){
             '<span class="'+cls+' ticker-chg">'+arrow+Math.abs(chg).toFixed(2)+'%</span>'
     });
   });
-
-  // US Stocks
   (data.stocks||[]).forEach(function(s){
     var chg   = parseFloat(s.chg)||0;
     var arrow = chg>=0 ? "▲" : "▼";
@@ -660,8 +647,6 @@ function _buildTickerItems(data){
             '<span class="'+cls+' ticker-chg">'+arrow+Math.abs(chg).toFixed(2)+'%</span>'
     });
   });
-
-  // Cripto
   (data.crypto||[]).forEach(function(c){
     var chg   = parseFloat(c.chg)||0;
     var arrow = chg>=0 ? "▲" : "▼";
@@ -677,14 +662,12 @@ function _buildTickerItems(data){
             '<span class="'+cls+' ticker-chg">'+arrow+Math.abs(chg).toFixed(2)+'%</span>'
     });
   });
-
   return items;
 }
 
 function _renderTicker(){
   var track = document.querySelector(".ticker-track");
   if(!track || !_tickerData.length) return;
-  // Duplica para loop contínuo sem salto
   var html = "";
   var all  = _tickerData.concat(_tickerData);
   all.forEach(function(item){
@@ -693,8 +676,6 @@ function _renderTicker(){
   track.innerHTML = html;
 }
 
-// Fetch seguro para o ticker: usa Promise.race + setTimeout puro
-// NÃO usa AbortSignal — incompatível com WebView/sandbox (cloning error)
 function _tickerFetch(url, ms){
   ms = ms || 10000;
   return Promise.race([
@@ -703,7 +684,6 @@ function _tickerFetch(url, ms){
   ]);
 }
 
-// Busca cripto direto da Binance — sem backend, sem auth, instantâneo
 async function _fetchBinanceDirect(){
   var syms='["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT","XRPUSDT","DOGEUSDT","ADAUSDT","AVAXUSDT","LINKUSDT","MATICUSDT","TONUSDT","SHIBUSDT"]';
   var r=await _tickerFetch("https://api.binance.com/api/v3/ticker/24hr?symbols="+encodeURIComponent(syms),6000);
@@ -725,7 +705,6 @@ async function _fetchBinanceDirect(){
 }
 
 async function updateTicker(){
-  // 1) Tenta backend unificado (stocks + indices + F&G + cripto)
   try{
     var r=await _tickerFetch(BACKEND+"/api/market/ticker",12000);
     if(r.ok){
@@ -734,14 +713,10 @@ async function updateTicker(){
       if(items.length){_tickerData=items;_renderTicker();return;}
     }
   }catch(e){}
-
-  // 2) Fallback A: Binance direto para cripto (sem backend, instantâneo)
   try{
     var bItems=await _fetchBinanceDirect();
     if(bItems.length){_tickerData=bItems;_renderTicker();return;}
   }catch(e){}
-
-  // 3) Fallback B: endpoint /api/market/crypto do backend
   try{
     var r2=await _tickerFetch(BACKEND+"/api/market/crypto",8000);
     if(r2.ok){
@@ -761,13 +736,12 @@ async function updateTicker(){
       }
     }
   }catch(e2){}
-  // Todos falharam — ticker mantém estado anterior até próximo ciclo (30s)
 }
 
 // ── STATUS ───────────────────────────────────────────────────
 function setStatus(txt,cls){var el=document.getElementById("api-status");el.textContent=txt;el.className="status-pill "+cls;}
 
-// ── HEALTH CHECK (aguarda Render acordar até 90s) ────────────
+// ── HEALTH CHECK ─────────────────────────────────────────────
 async function checkHealth(){
   setStatus(t("status_connecting"),"s-waking");
   var waits=[0,5000,10000,15000,20000,25000,30000,35000,40000];
@@ -939,7 +913,6 @@ function resetPipeline(){
 }
 
 // ── ANALISE GRATUITA ──────────────────────────────────────────
-// Usa background job + polling para evitar timeout de 30s do Render.
 async function handleFree(){
   if(!_online){showAlert("inp-alert","alert-info",t("err_server_wake"));return;}
   var txt=document.getElementById("txt-input").value.trim();
@@ -954,8 +927,6 @@ async function handleFree(){
     var c=document.getElementById("ac-"+id);if(c){c.className="ac thinking";}
   });
   animateProg();
-
-  // ── Passo 1: inicia job (retorna em <1s, evita timeout Render) ──
   var jobId=null;
   try{
     var r=await fetch(BACKEND+"/api/analyze/free",{
@@ -971,8 +942,6 @@ async function handleFree(){
     if(!_isAbortError(e))showAlert("inp-alert","alert-err","Erro: "+e.message);
     clearInterval(_progInt);setBtns(false);return;
   }
-
-  // ── Passo 2: polling até resultado (máx 120s = 40 × 3s) ─────────
   var maxTries=40;
   for(var i=0;i<maxTries;i++){
     await new Promise(function(res){setTimeout(res,3000);});
@@ -1051,7 +1020,7 @@ async function runPremiumAnalysis(){
     jobId=d.job_id;addLog(t("log_fetching"));
   }catch(e){if(!_isAbortError(e))showAlert("inp-alert","alert-err","Erro: "+e.message);clearInterval(_progInt);setBtns(false);return;}
 
-  var maxTries=120;  // 120 × 4s = 480s — job pode levar até 400s com 16 agentes + guardian
+  var maxTries=120;
   for(var i=0;i<maxTries;i++){
     await new Promise(function(r){setTimeout(r,4000);});
     try{
@@ -1091,20 +1060,11 @@ function renderFullReport(verdict,agents){
   document.getElementById("sec-full").scrollIntoView({behavior:"smooth"});
 }
 
-// ── PDF DOWNLOAD v2.1 — funciona em Web + Capacitor/Android ──────────────────
-// [BUG-1] Capacitor: window.open("url","_blank") era bloqueado silenciosamente
-//         pelo WebView Android. Substituído por fetch() + blob URL.
-// [BUG-2] Erros do servidor retornavam HTML 500 (não JSON) causando falha
-//         silenciosa. Agora tratados explicitamente.
-// [FIX v2.1] Android: window.open(url,"_system") NÃO é interceptado pelo
-//         shouldOverrideUrlLoading do MainActivity — a chamada falha silenciosamente.
-//         Substituído por window.location.href, que SIM dispara
-//         shouldOverrideUrlLoading → isP dfUrl() → Intent.ACTION_VIEW → Chrome/Adobe.
-//         shouldOverrideUrlLoading retorna true → WebView NÃO navega, página fica intacta.
-// Authorization header unificado para Web e Capacitor.
-// Timeout 90s — PDF grande pode demorar na 1ª geração.
-var _isCapacitor = !!(window.Capacitor) || navigator.userAgent.indexOf("WuzoApp") !== -1;
-
+// ── PDF DOWNLOAD v2.2 — Web + Capacitor/Android ───────────────────────────
+// Android: window.location.href → shouldOverrideUrlLoading → isP dfUrl()
+//          → Intent.ACTION_VIEW → Chrome/Adobe
+//          shouldOverrideUrlLoading retorna true → WebView NÃO navega
+// Web: fetch + blob (desktop/mobile browser)
 async function downloadPDF(){
   if(!_currentAnalysisId){
     showAlert("inp-alert","alert-err","Análise não disponível. Execute uma análise premium primeiro.");
@@ -1120,30 +1080,20 @@ async function downloadPDF(){
 
   try{
     if(_isCapacitor){
-      // Android: window.location.href dispara shouldOverrideUrlLoading no MainActivity,
-      // que detecta "/api/report/pdf/" via isP dfUrl() e abre via Intent.ACTION_VIEW
-      // no visualizador nativo (Chrome, Adobe, etc.).
-      // Como shouldOverrideUrlLoading retorna true, o WebView NÃO navega — página intacta.
-      // [FIX-CACHE] &_t=Date.now() quebra cache HTTP do Android/Chrome — sem isso PDFs
-      // em cache no servidor retornam resposta cacheada vazia no DownloadManager.
       window.location.href = pdfUrl + "?token=" + encodeURIComponent(tok) + "&_t=" + Date.now();
       showAlert("inp-alert","alert-ok","PDF abrindo no navegador...");
       setTimeout(function(){ hideAlert("inp-alert"); }, 3000);
       return;
     }
-
-    // Web browser padrão — fetch + blob
     var r = await fetch(pdfUrl, {
       headers: { "Authorization": "Bearer " + tok },
       signal: aborter(90000)
     });
-
     if(!r.ok){
       var errData = await r.json().catch(function(){ return {}; });
       showAlert("inp-alert","alert-err", errData.error || ("Erro HTTP " + r.status + " ao gerar PDF."));
       return;
     }
-
     var blob = await r.blob();
     var blobUrl = URL.createObjectURL(blob);
     var a = document.createElement("a");
@@ -1153,10 +1103,8 @@ async function downloadPDF(){
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(blobUrl);
-
     showAlert("inp-alert","alert-ok","PDF gerado com sucesso!");
     setTimeout(function(){ hideAlert("inp-alert"); }, 3000);
-
   } catch(e) {
     if(!_isAbortError(e)){
       showAlert("inp-alert","alert-err","Erro ao baixar PDF: " + e.message);
@@ -1166,7 +1114,13 @@ async function downloadPDF(){
   }
 }
 
-// ── SHARE IMAGE v4.0 — Card HTML elegante (Cinzel/Cormorant) + html2canvas ──
+// ── SHARE IMAGE v5.0 — Capacitor Filesystem+Share (primário) + fallbacks ──
+// [FIX v5.0] Android APK: usa Capacitor Filesystem.writeFile + Share.share
+//            em vez de JavascriptInterface bridge que era instável com
+//            server.url remoto no Capacitor 6.
+//            Fallback 1: window.Android.shareImage (legado/bridge)
+//            Fallback 2: navigator.share (mobile web)
+//            Fallback 3: modal overlay (desktop)
 
 function _shareIsAgentHeader(line){
   var t=line.trim();
@@ -1307,17 +1261,14 @@ async function generateShareImage(){
       '</div>'+
       '</div>';
 
-    // Injeta card no DOM (offscreen)
     var wrapper=document.createElement("div");
     wrapper.innerHTML=cardHtml;
     var cardEl=wrapper.firstElementChild;
     document.body.appendChild(cardEl);
 
-    // Aguarda fontes
     if(document.fonts&&document.fonts.ready)await document.fonts.ready;
     await new Promise(function(r){setTimeout(r,400);});
 
-    // Captura com html2canvas
     var canvas=await html2canvas(cardEl,{
       scale:3,
       backgroundColor:"#0E1117",
@@ -1331,7 +1282,35 @@ async function generateShareImage(){
     var dataURL=canvas.toDataURL("image/png");
     var base64Data=dataURL.split(",")[1];
 
-    // ── Android APK: bridge nativa ────────────────────────────────────────────
+    // ── Android APK: Capacitor Filesystem + Share (primário) ──────────────────
+    if(_isCapacitor){
+      var _capPlugins=window.Capacitor&&window.Capacitor.Plugins;
+      if(_capPlugins&&_capPlugins.Filesystem&&_capPlugins.Share){
+        try{
+          var _fileName='wuzo_card_'+Date.now()+'.png';
+          var _writeRes=await _capPlugins.Filesystem.writeFile({
+            path:_fileName,
+            data:base64Data,
+            directory:'CACHE'
+          });
+          await _capPlugins.Share.share({
+            title:'Minha Análise Financeira WUZO',
+            text:'\uD83D\uDE80 Análise IA em wuzo.com.br',
+            url:_writeRes.uri,
+            dialogTitle:'Compartilhar análise WUZO'
+          });
+          showAlert("inp-alert","alert-ok","&#128248; Compartilhado!");
+          setTimeout(function(){hideAlert("inp-alert");},3000);
+          return;
+        }catch(_capErr){
+          var _em=_capErr&&_capErr.message;
+          if(_em==='Share canceled'||_em==='USER_CANCELED'||(_capErr.name==='AbortError'))return;
+          console.warn('[WuzoShare] Capacitor Share falhou, tentando bridge legado:',_capErr);
+        }
+      }
+    }
+
+    // ── Android APK: JavascriptInterface bridge (fallback legado) ─────────────
     if(window.Android&&typeof window.Android.shareImage==="function"){
       window.Android.shareImage(base64Data);
       showAlert("inp-alert","alert-ok","&#128248; Abrindo compartilhamento...");
@@ -1339,7 +1318,7 @@ async function generateShareImage(){
       return;
     }
 
-    // ── Fallback web: navigator.share (mobile) ou modal overlay ───────────────
+    // ── Web mobile: navigator.share ───────────────────────────────────────────
     if(navigator.share){
       try{
         var blob2=await new Promise(function(res){canvas.toBlob(res,"image/png");});
@@ -1354,7 +1333,7 @@ async function generateShareImage(){
       }catch(se){if(se.name==="AbortError")return;}
     }
 
-    // ── Modal overlay: fallback desktop / browsers sem Web Share API ──────────
+    // ── Modal overlay: desktop / browsers sem Web Share API ──────────────────
     var ov=document.createElement("div");
     ov.id="wuzo-share-overlay";
     ov.style.cssText="position:fixed;inset:0;z-index:9999;background:rgba(3,3,2,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:14px;";
@@ -1411,7 +1390,7 @@ async function adminLoadPDFFiles(){
         '<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">'+
         '<div class="pdf-row-meta">User:'+f.user_id+'</div>'+
         '<div class="pdf-expiry '+cls+'">'+expLabel+'</div>'+
-        (f.expired?'':'<button class="admin-credit-btn" style="background:rgba(26,173,88,.12);border-color:var(--gr);color:var(--gr);padding:3px 10px;" onclick="adminDownloadPDF('+f.analysis_id+')">&#11015; PDF</button>')+
+        (f.expired?'':'<button class="admin-credit-btn" style="background:rgba(26,173,88,.12);border-color:var(--gr);color:var(--gr);padding:3px 10px;" onclick="adminDownloadPDF('+f.analysis_id+',event)">&#11015; PDF</button>')+
         '</div>';
       box.appendChild(row);
     });
@@ -1425,20 +1404,40 @@ async function adminLoadPDFFiles(){
   }catch(e){if(!_isAbortError(e))box.textContent="Erro: "+e.message;}
 }
 
-
-// ── ADMIN DOWNLOAD PDF ────────────────────────────────────────
-async function adminDownloadPDF(analysisId){
+// ── ADMIN DOWNLOAD PDF v2.0 ───────────────────────────────────
+// [FIX v2.0] Android APK: blob + a.click() NÃO funciona no Android WebView.
+//            Capacitor: window.location.href → shouldOverrideUrlLoading
+//            → isP dfUrl() detecta "/api/admin/pdf-download/"
+//            → Intent.ACTION_VIEW → Chrome/Adobe.
+//            shouldOverrideUrlLoading retorna true → WebView NÃO navega.
+//            Web browser: mantém fetch + blob (funciona normalmente).
+async function adminDownloadPDF(analysisId,ev){
   var tok=getToken();if(!tok)return;
-  var btn=event.target;btn.disabled=true;btn.textContent="...";
+  var btn=ev&&ev.target;
+  if(btn){btn.disabled=true;btn.textContent="...";}
   try{
-    var r=await fetch(BACKEND+"/api/admin/pdf-download/"+analysisId,{headers:{"Authorization":"Bearer "+tok},signal:aborter(45000)});
+    if(_isCapacitor){
+      // Android APK: Intent.ACTION_VIEW via shouldOverrideUrlLoading
+      window.location.href=BACKEND+"/api/admin/pdf-download/"+analysisId+
+        "?token="+encodeURIComponent(tok)+"&_t="+Date.now();
+      setTimeout(function(){
+        if(btn){btn.disabled=false;btn.innerHTML="&#11015; PDF";}
+      },2000);
+      return;
+    }
+    // Web browser: fetch + blob
+    var r=await fetch(BACKEND+"/api/admin/pdf-download/"+analysisId,{
+      headers:{"Authorization":"Bearer "+tok},signal:aborter(45000)
+    });
     if(!r.ok){var e=await r.json().catch(function(){return{};});alert(e.error||"Erro ao baixar PDF.");return;}
     var blob=await r.blob();
     var url=URL.createObjectURL(blob);
     var a=document.createElement("a");a.href=url;a.download="wuzo_admin_pdf_"+analysisId+".pdf";
     document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
   }catch(e){if(!_isAbortError(e))alert("Erro: "+e.message);}
-  finally{btn.disabled=false;btn.innerHTML="&#11015; PDF";}
+  finally{
+    if(btn&&!_isCapacitor){btn.disabled=false;btn.innerHTML="&#11015; PDF";}
+  }
 }
 
 function escHtmlAdmin(str){
@@ -1570,7 +1569,6 @@ function setBtns(on){
     if(bf)bf.innerHTML=t("btn_free_main")+'<br><span class="btn-sub">'+t("btn_free_sub")+'</span>';
     if(bp){
       var popular=t("btn_free_popular");
-      // Atualiza o ::before via CSS var (workaround: usa atributo data)
       bp.setAttribute("data-popular",popular);
       bp.innerHTML=t("btn_premium_main")+'<br><span class="btn-sub">'+t("btn_premium_sub")+'</span>';
     }
@@ -1584,7 +1582,7 @@ function hideAlert(id){document.getElementById(id).style.display="none";}
 document.addEventListener("DOMContentLoaded",function(){
   setLang(_lang);buildGrid();getToken();updateUI();checkHealth();
   updateTicker();
-  setInterval(updateTicker,30000); // atualiza precos a cada 30s
+  setInterval(updateTicker,30000);
 });
 </script>
 </body>
