@@ -1118,6 +1118,22 @@ async function downloadPDF(){
 // ── SHARE IMAGE v6.0 — Card Premium Wuzo (Barlow + Glassmorphism) ────────────
 // Usa wuzo_score real do job + extração de módulos por agente + card design v2.
 
+function _shareIsAgentHeader(line){
+  var t=line.trim();
+  if(!t||t.length<5)return true;
+  return(
+    / — /.test(t)||
+    /^[^a-záàâãéêíóôõúç\d]{1,8}$/i.test(t)||
+    /^(Consultor|Analista|Especialista|Agente|Auditor|Veredito)/i.test(t)||
+    /^#{1,4}\s/.test(t)||
+    /\*{2,}/.test(t)||
+    /^[-=]{3,}$/.test(t)||
+    /WUZO\s*$/.test(t)||
+    /Integrado WUZO/i.test(t)||
+    /^(Justificativa|O que está|O que precisa|Atenção|Recomendação|Resumo|Conclusão|Diagnóstico|Nota|Observação|Aviso|Veredicto|Final|Síntese)\s*:/i.test(t)
+  );
+}
+
 function _extractModulesForCard() {
   var agentsMap = {};
   if (_currentAgents && _currentAgents.length) {
