@@ -1160,6 +1160,16 @@ function _extractModulesForCard() {
   return [m1, m2, m3, m4];
 }
 
+function _extractRiskFromVerdict(text) {
+  if (!text) return { label: "MODERADO", sub: "Perfil moderado" };
+  var lower = text.toLowerCase();
+  if (lower.indexOf("conservador") !== -1)
+    return { label: "CONSERV.", sub: "Perfil conservador" };
+  if (lower.indexOf("arrojado") !== -1 || lower.indexOf("agressivo") !== -1)
+    return { label: "ARROJADO", sub: "Perfil arrojado" };
+  return { label: "MODERADO", sub: "Perfil moderado" };
+}
+
 async function generateShareImage() {
   var btn = document.getElementById("btn-share");
   if (btn) { btn.disabled = true; btn.innerHTML = "&#9203; Gerando..."; }
