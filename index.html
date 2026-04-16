@@ -1180,26 +1180,58 @@ function _extractModulesForCard(){
   if(_currentAgents&&_currentAgents.length){
     _currentAgents.forEach(function(a){agentsMap[a.id]=a.analysis||"";});
   }
-  function firstLine(text){
+
+  // Bold labels fixos por slot — usados se o agente não emitir label próprio
+  var LABELS=["ALERTA DE VOLATILIDADE","ECONOMIA BRASILEIRA","IMPACTO DE TAXAS","CRIPTOATIVOS"];
+  var AGENTS=[
+    ["macroeconomia","consultor_senior"],
+    ["noticias_realtime","sentimento_mercado"],
+    ["renda_fixa","compliance_risco"],
+    ["criptomoedas"]
+  ];
+  var FALLBACKS=[
+    "Cenário macro exige posicionamento defensivo estratégico.",
+    "Tendências de mercado identificadas. Oportunidade tática no curto prazo.",
+    "Selic alta pode drenar rentabilidade. Revisão de portfólio é imperativa.",
+    "Volatilidade ativa. Alocação em ativos de baixo risco é mandatória."
+  ];
+
+  function parseLine(text){
     if(!text)return"";
     var lines=text.split(/\n+/);
     for(var i=0;i<lines.length;i++){
       var raw=lines[i]
-        .replace(/\*{1,2}([^*]+)\*{1,2}/g,"$1")
         .replace(/^#{1,4}\s+/,"")
         .replace(/^\s*[-•]\s*/,"")
         .trim();
-      if(raw.length>=38&&!_shareIsAgentHeader(raw))
-        return raw.length>120?raw.slice(0,117)+"…":raw;
+      if(raw.length<32)continue;
+      // Descarta linhas de prompt/pergunta vazadas
+      if(/\?/.test(raw.slice(0,70)))continue;
+      if(/^(O que|Com os|Qual |Como |Se |Para |Dado |Usando |Considerando |Avalie |Identifique )/i.test(raw))continue;
+      var clean=raw.replace(/\*{1,2}([^*]+)\*{1,2}/g,"$1");
+      if(_shareIsAgentHeader(clean))continue;
+      // Converte markdown **LABEL:** → <strong>LABEL:</strong>
+      raw=raw.replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>");
+      // Converte LABEL_EM_CAPS: texto → <strong>LABEL:</strong> texto
+      raw=raw.replace(/^([A-ZÁÀÂÃÉÊÍÓÔÕÚÇ][A-ZÁÀÂÃÉÊÍÓÔÕÚÇ\s]{3,45}):\s/,function(m,k){
+        return"<strong>"+k.trim()+":</strong> ";
+      });
+      return raw.length>140?raw.slice(0,137)+"…":raw;
     }
     return"";
   }
-  return[
-    firstLine(agentsMap["macroeconomia"])||firstLine(_currentVerdict)||"Cenário macro em análise estratégica.",
-    firstLine(agentsMap["noticias_realtime"])||firstLine(agentsMap["sentimento_mercado"])||"Tendências de mercado identificadas.",
-    firstLine(agentsMap["renda_fixa"])||firstLine(agentsMap["compliance_risco"])||"Riscos estruturais mapeados.",
-    firstLine(agentsMap["criptomoedas"])||"Volatilidade digital em monitoramento ativo."
-  ];
+
+  return AGENTS.map(function(ids,idx){
+    var raw="";
+    for(var i=0;i<ids.length;i++){raw=agentsMap[ids[i]]||"";if(raw)break;}
+    if(!raw&&idx===0)raw=_currentVerdict||"";
+    var desc=parseLine(raw)||FALLBACKS[idx];
+    // Se o agente não emitiu label próprio (<strong>), injeta o label fixo do slot
+    if(desc.indexOf("<strong>")===-1){
+      desc="<strong>"+LABELS[idx]+":</strong> "+desc;
+    }
+    return desc;
+  });
 }
 
 // ── SHARE IMAGE v7.0 — Card Ultra Premium (Canvas Ring + Gauge + ECG Network) ──
