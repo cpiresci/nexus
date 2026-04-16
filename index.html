@@ -1134,441 +1134,613 @@ function _shareIsAgentHeader(line){
   );
 }
 
-function _extractModulesForCard() {
-  var agentsMap = {};
-  if (_currentAgents && _currentAgents.length) {
-    _currentAgents.forEach(function(a) { agentsMap[a.id] = a.analysis || ""; });
+function _extractInsights(max){
+  var pool=_currentVerdict||"";
+  if(_currentAgents&&_currentAgents.length){
+    _currentAgents.forEach(function(a){
+      if(a.id==="consultor_senior")return;
+      if(a.analysis)pool+="\n"+a.analysis;
+    });
   }
-  function firstLine(text) {
-    if (!text) return "";
-    var lines = text.split(/\n+/);
-    for (var i = 0; i < lines.length; i++) {
-      var raw = lines[i]
-        .replace(/\*{1,2}([^*]+)\*{1,2}/g, "$1")
-        .replace(/^#{1,4}\s+/, "")
-        .replace(/^\s*[-•]\s*/, "")
+  var lines=pool.split(/\n+/);
+  var insights=[];var seen={};
+  for(var i=0;i<lines.length;i++){
+    var raw=lines[i]
+      .replace(/\*{1,2}([^*]+)\*{1,2}/g,"$1")
+      .replace(/^#{1,4}\s+/,"")
+      .replace(/^\s*[-•]\s*/,"")
+      .trim();
+    if(_shareIsAgentHeader(raw))continue;
+    if(raw.length<28)continue;
+    var display=raw.length>135?raw.slice(0,132).replace(/[,;:]\s*$/,"")+"\u2026":raw;
+    var key=display.slice(0,40).toLowerCase();
+    if(seen[key])continue;
+    seen[key]=1;
+    insights.push(display);
+    if(insights.length>=max)break;
+  }
+  return insights;
+}
+
+function _extractScoreFromVerdict(text){
+  var m=text.match(/\b([4-9]\d|100)\/100\b/);if(m)return parseInt(m[1],10);
+  m=text.match(/sa[uú]de[^0-9]{0,20}([4-9]\d|100)/i);if(m)return parseInt(m[1],10);
+  return null;
+}
+
+function _extractRiskFromVerdict(text){
+  var lower=text.toLowerCase();
+  if(lower.indexOf("arrojado")!==-1||lower.indexOf("agressivo")!==-1)return{label:"ALTO",sub:"Arrojado"};
+  if(lower.indexOf("conservador")!==-1)return{label:"BAIXO",sub:"Conservador"};
+  return{label:"MOD",sub:"Moderado"};
+}
+
+function _extractModulesForCard(){
+  var agentsMap={};
+  if(_currentAgents&&_currentAgents.length){
+    _currentAgents.forEach(function(a){agentsMap[a.id]=a.analysis||"";});
+  }
+  function firstLine(text){
+    if(!text)return"";
+    var lines=text.split(/\n+/);
+    for(var i=0;i<lines.length;i++){
+      var raw=lines[i]
+        .replace(/\*{1,2}([^*]+)\*{1,2}/g,"$1")
+        .replace(/^#{1,4}\s+/,"")
+        .replace(/^\s*[-•]\s*/,"")
         .trim();
-      if (raw.length >= 38 && !_shareIsAgentHeader(raw))
-        return raw.length > 115 ? raw.slice(0, 112) + "…" : raw;
+      if(raw.length>=38&&!_shareIsAgentHeader(raw))
+        return raw.length>120?raw.slice(0,117)+"…":raw;
     }
-    return "";
+    return"";
   }
-  var m1 = firstLine(agentsMap["macroeconomia"])    || firstLine(_currentVerdict) || "Cenário macro em análise.";
-  var m2 = firstLine(agentsMap["noticias_realtime"]) || firstLine(agentsMap["sentimento_mercado"]) || "Tendências de mercado identificadas.";
-  var m3 = firstLine(agentsMap["renda_fixa"])        || firstLine(agentsMap["compliance_risco"])   || "Riscos estruturais mapeados.";
-  var m4 = firstLine(agentsMap["criptomoedas"])      || "Volatilidade digital em monitoramento.";
-  return [m1, m2, m3, m4];
+  return[
+    firstLine(agentsMap["macroeconomia"])||firstLine(_currentVerdict)||"Cenário macro em análise estratégica.",
+    firstLine(agentsMap["noticias_realtime"])||firstLine(agentsMap["sentimento_mercado"])||"Tendências de mercado identificadas.",
+    firstLine(agentsMap["renda_fixa"])||firstLine(agentsMap["compliance_risco"])||"Riscos estruturais mapeados.",
+    firstLine(agentsMap["criptomoedas"])||"Volatilidade digital em monitoramento ativo."
+  ];
 }
 
-function _extractRiskFromVerdict(text) {
-  if (!text) return { label: "MODERADO", sub: "Perfil moderado" };
-  var lower = text.toLowerCase();
-  if (lower.indexOf("conservador") !== -1)
-    return { label: "CONSERV.", sub: "Perfil conservador" };
-  if (lower.indexOf("arrojado") !== -1 || lower.indexOf("agressivo") !== -1)
-    return { label: "ARROJADO", sub: "Perfil arrojado" };
-  return { label: "MODERADO", sub: "Perfil moderado" };
-}
+// ── SHARE IMAGE v7.0 — Card Ultra Premium (Canvas Ring + Gauge + ECG Network) ──
+async function generateShareImage(){
+  var btn=document.getElementById("btn-share");
+  if(btn){btn.disabled=true;btn.innerHTML="&#9203; Gerando...";}
 
-async function generateShareImage() {
-  var btn = document.getElementById("btn-share");
-  if (btn) { btn.disabled = true; btn.innerHTML = "&#9203; Gerando..."; }
+  try{
+    var modules=_extractModulesForCard();
+    if(!modules[0]){showAlert("inp-alert","alert-err","Execute uma análise premium primeiro.");return;}
 
-  try {
-    var modules = _extractModulesForCard();
-    if (!modules[0]) { showAlert("inp-alert","alert-err","Execute uma análise premium primeiro."); return; }
+    var scoreVal=_currentWuzoScore||65;
+    var riskInfo=_extractRiskFromVerdict(_currentVerdict||"");
 
-    var score    = _currentWuzoScore || 65;
-    var riskInfo = _extractRiskFromVerdict(_currentVerdict || "");
+    // ── Card CSS (inline) ─────────────────────────────────────────────────────
+    var css=
+      '@import url(\'https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Raleway:wght@400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700&display=swap\');'+
+      '*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}'+
+      '#_wc{width:430px;background:linear-gradient(170deg,#0a1428 0%,#070f1e 25%,#060b18 55%,#040910 100%);border-radius:20px;overflow:visible;position:relative;border:1px solid rgba(180,140,55,.32);box-shadow:0 0 0 1px rgba(255,255,255,.04),0 50px 120px rgba(0,0,5,.92),inset 0 1px 0 rgba(255,255,255,.07),inset 0 0 100px rgba(5,15,50,.55);}'+
+      '#_wc::before{content:"";position:absolute;inset:0;border-radius:20px;pointer-events:none;z-index:0;background:radial-gradient(ellipse 75% 38% at 28% 7%,rgba(18,48,148,.52) 0%,transparent 65%),radial-gradient(ellipse 55% 45% at 78% 95%,rgba(38,12,78,.48) 0%,transparent 58%),radial-gradient(ellipse 90% 60% at 50% 50%,rgba(5,10,28,.7) 0%,transparent 100%);}'+
+      '#_wc::after{content:"";position:absolute;inset:0;border-radius:20px;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(180,140,55,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(180,140,55,.022) 1px,transparent 1px);background-size:30px 30px;}'+
+      '.oc{position:absolute;z-index:3;}'+
+      '.oc-tl{top:11px;left:11px;border-top:2px solid rgba(201,162,39,.65);border-left:2px solid rgba(201,162,39,.65);width:18px;height:18px;}'+
+      '.oc-tr{top:11px;right:11px;border-top:2px solid rgba(201,162,39,.65);border-right:2px solid rgba(201,162,39,.65);width:18px;height:18px;}'+
+      '.oc-bl{bottom:11px;left:11px;border-bottom:2px solid rgba(201,162,39,.65);border-left:2px solid rgba(201,162,39,.65);width:18px;height:18px;}'+
+      '.oc-br{bottom:11px;right:11px;border-bottom:2px solid rgba(201,162,39,.65);border-right:2px solid rgba(201,162,39,.65);width:18px;height:18px;}'+
+      '.ci{position:relative;z-index:1;padding:22px 20px 20px;}'+
+      '.hdr{text-align:center;padding-bottom:16px;}'+
+      '.hdr-eye{font-family:"Raleway",sans-serif;font-size:8px;font-weight:700;letter-spacing:6px;text-transform:uppercase;color:rgba(201,162,39,.52);margin-bottom:4px;}'+
+      '.hdr-logo{font-family:"Cinzel",serif;font-size:70px;font-weight:900;letter-spacing:18px;line-height:1;background:linear-gradient(180deg,#f9ecaa 0%,#eacc66 18%,#c9a227 38%,#f5dc72 52%,#c9a227 68%,#9a7510 86%,#7a5a0e 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 3px 16px rgba(201,162,39,.42));padding-right:18px;}'+
+      '.hdr-url{font-family:"Raleway",sans-serif;font-size:10px;font-weight:500;letter-spacing:2.5px;color:rgba(201,162,39,.48);margin-bottom:14px;}'+
+      '.hdr-div{display:flex;align-items:center;gap:10px;}'+
+      '.hdr-div-l{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,162,39,.7),rgba(201,162,39,.5),transparent);}'+
+      '.hdr-div-d{width:6px;height:6px;background:#c9a227;transform:rotate(45deg);flex-shrink:0;box-shadow:0 0 10px rgba(201,162,39,.7);}'+
+      '.top-row{display:grid;grid-template-columns:1.18fr 1fr;gap:11px;margin-top:15px;margin-bottom:13px;}'+
+      '.gp{background:linear-gradient(145deg,rgba(255,255,255,.034),rgba(255,255,255,.008));border:1px solid rgba(180,140,55,.24);border-radius:15px;position:relative;overflow:hidden;}'+
+      '.gp::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 8%,rgba(255,255,255,.16) 50%,transparent 92%);}'+
+      '.pt-row{display:flex;align-items:center;justify-content:center;gap:5px;margin-bottom:8px;}'+
+      '.pt{font-family:"Raleway",sans-serif;font-size:8px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(201,162,39,.55);}'+
+      '.shield-ic svg{width:10px;height:10px;}'+
+      '.sp{padding:14px 10px 10px;display:flex;flex-direction:column;align-items:center;}'+
+      '.ring-wrap{position:relative;width:156px;height:156px;margin-bottom:9px;flex-shrink:0;}'+
+      '.ring-wrap canvas{position:absolute;inset:0;width:100%;height:100%;}'+
+      '.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}'+
+      '.sc-num{font-family:"Cinzel",serif;font-size:52px;font-weight:900;line-height:1;background:linear-gradient(180deg,#f9ecaa 0%,#e8c860 30%,#c9a227 62%,#9a7510 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 14px rgba(201,162,39,.58));}'+
+      '.sc-den{font-family:"Raleway",sans-serif;font-size:13px;font-weight:700;color:rgba(201,162,39,.52);letter-spacing:1px;margin-top:-3px;}'+
+      '.sc-cat{font-family:"Raleway",sans-serif;font-size:7.5px;font-weight:700;letter-spacing:2.5px;color:rgba(201,162,39,.38);text-transform:uppercase;margin-top:3px;}'+
+      '.trust-bdg{display:flex;align-items:center;gap:5px;padding:3px 10px 3px 8px;background:rgba(201,162,39,.07);border:1px solid rgba(201,162,39,.24);border-radius:20px;margin-bottom:5px;}'+
+      '.trust-bdg svg{width:11px;height:11px;flex-shrink:0;}'+
+      '.trust-txt{font-family:"Raleway",sans-serif;font-size:7px;font-weight:700;letter-spacing:1.5px;color:rgba(201,162,39,.68);text-transform:uppercase;}'+
+      '.sc-footer{font-family:"Raleway",sans-serif;font-size:7px;font-weight:600;letter-spacing:2px;color:rgba(201,162,39,.3);text-transform:uppercase;}'+
+      '.rc{display:flex;flex-direction:column;gap:11px;}'+
+      '.rp{padding:10px 10px 8px;display:flex;flex-direction:column;align-items:center;}'+
+      '.gauge-wrap{width:100%;height:88px;position:relative;margin-bottom:3px;}'+
+      '.gauge-wrap canvas{width:100%;height:100%;display:block;}'+
+      '.gauge-rd{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:1px;}'+
+      '.g-badge{background:linear-gradient(135deg,rgba(201,162,39,.18),rgba(201,162,39,.07));border:1px solid rgba(201,162,39,.45);border-radius:5px;padding:2px 9px;font-family:"Orbitron",sans-serif;font-size:11px;font-weight:700;letter-spacing:1.5px;color:#c9a227;box-shadow:0 0 12px rgba(201,162,39,.18),inset 0 1px 0 rgba(255,255,255,.08);}'+
+      '.g-sub{font-family:"Raleway",sans-serif;font-size:9px;font-weight:600;letter-spacing:1.5px;color:rgba(201,162,39,.48);text-transform:uppercase;}'+
+      '.ap{flex:1;padding:9px 10px 8px;display:flex;flex-direction:column;align-items:center;}'+
+      '.ap-title{font-family:"Raleway",sans-serif;font-size:7.5px;font-weight:700;letter-spacing:1.8px;color:rgba(201,162,39,.5);text-transform:uppercase;text-align:center;line-height:1.55;margin-bottom:5px;}'+
+      '.net-wrap{width:100%;flex:1;min-height:62px;position:relative;}'+
+      '.net-wrap canvas{position:absolute;inset:0;width:100%;height:100%;}'+
+      '.ag-row{display:flex;align-items:baseline;gap:5px;margin-top:5px;}'+
+      '.ag-num{font-family:"Cinzel",serif;font-size:36px;font-weight:900;line-height:1;background:linear-gradient(180deg,#f9ecaa 0%,#c9a227 55%,#9a7510 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 9px rgba(201,162,39,.42));}'+
+      '.ag-sub{font-family:"Raleway",sans-serif;font-size:7.5px;font-weight:700;letter-spacing:1.5px;color:rgba(201,162,39,.5);text-transform:uppercase;max-width:55px;line-height:1.35;}'+
+      '.diag-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px;}'+
+      '.diag-title{font-family:"Raleway",sans-serif;font-size:8.5px;font-weight:800;letter-spacing:4px;color:rgba(201,162,39,.52);text-transform:uppercase;white-space:nowrap;}'+
+      '.diag-ln{flex:1;height:1px;background:linear-gradient(90deg,rgba(201,162,39,.48),transparent);}'+
+      '.mod{background:linear-gradient(135deg,rgba(180,140,50,.05),rgba(180,140,50,.01));border:1px solid rgba(180,140,55,.2);border-radius:10px;padding:8px 12px 8px 16px;margin-bottom:8px;position:relative;overflow:hidden;}'+
+      '.mod::before{content:"";position:absolute;top:10px;bottom:10px;left:0;width:3px;border-radius:0 3px 3px 0;background:linear-gradient(180deg,rgba(201,162,39,.9),rgba(201,162,39,.25));}'+
+      '.mod::after{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,162,39,.22),transparent);}'+
+      '.mc-tl,.mc-br{position:absolute;width:9px;height:9px;}'+
+      '.mc-tl{top:6px;left:6px;border-top:1px solid rgba(201,162,39,.45);border-left:1px solid rgba(201,162,39,.45);}'+
+      '.mc-br{bottom:6px;right:6px;border-bottom:1px solid rgba(201,162,39,.45);border-right:1px solid rgba(201,162,39,.45);}'+
+      '.mod-n{font-family:"Orbitron",sans-serif;font-size:7px;font-weight:500;color:rgba(201,162,39,.35);letter-spacing:1px;margin-bottom:1px;}'+
+      '.mod-lbl{font-family:"Raleway",sans-serif;font-size:8px;font-weight:600;letter-spacing:1.5px;color:rgba(201,162,39,.44);text-transform:uppercase;font-style:italic;margin-bottom:4px;}'+
+      '.mod-txt{font-family:"Raleway",sans-serif;font-size:11px;font-weight:500;color:rgba(218,228,248,.84);line-height:1.46;}'+
+      '.mod-txt strong{font-weight:800;color:#c9a227;}'+
+      '.mod.urg::before{background:linear-gradient(180deg,#00ddb8,#009980);}'+
+      '.mod.urg{border-color:rgba(0,200,180,.22);}'+
+      '.mod.urg .mod-txt strong{color:#00d4b0;}'+
+      '.mod.urg .mc-tl,.mod.urg .mc-br{border-color:rgba(0,200,180,.42);}'+
+      '.mod.cta{text-align:center;border-color:rgba(201,162,39,.32);background:linear-gradient(135deg,rgba(201,162,39,.08),rgba(201,162,39,.02));padding:11px 14px;border-radius:10px;margin-bottom:0;}'+
+      '.mod.cta::before{display:none;}'+
+      '.cta-lbl{font-family:"Raleway",sans-serif;font-size:7.5px;font-weight:700;letter-spacing:2.5px;color:rgba(201,162,39,.48);text-transform:uppercase;font-style:italic;margin-bottom:4px;}'+
+      '.cta-body{font-family:"Raleway",sans-serif;font-size:10.5px;font-weight:500;color:rgba(218,228,248,.8);margin-bottom:6px;line-height:1.45;}'+
+      '.cta-body strong{color:#f0d060;font-weight:800;}'+
+      '.cta-url{font-family:"Cinzel",serif;font-size:20px;font-weight:900;letter-spacing:2.5px;background:linear-gradient(90deg,#f9ecaa,#c9a227,#f9ecaa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 12px rgba(201,162,39,.48));}'+
+      '.card-ft{display:flex;justify-content:flex-end;align-items:center;gap:6px;margin-top:12px;padding-top:9px;border-top:1px solid rgba(201,162,39,.1);}'+
+      '.auth-seal{display:flex;align-items:center;gap:5px;background:rgba(201,162,39,.07);border:1px solid rgba(201,162,39,.24);border-radius:20px;padding:3px 10px 3px 7px;}'+
+      '.auth-ic{width:15px;height:15px;border-radius:50%;background:rgba(201,162,39,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;}'+
+      '.auth-txt{font-family:"Raleway",sans-serif;font-size:7px;font-weight:700;letter-spacing:1.5px;color:rgba(201,162,39,.5);text-transform:uppercase;}';
 
-    // ── Score ring arc math ────────────────────────────────────────────────────
-    // r=54, full circumference=339.29, 270° arc=254.47, gap=84.82
-    var arcFill = parseFloat((254.47 * (score / 100)).toFixed(2));
-    var arcRest = parseFloat((339.29 - arcFill).toFixed(2));
+    // ── Card HTML ─────────────────────────────────────────────────────────────
+    var cardHtml=
+      '<div id="_wc" style="position:absolute;left:-9999px;top:0;">'+
+      '<style>'+css+'</style>'+
+      '<div class="oc oc-tl"></div><div class="oc oc-tr"></div>'+
+      '<div class="oc oc-bl"></div><div class="oc oc-br"></div>'+
+      '<div class="ci">'+
 
-    // ── Gauge needle & dot position ───────────────────────────────────────────
-    // Center=(60,62), arc from (10,62) LEFT to (110,62) RIGHT via top
-    var needleAngleDeg, riskClass;
-    var riskLower = (riskInfo.sub || "").toLowerCase();
-    if      (riskLower.indexOf("conservador") !== -1) { needleAngleDeg = 148; riskClass = "low"; }
-    else if (riskLower.indexOf("arrojado")    !== -1 ||
-             riskLower.indexOf("agressivo")   !== -1) { needleAngleDeg = 32;  riskClass = "high"; }
-    else                                               { needleAngleDeg = 90;  riskClass = "mod"; }
+        '<div class="hdr">'+
+          '<div class="hdr-eye">Análise por Inteligência Artificial</div>'+
+          '<div class="hdr-logo">WUZO</div>'+
+          '<div class="hdr-url">Wuzo.com.br</div>'+
+          '<div class="hdr-div">'+
+            '<div class="hdr-div-l"></div>'+
+            '<div class="hdr-div-d"></div>'+
+            '<div class="hdr-div-l"></div>'+
+          '</div>'+
+        '</div>'+
 
-    var rad      = needleAngleDeg * Math.PI / 180;
-    var nx2      = (60 + 42 * Math.cos(rad)).toFixed(1);
-    var ny2      = (62 - 42 * Math.sin(rad)).toFixed(1);
-    var dotCx    = (60 + 50 * Math.cos(rad)).toFixed(1);
-    var dotCy    = (62 - 50 * Math.sin(rad)).toFixed(1);
+        '<div class="top-row">'+
 
-    // ── Module label map ──────────────────────────────────────────────────────
-    var modLabels = [
-      { num:"01", title:'Módulo "Síntese de Carteira"' },
-      { num:"02", title:'Módulo "Vetores de Valor Tático"' },
-      { num:"03", title:'Módulo "Vetores de Risco Crítico"' },
-      { num:"04", title:'Módulo "Ações Imediatas de Alta Prioridade"', urgent:true },
-    ];
+          '<div class="gp sp">'+
+            '<div class="pt-row">'+
+              '<div class="pt">Wuzo Score</div>'+
+              '<div class="shield-ic"><svg viewBox="0 0 12 14" fill="none"><path d="M6 1L1 3.5V7c0 2.8 2 5.3 5 6 3-0.7 5-3.2 5-6V3.5L6 1z" fill="rgba(201,162,39,0.55)"/><path d="M4 7l1.5 1.5L8 5.5" stroke="rgba(240,220,130,0.9)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'+
+            '</div>'+
+            '<div class="ring-wrap">'+
+              '<canvas id="_wcScoreC" width="312" height="312"></canvas>'+
+              '<div class="ring-center">'+
+                '<div class="sc-num">'+scoreVal+'</div>'+
+                '<div class="sc-den">/100</div>'+
+                '<div class="sc-cat">Financeira</div>'+
+              '</div>'+
+            '</div>'+
+            '<div class="trust-bdg">'+
+              '<svg viewBox="0 0 12 14" fill="none"><path d="M6 1L1 3.5V7c0 2.8 2 5.3 5 6 3-0.7 5-3.2 5-6V3.5L6 1z" fill="rgba(201,162,39,0.7)"/><path d="M4 7l1.5 1.5L8 5.5" stroke="rgba(248,235,160,1)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>'+
+              '<span class="trust-txt">Badge de Confiança</span>'+
+            '</div>'+
+            '<div class="sc-footer">Wuzo Score</div>'+
+          '</div>'+
 
-    // ── Network canvas nodes seed ─────────────────────────────────────────────
-    var nodeSeed = [
-      [0.1,0.25],[0.22,0.7],[0.35,0.15],[0.45,0.55],[0.55,0.9],
-      [0.62,0.3],[0.72,0.65],[0.82,0.2],[0.9,0.55],[0.5,0.15],
-      [0.15,0.6],[0.3,0.45],[0.68,0.85],[0.78,0.45],[0.4,0.8],[0.88,0.8]
-    ];
-    var conns = [
-      [0,2],[0,11],[1,11],[1,3],[2,9],[2,5],[3,5],[3,6],[4,6],[4,12],
-      [5,7],[6,7],[6,13],[7,8],[8,13],[9,5],[10,1],[10,11],[12,6],[14,3],[15,8],[13,8]
-    ];
+          '<div class="rc">'+
 
-    // ── Build modules HTML ────────────────────────────────────────────────────
-    var modulesHtml = modLabels.map(function(ml, i) {
-      var isUrgent = ml.urgent;
-      return (
-        '<div class="wsc-module' + (isUrgent ? ' wsc-urgent' : '') + '">' +
-          '<div class="wsc-mod-num">' + ml.num + '</div>' +
-          '<div class="wsc-mod-title">' + ml.title + '</div>' +
-          '<div class="wsc-mod-text">' + (modules[i] || "") + '</div>' +
-        '</div>'
-      );
-    }).join("");
+            '<div class="gp rp">'+
+              '<div class="pt-row"><div class="pt">Perímetro de Risco</div></div>'+
+              '<div class="gauge-wrap">'+
+                '<canvas id="_wcGaugeC" width="180" height="120"></canvas>'+
+              '</div>'+
+              '<div class="gauge-rd">'+
+                '<div class="g-badge">'+riskInfo.label+'</div>'+
+                '<div class="g-sub">'+riskInfo.sub+'</div>'+
+              '</div>'+
+            '</div>'+
 
-    // ── Build CTA module ──────────────────────────────────────────────────────
-    var ctaHtml =
-      '<div class="wsc-module wsc-cta">' +
-        '<div class="wsc-cta-label">Módulo "Ação do Usuário"</div>' +
-        '<div class="wsc-cta-text"><strong>ACESSO À INTELIGÊNCIA:</strong> Descubra o SEU Wuzo Score <strong>Gratuitamente</strong> agora mesmo:</div>' +
-        '<div class="wsc-cta-url">WUZO.COM.BR</div>' +
+            '<div class="gp ap">'+
+              '<div class="ap-title">Rede de Consenso<br>de 16 Agentes</div>'+
+              '<div class="net-wrap" style="height:62px;">'+
+                '<canvas id="_wcNetC" width="180" height="80" style="position:absolute;inset:0;width:100%;height:100%;"></canvas>'+
+              '</div>'+
+              '<div class="ag-row">'+
+                '<div class="ag-num">16</div>'+
+                '<div class="ag-sub">Agentes<br>Especialistas</div>'+
+              '</div>'+
+            '</div>'+
+
+          '</div>'+
+        '</div>'+
+
+        '<div class="diag-hdr">'+
+          '<div class="diag-title">Diagnóstico Executivo</div>'+
+          '<div class="diag-ln"></div>'+
+        '</div>'+
+
+        '<div class="mod"><div class="mc-tl"></div><div class="mc-br"></div>'+
+          '<div class="mod-n">01</div>'+
+          '<div class="mod-lbl">Módulo "Síntese de Carteira"</div>'+
+          '<div class="mod-txt">'+modules[0]+'</div>'+
+        '</div>'+
+
+        '<div class="mod"><div class="mc-tl"></div><div class="mc-br"></div>'+
+          '<div class="mod-n">02</div>'+
+          '<div class="mod-lbl">Módulo "Vetores de Valor Tático"</div>'+
+          '<div class="mod-txt">'+modules[1]+'</div>'+
+        '</div>'+
+
+        '<div class="mod"><div class="mc-tl"></div><div class="mc-br"></div>'+
+          '<div class="mod-n">03</div>'+
+          '<div class="mod-lbl">Módulo "Vetores de Risco Crítico"</div>'+
+          '<div class="mod-txt">'+modules[2]+'</div>'+
+        '</div>'+
+
+        '<div class="mod urg"><div class="mc-tl"></div><div class="mc-br"></div>'+
+          '<div class="mod-n">04</div>'+
+          '<div class="mod-lbl">Módulo "Ações Imediatas de Alta Prioridade"</div>'+
+          '<div class="mod-txt">'+modules[3]+'</div>'+
+        '</div>'+
+
+        '<div class="mod cta"><div class="mc-tl"></div><div class="mc-br"></div>'+
+          '<div class="cta-lbl">Módulo "Ação do Usuário"</div>'+
+          '<div class="cta-body"><strong>ACESSO À INTELIGÊNCIA:</strong> Descubra o SEU Wuzo Score <strong>Gratuitamente</strong> agora mesmo:</div>'+
+          '<div class="cta-url">WUZO.COM.BR</div>'+
+        '</div>'+
+
+        '<div class="card-ft">'+
+          '<div class="auth-seal">'+
+            '<div class="auth-ic"><svg width="9" height="10" viewBox="0 0 12 14" fill="none"><path d="M6 1L1 3.5V7c0 2.8 2 5.3 5 6 3-0.7 5-3.2 5-6V3.5L6 1z" fill="rgba(201,162,39,0.75)"/><path d="M4 7l1.5 1.5L8 5.5" stroke="rgba(248,235,160,1)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'+
+            '<div class="auth-txt">Autenticidade de IA</div>'+
+          '</div>'+
+        '</div>'+
+
+      '</div>'+
       '</div>';
 
-    // ── Card wrapper HTML ─────────────────────────────────────────────────────
-    var cardHtml =
-      '<div id="_wsc_card" style="position:absolute;left:-9999px;top:0;width:420px;">' +
-      '<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800;900&family=Barlow:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">' +
-      '<style>' +
-      '#_wsc_card *{margin:0;padding:0;box-sizing:border-box;}' +
-      '#_wsc_card{background:#080c1a;border-radius:20px;overflow:hidden;border:1px solid rgba(201,162,39,.25);box-shadow:0 0 0 1px rgba(255,255,255,.04),0 30px 80px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.07);font-family:Barlow,sans-serif;}' +
-      // inner
-      '.wsc-inner{position:relative;z-index:1;padding:22px 20px 20px;}' +
-      // header
-      '.wsc-hdr-sub{font-family:"Barlow Condensed",sans-serif;font-size:9px;font-weight:500;letter-spacing:4px;color:rgba(201,162,39,.6);text-transform:uppercase;margin-bottom:2px;text-align:center;}' +
-      '.wsc-logo{font-family:"Barlow Condensed",sans-serif;font-size:56px;font-weight:900;letter-spacing:10px;line-height:1;background:linear-gradient(180deg,#f5e08a 0%,#c9a227 40%,#9a7510 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 18px rgba(201,162,39,.35));text-align:center;margin-bottom:2px;}' +
-      '.wsc-url{font-family:"Space Mono",monospace;font-size:10px;color:rgba(201,162,39,.5);letter-spacing:1px;text-align:center;}' +
-      '.wsc-divider{height:1px;margin-top:14px;background:linear-gradient(90deg,transparent,rgba(201,162,39,.4),rgba(201,162,39,.7),rgba(201,162,39,.4),transparent);}' +
-      // top row
-      '.wsc-top-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;margin-bottom:10px;}' +
-      '.wsc-panel{background:rgba(255,255,255,.03);border:1px solid rgba(201,162,39,.18);border-radius:14px;position:relative;overflow:hidden;}' +
-      '.wsc-panel::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);}' +
-      '.wsc-plabel{font-family:"Barlow Condensed",sans-serif;font-size:9px;font-weight:600;letter-spacing:2.5px;color:rgba(201,162,39,.55);text-transform:uppercase;}' +
-      // score panel
-      '.wsc-score-panel{padding:14px 10px 10px;display:flex;flex-direction:column;align-items:center;}' +
-      '.wsc-score-panel .wsc-plabel{margin-bottom:8px;}' +
-      '.wsc-ring-wrap{position:relative;width:130px;height:130px;margin-bottom:6px;}' +
-      '.wsc-ring-wrap svg{position:absolute;inset:0;}' +
-      '.wsc-score-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}' +
-      '.wsc-snum{font-family:"Barlow Condensed",sans-serif;font-size:44px;font-weight:900;line-height:1;background:linear-gradient(180deg,#f5e08a 0%,#c9a227 60%,#9a7510 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 10px rgba(201,162,39,.5));}' +
-      '.wsc-sdenom{font-family:"Barlow Condensed",sans-serif;font-size:13px;font-weight:500;color:rgba(201,162,39,.5);letter-spacing:1px;margin-top:-2px;}' +
-      '.wsc-scat{font-family:"Barlow Condensed",sans-serif;font-size:8px;font-weight:600;letter-spacing:2px;color:rgba(201,162,39,.45);text-transform:uppercase;margin-top:2px;}' +
-      '.wsc-badge{display:flex;align-items:center;gap:4px;margin-top:4px;padding:3px 8px;background:rgba(201,162,39,.08);border:1px solid rgba(201,162,39,.2);border-radius:20px;}' +
-      '.wsc-badge-txt{font-family:"Barlow Condensed",sans-serif;font-size:8px;font-weight:600;letter-spacing:1.5px;color:rgba(201,162,39,.7);text-transform:uppercase;}' +
-      '.wsc-score-botlabel{font-family:"Barlow Condensed",sans-serif;font-size:9px;font-weight:600;letter-spacing:2px;color:rgba(201,162,39,.4);text-transform:uppercase;margin-top:4px;}' +
-      // right col
-      '.wsc-right-col{display:flex;flex-direction:column;gap:10px;}' +
-      // risk panel
-      '.wsc-risk-panel{padding:10px 10px 8px;}' +
-      '.wsc-risk-panel .wsc-plabel{margin-bottom:6px;}' +
-      '.wsc-gauge-wrap{width:100%;}' +
-      '.wsc-gauge-badge-row{display:flex;align-items:center;gap:6px;margin-top:4px;}' +
-      '.wsc-gauge-badge{font-family:"Barlow Condensed",sans-serif;font-size:14px;font-weight:800;letter-spacing:2px;color:#c9a227;background:rgba(201,162,39,.1);border:1px solid rgba(201,162,39,.3);border-radius:6px;padding:2px 8px;}' +
-      '.wsc-gauge-sub{font-family:"Barlow",sans-serif;font-size:10px;color:rgba(255,255,255,.45);}' +
-      // agents panel
-      '.wsc-agents-panel{padding:10px;display:flex;flex-direction:column;align-items:center;}' +
-      '.wsc-agents-panel .wsc-plabel{text-align:center;line-height:1.3;margin-bottom:6px;}' +
-      '.wsc-agents-num{font-family:"Barlow Condensed",sans-serif;font-size:32px;font-weight:900;line-height:1;background:linear-gradient(180deg,#f5e08a 0%,#c9a227 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}' +
-      '.wsc-agents-sub{font-family:"Barlow Condensed",sans-serif;font-size:9px;font-weight:600;letter-spacing:2px;color:rgba(201,162,39,.5);text-transform:uppercase;text-align:center;margin-top:2px;}' +
-      // diag header
-      '.wsc-diag-hdr{display:flex;align-items:center;gap:10px;margin-bottom:8px;}' +
-      '.wsc-diag-title{font-family:"Barlow Condensed",sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;color:rgba(201,162,39,.6);text-transform:uppercase;white-space:nowrap;}' +
-      '.wsc-diag-line{flex:1;height:1px;background:linear-gradient(90deg,rgba(201,162,39,.3),transparent);}' +
-      // modules
-      '.wsc-module{border:1px solid rgba(201,162,39,.12);border-radius:10px;padding:8px 10px;margin-bottom:6px;background:rgba(255,255,255,.015);position:relative;overflow:hidden;}' +
-      '.wsc-module::before{content:"";position:absolute;top:0;left:0;bottom:0;width:2px;background:linear-gradient(180deg,rgba(201,162,39,.6),rgba(201,162,39,.2));}' +
-      '.wsc-urgent::before{background:linear-gradient(180deg,#00d4ff,rgba(0,212,255,.2));}' +
-      '.wsc-urgent{border-color:rgba(0,212,255,.2);}' +
-      '.wsc-mod-num{font-family:"Barlow Condensed",sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(201,162,39,.35);margin-bottom:1px;}' +
-      '.wsc-mod-title{font-family:"Barlow Condensed",sans-serif;font-size:10px;font-weight:600;letter-spacing:.5px;color:rgba(201,162,39,.6);margin-bottom:3px;}' +
-      '.wsc-mod-text{font-family:"Barlow",sans-serif;font-size:10.5px;color:rgba(255,255,255,.75);line-height:1.5;}' +
-      '.wsc-mod-text strong{color:#c9a227;}' +
-      // CTA module
-      '.wsc-cta{background:rgba(201,162,39,.06);border-color:rgba(201,162,39,.25);text-align:center;padding:10px 14px;}' +
-      '.wsc-cta::before{display:none;}' +
-      '.wsc-cta-label{font-family:"Barlow Condensed",sans-serif;font-size:9px;font-weight:600;letter-spacing:2px;color:rgba(201,162,39,.5);text-transform:uppercase;margin-bottom:4px;}' +
-      '.wsc-cta-text{font-family:"Barlow",sans-serif;font-size:10px;color:rgba(255,255,255,.65);line-height:1.5;margin-bottom:4px;}' +
-      '.wsc-cta-text strong{color:#c9a227;}' +
-      '.wsc-cta-url{font-family:"Barlow Condensed",sans-serif;font-size:18px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#f5e08a,#c9a227);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}' +
-      // footer stamp
-      '.wsc-stamp{display:flex;align-items:center;justify-content:flex-end;gap:5px;margin-top:8px;padding-top:6px;border-top:1px solid rgba(201,162,39,.1);}' +
-      '.wsc-stamp-txt{font-family:"Barlow Condensed",sans-serif;font-size:8px;font-weight:600;letter-spacing:1.5px;color:rgba(201,162,39,.4);text-transform:uppercase;}' +
-      '</style>' +
-
-      // background overlays
-      '<div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 40% at 20% 15%,rgba(13,30,80,.9) 0%,transparent 60%),radial-gradient(ellipse 50% 60% at 80% 80%,rgba(30,10,60,.7) 0%,transparent 60%),radial-gradient(ellipse 80% 50% at 50% 50%,rgba(8,12,28,1) 0%,transparent 100%);pointer-events:none;z-index:0;"></div>' +
-      '<div style="position:absolute;inset:0;background-image:linear-gradient(rgba(201,162,39,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,162,39,.03) 1px,transparent 1px);background-size:28px 28px;pointer-events:none;z-index:0;"></div>' +
-
-      '<div class="wsc-inner">' +
-
-        // HEADER
-        '<div class="wsc-hdr-sub">Análise por Inteligência Artificial</div>' +
-        '<div class="wsc-logo">WUZO</div>' +
-        '<div class="wsc-url">Wuzo.com.br</div>' +
-        '<div class="wsc-divider"></div>' +
-
-        // TOP ROW
-        '<div class="wsc-top-row">' +
-
-          // Score panel
-          '<div class="wsc-panel wsc-score-panel">' +
-            '<div class="wsc-plabel">Wuzo Score</div>' +
-            '<div class="wsc-ring-wrap">' +
-              '<svg viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg" width="130" height="130">' +
-                '<defs>' +
-                  '<linearGradient id="wscSG" x1="0%" y1="0%" x2="100%" y2="100%">' +
-                    '<stop offset="0%" stop-color="#9a7510"/>' +
-                    '<stop offset="50%" stop-color="#c9a227"/>' +
-                    '<stop offset="100%" stop-color="#f5e08a"/>' +
-                  '</linearGradient>' +
-                  '<filter id="wscGlow">' +
-                    '<feGaussianBlur stdDeviation="2.5" result="b"/>' +
-                    '<feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>' +
-                  '</filter>' +
-                '</defs>' +
-                '<circle cx="65" cy="65" r="54" fill="none" stroke="rgba(201,162,39,.1)" stroke-width="7" stroke-dasharray="254.47 84.82" transform="rotate(-225 65 65)" stroke-linecap="round"/>' +
-                '<circle cx="65" cy="65" r="54" fill="none" stroke="url(#wscSG)" stroke-width="7" stroke-dasharray="' + arcFill + ' ' + arcRest + '" transform="rotate(-225 65 65)" stroke-linecap="round" filter="url(#wscGlow)"/>' +
-                '<circle cx="65" cy="65" r="44" fill="none" stroke="rgba(201,162,39,.07)" stroke-width="1"/>' +
-                '<circle cx="65" cy="65" r="36" fill="none" stroke="rgba(201,162,39,.05)" stroke-width="1" stroke-dasharray="4 6"/>' +
-                '<g stroke="rgba(201,162,39,.25)" stroke-width="1">' +
-                  '<line x1="65" y1="8" x2="65" y2="14" transform="rotate(45 65 65)"/>' +
-                  '<line x1="65" y1="8" x2="65" y2="14" transform="rotate(90 65 65)"/>' +
-                  '<line x1="65" y1="8" x2="65" y2="14" transform="rotate(135 65 65)"/>' +
-                  '<line x1="65" y1="8" x2="65" y2="14" transform="rotate(180 65 65)"/>' +
-                  '<line x1="65" y1="8" x2="65" y2="14" transform="rotate(225 65 65)"/>' +
-                '</g>' +
-              '</svg>' +
-              '<div class="wsc-score-center">' +
-                '<span class="wsc-snum">' + score + '</span>' +
-                '<span class="wsc-sdenom">/100</span>' +
-                '<span class="wsc-scat">Financeira</span>' +
-              '</div>' +
-            '</div>' +
-            '<div class="wsc-badge">' +
-              '<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 1L6.2 3.5L9 3.9L7 5.8L7.5 8.5L5 7.1L2.5 8.5L3 5.8L1 3.9L3.8 3.5Z" fill="rgba(201,162,39,.7)"/></svg>' +
-              '<span class="wsc-badge-txt">Badge de Confiança</span>' +
-            '</div>' +
-            '<div class="wsc-score-botlabel">Wuzo Score</div>' +
-          '</div>' +
-
-          // Right col
-          '<div class="wsc-right-col">' +
-
-            // Risk panel
-            '<div class="wsc-panel wsc-risk-panel">' +
-              '<div class="wsc-plabel">Perímetro de Risco</div>' +
-              '<div class="wsc-gauge-wrap">' +
-                '<svg viewBox="0 0 120 70" xmlns="http://www.w3.org/2000/svg">' +
-                  '<defs>' +
-                    '<linearGradient id="wscGG" x1="0%" y1="0%" x2="100%" y2="0%">' +
-                      '<stop offset="0%" stop-color="#1a9e60"/>' +
-                      '<stop offset="40%" stop-color="#c9a227"/>' +
-                      '<stop offset="70%" stop-color="#d4601a"/>' +
-                      '<stop offset="100%" stop-color="#c0392b"/>' +
-                    '</linearGradient>' +
-                    '<filter id="wscG2"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>' +
-                  '</defs>' +
-                  '<path d="M10 62 A50 50 0 0 1 110 62" fill="none" stroke="rgba(255,255,255,.05)" stroke-width="8" stroke-linecap="round"/>' +
-                  '<path d="M10 62 A50 50 0 0 1 110 62" fill="none" stroke="url(#wscGG)" stroke-width="8" stroke-linecap="round" opacity=".7"/>' +
-                  '<g stroke="rgba(255,255,255,.2)" stroke-width="1">' +
-                    '<line x1="10" y1="62" x2="15" y2="57" transform="rotate(0 10 62)"/>' +
-                    '<line x1="60" y1="12" x2="60" y2="18"/>' +
-                    '<line x1="110" y1="62" x2="105" y2="57"/>' +
-                  '</g>' +
-                  '<text x="7" y="72" fill="rgba(255,255,255,.3)" font-size="6" font-family="Barlow Condensed">LOW</text>' +
-                  '<text x="53" y="10" fill="rgba(255,255,255,.3)" font-size="6" font-family="Barlow Condensed">MOD</text>' +
-                  '<text x="103" y="72" fill="rgba(255,255,255,.3)" font-size="6" font-family="Barlow Condensed">HIGH</text>' +
-                  '<line x1="60" y1="62" x2="' + nx2 + '" y2="' + ny2 + '" stroke="#c9a227" stroke-width="2" stroke-linecap="round" filter="url(#wscG2)"/>' +
-                  '<circle cx="60" cy="62" r="4" fill="#c9a227" filter="url(#wscG2)"/>' +
-                  '<circle cx="60" cy="62" r="2" fill="#f5e08a"/>' +
-                  '<circle cx="' + dotCx + '" cy="' + dotCy + '" r="3" fill="#c9a227" opacity=".9" filter="url(#wscG2)"/>' +
-                '</svg>' +
-              '</div>' +
-              '<div class="wsc-gauge-badge-row">' +
-                '<div class="wsc-gauge-badge">' + riskInfo.label + '</div>' +
-                '<div class="wsc-gauge-sub">' + riskInfo.sub + '</div>' +
-              '</div>' +
-            '</div>' +
-
-            // Agents panel
-            '<div class="wsc-panel wsc-agents-panel">' +
-              '<div class="wsc-plabel">Rede de Consenso<br>de 16 Agentes</div>' +
-              '<canvas id="_wscNetCanvas" width="176" height="72" style="display:block;margin:4px auto;"></canvas>' +
-              '<div class="wsc-agents-num">16</div>' +
-              '<div class="wsc-agents-sub">Agentes Especialistas</div>' +
-            '</div>' +
-
-          '</div>' + // right-col
-        '</div>' + // top-row
-
-        // DIAGNOSTICO
-        '<div class="wsc-diag-hdr">' +
-          '<div class="wsc-diag-title">Diagnóstico Executivo</div>' +
-          '<div class="wsc-diag-line"></div>' +
-        '</div>' +
-
-        modulesHtml +
-        ctaHtml +
-
-        // Footer
-        '<div class="wsc-stamp">' +
-          '<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" stroke="rgba(201,162,39,.6)" stroke-width="1"/><path d="M3 5l1.5 1.5L7 3.5" stroke="rgba(201,162,39,.8)" stroke-width="1" stroke-linecap="round"/></svg>' +
-          '<div class="wsc-stamp-txt">Autenticidade de IA</div>' +
-        '</div>' +
-
-      '</div>' + // inner
-      '</div>'; // card
-
-    var wrapper = document.createElement("div");
-    wrapper.innerHTML = cardHtml;
-    var cardEl = wrapper.firstElementChild;
+    var wrapper=document.createElement("div");
+    wrapper.innerHTML=cardHtml;
+    var cardEl=wrapper.firstElementChild;
     document.body.appendChild(cardEl);
 
-    // Draw network canvas
-    (function() {
-      var nc = document.getElementById("_wscNetCanvas");
-      if (!nc) return;
-      var ctx2 = nc.getContext("2d");
-      var CW = nc.width, CH = nc.height;
-      var nodes2 = nodeSeed.map(function(xy) {
-        return { x: xy[0]*CW, y: xy[1]*CH, phase: Math.random()*Math.PI*2 };
+    // ── Draw Score Ring ────────────────────────────────────────────────────────
+    (function(){
+      var el=document.getElementById("_wcScoreC");
+      var dpr=Math.min(window.devicePixelRatio||1,3);
+      var SZ=156;
+      el.width=SZ*dpr; el.height=SZ*dpr;
+      el.style.width=SZ+"px"; el.style.height=SZ+"px";
+      var ctx=el.getContext("2d"); ctx.scale(dpr,dpr);
+      var cx=SZ/2, cy=SZ/2;
+      var SA=(225*Math.PI)/180;
+      var SW=(270*Math.PI)/180;
+      var EA=SA+SW;
+      var scorePct=Math.max(0,Math.min(100,scoreVal))/100;
+      var SCORE_A=SA+SW*scorePct;
+
+      // outer tick ring
+      for(var i=0;i<60;i++){
+        var a=(i/60)*Math.PI*2;
+        var isMaj=i%5===0;
+        var r1=isMaj?74:75; var r2=77;
+        ctx.beginPath();
+        ctx.moveTo(cx+Math.cos(a)*r1,cy+Math.sin(a)*r1);
+        ctx.lineTo(cx+Math.cos(a)*r2,cy+Math.sin(a)*r2);
+        ctx.strokeStyle="rgba(201,162,39,"+(isMaj?0.4:0.15)+")";
+        ctx.lineWidth=isMaj?1.2:0.6; ctx.stroke();
+      }
+      ctx.beginPath(); ctx.arc(cx,cy,77,0,Math.PI*2);
+      ctx.strokeStyle="rgba(180,140,55,0.1)"; ctx.lineWidth=0.7; ctx.stroke();
+
+      // bevel shadow
+      ctx.beginPath(); ctx.arc(cx,cy,70,0,Math.PI*2);
+      ctx.strokeStyle="rgba(0,0,0,0.55)"; ctx.lineWidth=14; ctx.stroke();
+      var bevel=ctx.createLinearGradient(cx-70,cy-70,cx+70,cy+70);
+      bevel.addColorStop(0,"rgba(22,38,90,1)"); bevel.addColorStop(0.4,"rgba(14,24,58,1)"); bevel.addColorStop(1,"rgba(8,14,36,1)");
+      ctx.beginPath(); ctx.arc(cx,cy,70,0,Math.PI*2);
+      ctx.strokeStyle=bevel; ctx.lineWidth=13; ctx.stroke();
+      var hiB=ctx.createLinearGradient(cx-60,cy-60,cx+20,cy+20);
+      hiB.addColorStop(0,"rgba(255,255,255,0.07)"); hiB.addColorStop(1,"transparent");
+      ctx.beginPath(); ctx.arc(cx,cy,70,0,Math.PI*2);
+      ctx.strokeStyle=hiB; ctx.lineWidth=5; ctx.stroke();
+
+      // track
+      var trackGrad=ctx.createLinearGradient(cx-65,cy-65,cx+65,cy+65);
+      trackGrad.addColorStop(0,"rgba(18,28,70,1)"); trackGrad.addColorStop(1,"rgba(10,16,42,1)");
+      ctx.beginPath(); ctx.arc(cx,cy,63,SA,EA);
+      ctx.strokeStyle=trackGrad; ctx.lineWidth=12; ctx.lineCap="round"; ctx.stroke();
+      ctx.beginPath(); ctx.arc(cx,cy,63,SA,EA);
+      ctx.strokeStyle="rgba(0,0,0,0.45)"; ctx.lineWidth=10; ctx.lineCap="butt"; ctx.stroke();
+
+      // score arc
+      var sG=ctx.createLinearGradient(cx-60,cy+40,cx+60,cy-50);
+      sG.addColorStop(0,"#6a4008"); sG.addColorStop(0.2,"#b88a1a"); sG.addColorStop(0.4,"#c9a227");
+      sG.addColorStop(0.62,"#f0da6a"); sG.addColorStop(0.8,"#d4a830"); sG.addColorStop(1,"#9a7010");
+      ctx.save(); ctx.shadowColor="rgba(201,162,39,0.7)"; ctx.shadowBlur=14;
+      ctx.beginPath(); ctx.arc(cx,cy,63,SA,SCORE_A);
+      ctx.strokeStyle=sG; ctx.lineWidth=11; ctx.lineCap="round"; ctx.stroke(); ctx.restore();
+      ctx.beginPath(); ctx.arc(cx,cy,63,SA,SCORE_A);
+      ctx.strokeStyle=sG; ctx.lineWidth=9; ctx.lineCap="round"; ctx.stroke();
+
+      // rim highlight
+      var rimG=ctx.createLinearGradient(cx-60,cy-60,cx+30,cy);
+      rimG.addColorStop(0,"rgba(255,248,180,0.5)"); rimG.addColorStop(0.5,"rgba(240,210,90,0.18)"); rimG.addColorStop(1,"rgba(180,130,20,0)");
+      ctx.beginPath(); ctx.arc(cx,cy,66.5,SA,SCORE_A);
+      ctx.strokeStyle=rimG; ctx.lineWidth=2; ctx.lineCap="round"; ctx.stroke();
+
+      // arc ticks
+      for(var j=0;j<=10;j++){
+        var at=SA+(SW/10)*j; var isMj=j%5===0;
+        var rr1=isMj?55:57; var rr2=isMj?60:59;
+        var inside=at<SCORE_A;
+        ctx.beginPath();
+        ctx.moveTo(cx+Math.cos(at)*rr1,cy+Math.sin(at)*rr1);
+        ctx.lineTo(cx+Math.cos(at)*rr2,cy+Math.sin(at)*rr2);
+        ctx.strokeStyle=inside?"rgba(201,162,39,"+(isMj?0.6:0.28)+")":"rgba(201,162,39,"+(isMj?0.22:0.1)+")";
+        ctx.lineWidth=isMj?1.5:0.8; ctx.stroke();
+      }
+
+      // end cap glow
+      var ex=cx+Math.cos(SCORE_A)*63, ey=cy+Math.sin(SCORE_A)*63;
+      var dGr=ctx.createRadialGradient(ex,ey,0,ex,ey,8);
+      dGr.addColorStop(0,"rgba(255,245,160,0.95)"); dGr.addColorStop(0.45,"rgba(201,162,39,0.55)"); dGr.addColorStop(1,"transparent");
+      ctx.beginPath(); ctx.arc(ex,ey,8,0,Math.PI*2); ctx.fillStyle=dGr; ctx.fill();
+
+      // center fill
+      var cG=ctx.createRadialGradient(cx,cy-10,4,cx,cy,50);
+      cG.addColorStop(0,"rgba(22,40,105,0.98)"); cG.addColorStop(0.45,"rgba(12,22,65,1)"); cG.addColorStop(1,"rgba(5,10,32,1)");
+      ctx.beginPath(); ctx.arc(cx,cy,52,0,Math.PI*2); ctx.fillStyle=cG; ctx.fill();
+      [52,43,34].forEach(function(r,ii){
+        ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2);
+        ctx.strokeStyle="rgba(180,140,55,"+(0.1-ii*0.025)+")"; ctx.lineWidth=0.8; ctx.stroke();
       });
-      // Draw one static frame for html2canvas snapshot
-      ctx2.clearRect(0, 0, CW, CH);
-      conns.forEach(function(pair) {
-        ctx2.strokeStyle = "rgba(201,162,39,0.28)";
-        ctx2.lineWidth = 0.7;
-        ctx2.beginPath();
-        ctx2.moveTo(nodes2[pair[0]].x, nodes2[pair[0]].y);
-        ctx2.lineTo(nodes2[pair[1]].x, nodes2[pair[1]].y);
-        ctx2.stroke();
+      ctx.save(); ctx.setLineDash([2,5]);
+      ctx.beginPath(); ctx.arc(cx,cy,34,0,Math.PI*2);
+      ctx.strokeStyle="rgba(180,140,55,0.06)"; ctx.lineWidth=1; ctx.stroke(); ctx.restore();
+    })();
+
+    // ── Draw Gauge ─────────────────────────────────────────────────────────────
+    (function(){
+      var el=document.getElementById("_wcGaugeC");
+      var dpr=Math.min(window.devicePixelRatio||1,3);
+      el.width=180*dpr; el.height=120*dpr;
+      el.style.width="100%"; el.style.height="88px";
+      var ctx=el.getContext("2d"); ctx.scale(dpr,dpr);
+      var cx=90, cy=90, R=62;
+      var SA=(165*Math.PI)/180;
+      var EA=(15*Math.PI)/180;
+
+      ctx.beginPath(); ctx.arc(cx,cy,R,SA,EA);
+      ctx.strokeStyle="rgba(255,255,255,0.04)"; ctx.lineWidth=16; ctx.lineCap="butt"; ctx.stroke();
+      ctx.beginPath(); ctx.arc(cx,cy,R+9,SA,EA);
+      ctx.strokeStyle="rgba(180,140,55,0.1)"; ctx.lineWidth=1; ctx.stroke();
+
+      var aG=ctx.createLinearGradient(cx-R,cy,cx+R,cy);
+      aG.addColorStop(0,"#28a85a"); aG.addColorStop(0.28,"#8ab818"); aG.addColorStop(0.5,"#c9a227");
+      aG.addColorStop(0.72,"#d46818"); aG.addColorStop(1,"#be2c28");
+      ctx.save(); ctx.shadowColor="rgba(201,162,39,0.35)"; ctx.shadowBlur=8;
+      ctx.beginPath(); ctx.arc(cx,cy,R,SA,EA);
+      ctx.strokeStyle=aG; ctx.lineWidth=12; ctx.lineCap="round"; ctx.stroke(); ctx.restore();
+
+      // depth shadow
+      ctx.beginPath(); ctx.arc(cx,cy,R,SA,EA);
+      ctx.strokeStyle="rgba(0,0,0,0.28)"; ctx.lineWidth=8; ctx.lineCap="butt";
+      ctx.globalAlpha=0.35; ctx.stroke(); ctx.globalAlpha=1;
+
+      // ticks
+      var TSW=(210*Math.PI)/180;
+      for(var i=0;i<=10;i++){
+        var a=SA+(TSW/10)*i; var isMaj=i%2===0;
+        var r1=R-(isMaj?9:6); var r2=R-16;
+        ctx.beginPath();
+        ctx.moveTo(cx+Math.cos(a)*r1,cy+Math.sin(a)*r1);
+        ctx.lineTo(cx+Math.cos(a)*r2,cy+Math.sin(a)*r2);
+        ctx.strokeStyle="rgba(201,162,39,"+(isMaj?0.45:0.2)+")";
+        ctx.lineWidth=isMaj?1.5:0.8; ctx.stroke();
+      }
+
+      // needle angle based on risk
+      var rLow=riskInfo.sub.toLowerCase();
+      var nA;
+      if(rLow.indexOf("conservador")!==-1)      nA=(180*Math.PI)/180;
+      else if(rLow.indexOf("arrojado")!==-1||rLow.indexOf("agressivo")!==-1) nA=(0*Math.PI)/180;
+      else nA=(270*Math.PI)/180; // MOD = straight up
+
+      // labels
+      ctx.font="700 7.5px 'Raleway',sans-serif"; ctx.textAlign="center";
+      ctx.fillStyle="rgba(255,255,255,0.28)";
+      ctx.fillText("LOW",cx+Math.cos(SA)*(R+18),cy+Math.sin(SA)*(R+18)+4);
+      ctx.fillText("HIGH",cx+Math.cos(EA)*(R+18),cy+Math.sin(EA)*(R+18)+4);
+      ctx.fillStyle="rgba(201,162,39,0.72)";
+      var modA=(270*Math.PI)/180;
+      ctx.fillText("MOD",cx+Math.cos(modA)*(R+16),cy+Math.sin(modA)*(R+16)+4);
+
+      // MOD dot
+      var modX=cx+Math.cos(modA)*R, modY=cy+Math.sin(modA)*R;
+      var dGr=ctx.createRadialGradient(modX,modY,0,modX,modY,6);
+      dGr.addColorStop(0,"rgba(255,235,100,0.98)"); dGr.addColorStop(0.4,"rgba(201,162,39,0.7)"); dGr.addColorStop(1,"transparent");
+      ctx.beginPath(); ctx.arc(modX,modY,6,0,Math.PI*2); ctx.fillStyle=dGr; ctx.fill();
+
+      // needle
+      var nLen=R-5;
+      ctx.save();
+      ctx.shadowColor="rgba(0,0,0,0.6)"; ctx.shadowBlur=5; ctx.shadowOffsetX=1; ctx.shadowOffsetY=2;
+      var nG2=ctx.createLinearGradient(cx,cy,cx+Math.cos(nA)*nLen,cy+Math.sin(nA)*nLen);
+      nG2.addColorStop(0,"#b88a18"); nG2.addColorStop(0.6,"#e8c860"); nG2.addColorStop(1,"#f8e890");
+      ctx.beginPath(); ctx.moveTo(cx,cy);
+      ctx.lineTo(cx+Math.cos(nA)*nLen,cy+Math.sin(nA)*nLen);
+      ctx.strokeStyle=nG2; ctx.lineWidth=3; ctx.lineCap="round"; ctx.stroke(); ctx.restore();
+
+      // needle base
+      var bG2=ctx.createRadialGradient(cx,cy,0,cx,cy,8);
+      bG2.addColorStop(0,"#f5e080"); bG2.addColorStop(0.5,"#c9a227"); bG2.addColorStop(1,"#7a5010");
+      ctx.beginPath(); ctx.arc(cx,cy,8,0,Math.PI*2); ctx.fillStyle=bG2; ctx.fill();
+      ctx.beginPath(); ctx.arc(cx,cy,3.5,0,Math.PI*2); ctx.fillStyle="#faf0d8"; ctx.fill();
+    })();
+
+    // ── Draw Network + ECG ─────────────────────────────────────────────────────
+    (function(){
+      var nc=document.getElementById("_wcNetC");
+      if(!nc)return;
+      var dpr=Math.min(window.devicePixelRatio||1,3);
+      nc.width=180*dpr; nc.height=80*dpr;
+      var ctx=nc.getContext("2d"); ctx.scale(dpr,dpr);
+      var W=180, H=80;
+      var pts=[
+        [.07,.30],[.18,.72],[.27,.18],[.37,.58],[.49,.82],
+        [.54,.28],[.63,.68],[.72,.18],[.82,.52],[.47,.10],
+        [.13,.52],[.30,.42],[.65,.83],[.78,.38],[.40,.73],[.90,.68]
+      ];
+      var nodes=pts.map(function(xy){return{x:xy[0]*W,y:xy[1]*H};});
+      var conns2=[
+        [0,2],[0,10],[1,10],[1,3],[2,9],[2,5],[3,5],[3,6],
+        [4,6],[4,12],[5,7],[6,7],[6,13],[7,8],[8,13],[9,5],
+        [10,1],[10,11],[12,6],[14,3],[15,8],[11,3],[9,6],[7,13]
+      ];
+
+      // edges
+      conns2.forEach(function(pair){
+        var g=ctx.createLinearGradient(nodes[pair[0]].x,nodes[pair[0]].y,nodes[pair[1]].x,nodes[pair[1]].y);
+        g.addColorStop(0,"rgba(201,162,39,0.28)"); g.addColorStop(0.5,"rgba(240,200,80,0.18)"); g.addColorStop(1,"rgba(201,162,39,0.28)");
+        ctx.strokeStyle=g; ctx.lineWidth=0.85;
+        ctx.beginPath(); ctx.moveTo(nodes[pair[0]].x,nodes[pair[0]].y); ctx.lineTo(nodes[pair[1]].x,nodes[pair[1]].y); ctx.stroke();
       });
-      nodes2.forEach(function(n) {
-        var grad2 = ctx2.createRadialGradient(n.x, n.y, 0, n.x, n.y, 4);
-        grad2.addColorStop(0, "rgba(201,162,39,0.55)");
-        grad2.addColorStop(1, "transparent");
-        ctx2.fillStyle = grad2;
-        ctx2.beginPath();
-        ctx2.arc(n.x, n.y, 4, 0, Math.PI*2);
-        ctx2.fill();
-        ctx2.fillStyle = "rgba(240,208,96,0.9)";
-        ctx2.beginPath();
-        ctx2.arc(n.x, n.y, 1.6, 0, Math.PI*2);
-        ctx2.fill();
+
+      // ECG baseline + pulse
+      var baseY=H*0.88;
+      ctx.strokeStyle="rgba(201,162,39,0.35)"; ctx.lineWidth=0.8;
+      ctx.beginPath(); ctx.moveTo(0,baseY); ctx.lineTo(W,baseY); ctx.stroke();
+      ctx.strokeStyle="rgba(201,162,39,0.65)"; ctx.lineWidth=1.2;
+      ctx.shadowColor="rgba(201,162,39,0.5)"; ctx.shadowBlur=3;
+      var waveX=W*0.45;
+      var ecgPts=[[0,0],[8,0],[12,-6],[15,10],[19,-18],[23,18],[27,-5],[32,0],[60,0]];
+      ctx.beginPath();
+      ecgPts.forEach(function(pt,i){
+        var x=waveX+pt[0]; var y=baseY+pt[1];
+        if(i===0)ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      });
+      ctx.stroke();
+      ctx.shadowBlur=0;
+
+      // nodes
+      nodes.forEach(function(n){
+        var g2=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,6);
+        g2.addColorStop(0,"rgba(240,200,80,0.6)"); g2.addColorStop(0.5,"rgba(201,162,39,0.25)"); g2.addColorStop(1,"transparent");
+        ctx.fillStyle=g2; ctx.beginPath(); ctx.arc(n.x,n.y,6,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle="rgba(250,226,138,0.95)";
+        ctx.beginPath(); ctx.arc(n.x,n.y,2,0,Math.PI*2); ctx.fill();
       });
     })();
 
-    if (document.fonts && document.fonts.ready) await document.fonts.ready;
-    await new Promise(function(r) { setTimeout(r, 500); });
+    if(document.fonts&&document.fonts.ready)await document.fonts.ready;
+    await new Promise(function(r){setTimeout(r,600);});
 
-    var netSnapshot = document.getElementById("_wscNetCanvas") ? document.getElementById("_wscNetCanvas").toDataURL("image/png") : null;
+    // Snapshot canvases before html2canvas
+    var scoreSnap=document.getElementById("_wcScoreC")?document.getElementById("_wcScoreC").toDataURL("image/png"):null;
+    var gaugeSnap=document.getElementById("_wcGaugeC")?document.getElementById("_wcGaugeC").toDataURL("image/png"):null;
+    var netSnap  =document.getElementById("_wcNetC")  ?document.getElementById("_wcNetC").toDataURL("image/png"):null;
 
-    var canvas = await html2canvas(cardEl, {
-      scale: 3,
-      backgroundColor: "#080c1a",
-      useCORS: true,
-      logging: false,
-      allowTaint: true,
-      onclone: function(doc) {
-        if (!netSnapshot) return;
-        var nc2 = doc.getElementById("_wscNetCanvas");
-        if (nc2) {
-          var ctx3 = nc2.getContext("2d");
-          var img3 = new Image();
-          img3.onload = function() { ctx3.drawImage(img3, 0, 0); };
-          img3.src = netSnapshot;
+    var canvas=await html2canvas(cardEl,{
+      scale:3,
+      backgroundColor:"#060b18",
+      useCORS:true,
+      logging:false,
+      allowTaint:true,
+      imageTimeout:0,
+      onclone:function(doc){
+        function restoreCanvas(id,snap){
+          if(!snap)return;
+          var c=doc.getElementById(id); if(!c)return;
+          var x=c.getContext("2d");
+          var im=new Image(); im.onload=function(){x.drawImage(im,0,0);}; im.src=snap;
         }
+        restoreCanvas("_wcScoreC",scoreSnap);
+        restoreCanvas("_wcGaugeC",gaugeSnap);
+        restoreCanvas("_wcNetC",  netSnap);
       }
     });
 
     document.body.removeChild(cardEl);
 
-    var dataURL = canvas.toDataURL("image/png");
-    var base64Data = dataURL.split(",")[1];
+    var dataURL=canvas.toDataURL("image/png");
+    var base64Data=dataURL.split(",")[1];
 
     // ── Android APK: Capacitor Filesystem + Share ─────────────────────────────
-    if (_isCapacitor) {
-      var _capPlugins = window.Capacitor && window.Capacitor.Plugins;
-      if (_capPlugins && _capPlugins.Filesystem && _capPlugins.Share) {
-        try {
-          var _fileName = "wuzo_card_" + Date.now() + ".png";
-          var _writeRes = await _capPlugins.Filesystem.writeFile({ path: _fileName, data: base64Data, directory: "CACHE" });
-          await _capPlugins.Share.share({ title: "Minha Análise Financeira WUZO", text: "\uD83D\uDE80 Análise IA em wuzo.com.br", url: _writeRes.uri, dialogTitle: "Compartilhar análise WUZO" });
+    if(_isCapacitor){
+      var _capPlugins=window.Capacitor&&window.Capacitor.Plugins;
+      if(_capPlugins&&_capPlugins.Filesystem&&_capPlugins.Share){
+        try{
+          var _fileName="wuzo_card_"+Date.now()+".png";
+          var _writeRes=await _capPlugins.Filesystem.writeFile({path:_fileName,data:base64Data,directory:"CACHE"});
+          await _capPlugins.Share.share({title:"Minha Análise Financeira WUZO",text:"\uD83D\uDE80 Análise IA em wuzo.com.br",url:_writeRes.uri,dialogTitle:"Compartilhar análise WUZO"});
           showAlert("inp-alert","alert-ok","&#128248; Compartilhado!");
-          setTimeout(function(){ hideAlert("inp-alert"); }, 3000);
+          setTimeout(function(){hideAlert("inp-alert");},3000);
           return;
-        } catch (_capErr) {
-          var _em = _capErr && _capErr.message;
-          if (_em === "Share canceled" || _em === "USER_CANCELED" || (_capErr.name === "AbortError")) return;
-          console.warn("[WuzoShare] Capacitor Share falhou:", _capErr);
+        }catch(_capErr){
+          var _em=_capErr&&_capErr.message;
+          if(_em==="Share canceled"||_em==="USER_CANCELED"||(_capErr.name==="AbortError"))return;
+          console.warn("[WuzoShare] Capacitor Share falhou:",_capErr);
         }
       }
     }
 
     // ── Android bridge (legado) ───────────────────────────────────────────────
-    if (window.Android && typeof window.Android.shareImage === "function") {
+    if(window.Android&&typeof window.Android.shareImage==="function"){
       window.Android.shareImage(base64Data);
       showAlert("inp-alert","alert-ok","&#128248; Abrindo compartilhamento...");
-      setTimeout(function(){ hideAlert("inp-alert"); }, 3000);
+      setTimeout(function(){hideAlert("inp-alert");},3000);
       return;
     }
 
     // ── Web mobile: navigator.share ───────────────────────────────────────────
-    if (navigator.share) {
-      try {
-        var blob2 = await new Promise(function(res) { canvas.toBlob(res, "image/png"); });
-        var file2 = new File([blob2], "wuzo_stories.png", { type: "image/png" });
-        var payload = (navigator.canShare && navigator.canShare({ files: [file2] }))
-          ? { title: "Minha Análise WUZO", text: "\uD83D\uDE80 wuzo.com.br", files: [file2] }
-          : { title: "Minha Análise WUZO", text: "\uD83D\uDE80 Análise financeira por IA! wuzo.com.br", url: "https://wuzo.com.br" };
+    if(navigator.share){
+      try{
+        var blob2=await new Promise(function(res){canvas.toBlob(res,"image/png");});
+        var file2=new File([blob2],"wuzo_stories.png",{type:"image/png"});
+        var payload=(navigator.canShare&&navigator.canShare({files:[file2]}))
+          ?{title:"Minha Análise WUZO",text:"\uD83D\uDE80 wuzo.com.br",files:[file2]}
+          :{title:"Minha Análise WUZO",text:"\uD83D\uDE80 Análise financeira por IA! wuzo.com.br",url:"https://wuzo.com.br"};
         await navigator.share(payload);
         showAlert("inp-alert","alert-ok","Compartilhado! &#128248;");
-        setTimeout(function(){ hideAlert("inp-alert"); }, 3000);
+        setTimeout(function(){hideAlert("inp-alert");},3000);
         return;
-      } catch (se) { if (se.name === "AbortError") return; }
+      }catch(se){if(se.name==="AbortError")return;}
     }
 
     // ── Modal overlay: desktop / sem Web Share API ────────────────────────────
-    var ov = document.createElement("div");
-    ov.id = "wuzo-share-overlay";
-    ov.style.cssText = "position:fixed;inset:0;z-index:9999;background:rgba(3,3,2,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:14px;";
-    var imgEl = document.createElement("img");
-    imgEl.src = dataURL;
-    imgEl.style.cssText = "max-width:100%;max-height:65vh;border-radius:20px;box-shadow:0 0 60px rgba(201,162,39,.3);display:block;";
-    var hint = document.createElement("div");
-    hint.style.cssText = "color:rgba(240,204,112,.85);font-size:.72rem;font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-align:center;";
-    hint.textContent = "Clique com botão direito → Salvar imagem";
-    var link2 = document.createElement("a");
-    link2.href = dataURL; link2.download = "wuzo_stories.png";
-    link2.style.cssText = "padding:10px 24px;border-radius:50px;border:1px solid rgba(201,162,39,.4);background:rgba(201,162,39,.1);color:#f0cc70;font-family:'Outfit',sans-serif;font-weight:700;font-size:.8rem;text-decoration:none;";
-    link2.textContent = "⬇ Baixar imagem";
-    var closeBtn = document.createElement("button");
-    closeBtn.style.cssText = "padding:9px 24px;border-radius:50px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(192,184,158,.6);font-family:'Outfit',sans-serif;font-size:.75rem;cursor:pointer;";
-    closeBtn.innerHTML = "&#10005; Fechar";
-    closeBtn.onclick = function() { var el = document.getElementById("wuzo-share-overlay"); if (el) document.body.removeChild(el); };
-    ov.appendChild(imgEl); ov.appendChild(hint); ov.appendChild(link2); ov.appendChild(closeBtn);
+    var ov=document.createElement("div");
+    ov.id="wuzo-share-overlay";
+    ov.style.cssText="position:fixed;inset:0;z-index:9999;background:rgba(3,3,2,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:14px;";
+    var imgEl=document.createElement("img");
+    imgEl.src=dataURL;
+    imgEl.style.cssText="max-width:100%;max-height:65vh;border-radius:20px;box-shadow:0 0 60px rgba(201,162,39,.3);display:block;";
+    var hint=document.createElement("div");
+    hint.style.cssText="color:rgba(240,204,112,.85);font-size:.72rem;font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-align:center;";
+    hint.textContent="Clique com botão direito → Salvar imagem";
+    var link2=document.createElement("a");
+    link2.href=dataURL; link2.download="wuzo_stories.png";
+    link2.style.cssText="padding:10px 24px;border-radius:50px;border:1px solid rgba(201,162,39,.4);background:rgba(201,162,39,.1);color:#f0cc70;font-family:'Outfit',sans-serif;font-weight:700;font-size:.8rem;text-decoration:none;";
+    link2.textContent="⬇ Baixar imagem";
+    var closeBtn=document.createElement("button");
+    closeBtn.style.cssText="padding:9px 24px;border-radius:50px;border:1px solid rgba(255,255,255,.12);background:transparent;color:rgba(192,184,158,.6);font-family:'Outfit',sans-serif;font-size:.75rem;cursor:pointer;";
+    closeBtn.innerHTML="&#10005; Fechar";
+    closeBtn.onclick=function(){var el=document.getElementById("wuzo-share-overlay");if(el)document.body.removeChild(el);};
+    ov.appendChild(imgEl);ov.appendChild(hint);ov.appendChild(link2);ov.appendChild(closeBtn);
     document.body.appendChild(ov);
 
-  } catch(e) {
-    console.error("[WuzoShare]", e);
-    showAlert("inp-alert","alert-err","Erro ao compartilhar: " + e.message);
-  } finally {
-    if (btn) { btn.disabled = false; btn.innerHTML = "&#128248; COMPARTILHAR NOS STORIES"; }
+  }catch(e){
+    console.error("[WuzoShare]",e);
+    showAlert("inp-alert","alert-err","Erro ao compartilhar: "+e.message);
+  }finally{
+    if(btn){btn.disabled=false;btn.innerHTML="&#128248; COMPARTILHAR NOS STORIES";}
   }
 }
 
