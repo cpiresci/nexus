@@ -18,7 +18,6 @@
 html,body{background:var(--bg);color:var(--tx);font-family:'Outfit',sans-serif;min-height:100vh;}
 body{background-image:radial-gradient(ellipse 80% 50% at 0% 10%,rgba(201,168,76,.055) 0%,transparent 55%),radial-gradient(ellipse 60% 60% at 100% 90%,rgba(201,168,76,.04) 0%,transparent 55%);}
 ::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--gd);border-radius:2px;}
-
 /* CRYPTO TICKER */
 #crypto-ticker{width:100%;background:rgba(3,3,2,.95);border-bottom:1px solid var(--bd2);overflow:hidden;padding:7px 0;position:sticky;top:0;z-index:300;backdrop-filter:blur(10px);}
 .ticker-track{display:flex;gap:0;animation:ticker-scroll 57.5s linear infinite;width:max-content;will-change:transform;}
@@ -30,7 +29,6 @@ body{background-image:radial-gradient(ellipse 80% 50% at 0% 10%,rgba(201,168,76,
 .ticker-dn{color:#e05252;font-weight:700;}
 .ticker-chg{font-size:.6rem;}
 @keyframes ticker-scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
-
 /* LAYOUT */
 .shell{max-width:680px;margin:0 auto;padding:20px 14px 80px;}
 .hdr{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 0 14px;border-bottom:1px solid var(--bd);margin-bottom:20px;gap:12px;flex-wrap:wrap;background:var(--bg);}
@@ -50,7 +48,6 @@ body{background-image:radial-gradient(ellipse 80% 50% at 0% 10%,rgba(201,168,76,
 .abtn.red{border-color:rgba(224,82,82,.3);color:#e08080;}
 .abtn.red:hover{border-color:var(--rd);color:var(--rd);}
 #user-info{font-size:.6rem;color:var(--dm);font-family:'JetBrains Mono',monospace;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-
 /* CARDS */
 .card{background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));border:1px solid var(--bd);border-radius:var(--r);padding:18px 16px;margin-bottom:14px;position:relative;overflow:hidden;}
 .card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.28),transparent);}
@@ -78,7 +75,6 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
 .alert-info{border-color:var(--g);background:rgba(201,168,76,.05);color:var(--g2);}
 .alert-err{border-color:var(--rd);background:rgba(224,82,82,.05);color:#f5a0a0;}
 .alert-ok{border-color:var(--gr);background:rgba(74,175,120,.05);color:#a0f5c0;}
-
 /* PIPELINE */
 .agent-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:12px 0;}
 @media(max-width:420px){.agent-grid{grid-template-columns:repeat(2,1fr);}}
@@ -99,7 +95,6 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
 .pill-run{background:rgba(201,168,76,.1);color:var(--g);}.pill-done{background:rgba(74,175,120,.1);color:var(--gr);}
 .spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(201,168,76,.3);border-top-color:var(--g);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-
 /* RESULTADOS */
 .verdict-card{background:linear-gradient(135deg,rgba(180,140,50,.06),rgba(180,140,50,.01));border:1px solid var(--bd2);border-radius:var(--r);border-left:4px solid var(--g);padding:16px;margin-bottom:12px;position:relative;overflow:hidden;}
 .verdict-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent);}
@@ -116,7 +111,6 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
 .agent-block-title{color:var(--g2);font-size:.72rem;font-weight:700;margin-bottom:6px;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;border-bottom:1px solid var(--bd);padding-bottom:4px;}
 .agent-block-body{font-size:.84rem;line-height:1.75;color:var(--tx);}
 .agent-block-body strong{color:var(--g2);}
-
 /* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);display:none;align-items:center;justify-content:center;z-index:1000;padding:16px;}
 .modal-overlay.open{display:flex;}
@@ -133,7 +127,6 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
 .modal-err{background:rgba(224,82,82,.08);border:1px solid rgba(224,82,82,.3);border-radius:var(--r2);padding:8px 12px;font-size:.78rem;color:#f5a0a0;margin-top:8px;display:none;}
 .modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--dm);font-size:1.1rem;cursor:pointer;}
 .modal-close:hover{color:var(--g);}
-
 /* ADMIN */
 #admin-panel{position:fixed;bottom:20px;right:16px;z-index:500;display:none;flex-direction:column;gap:8px;align-items:flex-end;}
 .admin-btn{padding:10px 16px;border-radius:50px;border:none;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;transition:all .2s;box-shadow:0 4px 16px rgba(0,0,0,.4);}
@@ -154,18 +147,15 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
 .admin-user-email{font-size:.68rem;color:var(--tx);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .admin-user-meta{font-size:.6rem;color:var(--dm);font-family:'JetBrains Mono',monospace;white-space:nowrap;}
 .admin-credit-btn{padding:3px 8px;border-radius:4px;border:1px solid var(--gd);background:rgba(201,168,76,.1);color:var(--g);cursor:pointer;font-size:.6rem;font-family:'JetBrains Mono',monospace;}
-
 /* LANGUAGE SELECTOR */
 .lang-selector{display:flex;gap:4px;align-items:center;}
 .lang-btn{background:transparent;border:1px solid var(--bd);border-radius:12px;color:var(--dm);font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:1px;padding:3px 8px;cursor:pointer;transition:all .2s;text-transform:uppercase;}
 .lang-btn:hover{border-color:var(--g);color:var(--g);}
 .lang-btn.active{background:rgba(201,168,76,.12);border-color:var(--gd);color:var(--g);}
-
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800;900&family=Barlow:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
 <!-- ULTRA TICKER v5.0 (Cripto + US Stocks + Índices + F&G — atualiza a cada 30s) -->
 <div id="crypto-ticker">
   <div class="ticker-track">
@@ -175,9 +165,7 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
     <div class="ticker-item"><span class="ticker-sym">S&amp;P500</span>&nbsp;<span class="ticker-price">---</span></div>
   </div>
 </div>
-
 <div class="shell">
-
 <!-- HEADER -->
 <div class="hdr">
   <div>
@@ -204,7 +192,6 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
     </div>
   </div>
 </div>
-
 <!-- INPUT CARD -->
 <div class="card" id="card-input">
   <div class="inp-lbl" data-i18n="inp_lbl">Descreva sua situação financeira</div>
@@ -216,7 +203,6 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
   </div>
   <div class="alert alert-err" id="inp-alert"></div>
 </div>
-
 <!-- PIPELINE -->
 <div class="card" id="sec-pipeline" style="display:none;">
   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
@@ -224,10 +210,10 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
     <span class="pill pill-run" id="pip-pill">ANALISANDO</span>
   </div>
   <div class="agent-grid" id="agent-grid"></div>
+  <div id="phase-status" style="font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--g);letter-spacing:1px;margin-bottom:8px;min-height:14px;"></div>
   <div class="prog"><div class="prog-fill" id="prog-fill"></div></div>
   <div class="log" id="log-feed"><div class="ll" id="log-init-ll">&#11041; Iniciando...</div></div>
 </div>
-
 <!-- FREE RESULT -->
 <div id="sec-free" style="display:none;">
   <div class="verdict-card">
@@ -244,7 +230,6 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
     </button>
   </div>
 </div>
-
 <!-- FULL REPORT -->
 <div id="sec-full">
   <div class="verdict-card">
@@ -269,15 +254,12 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
     </button>
   </div>
 </div>
-
 </div><!-- /shell -->
-
 <!-- ADMIN PANEL -->
 <div id="admin-panel">
   <button class="admin-btn pdf-btn" onclick="openPDFFilesModal()">&#128196; PDFs</button>
   <button class="admin-btn purple" onclick="openAdminModal()">&#128081; Admin</button>
 </div>
-
 <!-- MODAL PDFs EXPIRING -->
 <div class="modal-overlay" id="modal-pdfs" onclick="if(event.target===this)document.getElementById('modal-pdfs').classList.remove('open')">
   <div class="modal-box" style="max-width:480px;max-height:90vh;overflow-y:auto;">
@@ -290,7 +272,6 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
     <div id="pdf-files-list" style="max-height:400px;overflow-y:auto;"></div>
   </div>
 </div>
-
 <!-- MODAL ADMIN -->
 <div class="modal-overlay" id="modal-admin" onclick="if(event.target===this)closeAdminModal()">
   <div class="modal-box" style="max-width:440px;max-height:90vh;overflow-y:auto;">
@@ -329,7 +310,6 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
     </div>
   </div>
 </div>
-
 <!-- MODAL LOGIN -->
 <div class="modal-overlay" id="modal-login" onclick="if(event.target===this)closeModal('login')">
   <div class="modal-box">
@@ -344,7 +324,6 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
     <div class="modal-switch"><span data-i18n="login_switch">Não tem conta? <a onclick="switchModal('login','register')">Criar conta</a></span></div>
   </div>
 </div>
-
 <!-- MODAL REGISTER -->
 <div class="modal-overlay" id="modal-register" onclick="if(event.target===this)closeModal('register')">
   <div class="modal-box">
@@ -359,15 +338,13 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
     <div class="modal-switch"><span data-i18n="reg_switch">Já tem conta? <a onclick="switchModal('register','login')">Entrar</a></span></div>
   </div>
 </div>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+<script src="wuzo-premium-progress.js"></script>
 <script>
 var BACKEND = "https://app.wuzo.com.br";
-
 // ── I18N ENGINE ──────────────────────────────────────────────────────────
 var _lang = localStorage.getItem("wuzo_lang") || "pt";
-
 var I18N = {
   pt: {
     live:             "AO VIVO",
@@ -412,6 +389,7 @@ var I18N = {
     log_fetching:     "Buscando preços reais e notícias do dia...",
     log_processing:   "Processando 16 especialistas...",
     log_done:         "Concluído.",
+    log_second_ok:    "Segunda análise integrada ao veredito.",
     err_describe:     "Descreva sua situação financeira.",
     err_server_wake:  "&#9203; Servidor acordando, aguarde...",
     login_placeholder_email: "seu@email.com",
@@ -463,6 +441,7 @@ var I18N = {
     log_fetching:     "Fetching live prices and today's news...",
     log_processing:   "Processing 16 specialists...",
     log_done:         "Completed.",
+    log_second_ok:    "Second analysis merged into verdict.",
     err_describe:     "Describe your financial situation.",
     err_server_wake:  "&#9203; Server starting up, please wait...",
     login_placeholder_email: "your@email.com",
@@ -514,6 +493,7 @@ var I18N = {
     log_fetching:     "Obteniendo precios reales y noticias del día...",
     log_processing:   "Procesando 16 especialistas...",
     log_done:         "Completado.",
+    log_second_ok:    "Segunda análisis integrada al veredicto.",
     err_describe:     "Describe tu situación financiera.",
     err_server_wake:  "&#9203; Servidor iniciando, por favor espera...",
     login_placeholder_email: "tu@email.com",
@@ -523,9 +503,7 @@ var I18N = {
     lang_instruction: "Responde en español.",
   }
 };
-
 function t(key){ return (I18N[_lang] || I18N.pt)[key] || (I18N.pt)[key] || key; }
-
 function setLang(lang){
   _lang = lang;
   localStorage.setItem("wuzo_lang", lang);
@@ -536,7 +514,6 @@ function setLang(lang){
   });
   applyTranslations();
 }
-
 function applyTranslations(){
   document.querySelectorAll("[data-i18n]").forEach(function(el){
     el.innerHTML = t(el.getAttribute("data-i18n"));
@@ -562,7 +539,6 @@ function applyTranslations(){
     pill.innerHTML=t("pip_running");
   }
 }
-
 function aborter(ms){
   var c=new AbortController();
   setTimeout(function(){
@@ -589,15 +565,12 @@ function getToken(){
 }
 function authHeader(){var t=getToken();return t?{"Content-Type":"application/json","Authorization":"Bearer "+t}:{"Content-Type":"application/json"};}
 var _online=false,_currentAnalysisId=null,_currentVerdict="",_currentAgents=[],_currentWuzoScore=65;
-
 // ── Detecção de ambiente Capacitor/APK ──────────────────────────────────────
 var _isCapacitor = !!(window.Capacitor) || navigator.userAgent.indexOf("WuzoApp") !== -1;
-
 // ── ULTRA TICKER v5.0 ────────────────────────────────────────────────────────
 var _tickerData    = [];
 var _tickerPos     = 0;
 var _tickerAnimReq = null;
-
 function _buildTickerItems(data){
   var items = [];
   if(data.fear_greed){
@@ -665,7 +638,6 @@ function _buildTickerItems(data){
   });
   return items;
 }
-
 function _renderTicker(){
   var track = document.querySelector(".ticker-track");
   if(!track || !_tickerData.length) return;
@@ -676,7 +648,6 @@ function _renderTicker(){
   });
   track.innerHTML = html;
 }
-
 function _tickerFetch(url, ms){
   ms = ms || 10000;
   return Promise.race([
@@ -684,7 +655,6 @@ function _tickerFetch(url, ms){
     new Promise(function(_,rej){setTimeout(function(){rej(new Error("timeout"));},ms);})
   ]);
 }
-
 async function _fetchBinanceDirect(){
   var syms='["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT","XRPUSDT","DOGEUSDT","ADAUSDT","AVAXUSDT","LINKUSDT","MATICUSDT","TONUSDT","SHIBUSDT"]';
   var r=await _tickerFetch("https://api.binance.com/api/v3/ticker/24hr?symbols="+encodeURIComponent(syms),6000);
@@ -704,7 +674,6 @@ async function _fetchBinanceDirect(){
   });
   return items;
 }
-
 async function updateTicker(){
   try{
     var r=await _tickerFetch(BACKEND+"/api/market/ticker",12000);
@@ -738,10 +707,8 @@ async function updateTicker(){
     }
   }catch(e2){}
 }
-
 // ── STATUS ───────────────────────────────────────────────────
 function setStatus(txt,cls){var el=document.getElementById("api-status");el.textContent=txt;el.className="status-pill "+cls;}
-
 // ── HEALTH CHECK ─────────────────────────────────────────────
 async function checkHealth(){
   setStatus(t("status_connecting"),"s-waking");
@@ -761,7 +728,6 @@ async function checkHealth(){
   }
   _online=false;setStatus(t("status_offline"),"s-offline");
 }
-
 async function checkStripeReturn(){
   var p=new URLSearchParams(location.search);var sid=p.get("session_id")||"";if(!sid)return;
   p.delete("session_id");history.replaceState(null,"",location.pathname+(p.toString()?"?"+p.toString():""));
@@ -778,7 +744,6 @@ async function checkStripeReturn(){
     }
   }catch(e){setStatus("API OK","s-online");}
 }
-
 async function updateUI(){
   var tok=getToken();
   if(!tok){
@@ -816,13 +781,11 @@ async function updateUI(){
     document.getElementById("user-info").textContent=getSaved(LS.EMAIL)||"logado";
   }
 }
-
 // ── AUTH MODALS ───────────────────────────────────────────────
 function openModal(name){document.getElementById("modal-"+name).classList.add("open");var first=document.querySelector("#modal-"+name+" .modal-inp");if(first)setTimeout(function(){first.focus();},80);}
 function closeModal(n){document.getElementById("modal-"+n).classList.remove("open");document.getElementById(n==="login"?"login-err":"reg-err").style.display="none";}
 function switchModal(f,t){closeModal(f);openModal(t);}
 function showModalErr(id,msg){var el=document.getElementById(id);el.textContent=msg;el.style.display="block";}
-
 async function doLogin(){
   if(!_online){showModalErr("login-err","Servidor offline. Aguarde.");return;}
   var email=document.getElementById("login-email").value.trim();
@@ -837,7 +800,6 @@ async function doLogin(){
   }catch(e){if(!_isAbortError(e))showModalErr("login-err","Sem conexão: "+e.message);}
   finally{btn.textContent="ENTRAR";btn.disabled=false;}
 }
-
 async function doRegister(){
   if(!_online){showModalErr("reg-err","Servidor offline. Aguarde.");return;}
   var email=document.getElementById("reg-email").value.trim();
@@ -855,14 +817,12 @@ async function doRegister(){
   }catch(e){if(!_isAbortError(e))showModalErr("reg-err","Sem conexão: "+e.message);}
   finally{btn.textContent="CRIAR CONTA GRÁTIS";btn.disabled=false;}
 }
-
 function logout(){
   del(LS.TOKEN);del(LS.EMAIL);
   document.getElementById("cred-num").textContent="0";
   document.getElementById("admin-panel").style.display="none";
   updateUI();
 }
-
 // ── PIPELINE VISUAL ───────────────────────────────────────────
 var AGENTS_UI=[
   {id:"macroeconomia",              em:"&#127758;",nm:"Macro"},
@@ -882,7 +842,6 @@ var AGENTS_UI=[
   {id:"auditor_dados",              em:"&#128269;",nm:"Auditor"},
   {id:"consultor_senior",           em:"&#128084;",nm:"Senior"},
 ];
-
 function buildGrid(){
   var g=document.getElementById("agent-grid");g.innerHTML="";
   AGENTS_UI.forEach(function(a){
@@ -891,7 +850,6 @@ function buildGrid(){
     g.appendChild(d);
   });
 }
-
 function setAllThinking(){AGENTS_UI.forEach(function(a){var c=document.getElementById("ac-"+a.id);if(!c)return;c.className="ac thinking";c.querySelector(".ac-st").innerHTML="&#9675;";});animateProg();}
 var _progInt=null;
 function animateProg(){var fill=document.getElementById("prog-fill");var pct=0;clearInterval(_progInt);_progInt=setInterval(function(){pct+=0.2;if(pct>90)pct=90;fill.style.width=pct+"%";},600);}
@@ -912,7 +870,6 @@ function resetPipeline(){
   document.getElementById("log-feed").innerHTML='<div class="ll" id="log-init-ll">&#11041; Iniciando...</div>';
   document.getElementById("pip-pill").innerHTML=t("pip_running");document.getElementById("pip-pill").className="pill pill-run";
 }
-
 // ── ANALISE GRATUITA ──────────────────────────────────────────
 async function handleFree(){
   if(!_online){showAlert("inp-alert","alert-info",t("err_server_wake"));return;}
@@ -965,14 +922,12 @@ async function handleFree(){
   showAlert("inp-alert","alert-err","Timeout. Tente novamente.");
   clearInterval(_progInt);setBtns(false);
 }
-
 function renderFreeResult(verdict,preview){
   document.getElementById("verdict-body").innerHTML=(verdict||"").replace(/\n/g,"<br>").replace(/\*\*(.*?)\*\*/g,"<b>$1</b>");
   document.getElementById("sec-pipeline").style.display="none";
   document.getElementById("sec-free").style.display="block";
   document.getElementById("sec-free").scrollIntoView({behavior:"smooth"});
 }
-
 // ── PREMIUM ───────────────────────────────────────────────────
 async function handlePremium(){
   if(!_online){showAlert("inp-alert","alert-info",t("err_server_wake"));return;}
@@ -1003,7 +958,6 @@ async function startCheckout(){
     else showAlert("inp-alert","alert-err",d.error||"Erro ao iniciar pagamento.");
   }catch(e){if(!_isAbortError(e))showAlert("inp-alert","alert-err","Erro de conexao.");}
 }
-
 async function runPremiumAnalysis(){
   var txt=document.getElementById("txt-input").value.trim()||getSaved(LS.PROMPT);
   if(!txt){showAlert("inp-alert","alert-info",t("err_describe"));return;}
@@ -1020,24 +974,29 @@ async function runPremiumAnalysis(){
     if(!r.ok){showAlert("inp-alert","alert-err",d.error||"Erro ao iniciar.");clearInterval(_progInt);setBtns(false);return;}
     jobId=d.job_id;addLog(t("log_fetching"));
   }catch(e){if(!_isAbortError(e))showAlert("inp-alert","alert-err","Erro: "+e.message);clearInterval(_progInt);setBtns(false);return;}
-
   var maxTries=120;
   for(var i=0;i<maxTries;i++){
     await new Promise(function(r){setTimeout(r,4000);});
     try{
       var pr=await fetch(BACKEND+"/api/job/"+jobId,{headers:{"Authorization":"Bearer "+tok},signal:aborter(10000)});
       var pd=await pr.json().catch(function(){return {};});
+      if(pr.status===202||pd.status==="running"){
+        if(typeof wuzoApplyJobProgress==="function"){
+          wuzoApplyJobProgress(pd.phase,pd.message,_lang);
+        }else if(pd.message){addLog(pd.message);}
+        continue;
+      }
       if(pd.status==="done"){
         _currentAnalysisId=pd.analysis_id;_currentWuzoScore=(typeof pd.wuzo_score==="number")?Math.round(pd.wuzo_score):65;await updateUI();
+        if(pd.second_analysis_applied&&typeof t==="function"){addLog(t("log_second_ok"),"ok");}
         finishGrid(pd.agents);renderFullReport(pd.verdict,pd.agents);setBtns(false);return;
       }
       if(pd.status==="error"){showAlert("inp-alert","alert-err",pd.message||"Erro.");clearInterval(_progInt);setBtns(false);return;}
-      if(i%5===0)addLog(t("log_processing")+" ("+((i+1)*4)+"s)");
+      if(i%5===0&&!pd.phase)addLog(t("log_processing")+" ("+((i+1)*4)+"s)");
     }catch(e){}
   }
   showAlert("inp-alert","alert-err","Timeout. Tente novamente.");clearInterval(_progInt);setBtns(false);
 }
-
 // ── RENDER FULL REPORT ────────────────────────────────────────
 function renderFullReport(verdict,agents){
   _currentVerdict=verdict||"";
@@ -1060,7 +1019,6 @@ function renderFullReport(verdict,agents){
   document.getElementById("sec-full").style.display="block";
   document.getElementById("sec-full").scrollIntoView({behavior:"smooth"});
 }
-
 // ── PDF DOWNLOAD v2.2 — Web + Capacitor/Android ───────────────────────────
 // Android: window.location.href → shouldOverrideUrlLoading → isP dfUrl()
 //          → Intent.ACTION_VIEW → Chrome/Adobe
@@ -1073,12 +1031,9 @@ async function downloadPDF(){
   }
   var tok = getToken();
   if(!tok){ openModal("login"); return; }
-
   var btn = document.getElementById("btn-dl-pdf");
   if(btn){ btn.disabled = true; btn.innerHTML = t("btn_pdf_gen"); }
-
   var pdfUrl = BACKEND + "/api/report/pdf/" + _currentAnalysisId;
-
   try{
     if(_isCapacitor){
       window.location.href = pdfUrl + "?token=" + encodeURIComponent(tok) + "&_t=" + Date.now();
@@ -1114,10 +1069,8 @@ async function downloadPDF(){
     if(btn){ btn.disabled = false; btn.innerHTML = t("btn_pdf_dl"); }
   }
 }
-
 // ── SHARE IMAGE v6.0 — Card Premium Wuzo (Barlow + Glassmorphism) ────────────
 // Usa wuzo_score real do job + extração de módulos por agente + card design v2.
-
 function _shareIsAgentHeader(line){
   var t=line.trim();
   if(!t||t.length<5)return true;
@@ -1133,7 +1086,6 @@ function _shareIsAgentHeader(line){
     /^(Justificativa|O que está|O que precisa|Atenção|Recomendação|Resumo|Conclusão|Diagnóstico|Nota|Observação|Aviso|Veredicto|Final|Síntese)\s*:/i.test(t)
   );
 }
-
 function _extractInsights(max){
   var pool=_currentVerdict||"";
   if(_currentAgents&&_currentAgents.length){
@@ -1161,26 +1113,22 @@ function _extractInsights(max){
   }
   return insights;
 }
-
 function _extractScoreFromVerdict(text){
   var m=text.match(/\b([4-9]\d|100)\/100\b/);if(m)return parseInt(m[1],10);
   m=text.match(/sa[uú]de[^0-9]{0,20}([4-9]\d|100)/i);if(m)return parseInt(m[1],10);
   return null;
 }
-
 function _extractRiskFromVerdict(text){
   var lower=text.toLowerCase();
   if(lower.indexOf("arrojado")!==-1||lower.indexOf("agressivo")!==-1)return{label:"ALTO",sub:"Arrojado"};
   if(lower.indexOf("conservador")!==-1)return{label:"BAIXO",sub:"Conservador"};
   return{label:"MOD",sub:"Moderado"};
 }
-
 function _extractModulesForCard(){
   var agentsMap={};
   if(_currentAgents&&_currentAgents.length){
     _currentAgents.forEach(function(a){agentsMap[a.id]=a.analysis||"";});
   }
-
   // Bold labels fixos por slot — usados se o agente não emitir label próprio
   var LABELS=["ALERTA DE VOLATILIDADE","ECONOMIA BRASILEIRA","IMPACTO DE TAXAS","CRIPTOATIVOS"];
   var AGENTS=[
@@ -1195,7 +1143,6 @@ function _extractModulesForCard(){
     "Selic alta pode drenar rentabilidade. Revisão de portfólio é imperativa.",
     "Volatilidade ativa. Alocação em ativos de baixo risco é mandatória."
   ];
-
   function parseLine(text){
     if(!text)return"";
     var lines=text.split(/\n+/);
@@ -1220,7 +1167,6 @@ function _extractModulesForCard(){
     }
     return"";
   }
-
   return AGENTS.map(function(ids,idx){
     var raw="";
     for(var i=0;i<ids.length;i++){raw=agentsMap[ids[i]]||"";if(raw)break;}
@@ -1233,19 +1179,15 @@ function _extractModulesForCard(){
     return desc;
   });
 }
-
 // ── SHARE IMAGE v7.0 — Card Ultra Premium (Canvas Ring + Gauge + ECG Network) ──
 async function generateShareImage(){
   var btn=document.getElementById("btn-share");
   if(btn){btn.disabled=true;btn.innerHTML="&#9203; Gerando...";}
-
   try{
     var modules=_extractModulesForCard();
     if(!modules[0]){showAlert("inp-alert","alert-err","Execute uma análise premium primeiro.");return;}
-
     var scoreVal=_currentWuzoScore||65;
     var riskInfo=_extractRiskFromVerdict(_currentVerdict||"");
-
     // ── Card CSS (inline) ─────────────────────────────────────────────────────
     var css=
       '@import url(\'https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Raleway:wght@400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700&display=swap\');'+
@@ -1324,7 +1266,6 @@ async function generateShareImage(){
       '.auth-seal{display:flex;align-items:center;gap:5px;background:rgba(201,162,39,.07);border:1px solid rgba(201,162,39,.24);border-radius:20px;padding:3px 10px 3px 7px;}'+
       '.auth-ic{width:15px;height:15px;border-radius:50%;background:rgba(201,162,39,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;}'+
       '.auth-txt{font-family:"Raleway",sans-serif;font-size:7px;font-weight:700;letter-spacing:1.5px;color:rgba(201,162,39,.5);text-transform:uppercase;}';
-
     // ── Card HTML ─────────────────────────────────────────────────────────────
     var cardHtml=
       '<div id="_wc" style="position:absolute;left:-9999px;top:0;">'+
@@ -1332,7 +1273,6 @@ async function generateShareImage(){
       '<div class="oc oc-tl"></div><div class="oc oc-tr"></div>'+
       '<div class="oc oc-bl"></div><div class="oc oc-br"></div>'+
       '<div class="ci">'+
-
         '<div class="hdr">'+
           '<div class="hdr-eye">Análise por Inteligência Artificial</div>'+
           '<div class="hdr-logo">WUZO</div>'+
@@ -1343,9 +1283,7 @@ async function generateShareImage(){
             '<div class="hdr-div-l"></div>'+
           '</div>'+
         '</div>'+
-
         '<div class="top-row">'+
-
           '<div class="gp sp">'+
             '<div class="pt-row">'+
               '<div class="pt">Wuzo Score</div>'+
@@ -1365,9 +1303,7 @@ async function generateShareImage(){
             '</div>'+
             '<div class="sc-footer">Wuzo Score</div>'+
           '</div>'+
-
           '<div class="rc">'+
-
             '<div class="gp rp">'+
               '<div class="pt-row"><div class="pt">Perímetro de Risco</div></div>'+
               '<div class="gauge-wrap">'+
@@ -1378,7 +1314,6 @@ async function generateShareImage(){
                 '<div class="g-sub">'+riskInfo.sub+'</div>'+
               '</div>'+
             '</div>'+
-
             '<div class="gp ap">'+
               '<div class="ap-title">Rede de Consenso<br>de 16 Agentes</div>'+
               '<div class="net-wrap" style="height:62px;">'+
@@ -1389,60 +1324,49 @@ async function generateShareImage(){
                 '<div class="ag-sub">Agentes<br>Especialistas</div>'+
               '</div>'+
             '</div>'+
-
           '</div>'+
         '</div>'+
-
         '<div class="diag-hdr">'+
           '<div class="diag-title">Diagnóstico Executivo</div>'+
           '<div class="diag-ln"></div>'+
         '</div>'+
-
         '<div class="mod"><div class="mc-tl"></div><div class="mc-br"></div>'+
           '<div class="mod-n">01</div>'+
           '<div class="mod-lbl">Módulo "Síntese de Carteira"</div>'+
           '<div class="mod-txt">'+modules[0]+'</div>'+
         '</div>'+
-
         '<div class="mod"><div class="mc-tl"></div><div class="mc-br"></div>'+
           '<div class="mod-n">02</div>'+
           '<div class="mod-lbl">Módulo "Vetores de Valor Tático"</div>'+
           '<div class="mod-txt">'+modules[1]+'</div>'+
         '</div>'+
-
         '<div class="mod"><div class="mc-tl"></div><div class="mc-br"></div>'+
           '<div class="mod-n">03</div>'+
           '<div class="mod-lbl">Módulo "Vetores de Risco Crítico"</div>'+
           '<div class="mod-txt">'+modules[2]+'</div>'+
         '</div>'+
-
         '<div class="mod urg"><div class="mc-tl"></div><div class="mc-br"></div>'+
           '<div class="mod-n">04</div>'+
           '<div class="mod-lbl">Módulo "Ações Imediatas de Alta Prioridade"</div>'+
           '<div class="mod-txt">'+modules[3]+'</div>'+
         '</div>'+
-
         '<div class="mod cta"><div class="mc-tl"></div><div class="mc-br"></div>'+
           '<div class="cta-lbl">Módulo "Ação do Usuário"</div>'+
           '<div class="cta-body"><strong>ACESSO À INTELIGÊNCIA:</strong> Descubra o SEU Wuzo Score <strong>Gratuitamente</strong> agora mesmo:</div>'+
           '<div class="cta-url">WUZO.COM.BR</div>'+
         '</div>'+
-
         '<div class="card-ft">'+
           '<div class="auth-seal">'+
             '<div class="auth-ic"><svg width="9" height="10" viewBox="0 0 12 14" fill="none"><path d="M6 1L1 3.5V7c0 2.8 2 5.3 5 6 3-0.7 5-3.2 5-6V3.5L6 1z" fill="rgba(201,162,39,0.75)"/><path d="M4 7l1.5 1.5L8 5.5" stroke="rgba(248,235,160,1)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>'+
             '<div class="auth-txt">Autenticidade de IA</div>'+
           '</div>'+
         '</div>'+
-
       '</div>'+
       '</div>';
-
     var wrapper=document.createElement("div");
     wrapper.innerHTML=cardHtml;
     var cardEl=wrapper.firstElementChild;
     document.body.appendChild(cardEl);
-
     // ── Draw Score Ring ────────────────────────────────────────────────────────
     (function(){
       var el=document.getElementById("_wcScoreC");
@@ -1457,7 +1381,6 @@ async function generateShareImage(){
       var EA=SA+SW;
       var scorePct=Math.max(0,Math.min(100,scoreVal))/100;
       var SCORE_A=SA+SW*scorePct;
-
       // outer tick ring
       for(var i=0;i<60;i++){
         var a=(i/60)*Math.PI*2;
@@ -1471,7 +1394,6 @@ async function generateShareImage(){
       }
       ctx.beginPath(); ctx.arc(cx,cy,77,0,Math.PI*2);
       ctx.strokeStyle="rgba(180,140,55,0.1)"; ctx.lineWidth=0.7; ctx.stroke();
-
       // bevel shadow
       ctx.beginPath(); ctx.arc(cx,cy,70,0,Math.PI*2);
       ctx.strokeStyle="rgba(0,0,0,0.55)"; ctx.lineWidth=14; ctx.stroke();
@@ -1483,7 +1405,6 @@ async function generateShareImage(){
       hiB.addColorStop(0,"rgba(255,255,255,0.07)"); hiB.addColorStop(1,"transparent");
       ctx.beginPath(); ctx.arc(cx,cy,70,0,Math.PI*2);
       ctx.strokeStyle=hiB; ctx.lineWidth=5; ctx.stroke();
-
       // track
       var trackGrad=ctx.createLinearGradient(cx-65,cy-65,cx+65,cy+65);
       trackGrad.addColorStop(0,"rgba(18,28,70,1)"); trackGrad.addColorStop(1,"rgba(10,16,42,1)");
@@ -1491,7 +1412,6 @@ async function generateShareImage(){
       ctx.strokeStyle=trackGrad; ctx.lineWidth=12; ctx.lineCap="round"; ctx.stroke();
       ctx.beginPath(); ctx.arc(cx,cy,63,SA,EA);
       ctx.strokeStyle="rgba(0,0,0,0.45)"; ctx.lineWidth=10; ctx.lineCap="butt"; ctx.stroke();
-
       // score arc
       var sG=ctx.createLinearGradient(cx-60,cy+40,cx+60,cy-50);
       sG.addColorStop(0,"#6a4008"); sG.addColorStop(0.2,"#b88a1a"); sG.addColorStop(0.4,"#c9a227");
@@ -1501,13 +1421,11 @@ async function generateShareImage(){
       ctx.strokeStyle=sG; ctx.lineWidth=11; ctx.lineCap="round"; ctx.stroke(); ctx.restore();
       ctx.beginPath(); ctx.arc(cx,cy,63,SA,SCORE_A);
       ctx.strokeStyle=sG; ctx.lineWidth=9; ctx.lineCap="round"; ctx.stroke();
-
       // rim highlight
       var rimG=ctx.createLinearGradient(cx-60,cy-60,cx+30,cy);
       rimG.addColorStop(0,"rgba(255,248,180,0.5)"); rimG.addColorStop(0.5,"rgba(240,210,90,0.18)"); rimG.addColorStop(1,"rgba(180,130,20,0)");
       ctx.beginPath(); ctx.arc(cx,cy,66.5,SA,SCORE_A);
       ctx.strokeStyle=rimG; ctx.lineWidth=2; ctx.lineCap="round"; ctx.stroke();
-
       // arc ticks
       for(var j=0;j<=10;j++){
         var at=SA+(SW/10)*j; var isMj=j%5===0;
@@ -1519,13 +1437,11 @@ async function generateShareImage(){
         ctx.strokeStyle=inside?"rgba(201,162,39,"+(isMj?0.6:0.28)+")":"rgba(201,162,39,"+(isMj?0.22:0.1)+")";
         ctx.lineWidth=isMj?1.5:0.8; ctx.stroke();
       }
-
       // end cap glow
       var ex=cx+Math.cos(SCORE_A)*63, ey=cy+Math.sin(SCORE_A)*63;
       var dGr=ctx.createRadialGradient(ex,ey,0,ex,ey,8);
       dGr.addColorStop(0,"rgba(255,245,160,0.95)"); dGr.addColorStop(0.45,"rgba(201,162,39,0.55)"); dGr.addColorStop(1,"transparent");
       ctx.beginPath(); ctx.arc(ex,ey,8,0,Math.PI*2); ctx.fillStyle=dGr; ctx.fill();
-
       // center fill
       var cG=ctx.createRadialGradient(cx,cy-10,4,cx,cy,50);
       cG.addColorStop(0,"rgba(22,40,105,0.98)"); cG.addColorStop(0.45,"rgba(12,22,65,1)"); cG.addColorStop(1,"rgba(5,10,32,1)");
@@ -1538,7 +1454,6 @@ async function generateShareImage(){
       ctx.beginPath(); ctx.arc(cx,cy,34,0,Math.PI*2);
       ctx.strokeStyle="rgba(180,140,55,0.06)"; ctx.lineWidth=1; ctx.stroke(); ctx.restore();
     })();
-
     // ── Draw Gauge ─────────────────────────────────────────────────────────────
     (function(){
       var el=document.getElementById("_wcGaugeC");
@@ -1549,24 +1464,20 @@ async function generateShareImage(){
       var cx=90, cy=90, R=62;
       var SA=(165*Math.PI)/180;
       var EA=(15*Math.PI)/180;
-
       ctx.beginPath(); ctx.arc(cx,cy,R,SA,EA);
       ctx.strokeStyle="rgba(255,255,255,0.04)"; ctx.lineWidth=16; ctx.lineCap="butt"; ctx.stroke();
       ctx.beginPath(); ctx.arc(cx,cy,R+9,SA,EA);
       ctx.strokeStyle="rgba(180,140,55,0.1)"; ctx.lineWidth=1; ctx.stroke();
-
       var aG=ctx.createLinearGradient(cx-R,cy,cx+R,cy);
       aG.addColorStop(0,"#28a85a"); aG.addColorStop(0.28,"#8ab818"); aG.addColorStop(0.5,"#c9a227");
       aG.addColorStop(0.72,"#d46818"); aG.addColorStop(1,"#be2c28");
       ctx.save(); ctx.shadowColor="rgba(201,162,39,0.35)"; ctx.shadowBlur=8;
       ctx.beginPath(); ctx.arc(cx,cy,R,SA,EA);
       ctx.strokeStyle=aG; ctx.lineWidth=12; ctx.lineCap="round"; ctx.stroke(); ctx.restore();
-
       // depth shadow
       ctx.beginPath(); ctx.arc(cx,cy,R,SA,EA);
       ctx.strokeStyle="rgba(0,0,0,0.28)"; ctx.lineWidth=8; ctx.lineCap="butt";
       ctx.globalAlpha=0.35; ctx.stroke(); ctx.globalAlpha=1;
-
       // ticks
       var TSW=(210*Math.PI)/180;
       for(var i=0;i<=10;i++){
@@ -1578,14 +1489,12 @@ async function generateShareImage(){
         ctx.strokeStyle="rgba(201,162,39,"+(isMaj?0.45:0.2)+")";
         ctx.lineWidth=isMaj?1.5:0.8; ctx.stroke();
       }
-
       // needle angle based on risk
       var rLow=riskInfo.sub.toLowerCase();
       var nA;
       if(rLow.indexOf("conservador")!==-1)      nA=(180*Math.PI)/180;
       else if(rLow.indexOf("arrojado")!==-1||rLow.indexOf("agressivo")!==-1) nA=(0*Math.PI)/180;
       else nA=(270*Math.PI)/180; // MOD = straight up
-
       // labels
       ctx.font="700 7.5px 'Raleway',sans-serif"; ctx.textAlign="center";
       ctx.fillStyle="rgba(255,255,255,0.28)";
@@ -1594,13 +1503,11 @@ async function generateShareImage(){
       ctx.fillStyle="rgba(201,162,39,0.72)";
       var modA=(270*Math.PI)/180;
       ctx.fillText("MOD",cx+Math.cos(modA)*(R+16),cy+Math.sin(modA)*(R+16)+4);
-
       // MOD dot
       var modX=cx+Math.cos(modA)*R, modY=cy+Math.sin(modA)*R;
       var dGr=ctx.createRadialGradient(modX,modY,0,modX,modY,6);
       dGr.addColorStop(0,"rgba(255,235,100,0.98)"); dGr.addColorStop(0.4,"rgba(201,162,39,0.7)"); dGr.addColorStop(1,"transparent");
       ctx.beginPath(); ctx.arc(modX,modY,6,0,Math.PI*2); ctx.fillStyle=dGr; ctx.fill();
-
       // needle
       var nLen=R-5;
       ctx.save();
@@ -1610,14 +1517,12 @@ async function generateShareImage(){
       ctx.beginPath(); ctx.moveTo(cx,cy);
       ctx.lineTo(cx+Math.cos(nA)*nLen,cy+Math.sin(nA)*nLen);
       ctx.strokeStyle=nG2; ctx.lineWidth=3; ctx.lineCap="round"; ctx.stroke(); ctx.restore();
-
       // needle base
       var bG2=ctx.createRadialGradient(cx,cy,0,cx,cy,8);
       bG2.addColorStop(0,"#f5e080"); bG2.addColorStop(0.5,"#c9a227"); bG2.addColorStop(1,"#7a5010");
       ctx.beginPath(); ctx.arc(cx,cy,8,0,Math.PI*2); ctx.fillStyle=bG2; ctx.fill();
       ctx.beginPath(); ctx.arc(cx,cy,3.5,0,Math.PI*2); ctx.fillStyle="#faf0d8"; ctx.fill();
     })();
-
     // ── Draw Network + ECG ─────────────────────────────────────────────────────
     (function(){
       var nc=document.getElementById("_wcNetC");
@@ -1637,7 +1542,6 @@ async function generateShareImage(){
         [4,6],[4,12],[5,7],[6,7],[6,13],[7,8],[8,13],[9,5],
         [10,1],[10,11],[12,6],[14,3],[15,8],[11,3],[9,6],[7,13]
       ];
-
       // edges
       conns2.forEach(function(pair){
         var g=ctx.createLinearGradient(nodes[pair[0]].x,nodes[pair[0]].y,nodes[pair[1]].x,nodes[pair[1]].y);
@@ -1645,7 +1549,6 @@ async function generateShareImage(){
         ctx.strokeStyle=g; ctx.lineWidth=0.85;
         ctx.beginPath(); ctx.moveTo(nodes[pair[0]].x,nodes[pair[0]].y); ctx.lineTo(nodes[pair[1]].x,nodes[pair[1]].y); ctx.stroke();
       });
-
       // ECG baseline + pulse
       var baseY=H*0.88;
       ctx.strokeStyle="rgba(201,162,39,0.35)"; ctx.lineWidth=0.8;
@@ -1661,7 +1564,6 @@ async function generateShareImage(){
       });
       ctx.stroke();
       ctx.shadowBlur=0;
-
       // nodes
       nodes.forEach(function(n){
         var g2=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,6);
@@ -1671,15 +1573,12 @@ async function generateShareImage(){
         ctx.beginPath(); ctx.arc(n.x,n.y,2,0,Math.PI*2); ctx.fill();
       });
     })();
-
     if(document.fonts&&document.fonts.ready)await document.fonts.ready;
     await new Promise(function(r){setTimeout(r,600);});
-
     // Snapshot canvases before html2canvas
     var scoreSnap=document.getElementById("_wcScoreC")?document.getElementById("_wcScoreC").toDataURL("image/png"):null;
     var gaugeSnap=document.getElementById("_wcGaugeC")?document.getElementById("_wcGaugeC").toDataURL("image/png"):null;
     var netSnap  =document.getElementById("_wcNetC")  ?document.getElementById("_wcNetC").toDataURL("image/png"):null;
-
     var canvas=await html2canvas(cardEl,{
       scale:3,
       backgroundColor:"#060b18",
@@ -1699,12 +1598,9 @@ async function generateShareImage(){
         restoreCanvas("_wcNetC",  netSnap);
       }
     });
-
     document.body.removeChild(cardEl);
-
     var dataURL=canvas.toDataURL("image/png");
     var base64Data=dataURL.split(",")[1];
-
     // ── Android APK: Capacitor Filesystem + Share ─────────────────────────────
     if(_isCapacitor){
       var _capPlugins=window.Capacitor&&window.Capacitor.Plugins;
@@ -1723,7 +1619,6 @@ async function generateShareImage(){
         }
       }
     }
-
     // ── Android bridge (legado) ───────────────────────────────────────────────
     if(window.Android&&typeof window.Android.shareImage==="function"){
       window.Android.shareImage(base64Data);
@@ -1731,7 +1626,6 @@ async function generateShareImage(){
       setTimeout(function(){hideAlert("inp-alert");},3000);
       return;
     }
-
     // ── Web mobile: navigator.share ───────────────────────────────────────────
     if(navigator.share){
       try{
@@ -1746,7 +1640,6 @@ async function generateShareImage(){
         return;
       }catch(se){if(se.name==="AbortError")return;}
     }
-
     // ── Modal overlay: desktop / sem Web Share API ────────────────────────────
     var ov=document.createElement("div");
     ov.id="wuzo-share-overlay";
@@ -1767,7 +1660,6 @@ async function generateShareImage(){
     closeBtn.onclick=function(){var el=document.getElementById("wuzo-share-overlay");if(el)document.body.removeChild(el);};
     ov.appendChild(imgEl);ov.appendChild(hint);ov.appendChild(link2);ov.appendChild(closeBtn);
     document.body.appendChild(ov);
-
   }catch(e){
     console.error("[WuzoShare]",e);
     showAlert("inp-alert","alert-err","Erro ao compartilhar: "+e.message);
@@ -1775,14 +1667,11 @@ async function generateShareImage(){
     if(btn){btn.disabled=false;btn.innerHTML="&#128248; COMPARTILHAR NOS STORIES";}
   }
 }
-
-
 // ── ADMIN ─────────────────────────────────────────────────────
 async function openPDFFilesModal(){
   document.getElementById("modal-pdfs").classList.add("open");
   await adminLoadPDFFiles();
 }
-
 async function adminLoadPDFFiles(){
   var tok=getToken();if(!tok)return;
   var box=document.getElementById("pdf-files-list");
@@ -1818,7 +1707,6 @@ async function adminLoadPDFFiles(){
     box.appendChild(summary);
   }catch(e){if(!_isAbortError(e))box.textContent="Erro: "+e.message;}
 }
-
 // ── ADMIN DOWNLOAD PDF v2.0 ───────────────────────────────────
 // [FIX v2.0] Android APK: blob + a.click() NÃO funciona no Android WebView.
 //            Capacitor: window.location.href → shouldOverrideUrlLoading
@@ -1854,12 +1742,10 @@ async function adminDownloadPDF(analysisId,ev){
     if(btn&&!_isCapacitor){btn.disabled=false;btn.innerHTML="&#11015; PDF";}
   }
 }
-
 function escHtmlAdmin(str){
   if(!str)return "";
   return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
-
 function openAdminModal(){document.getElementById("modal-admin").classList.add("open");}
 function closeAdminModal(){document.getElementById("modal-admin").classList.remove("open");}
 function switchAdminTab(tab){
@@ -1869,7 +1755,6 @@ function switchAdminTab(tab){
     if(btn){btn.className="admin-tab"+(t===tab?" active":"");}
   });
 }
-
 function adminShowMsg(msg,ok){
   var el=document.getElementById("admin-credit-msg");
   el.textContent=msg;
@@ -1879,7 +1764,6 @@ function adminShowMsg(msg,ok){
   el.style.border="1px solid "+(ok?"rgba(74,175,120,.3)":"rgba(224,82,82,.3)");
   setTimeout(function(){el.style.display="none";},4000);
 }
-
 async function adminCredit(action){
   var target=document.getElementById("admin-target").value.trim();
   var amount=parseInt(document.getElementById("admin-amount").value)||1;
@@ -1902,7 +1786,6 @@ async function adminCredit(action){
     else adminShowMsg(d.error||"Erro.",false);
   }catch(e){if(!_isAbortError(e))adminShowMsg("Erro: "+e.message,false);}
 }
-
 async function adminLoadUsers(){
   var tok=getToken();if(!tok)return;
   var box=document.getElementById("admin-users-list");
@@ -1922,7 +1805,6 @@ async function adminLoadUsers(){
     if(!users.length)box.innerHTML='<div style="color:var(--dm);font-size:.7rem;">Nenhum usuário.</div>';
   }catch(e){if(!_isAbortError(e))box.textContent="Erro: "+e.message;}
 }
-
 async function quickAddCredit(userId,email){
   var tok=getToken();if(!tok)return;
   try{
@@ -1935,7 +1817,6 @@ async function quickAddCredit(userId,email){
     else adminShowMsg(d.error||"Erro.",false);
   }catch(e){if(!_isAbortError(e))adminShowMsg("Erro: "+e.message,false);}
 }
-
 async function adminLoadStats(){
   var tok=getToken();if(!tok)return;
   var box=document.getElementById("admin-stats-box");
@@ -1957,7 +1838,6 @@ async function adminLoadStats(){
     ].map(function(l){return '<div style="border-bottom:1px solid var(--bd);padding:3px 0;">'+l+'</div>';}).join("");
   }catch(e){if(!_isAbortError(e))box.textContent="Erro: "+e.message;}
 }
-
 async function adminClearPDFCache(){
   if(!confirm("Limpar cache de PDFs antigos?"))return;
   var tok=getToken();if(!tok)return;
@@ -1970,7 +1850,6 @@ async function adminClearPDFCache(){
     alert(r.ok?d.message:d.error||"Erro.");
   }catch(e){if(!_isAbortError(e))alert("Erro: "+e.message);}
 }
-
 // ── HELPERS ───────────────────────────────────────────────────
 function setBtns(on){
   ["btn-free","btn-premium","btn-buy"].forEach(function(id){var b=document.getElementById(id);if(b)b.disabled=on;});
@@ -1992,7 +1871,6 @@ function setBtns(on){
 }
 function showAlert(id,cls,msg){var el=document.getElementById(id);el.className="alert "+cls;el.innerHTML=msg;el.style.display="block";}
 function hideAlert(id){document.getElementById(id).style.display="none";}
-
 // ── INIT ─────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded",function(){
   setLang(_lang);buildGrid();getToken();updateUI();checkHealth();
@@ -2002,3 +1880,4 @@ document.addEventListener("DOMContentLoaded",function(){
 </script>
 </body>
 </html>
+</user_query>
