@@ -156,7 +156,7 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800;900&family=Barlow:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<!-- ULTRA TICKER v5.0 (Cripto + US Stocks + Índices + F&G — atualiza a cada 30s) -->
+<!-- ULTRA TICKER v5.0 -->
 <div id="crypto-ticker">
   <div class="ticker-track">
     <div class="ticker-item">⬡ <span style="color:var(--dm);font-size:.55rem;letter-spacing:2px;" data-i18n="live">AO VIVO</span></div>
@@ -340,7 +340,107 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
-<script src="wuzo-premium-progress.js"></script>
+
+<!-- ══════════════════════════════════════════════════════════════
+     WUZO — Premium Progress (inlineado — elimina dependência de
+     wuzo-premium-progress.js como ficheiro externo)
+     ══════════════════════════════════════════════════════════════ -->
+<script>
+(function (global) {
+  "use strict";
+
+  var PHASE_PCT = {
+    pending:         8,
+    agents:         50,
+    senior_first:   62,
+    debate:         74,
+    second_analysis:88,
+    report:         96,
+    done:          100,
+  };
+
+  var PHASE_I18N = {
+    pt: {
+      pending:         "Na fila...",
+      agents:          "15 especialistas analisando...",
+      senior_first:    "Consultor sênior — primeira análise...",
+      debate:          "Debates entre especialistas conflitantes...",
+      second_analysis: "Segunda análise — arbitragem pós-debate...",
+      report:          "Gerando relatório final...",
+      done:            "Análise concluída.",
+      second_ok:       "Segunda análise integrada ao veredito.",
+    },
+    en: {
+      pending:         "Queued...",
+      agents:          "15 specialists analyzing...",
+      senior_first:    "Senior consultant — first pass...",
+      debate:          "Debates between conflicting specialists...",
+      second_analysis: "Second analysis — post-debate arbitration...",
+      report:          "Generating final report...",
+      done:            "Analysis complete.",
+      second_ok:       "Second analysis merged into verdict.",
+    },
+    es: {
+      pending:         "En cola...",
+      agents:          "15 especialistas analizando...",
+      senior_first:    "Consultor sénior — primer análisis...",
+      debate:          "Debates entre especialistas en conflicto...",
+      second_analysis: "Segunda análisis — arbitraje post-debate...",
+      report:          "Generando informe final...",
+      done:            "Análisis completado.",
+      second_ok:       "Segunda análisis integrada al veredicto.",
+    },
+  };
+
+  function phaseLabel(phase, lang) {
+    var L = PHASE_I18N[lang] || PHASE_I18N.pt;
+    return L[phase] || phase || "";
+  }
+
+  function applyJobProgress(phase, message, lang) {
+    /* Atualiza label de fase */
+    var el = document.getElementById("phase-status");
+    var lbl = (message && String(message).trim()) || phaseLabel(phase, lang);
+    if (el) el.textContent = lbl;
+
+    /* Atualiza barra de progresso */
+    if (phase && PHASE_PCT[phase] != null) {
+      var fill = document.getElementById("prog-fill");
+      if (fill) fill.style.width = PHASE_PCT[phase] + "%";
+    }
+
+    /* Mantém o agente sênior pulsando durante fases de análise profunda */
+    if (
+      phase === "senior_first" ||
+      phase === "debate" ||
+      phase === "second_analysis"
+    ) {
+      var senior = document.getElementById("ac-consultor_senior");
+      if (senior) {
+        senior.className = "ac thinking";
+        var st = senior.querySelector(".ac-st");
+        if (st) st.innerHTML = "&#9675;";
+      }
+    }
+
+    /* Adiciona linha no log de atividade */
+    if (lbl && typeof global.addLog === "function") {
+      global.addLog(lbl);
+    }
+  }
+
+  /* Exporta para o escopo global */
+  global.WUZO_PHASE_PCT   = PHASE_PCT;
+  global.WUZO_PHASE_I18N  = PHASE_I18N;
+  global.wuzoApplyJobProgress = applyJobProgress;
+  global.wuzoPhaseLabel   = phaseLabel;
+
+})(typeof window !== "undefined" ? window : globalThis);
+</script>
+
+<!-- ══════════════════════════════════════════════════════════════
+     WUZO — Script principal
+     ══════════════════════════════════════════════════════════════ -->
 <script>
 var BACKEND = "https://app.wuzo.com.br";
 // ── I18N ENGINE ──────────────────────────────────────────────────────────
@@ -381,7 +481,7 @@ var I18N = {
     btn_free_popular: "✦ MAIS POPULAR",
     btn_pdf_dl:       "&#9989; BAIXAR MEU RELATÓRIO PDF",
     btn_pdf_gen:      "&#9203; Gerando PDF...",
-    lock_btn:         "<span data-i18n=\"lock_btn\">&#128274; QUERO O RELATÓRIO COMPLETO — R$&nbsp;19,90</span>",
+    lock_btn:         "&#128274; QUERO O RELATÓRIO COMPLETO — R$&nbsp;19,90",
     log_init:         "&#11041; Iniciando...",
     pip_running:      "ANALISANDO",
     pip_done:         "CONCLUÍDO",
@@ -1019,11 +1119,7 @@ function renderFullReport(verdict,agents){
   document.getElementById("sec-full").style.display="block";
   document.getElementById("sec-full").scrollIntoView({behavior:"smooth"});
 }
-// ── PDF DOWNLOAD v2.2 — Web + Capacitor/Android ───────────────────────────
-// Android: window.location.href → shouldOverrideUrlLoading → isP dfUrl()
-//          → Intent.ACTION_VIEW → Chrome/Adobe
-//          shouldOverrideUrlLoading retorna true → WebView NÃO navega
-// Web: fetch + blob (desktop/mobile browser)
+// ── PDF DOWNLOAD v2.2 ─────────────────────────────────────────
 async function downloadPDF(){
   if(!_currentAnalysisId){
     showAlert("inp-alert","alert-err","Análise não disponível. Execute uma análise premium primeiro.");
@@ -1069,8 +1165,7 @@ async function downloadPDF(){
     if(btn){ btn.disabled = false; btn.innerHTML = t("btn_pdf_dl"); }
   }
 }
-// ── SHARE IMAGE v6.0 — Card Premium Wuzo (Barlow + Glassmorphism) ────────────
-// Usa wuzo_score real do job + extração de módulos por agente + card design v2.
+// ── SHARE IMAGE v7.0 ──────────────────────────────────────────
 function _shareIsAgentHeader(line){
   var t=line.trim();
   if(!t||t.length<5)return true;
@@ -1129,7 +1224,6 @@ function _extractModulesForCard(){
   if(_currentAgents&&_currentAgents.length){
     _currentAgents.forEach(function(a){agentsMap[a.id]=a.analysis||"";});
   }
-  // Bold labels fixos por slot — usados se o agente não emitir label próprio
   var LABELS=["ALERTA DE VOLATILIDADE","ECONOMIA BRASILEIRA","IMPACTO DE TAXAS","CRIPTOATIVOS"];
   var AGENTS=[
     ["macroeconomia","consultor_senior"],
@@ -1152,14 +1246,11 @@ function _extractModulesForCard(){
         .replace(/^\s*[-•]\s*/,"")
         .trim();
       if(raw.length<32)continue;
-      // Descarta linhas de prompt/pergunta vazadas
       if(/\?/.test(raw.slice(0,70)))continue;
       if(/^(O que|Com os|Qual |Como |Se |Para |Dado |Usando |Considerando |Avalie |Identifique )/i.test(raw))continue;
       var clean=raw.replace(/\*{1,2}([^*]+)\*{1,2}/g,"$1");
       if(_shareIsAgentHeader(clean))continue;
-      // Converte markdown **LABEL:** → <strong>LABEL:</strong>
       raw=raw.replace(/\*\*([^*]+)\*\*/g,"<strong>$1</strong>");
-      // Converte LABEL_EM_CAPS: texto → <strong>LABEL:</strong> texto
       raw=raw.replace(/^([A-ZÁÀÂÃÉÊÍÓÔÕÚÇ][A-ZÁÀÂÃÉÊÍÓÔÕÚÇ\s]{3,45}):\s/,function(m,k){
         return"<strong>"+k.trim()+":</strong> ";
       });
@@ -1172,14 +1263,12 @@ function _extractModulesForCard(){
     for(var i=0;i<ids.length;i++){raw=agentsMap[ids[i]]||"";if(raw)break;}
     if(!raw&&idx===0)raw=_currentVerdict||"";
     var desc=parseLine(raw)||FALLBACKS[idx];
-    // Se o agente não emitiu label próprio (<strong>), injeta o label fixo do slot
     if(desc.indexOf("<strong>")===-1){
       desc="<strong>"+LABELS[idx]+":</strong> "+desc;
     }
     return desc;
   });
 }
-// ── SHARE IMAGE v7.0 — Card Ultra Premium (Canvas Ring + Gauge + ECG Network) ──
 async function generateShareImage(){
   var btn=document.getElementById("btn-share");
   if(btn){btn.disabled=true;btn.innerHTML="&#9203; Gerando...";}
@@ -1188,7 +1277,6 @@ async function generateShareImage(){
     if(!modules[0]){showAlert("inp-alert","alert-err","Execute uma análise premium primeiro.");return;}
     var scoreVal=_currentWuzoScore||65;
     var riskInfo=_extractRiskFromVerdict(_currentVerdict||"");
-    // ── Card CSS (inline) ─────────────────────────────────────────────────────
     var css=
       '@import url(\'https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Raleway:wght@400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700&display=swap\');'+
       '*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}'+
@@ -1266,7 +1354,6 @@ async function generateShareImage(){
       '.auth-seal{display:flex;align-items:center;gap:5px;background:rgba(201,162,39,.07);border:1px solid rgba(201,162,39,.24);border-radius:20px;padding:3px 10px 3px 7px;}'+
       '.auth-ic{width:15px;height:15px;border-radius:50%;background:rgba(201,162,39,.12);display:flex;align-items:center;justify-content:center;flex-shrink:0;}'+
       '.auth-txt{font-family:"Raleway",sans-serif;font-size:7px;font-weight:700;letter-spacing:1.5px;color:rgba(201,162,39,.5);text-transform:uppercase;}';
-    // ── Card HTML ─────────────────────────────────────────────────────────────
     var cardHtml=
       '<div id="_wc" style="position:absolute;left:-9999px;top:0;">'+
       '<style>'+css+'</style>'+
@@ -1367,7 +1454,6 @@ async function generateShareImage(){
     wrapper.innerHTML=cardHtml;
     var cardEl=wrapper.firstElementChild;
     document.body.appendChild(cardEl);
-    // ── Draw Score Ring ────────────────────────────────────────────────────────
     (function(){
       var el=document.getElementById("_wcScoreC");
       var dpr=Math.min(window.devicePixelRatio||1,3);
@@ -1381,7 +1467,6 @@ async function generateShareImage(){
       var EA=SA+SW;
       var scorePct=Math.max(0,Math.min(100,scoreVal))/100;
       var SCORE_A=SA+SW*scorePct;
-      // outer tick ring
       for(var i=0;i<60;i++){
         var a=(i/60)*Math.PI*2;
         var isMaj=i%5===0;
@@ -1394,7 +1479,6 @@ async function generateShareImage(){
       }
       ctx.beginPath(); ctx.arc(cx,cy,77,0,Math.PI*2);
       ctx.strokeStyle="rgba(180,140,55,0.1)"; ctx.lineWidth=0.7; ctx.stroke();
-      // bevel shadow
       ctx.beginPath(); ctx.arc(cx,cy,70,0,Math.PI*2);
       ctx.strokeStyle="rgba(0,0,0,0.55)"; ctx.lineWidth=14; ctx.stroke();
       var bevel=ctx.createLinearGradient(cx-70,cy-70,cx+70,cy+70);
@@ -1405,14 +1489,12 @@ async function generateShareImage(){
       hiB.addColorStop(0,"rgba(255,255,255,0.07)"); hiB.addColorStop(1,"transparent");
       ctx.beginPath(); ctx.arc(cx,cy,70,0,Math.PI*2);
       ctx.strokeStyle=hiB; ctx.lineWidth=5; ctx.stroke();
-      // track
       var trackGrad=ctx.createLinearGradient(cx-65,cy-65,cx+65,cy+65);
       trackGrad.addColorStop(0,"rgba(18,28,70,1)"); trackGrad.addColorStop(1,"rgba(10,16,42,1)");
       ctx.beginPath(); ctx.arc(cx,cy,63,SA,EA);
       ctx.strokeStyle=trackGrad; ctx.lineWidth=12; ctx.lineCap="round"; ctx.stroke();
       ctx.beginPath(); ctx.arc(cx,cy,63,SA,EA);
       ctx.strokeStyle="rgba(0,0,0,0.45)"; ctx.lineWidth=10; ctx.lineCap="butt"; ctx.stroke();
-      // score arc
       var sG=ctx.createLinearGradient(cx-60,cy+40,cx+60,cy-50);
       sG.addColorStop(0,"#6a4008"); sG.addColorStop(0.2,"#b88a1a"); sG.addColorStop(0.4,"#c9a227");
       sG.addColorStop(0.62,"#f0da6a"); sG.addColorStop(0.8,"#d4a830"); sG.addColorStop(1,"#9a7010");
@@ -1421,12 +1503,10 @@ async function generateShareImage(){
       ctx.strokeStyle=sG; ctx.lineWidth=11; ctx.lineCap="round"; ctx.stroke(); ctx.restore();
       ctx.beginPath(); ctx.arc(cx,cy,63,SA,SCORE_A);
       ctx.strokeStyle=sG; ctx.lineWidth=9; ctx.lineCap="round"; ctx.stroke();
-      // rim highlight
       var rimG=ctx.createLinearGradient(cx-60,cy-60,cx+30,cy);
       rimG.addColorStop(0,"rgba(255,248,180,0.5)"); rimG.addColorStop(0.5,"rgba(240,210,90,0.18)"); rimG.addColorStop(1,"rgba(180,130,20,0)");
       ctx.beginPath(); ctx.arc(cx,cy,66.5,SA,SCORE_A);
       ctx.strokeStyle=rimG; ctx.lineWidth=2; ctx.lineCap="round"; ctx.stroke();
-      // arc ticks
       for(var j=0;j<=10;j++){
         var at=SA+(SW/10)*j; var isMj=j%5===0;
         var rr1=isMj?55:57; var rr2=isMj?60:59;
@@ -1437,12 +1517,10 @@ async function generateShareImage(){
         ctx.strokeStyle=inside?"rgba(201,162,39,"+(isMj?0.6:0.28)+")":"rgba(201,162,39,"+(isMj?0.22:0.1)+")";
         ctx.lineWidth=isMj?1.5:0.8; ctx.stroke();
       }
-      // end cap glow
       var ex=cx+Math.cos(SCORE_A)*63, ey=cy+Math.sin(SCORE_A)*63;
       var dGr=ctx.createRadialGradient(ex,ey,0,ex,ey,8);
       dGr.addColorStop(0,"rgba(255,245,160,0.95)"); dGr.addColorStop(0.45,"rgba(201,162,39,0.55)"); dGr.addColorStop(1,"transparent");
       ctx.beginPath(); ctx.arc(ex,ey,8,0,Math.PI*2); ctx.fillStyle=dGr; ctx.fill();
-      // center fill
       var cG=ctx.createRadialGradient(cx,cy-10,4,cx,cy,50);
       cG.addColorStop(0,"rgba(22,40,105,0.98)"); cG.addColorStop(0.45,"rgba(12,22,65,1)"); cG.addColorStop(1,"rgba(5,10,32,1)");
       ctx.beginPath(); ctx.arc(cx,cy,52,0,Math.PI*2); ctx.fillStyle=cG; ctx.fill();
@@ -1454,7 +1532,6 @@ async function generateShareImage(){
       ctx.beginPath(); ctx.arc(cx,cy,34,0,Math.PI*2);
       ctx.strokeStyle="rgba(180,140,55,0.06)"; ctx.lineWidth=1; ctx.stroke(); ctx.restore();
     })();
-    // ── Draw Gauge ─────────────────────────────────────────────────────────────
     (function(){
       var el=document.getElementById("_wcGaugeC");
       var dpr=Math.min(window.devicePixelRatio||1,3);
@@ -1474,11 +1551,9 @@ async function generateShareImage(){
       ctx.save(); ctx.shadowColor="rgba(201,162,39,0.35)"; ctx.shadowBlur=8;
       ctx.beginPath(); ctx.arc(cx,cy,R,SA,EA);
       ctx.strokeStyle=aG; ctx.lineWidth=12; ctx.lineCap="round"; ctx.stroke(); ctx.restore();
-      // depth shadow
       ctx.beginPath(); ctx.arc(cx,cy,R,SA,EA);
       ctx.strokeStyle="rgba(0,0,0,0.28)"; ctx.lineWidth=8; ctx.lineCap="butt";
       ctx.globalAlpha=0.35; ctx.stroke(); ctx.globalAlpha=1;
-      // ticks
       var TSW=(210*Math.PI)/180;
       for(var i=0;i<=10;i++){
         var a=SA+(TSW/10)*i; var isMaj=i%2===0;
@@ -1489,13 +1564,11 @@ async function generateShareImage(){
         ctx.strokeStyle="rgba(201,162,39,"+(isMaj?0.45:0.2)+")";
         ctx.lineWidth=isMaj?1.5:0.8; ctx.stroke();
       }
-      // needle angle based on risk
       var rLow=riskInfo.sub.toLowerCase();
       var nA;
       if(rLow.indexOf("conservador")!==-1)      nA=(180*Math.PI)/180;
       else if(rLow.indexOf("arrojado")!==-1||rLow.indexOf("agressivo")!==-1) nA=(0*Math.PI)/180;
-      else nA=(270*Math.PI)/180; // MOD = straight up
-      // labels
+      else nA=(270*Math.PI)/180;
       ctx.font="700 7.5px 'Raleway',sans-serif"; ctx.textAlign="center";
       ctx.fillStyle="rgba(255,255,255,0.28)";
       ctx.fillText("LOW",cx+Math.cos(SA)*(R+18),cy+Math.sin(SA)*(R+18)+4);
@@ -1503,12 +1576,10 @@ async function generateShareImage(){
       ctx.fillStyle="rgba(201,162,39,0.72)";
       var modA=(270*Math.PI)/180;
       ctx.fillText("MOD",cx+Math.cos(modA)*(R+16),cy+Math.sin(modA)*(R+16)+4);
-      // MOD dot
       var modX=cx+Math.cos(modA)*R, modY=cy+Math.sin(modA)*R;
       var dGr=ctx.createRadialGradient(modX,modY,0,modX,modY,6);
       dGr.addColorStop(0,"rgba(255,235,100,0.98)"); dGr.addColorStop(0.4,"rgba(201,162,39,0.7)"); dGr.addColorStop(1,"transparent");
       ctx.beginPath(); ctx.arc(modX,modY,6,0,Math.PI*2); ctx.fillStyle=dGr; ctx.fill();
-      // needle
       var nLen=R-5;
       ctx.save();
       ctx.shadowColor="rgba(0,0,0,0.6)"; ctx.shadowBlur=5; ctx.shadowOffsetX=1; ctx.shadowOffsetY=2;
@@ -1517,13 +1588,11 @@ async function generateShareImage(){
       ctx.beginPath(); ctx.moveTo(cx,cy);
       ctx.lineTo(cx+Math.cos(nA)*nLen,cy+Math.sin(nA)*nLen);
       ctx.strokeStyle=nG2; ctx.lineWidth=3; ctx.lineCap="round"; ctx.stroke(); ctx.restore();
-      // needle base
       var bG2=ctx.createRadialGradient(cx,cy,0,cx,cy,8);
       bG2.addColorStop(0,"#f5e080"); bG2.addColorStop(0.5,"#c9a227"); bG2.addColorStop(1,"#7a5010");
       ctx.beginPath(); ctx.arc(cx,cy,8,0,Math.PI*2); ctx.fillStyle=bG2; ctx.fill();
       ctx.beginPath(); ctx.arc(cx,cy,3.5,0,Math.PI*2); ctx.fillStyle="#faf0d8"; ctx.fill();
     })();
-    // ── Draw Network + ECG ─────────────────────────────────────────────────────
     (function(){
       var nc=document.getElementById("_wcNetC");
       if(!nc)return;
@@ -1542,14 +1611,12 @@ async function generateShareImage(){
         [4,6],[4,12],[5,7],[6,7],[6,13],[7,8],[8,13],[9,5],
         [10,1],[10,11],[12,6],[14,3],[15,8],[11,3],[9,6],[7,13]
       ];
-      // edges
       conns2.forEach(function(pair){
         var g=ctx.createLinearGradient(nodes[pair[0]].x,nodes[pair[0]].y,nodes[pair[1]].x,nodes[pair[1]].y);
         g.addColorStop(0,"rgba(201,162,39,0.28)"); g.addColorStop(0.5,"rgba(240,200,80,0.18)"); g.addColorStop(1,"rgba(201,162,39,0.28)");
         ctx.strokeStyle=g; ctx.lineWidth=0.85;
         ctx.beginPath(); ctx.moveTo(nodes[pair[0]].x,nodes[pair[0]].y); ctx.lineTo(nodes[pair[1]].x,nodes[pair[1]].y); ctx.stroke();
       });
-      // ECG baseline + pulse
       var baseY=H*0.88;
       ctx.strokeStyle="rgba(201,162,39,0.35)"; ctx.lineWidth=0.8;
       ctx.beginPath(); ctx.moveTo(0,baseY); ctx.lineTo(W,baseY); ctx.stroke();
@@ -1564,7 +1631,6 @@ async function generateShareImage(){
       });
       ctx.stroke();
       ctx.shadowBlur=0;
-      // nodes
       nodes.forEach(function(n){
         var g2=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,6);
         g2.addColorStop(0,"rgba(240,200,80,0.6)"); g2.addColorStop(0.5,"rgba(201,162,39,0.25)"); g2.addColorStop(1,"transparent");
@@ -1575,7 +1641,6 @@ async function generateShareImage(){
     })();
     if(document.fonts&&document.fonts.ready)await document.fonts.ready;
     await new Promise(function(r){setTimeout(r,600);});
-    // Snapshot canvases before html2canvas
     var scoreSnap=document.getElementById("_wcScoreC")?document.getElementById("_wcScoreC").toDataURL("image/png"):null;
     var gaugeSnap=document.getElementById("_wcGaugeC")?document.getElementById("_wcGaugeC").toDataURL("image/png"):null;
     var netSnap  =document.getElementById("_wcNetC")  ?document.getElementById("_wcNetC").toDataURL("image/png"):null;
@@ -1601,7 +1666,6 @@ async function generateShareImage(){
     document.body.removeChild(cardEl);
     var dataURL=canvas.toDataURL("image/png");
     var base64Data=dataURL.split(",")[1];
-    // ── Android APK: Capacitor Filesystem + Share ─────────────────────────────
     if(_isCapacitor){
       var _capPlugins=window.Capacitor&&window.Capacitor.Plugins;
       if(_capPlugins&&_capPlugins.Filesystem&&_capPlugins.Share){
@@ -1619,14 +1683,12 @@ async function generateShareImage(){
         }
       }
     }
-    // ── Android bridge (legado) ───────────────────────────────────────────────
     if(window.Android&&typeof window.Android.shareImage==="function"){
       window.Android.shareImage(base64Data);
       showAlert("inp-alert","alert-ok","&#128248; Abrindo compartilhamento...");
       setTimeout(function(){hideAlert("inp-alert");},3000);
       return;
     }
-    // ── Web mobile: navigator.share ───────────────────────────────────────────
     if(navigator.share){
       try{
         var blob2=await new Promise(function(res){canvas.toBlob(res,"image/png");});
@@ -1640,7 +1702,6 @@ async function generateShareImage(){
         return;
       }catch(se){if(se.name==="AbortError")return;}
     }
-    // ── Modal overlay: desktop / sem Web Share API ────────────────────────────
     var ov=document.createElement("div");
     ov.id="wuzo-share-overlay";
     ov.style.cssText="position:fixed;inset:0;z-index:9999;background:rgba(3,3,2,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;gap:14px;";
@@ -1707,20 +1768,12 @@ async function adminLoadPDFFiles(){
     box.appendChild(summary);
   }catch(e){if(!_isAbortError(e))box.textContent="Erro: "+e.message;}
 }
-// ── ADMIN DOWNLOAD PDF v2.0 ───────────────────────────────────
-// [FIX v2.0] Android APK: blob + a.click() NÃO funciona no Android WebView.
-//            Capacitor: window.location.href → shouldOverrideUrlLoading
-//            → isP dfUrl() detecta "/api/admin/pdf-download/"
-//            → Intent.ACTION_VIEW → Chrome/Adobe.
-//            shouldOverrideUrlLoading retorna true → WebView NÃO navega.
-//            Web browser: mantém fetch + blob (funciona normalmente).
 async function adminDownloadPDF(analysisId,ev){
   var tok=getToken();if(!tok)return;
   var btn=ev&&ev.target;
   if(btn){btn.disabled=true;btn.textContent="...";}
   try{
     if(_isCapacitor){
-      // Android APK: Intent.ACTION_VIEW via shouldOverrideUrlLoading
       window.location.href=BACKEND+"/api/admin/pdf-download/"+analysisId+
         "?token="+encodeURIComponent(tok)+"&_t="+Date.now();
       setTimeout(function(){
@@ -1728,7 +1781,6 @@ async function adminDownloadPDF(analysisId,ev){
       },2000);
       return;
     }
-    // Web browser: fetch + blob
     var r=await fetch(BACKEND+"/api/admin/pdf-download/"+analysisId,{
       headers:{"Authorization":"Bearer "+tok},signal:aborter(45000)
     });
@@ -1880,4 +1932,3 @@ document.addEventListener("DOMContentLoaded",function(){
 </script>
 </body>
 </html>
-</user_query>
