@@ -1014,10 +1014,164 @@ function normalizePremiumDonePayload(pd){
 }
 function _isJobRunningStatus(status, httpStatus){
   if(httpStatus===202) return true;
-  return status==="running" || status==="processing" || status==="pending" || status==="queued" || status==="in_progress";
+  var s=String(status||"").toLowerCase();
+  return s==="running" || s==="processing" || s==="pending" || s==="queued" || s==="in_progress" || s==="em_andamento" || s==="em andamento";
 }
-function _isJobDoneStatus(status){ return status==="done" || status==="completed" || status==="finished" || status==="success" || status==="complete"; }
-function _isJobErrorStatus(status){ return status==="error" || status==="failed" || status==="failure"; }
+function _isJobDoneStatus(status){
+  var s=String(status||"").toLowerCase();
+  return s==="done" || s==="completed" || s==="finished" || s==="success" || s==="complete" || s==="concluído" || s==="concluido" || s==="concluida" || s==="concluída";
+}
+function _isJobErrorStatus(status){
+  var s=String(status||"").toLowerCase();
+  return s==="error" || s==="failed" || s==="failure" || s==="erro" || s==="falhou";
+}
+// ── Premium polling (API assíncrona /api/analysis_status) ─────
+var _premiumPollInt=null;
+var _premiumPollBusy=false;
+var _premiumPollStartedAt=0;
+var _liveDoneAgents={};
+var PREMIUM_POLL_MS=4500;
+var PREMIUM_POLL_MAX_MS=5*60*1000;
+function stopPremiumPolling(){
+  if(_premiumPollInt){clearInterval(_premiumPollInt);_premiumPollInt=null;}
+  _premiumPollBusy=false;
+}
+function _isAgentDone(agent){
+  if(!agent||typeof agent!=="object") return false;
+  var st=String(agent.status||agent.state||"").toLowerCase();
+  if(st==="done"||st==="completed"||st==="finished"||st==="complete"||st==="concluído"||st==="concluido") return true;
+  if(st==="error"||st==="failed") return false;
+  var text=agent.analysis||agent.response||agent.content||agent.text||"";
+  return !!String(text).trim();
+}
+function normalizeAnalysisStatusPayload(pd){
+  var norm=normalizePremiumDonePayload(pd);
+  var agents=norm.agents;
+  if((!agents||!agents.length)&&pd){
+    agents=normalizePremiumAgents(
+      pd.agents||pd.agent_outputs||pd.swarm||pd.specialists||
+      pd.completed_agents||pd.agents_done||pd.partial_agents
+    );
+    norm.agents=agents;
+  }
+  if(!norm.analysis_id&&pd){
+    norm.analysis_id=pd.analysis_id||pd.analysisId||pd.id||null;
+  }
+  return norm;
+}
+function updateAgentCardsLive(rawAgents, phase){
+  var list=Array.isArray(rawAgents)?rawAgents:[];
+  var doneIds={};
+  list.forEach(function(a){
+    if(!a||typeof a!=="object") return;
+    var id=_resolveAgentId(a.id||a.agent_id||a.key||"");
+    if(id&&_isAgentDone(a)) doneIds[id]=1;
+  });
+  normalizePremiumAgents(rawAgents).forEach(function(a){
+    if(a.id&&_isAgentDone(a)) doneIds[a.id]=1;
+  });
+  var doneCount=0;
+  AGENTS_UI.forEach(function(ui){
+    var c=document.getElementById("ac-"+ui.id);
+    if(!c) return;
+    if(doneIds[ui.id]){
+      doneCount++;
+      if(!_liveDoneAgents[ui.id]){
+        _liveDoneAgents[ui.id]=1;
+        c.className="ac done";
+        c.querySelector(".ac-st").innerHTML="&#10003;";
+        addLog(ui.nm+" — análise concluída","ok");
+      }
+    }else if(
+      phase==="senior_first"||phase==="debate"||phase==="second_analysis"
+    ){
+      if(ui.id==="consultor_senior"&&!doneIds[ui.id]){
+        c.className="ac thinking";
+        c.querySelector(".ac-st").innerHTML="&#9675;";
+      }
+    }else if(!_liveDoneAgents[ui.id]&&c.className.indexOf("done")===-1){
+      c.className="ac thinking";
+      c.querySelector(".ac-st").innerHTML="&#9675;";
+    }
+  });
+  var fill=document.getElementById("prog-fill");
+  if(fill){
+    var pct=Math.min(96,Math.max(8,Math.round((doneCount/AGENTS_UI.length)*100)));
+    if(pct>parseFloat(fill.style.width||0)) fill.style.width=pct+"%";
+  }
+}
+function _finishPremiumAnalysis(norm, analysisId){
+  stopPremiumPolling();
+  clearInterval(_progInt);
+  _currentAnalysisId=analysisId||norm.analysis_id||_currentAnalysisId;
+  _currentWuzoScore=norm.wuzo_score;
+  if(typeof wuzoApplyJobProgress==="function"){wuzoApplyJobProgress("done",null,_lang);}
+  finishGrid(norm.agents.length?norm.agents:null);
+  renderFullReport(norm.verdict,norm.agents);
+  setBtns(false);
+  if(!norm.verdict.trim()&&!norm.agents.length){
+    showAlert("inp-alert","alert-info","Análise concluída com dados parciais. Tente novamente se o relatório estiver vazio.");
+  }
+}
+function _failPremiumAnalysis(msg){
+  stopPremiumPolling();
+  clearInterval(_progInt);
+  showAlert("inp-alert","alert-err",msg||"Erro na análise.");
+  setBtns(false);
+}
+async function _pollAnalysisStatusOnce(analysisId,tok){
+  var pr=await fetch(
+    BACKEND+"/api/analysis_status/"+encodeURIComponent(analysisId),
+    {headers:{"Authorization":"Bearer "+tok},signal:aborter(10000)}
+  );
+  var pd=await pr.json().catch(function(){return {};});
+  return {pr:pr, pd:pd, norm:normalizeAnalysisStatusPayload(pd)};
+}
+function startPremiumStatusPolling(analysisId,tok){
+  stopPremiumPolling();
+  _premiumPollStartedAt=Date.now();
+  _liveDoneAgents={};
+  async function tick(){
+    if(_premiumPollBusy) return;
+    if(Date.now()-_premiumPollStartedAt>PREMIUM_POLL_MAX_MS){
+      _failPremiumAnalysis("Tempo limite de 5 minutos excedido. Tente novamente.");
+      return;
+    }
+    _premiumPollBusy=true;
+    try{
+      var result=await _pollAnalysisStatusOnce(analysisId,tok);
+      var pr=result.pr,pd=result.pd,norm=result.norm;
+      if(norm.agents&&norm.agents.length){
+        updateAgentCardsLive(pd.agents||norm.agents,pd.phase);
+      }
+      if(_isJobRunningStatus(norm.status,pr.status)&&!_isJobDoneStatus(norm.status)){
+        if(typeof wuzoApplyJobProgress==="function"){
+          wuzoApplyJobProgress(pd.phase,pd.message,_lang);
+        }else if(pd.message){addLog(pd.message);}
+        return;
+      }
+      if(_isJobDoneStatus(norm.status)){
+        await updateUI();
+        if(norm.second_analysis_applied&&typeof t==="function"){addLog(t("log_second_ok"),"ok");}
+        _finishPremiumAnalysis(norm,analysisId);
+        return;
+      }
+      if(_isJobErrorStatus(norm.status)){
+        _failPremiumAnalysis(pd.message||pd.error||"Erro no processamento.");
+        return;
+      }
+      if(pd.phase||pd.message){
+        if(typeof wuzoApplyJobProgress==="function"){
+          wuzoApplyJobProgress(pd.phase,pd.message,_lang);
+        }else if(pd.message){addLog(pd.message);}
+      }
+    }catch(e){
+      if(!_isAbortError(e)){/* mantém polling em falhas transitórias de rede */}}
+    finally{_premiumPollBusy=false;}
+  }
+  tick();
+  _premiumPollInt=setInterval(tick,PREMIUM_POLL_MS);
+}
 function _formatVerdictHtml(text){
   var s=String(text || "");
   return s.replace(/\n/g,"<br>").replace(/\*\*(.*?)\*\*/g,"<b>$1</b>");
@@ -1046,6 +1200,8 @@ function addLog(msg,cls){
   f.appendChild(d);f.scrollTop=f.scrollHeight;
 }
 function resetPipeline(){
+  stopPremiumPolling();
+  _liveDoneAgents={};
   buildGrid();document.getElementById("prog-fill").style.width="0%";
   document.getElementById("log-feed").innerHTML='<div class="ll" id="log-init-ll">&#11041; Iniciando...</div>';
   document.getElementById("pip-pill").innerHTML=t("pip_running");document.getElementById("pip-pill").className="pill pill-run";
@@ -1147,50 +1303,34 @@ async function runPremiumAnalysis(){
   document.getElementById("sec-pipeline").style.display="block";
   resetPipeline();setAllThinking();setBtns(true);
   addLog(t("log_starting"));
-  var tok=getToken();var jobId=null;
+  var tok=getToken();
+  var analysisId=null;
   try{
-    var r=await fetch(BACKEND+"/api/analyze/premium",{method:"POST",headers:authHeader(),body:JSON.stringify({prompt:txt,language:_lang}),signal:aborter(15000)});
+    var r=await fetch(BACKEND+"/api/analyze/premium",{
+      method:"POST",
+      headers:authHeader(),
+      body:JSON.stringify({prompt:txt,language:_lang}),
+      signal:aborter(15000)
+    });
     var d=await r.json().catch(function(){return {};});
-    if(!r.ok){showAlert("inp-alert","alert-err",d.error||"Erro ao iniciar.");clearInterval(_progInt);setBtns(false);return;}
-    jobId=d.job_id||d.jobId||d.id;
-    if(!jobId){showAlert("inp-alert","alert-err",d.error||"Resposta inválida do servidor (sem job_id).");clearInterval(_progInt);setBtns(false);return;}
+    if(!r.ok){
+      showAlert("inp-alert","alert-err",d.error||"Erro ao iniciar.");
+      clearInterval(_progInt);setBtns(false);return;
+    }
+    analysisId=d.analysis_id||d.analysisId||d.id||d.job_id||d.jobId;
+    if(!analysisId){
+      showAlert("inp-alert","alert-err",d.error||"Resposta inválida do servidor (sem analysis_id).");
+      clearInterval(_progInt);setBtns(false);return;
+    }
+    _currentAnalysisId=analysisId;
     addLog(t("log_fetching"));
-  }catch(e){if(!_isAbortError(e))showAlert("inp-alert","alert-err","Erro: "+e.message);clearInterval(_progInt);setBtns(false);return;}
-  var maxTries=120;
-  for(var i=0;i<maxTries;i++){
-    await new Promise(function(r){setTimeout(r,4000);});
-    try{
-      if(!jobId) break;
-      var pr=await fetch(BACKEND+"/api/job/"+encodeURIComponent(jobId),{headers:{"Authorization":"Bearer "+tok},signal:aborter(10000)});
-      var pd=await pr.json().catch(function(){return {};});
-      var norm=normalizePremiumDonePayload(pd);
-      if(_isJobRunningStatus(norm.status, pr.status)){
-        if(typeof wuzoApplyJobProgress==="function"){
-          wuzoApplyJobProgress(pd.phase,pd.message,_lang);
-        }else if(pd.message){addLog(pd.message);}
-        continue;
-      }
-      if(_isJobDoneStatus(norm.status)){
-        _currentAnalysisId=norm.analysis_id;
-        _currentWuzoScore=norm.wuzo_score;
-        await updateUI();
-        if(norm.second_analysis_applied&&typeof t==="function"){addLog(t("log_second_ok"),"ok");}
-        finishGrid(norm.agents.length ? norm.agents : null);
-        renderFullReport(norm.verdict, norm.agents);
-        setBtns(false);
-        if(!norm.verdict.trim()&&!norm.agents.length){
-          showAlert("inp-alert","alert-info","Análise concluída com dados parciais. Tente novamente se o relatório estiver vazio.");
-        }
-        return;
-      }
-      if(_isJobErrorStatus(norm.status)){
-        showAlert("inp-alert","alert-err",pd.message||pd.error||"Erro.");
-        clearInterval(_progInt);setBtns(false);return;
-      }
-      if(i%5===0&&!pd.phase)addLog(t("log_processing")+" ("+((i+1)*4)+"s)");
-    }catch(e){}
+    if(typeof wuzoApplyJobProgress==="function"){wuzoApplyJobProgress("pending",null,_lang);}
+    startPremiumStatusPolling(analysisId,tok);
+  }catch(e){
+    stopPremiumPolling();
+    if(!_isAbortError(e))showAlert("inp-alert","alert-err","Erro: "+e.message);
+    clearInterval(_progInt);setBtns(false);
   }
-  showAlert("inp-alert","alert-err","Timeout. Tente novamente.");clearInterval(_progInt);setBtns(false);
 }
 // ── RENDER FULL REPORT ────────────────────────────────────────
 function renderFullReport(verdict,agents){
