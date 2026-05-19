@@ -953,10 +953,90 @@ function buildGrid(){
 function setAllThinking(){AGENTS_UI.forEach(function(a){var c=document.getElementById("ac-"+a.id);if(!c)return;c.className="ac thinking";c.querySelector(".ac-st").innerHTML="&#9675;";});animateProg();}
 var _progInt=null;
 function animateProg(){var fill=document.getElementById("prog-fill");var pct=0;clearInterval(_progInt);_progInt=setInterval(function(){pct+=0.2;if(pct>90)pct=90;fill.style.width=pct+"%";},600);}
+var AGENT_ID_ALIASES={
+  macro: "macroeconomia", radar: "noticias_realtime", noticias: "noticias_realtime",
+  sentimento: "sentimento_mercado", cripto: "criptomoedas", acoes: "acoes_equity",
+  equity: "acoes_equity", renda_fixa_br: "renda_fixa", fiis: "imoveis_fiis",
+  imoveis: "imoveis_fiis", dividas: "quitacao_dividas", credito: "credito_financiamento",
+  tributario: "planejamento_tributario", previdencia: "previdencia_aposentadoria",
+  compliance: "compliance_risco", auditor: "auditor_dados", senior: "consultor_senior",
+  consultor: "consultor_senior"
+};
+function _resolveAgentId(id){
+  if(!id) return "";
+  var s=String(id).trim().toLowerCase().replace(/\s+/g,"_");
+  return AGENT_ID_ALIASES[s] || s;
+}
+function normalizePremiumAgents(raw){
+  if(!raw) return [];
+  var list=[];
+  if(Array.isArray(raw)) list=raw;
+  else if(typeof raw==="object"){
+    Object.keys(raw).forEach(function(k){
+      var v=raw[k];
+      if(v && typeof v==="object" && !Array.isArray(v)) list.push(Object.assign({id:k}, v));
+      else list.push({id:k, analysis: typeof v==="string" ? v : ""});
+    });
+  }
+  return list.map(function(a){
+    if(!a || typeof a!=="object") return null;
+    var id=_resolveAgentId(a.id || a.agent_id || a.key || a.slug || "");
+    var analysis=a.analysis || a.response || a.content || a.text || a.output || a.result || "";
+    if(analysis && typeof analysis!=="string") analysis=JSON.stringify(analysis);
+    return {id:id, name:a.name || a.nm || a.title || "", emoji:a.emoji || a.em || "", analysis:String(analysis||"")};
+  }).filter(function(a){ return a && a.id; });
+}
+function normalizePremiumDonePayload(pd){
+  if(!pd || typeof pd!=="object") pd={};
+  var status=String(pd.status || pd.state || "").toLowerCase();
+  var verdict=pd.verdict || pd.veredito || pd.final_verdict || "";
+  if(!verdict && typeof pd.report==="string") verdict=pd.report;
+  if(!verdict && typeof pd.analysis==="string") verdict=pd.analysis;
+  if(!verdict && pd.report && typeof pd.report==="object"){
+    verdict=pd.report.verdict || pd.report.veredito || pd.report.body || pd.report.text || "";
+  }
+  var agents=normalizePremiumAgents(pd.agents || pd.agent_outputs || pd.swarm || pd.specialists);
+  var wuzo=pd.wuzo_score;
+  if(typeof wuzo!=="number"){ wuzo=parseFloat(wuzo); if(isNaN(wuzo)) wuzo=null; }
+  if(wuzo==null && verdict){
+    var wm=String(verdict).match(/\b([4-9]\d|100)\/100\b/);
+    if(wm) wuzo=parseInt(wm[1],10);
+  }
+  if(wuzo==null || isNaN(wuzo)) wuzo=65;
+  return {
+    status: status,
+    analysis_id: pd.analysis_id || pd.analysisId || pd.report_id || pd.id || null,
+    verdict: String(verdict || ""),
+    agents: agents,
+    wuzo_score: Math.round(wuzo),
+    second_analysis_applied: !!(pd.second_analysis_applied || pd.segunda_analise_aplicada || pd.segunda_analise)
+  };
+}
+function _isJobRunningStatus(status, httpStatus){
+  if(httpStatus===202) return true;
+  return status==="running" || status==="processing" || status==="pending" || status==="queued" || status==="in_progress";
+}
+function _isJobDoneStatus(status){ return status==="done" || status==="completed" || status==="finished" || status==="success" || status==="complete"; }
+function _isJobErrorStatus(status){ return status==="error" || status==="failed" || status==="failure"; }
+function _formatVerdictHtml(text){
+  var s=String(text || "");
+  return s.replace(/\n/g,"<br>").replace(/\*\*(.*?)\*\*/g,"<b>$1</b>");
+}
+function _safeMarkedParse(body){
+  var s=String(body || "");
+  if(!s.trim()) return "";
+  if(typeof marked==="undefined") return _formatVerdictHtml(s);
+  try{ return marked.parse(s); }
+  catch(e){ return _formatVerdictHtml(s); }
+}
 function finishGrid(agents){
   clearInterval(_progInt);document.getElementById("prog-fill").style.width="100%";
-  var ids=agents?agents.reduce(function(m,a){m[a.id]=1;return m;},{}):null;
-  AGENTS_UI.forEach(function(a){var c=document.getElementById("ac-"+a.id);if(!c)return;if(!ids||ids[a.id]){c.className="ac done";c.querySelector(".ac-st").innerHTML="&#10003;";}});
+  var normalized=normalizePremiumAgents(agents);
+  var ids=normalized.length ? normalized.reduce(function(m,a){m[a.id]=1;return m;}, {}) : null;
+  AGENTS_UI.forEach(function(a){
+    var c=document.getElementById("ac-"+a.id); if(!c) return;
+    if(!ids || ids[a.id]){ c.className="ac done"; c.querySelector(".ac-st").innerHTML="&#10003;"; }
+  });
   document.getElementById("pip-pill").innerHTML=t("pip_done");document.getElementById("pip-pill").className="pill pill-done";
   addLog(t("log_done"),"ok");
 }
@@ -1072,26 +1152,41 @@ async function runPremiumAnalysis(){
     var r=await fetch(BACKEND+"/api/analyze/premium",{method:"POST",headers:authHeader(),body:JSON.stringify({prompt:txt,language:_lang}),signal:aborter(15000)});
     var d=await r.json().catch(function(){return {};});
     if(!r.ok){showAlert("inp-alert","alert-err",d.error||"Erro ao iniciar.");clearInterval(_progInt);setBtns(false);return;}
-    jobId=d.job_id;addLog(t("log_fetching"));
+    jobId=d.job_id||d.jobId||d.id;
+    if(!jobId){showAlert("inp-alert","alert-err",d.error||"Resposta inválida do servidor (sem job_id).");clearInterval(_progInt);setBtns(false);return;}
+    addLog(t("log_fetching"));
   }catch(e){if(!_isAbortError(e))showAlert("inp-alert","alert-err","Erro: "+e.message);clearInterval(_progInt);setBtns(false);return;}
   var maxTries=120;
   for(var i=0;i<maxTries;i++){
     await new Promise(function(r){setTimeout(r,4000);});
     try{
-      var pr=await fetch(BACKEND+"/api/job/"+jobId,{headers:{"Authorization":"Bearer "+tok},signal:aborter(10000)});
+      if(!jobId) break;
+      var pr=await fetch(BACKEND+"/api/job/"+encodeURIComponent(jobId),{headers:{"Authorization":"Bearer "+tok},signal:aborter(10000)});
       var pd=await pr.json().catch(function(){return {};});
-      if(pr.status===202||pd.status==="running"){
+      var norm=normalizePremiumDonePayload(pd);
+      if(_isJobRunningStatus(norm.status, pr.status)){
         if(typeof wuzoApplyJobProgress==="function"){
           wuzoApplyJobProgress(pd.phase,pd.message,_lang);
         }else if(pd.message){addLog(pd.message);}
         continue;
       }
-      if(pd.status==="done"){
-        _currentAnalysisId=pd.analysis_id;_currentWuzoScore=(typeof pd.wuzo_score==="number")?Math.round(pd.wuzo_score):65;await updateUI();
-        if(pd.second_analysis_applied&&typeof t==="function"){addLog(t("log_second_ok"),"ok");}
-        finishGrid(pd.agents);renderFullReport(pd.verdict,pd.agents);setBtns(false);return;
+      if(_isJobDoneStatus(norm.status)){
+        _currentAnalysisId=norm.analysis_id;
+        _currentWuzoScore=norm.wuzo_score;
+        await updateUI();
+        if(norm.second_analysis_applied&&typeof t==="function"){addLog(t("log_second_ok"),"ok");}
+        finishGrid(norm.agents.length ? norm.agents : null);
+        renderFullReport(norm.verdict, norm.agents);
+        setBtns(false);
+        if(!norm.verdict.trim()&&!norm.agents.length){
+          showAlert("inp-alert","alert-info","Análise concluída com dados parciais. Tente novamente se o relatório estiver vazio.");
+        }
+        return;
       }
-      if(pd.status==="error"){showAlert("inp-alert","alert-err",pd.message||"Erro.");clearInterval(_progInt);setBtns(false);return;}
+      if(_isJobErrorStatus(norm.status)){
+        showAlert("inp-alert","alert-err",pd.message||pd.error||"Erro.");
+        clearInterval(_progInt);setBtns(false);return;
+      }
       if(i%5===0&&!pd.phase)addLog(t("log_processing")+" ("+((i+1)*4)+"s)");
     }catch(e){}
   }
@@ -1099,22 +1194,26 @@ async function runPremiumAnalysis(){
 }
 // ── RENDER FULL REPORT ────────────────────────────────────────
 function renderFullReport(verdict,agents){
-  _currentVerdict=verdict||"";
-  _currentAgents=agents||[];
-  document.getElementById("full-verdict-body").innerHTML=(verdict||"").replace(/\n/g,"<br>").replace(/\*\*(.*?)\*\*/g,"<b>$1</b>");
+  var normalized=normalizePremiumAgents(agents);
+  _currentVerdict=String(verdict||"");
+  _currentAgents=normalized;
+  document.getElementById("full-verdict-body").innerHTML=_formatVerdictHtml(_currentVerdict);
   var box=document.getElementById("agent-blocks-box");box.innerHTML="";
   var skip={consultor_senior:1};
-  if(agents&&agents.length){
-    agents.filter(function(a){return !skip[a.id];}).forEach(function(a){
+  var uiById={};
+  AGENTS_UI.forEach(function(u){uiById[u.id]=u;});
+  normalized.filter(function(a){return a.id&&!skip[a.id];}).forEach(function(a){
       var div=document.createElement("div");div.className="agent-block";
       var body=a.analysis||"";
-      div.innerHTML='<div class="agent-block-title">'+
-        (a.emoji||"&#11041;")+" "+(a.name||a.id)+
-        '</div><div class="agent-block-body">'+(typeof marked!=="undefined"?marked.parse(body):body.replace(/\*\*(.*?)\*\*/g,"<b>$1</b>").replace(/\n/g,"<br>"))+
+    var ui=uiById[a.id];
+    var titleEmoji=a.emoji||(ui?ui.em:"&#11041;");
+    var titleName=a.name||(ui?ui.nm:a.id);
+    div.innerHTML='<div class="agent-block-title">'+
+      titleEmoji+" "+titleName+
+        '</div><div class="agent-block-body">'+(body.trim() ? _safeMarkedParse(body) : '<span style="color:var(--dm2)">Análise indisponível para este especialista.</span>')+
         '</div>';
-      box.appendChild(div);
-    });
-  }
+    box.appendChild(div);
+  });
   document.getElementById("sec-pipeline").style.display="none";
   document.getElementById("sec-full").style.display="block";
   document.getElementById("sec-full").scrollIntoView({behavior:"smooth"});
