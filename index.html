@@ -1031,7 +1031,7 @@ var _premiumPollBusy=false;
 var _premiumPollStartedAt=0;
 var _liveDoneAgents={};
 var PREMIUM_POLL_MS=4500;
-var PREMIUM_POLL_MAX_MS=5*60*1000;
+var PREMIUM_POLL_MAX_MS=10*60*1000;
 function stopPremiumPolling(){
   if(_premiumPollInt){clearInterval(_premiumPollInt);_premiumPollInt=null;}
   _premiumPollBusy=false;
