@@ -1453,10 +1453,12 @@ function _extractScoreFromVerdict(text){
   return null;
 }
 function _extractRiskFromVerdict(text){
-  var lower=text.toLowerCase();
-  if(lower.indexOf("arrojado")!==-1||lower.indexOf("agressivo")!==-1)return{label:"ALTO",sub:"Arrojado"};
-  if(lower.indexOf("conservador")!==-1)return{label:"BAIXO",sub:"Conservador"};
-  return{label:"MOD",sub:"Moderado"};
+  // [FIX v2.0] Usa score numérico (alinhado com backend RISK_PROFILES)
+  // em vez de text-mining do verdict (que contém "conservador" em qualquer contexto)
+  var s=_currentWuzoScore||65;
+  if(s<=35)return{label:"BAIXO",sub:"Conservador"};
+  if(s<=70)return{label:"MOD",sub:"Moderado"};
+  return{label:"ALTO",sub:"Arrojado"};
 }
 function _extractModulesForCard(){
   var agentsMap={};
@@ -1804,10 +1806,9 @@ async function generateShareImage(){
         ctx.lineWidth=isMaj?1.5:0.8; ctx.stroke();
       }
       var rLow=riskInfo.sub.toLowerCase();
-      var nA;
-      if(rLow.indexOf("conservador")!==-1)      nA=(180*Math.PI)/180;
-      else if(rLow.indexOf("arrojado")!==-1||rLow.indexOf("agressivo")!==-1) nA=(0*Math.PI)/180;
-      else nA=(270*Math.PI)/180;
+      // [FIX v2.0] Ângulo contínuo baseado no score numérico
+      // Arco: SA=165°, totalSweep=210° → nA = 165 + (score/100)*210
+      var nA=((165+(scoreVal/100)*210)*Math.PI)/180;
       ctx.font="700 7.5px 'Raleway',sans-serif"; ctx.textAlign="center";
       ctx.fillStyle="rgba(255,255,255,0.28)";
       ctx.fillText("LOW",cx+Math.cos(SA)*(R+18),cy+Math.sin(SA)*(R+18)+4);
