@@ -1358,7 +1358,13 @@ function renderFullReport(verdict,agents){
   document.getElementById("sec-full").style.display="block";
   document.getElementById("sec-full").scrollIntoView({behavior:"smooth"});
 }
-// ── PDF DOWNLOAD v2.2 ─────────────────────────────────────────
+// ── PDF DOWNLOAD v3.0 — Anti-Efeito-Dominó (wuzo_pdf_resilience) ────────────
+// Integra wuzo_pdf_download.js (baixarRelatorioPDFJS):
+//   [C1] Verifica Content-Type antes de criar Blob — nunca salva JSON como PDF
+//   [C2] Leitura atômica do stream — não viola Fetch lifecycle
+//   [C3] onFinally sempre executado — botão nunca trava em loading eterno
+//   [C4] Detecta PDF de fallback administrativo via X-Wuzo-Pdf-Fallback
+
 async function downloadPDF(){
   if(!_currentAnalysisId){
     showAlert("inp-alert","alert-err","Análise não disponível. Execute uma análise premium primeiro.");
@@ -1366,43 +1372,49 @@ async function downloadPDF(){
   }
   var tok = getToken();
   if(!tok){ openModal("login"); return; }
-  var btn = document.getElementById("btn-dl-pdf");
-  if(btn){ btn.disabled = true; btn.innerHTML = t("btn_pdf_gen"); }
-  var pdfUrl = BACKEND + "/api/report/pdf/" + _currentAnalysisId;
-  try{
-    if(_isCapacitor){
-      window.location.href = pdfUrl + "?token=" + encodeURIComponent(tok) + "&_t=" + Date.now();
+
+  // Caminho Capacitor (WebView nativo): usa redirect com token no query-string.
+  // baixarRelatorioPDFJS é exclusivo para web; no WebView o fetch com
+  // Authorization header é bloqueado por CORS no capacitor://, então
+  // mantemos a estratégia de window.location.href com liberação manual do botão.
+  if(_isCapacitor){
+    var btn = document.getElementById("btn-dl-pdf");
+    if(btn){ btn.disabled = true; btn.innerHTML = t("btn_pdf_gen"); }
+    try{
+      var pdfUrl = BACKEND + "/api/report/pdf/" + _currentAnalysisId
+                 + "?token=" + encodeURIComponent(tok) + "&_t=" + Date.now();
+      window.location.href = pdfUrl;
       showAlert("inp-alert","alert-ok","PDF abrindo no navegador...");
       setTimeout(function(){ hideAlert("inp-alert"); }, 3000);
-      return;
+    } finally {
+      // finally garante liberação mesmo se window.location lançar exceção
+      setTimeout(function(){
+        if(btn){ btn.disabled = false; btn.innerHTML = t("btn_pdf_dl"); }
+      }, 2500);
     }
-    var r = await fetch(pdfUrl, {
-      headers: { "Authorization": "Bearer " + tok },
-      signal: aborter(90000)
-    });
-    if(!r.ok){
-      var errData = await r.json().catch(function(){ return {}; });
-      showAlert("inp-alert","alert-err", errData.error || ("Erro HTTP " + r.status + " ao gerar PDF."));
-      return;
-    }
-    var blob = await r.blob();
-    var blobUrl = URL.createObjectURL(blob);
-    var a = document.createElement("a");
-    a.href = blobUrl;
-    a.download = "wuzo_relatorio_" + _currentAnalysisId + ".pdf";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(blobUrl);
-    showAlert("inp-alert","alert-ok","PDF gerado com sucesso!");
-    setTimeout(function(){ hideAlert("inp-alert"); }, 3000);
-  } catch(e) {
-    if(!_isAbortError(e)){
-      showAlert("inp-alert","alert-err","Erro ao baixar PDF: " + e.message);
-    }
-  } finally {
-    if(btn){ btn.disabled = false; btn.innerHTML = t("btn_pdf_dl"); }
+    return;
   }
+
+  // Caminho Web: delega 100% para baixarRelatorioPDFJS (wuzo_pdf_download.js)
+  var btn = document.getElementById("btn-dl-pdf");
+  if(btn){ btn.disabled = true; btn.innerHTML = t("btn_pdf_gen"); }
+
+  await baixarRelatorioPDFJS({
+    analysisId : _currentAnalysisId,
+    token      : tok,
+    backendUrl : BACKEND,
+    onFinally  : function(){
+      if(btn){ btn.disabled = false; btn.innerHTML = t("btn_pdf_dl"); }
+    },
+    onError    : function(msg){
+      showAlert("inp-alert","alert-err", msg);
+    },
+    onSuccess  : function(nome){
+      showAlert("inp-alert","alert-ok","PDF baixado com sucesso!");
+      setTimeout(function(){ hideAlert("inp-alert"); }, 3500);
+      console.log("[Wuzo PDF] Download concluído:", nome);
+    }
+  });
 }
 // ── SHARE IMAGE v7.0 ──────────────────────────────────────────
 function _shareIsAgentHeader(line){
@@ -2170,5 +2182,9 @@ document.addEventListener("DOMContentLoaded",function(){
   setInterval(updateTicker,30000);
 });
 </script>
+
+<!-- PDF Download Engine v1.0 — Anti-Efeito-Dominó -->
+<!-- Deve ser carregado APÓS o bloco <script> principal acima -->
+<script src="wuzo_pdf_download.js"></script>
 </body>
 </html>
