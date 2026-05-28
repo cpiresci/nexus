@@ -1031,7 +1031,7 @@ var _premiumPollBusy=false;
 var _premiumPollStartedAt=0;
 var _liveDoneAgents={};
 var PREMIUM_POLL_MS=4500;
-var PREMIUM_POLL_MAX_MS=10*60*1000;
+var PREMIUM_POLL_MAX_MS=20*60*1000; // [FIX] era 10min → 20min: análise completa leva 12-13min sob carga normal
 // [FIX] Geração de polling: incrementado a cada startPremiumStatusPolling.
 // Ticks de análises anteriores verificam se ainda são a geração ativa
 // antes de modificar estado global — evita que o tick da análise #1
@@ -1150,7 +1150,7 @@ function startPremiumStatusPolling(analysisId,tok){
     if(myGeneration!==_pollGeneration) return;
     if(Date.now()-_premiumPollStartedAt>PREMIUM_POLL_MAX_MS){
       if(myGeneration!==_pollGeneration) return;
-      _failPremiumAnalysis("Tempo limite de 10 minutos excedido. Tente novamente.");
+      _failPremiumAnalysis("Tempo limite de 20 minutos excedido. Tente novamente.");
       return;
     }
     _premiumPollBusy=true;
