@@ -1032,9 +1032,17 @@ var _premiumPollStartedAt=0;
 var _liveDoneAgents={};
 var PREMIUM_POLL_MS=4500;
 var PREMIUM_POLL_MAX_MS=10*60*1000;
+// [FIX] Geração de polling: incrementado a cada startPremiumStatusPolling.
+// Ticks de análises anteriores verificam se ainda são a geração ativa
+// antes de modificar estado global — evita que o tick da análise #1
+// (em andamento quando a #2 começa) chame stopPremiumPolling() e
+// mate o intervalo da análise #2.
+var _pollGeneration=0;
 function stopPremiumPolling(){
   if(_premiumPollInt){clearInterval(_premiumPollInt);_premiumPollInt=null;}
   _premiumPollBusy=false;
+  // NÃO incrementa _pollGeneration aqui — apenas startPremiumStatusPolling
+  // deve fazer isso, para que ticks antigos possam detectar a troca.
 }
 function _isAgentDone(agent){
   if(!agent||typeof agent!=="object") return false;
@@ -1131,9 +1139,17 @@ function startPremiumStatusPolling(analysisId,tok){
   stopPremiumPolling();
   _premiumPollStartedAt=Date.now();
   _liveDoneAgents={};
+  // [FIX] Captura a geração DESTA análise.
+  // O tick verifica myGeneration === _pollGeneration antes de qualquer
+  // mutação de estado global, evitando que um tick 'zumbi' da análise
+  // anterior mate o intervalo desta análise.
+  var myGeneration=(++_pollGeneration);
   async function tick(){
     if(_premiumPollBusy) return;
+    // [FIX] Sai silenciosamente se esta geração foi supersedida
+    if(myGeneration!==_pollGeneration) return;
     if(Date.now()-_premiumPollStartedAt>PREMIUM_POLL_MAX_MS){
+      if(myGeneration!==_pollGeneration) return;
       _failPremiumAnalysis("Tempo limite de 10 minutos excedido. Tente novamente.");
       return;
     }
@@ -1151,12 +1167,16 @@ function startPremiumStatusPolling(analysisId,tok){
         return;
       }
       if(_isJobDoneStatus(norm.status)){
+        // [FIX] Verifica geração antes de mutar estado — impede tick zumbi
+        if(myGeneration!==_pollGeneration) return;
         await updateUI();
         if(norm.second_analysis_applied&&typeof t==="function"){addLog(t("log_second_ok"),"ok");}
         _finishPremiumAnalysis(norm,analysisId);
         return;
       }
       if(_isJobErrorStatus(norm.status)){
+        // [FIX] Verifica geração antes de mutar estado
+        if(myGeneration!==_pollGeneration) return;
         _failPremiumAnalysis(pd.message||pd.error||"Erro no processamento.");
         return;
       }
@@ -1167,7 +1187,12 @@ function startPremiumStatusPolling(analysisId,tok){
       }
     }catch(e){
       if(!_isAbortError(e)){/* mantém polling em falhas transitórias de rede */}}
-    finally{_premiumPollBusy=false;}
+    finally{
+      // [FIX] Sempre reseta _premiumPollBusy, independente de geração.
+      // Sem isso, se um tick zumbi trava com _premiumPollBusy=true,
+      // o polling da nova análise nunca consegue executar.
+      _premiumPollBusy=false;
+    }
   }
   tick();
   _premiumPollInt=setInterval(tick,PREMIUM_POLL_MS);
@@ -1201,6 +1226,10 @@ function addLog(msg,cls){
 }
 function resetPipeline(){
   stopPremiumPolling();
+  // [FIX] Força reset explícito de _premiumPollBusy para o caso de um tick
+  // da análise anterior ainda estar aguardando fetch quando stopPremiumPolling
+  // foi chamado (o finally do tick o redefine, mas pode haver race).
+  _premiumPollBusy=false;
   _liveDoneAgents={};
   buildGrid();document.getElementById("prog-fill").style.width="0%";
   document.getElementById("log-feed").innerHTML='<div class="ll" id="log-init-ll">&#11041; Iniciando...</div>';
@@ -1327,7 +1356,9 @@ async function runPremiumAnalysis(){
     if(typeof wuzoApplyJobProgress==="function"){wuzoApplyJobProgress("pending",null,_lang);}
     startPremiumStatusPolling(analysisId,tok);
   }catch(e){
+    // [FIX] Reset completo de estado em caso de falha na inicialização
     stopPremiumPolling();
+    _premiumPollBusy=false;
     if(!_isAbortError(e))showAlert("inp-alert","alert-err","Erro: "+e.message);
     clearInterval(_progInt);setBtns(false);
   }
