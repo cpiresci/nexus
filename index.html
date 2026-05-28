@@ -1169,7 +1169,9 @@ function startPremiumStatusPolling(analysisId,tok){
       if(_isJobDoneStatus(norm.status)){
         // [FIX] Verifica geração antes de mutar estado — impede tick zumbi
         if(myGeneration!==_pollGeneration) return;
-        await updateUI();
+        // [HFT] updateUI() fire-and-forget — não bloqueia renderização do relatório.
+        // Atualiza créditos em paralelo sem segurar o DOM.
+        updateUI().catch(function(){});
         if(norm.second_analysis_applied&&typeof t==="function"){addLog(t("log_second_ok"),"ok");}
         _finishPremiumAnalysis(norm,analysisId);
         return;
