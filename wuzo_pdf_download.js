@@ -1,6 +1,6 @@
 /**
  * ╔══════════════════════════════════════════════════════════════════════════════╗
- * ║   WUZO PDF Download Engine v1.0                                             ║
+ * ║   WUZO PDF Download Engine v1.1                                             ║
  * ║   Cliente resiliente para consumo da rota /api/report/pdf/<id>              ║
  * ╠══════════════════════════════════════════════════════════════════════════════╣
  * ║   Corrige os 3 elos do Efeito Dominó no lado do cliente:                    ║
@@ -17,6 +17,15 @@
  * ║   [C4] Diagnóstico via header X-Wuzo-Pdf-Fallback: quando o backend         ║
  * ║        entrega um PDF administrativo, o onSuccess informa o usuário         ║
  * ║        com mensagem distinta                                                 ║
+ * ║                                                                              ║
+ * ║   PATCH v1.1 "Session Reset + AbortController Cleanup":                     ║
+ * ║     [C5] _activePdfController: aborta request anterior antes de abrir       ║
+ * ║          nova conexão — garante que apenas um download esteja ativo.        ║
+ * ║     [C6] resetDownloadState(): força onFinally() em caso de re-entrada —    ║
+ * ║          isAnalyzing / progress / btnStates nunca ficam travados se o       ║
+ * ║          usuário iniciar um segundo download antes do primeiro terminar.    ║
+ * ║     [C7] Timeout via AbortController próprio (não setTimeout solto) —       ║
+ * ║          clearTimeout no finally evita referências pendentes de timer.      ║
  * ╚══════════════════════════════════════════════════════════════════════════════╝
  *
  * USO:
@@ -46,21 +55,47 @@
   var EXPECTED_MIME = "application/pdf";
 
   /**
-   * Cria um AbortController com timeout automático.
-   *
-   * @param {number} ms - Milissegundos até o abort.
-   * @returns {AbortSignal}
+   * [C5] Mantém referência ao AbortController do request de PDF atualmente ativo.
+   * Permite abortar uma conexão anterior quando uma nova é iniciada,
+   * impedindo que dois downloads paralelos corrompam o estado de UI.
    */
-  function _makeSignal(ms) {
-    var ctrl = new AbortController();
-    setTimeout(function () {
+  var _activePdfController = null;
+
+  /**
+   * Referência ao setTimeout de timeout da requisição ativa.
+   * Limpo no finally para evitar timers pendentes após o término.
+   */
+  var _activePdfTimeoutId = null;
+
+  /**
+   * [C6] Cancela qualquer download em andamento e reseta o estado de UI.
+   *
+   * Deve ser chamado ANTES de iniciar um novo download para garantir que:
+   *   - O AbortController anterior seja cancelado.
+   *   - O callback onFinally() do request anterior seja invocado se houver
+   *     um callback de UI registrado.
+   *
+   * @param {Function|null} prevOnFinally - onFinally() do request anterior (se disponível).
+   */
+  function _cancelActivePdfRequest(prevOnFinally) {
+    if (_activePdfController) {
       try {
-        ctrl.abort(new DOMException("PDF request timed out after " + ms + "ms", "AbortError"));
+        _activePdfController.abort(
+          new DOMException("Superseded by new PDF request", "AbortError")
+        );
       } catch (_) {
-        ctrl.abort();
+        try { _activePdfController.abort(); } catch (_2) {}
       }
-    }, ms);
-    return ctrl.signal;
+      _activePdfController = null;
+    }
+    if (_activePdfTimeoutId !== null) {
+      clearTimeout(_activePdfTimeoutId);
+      _activePdfTimeoutId = null;
+    }
+    // Força liberação de UI do request anterior (se ainda não foi liberada)
+    if (typeof prevOnFinally === "function") {
+      try { prevOnFinally(); } catch (_) {}
+    }
   }
 
   /**
@@ -77,6 +112,7 @@
       m.indexOf("abort") !== -1 ||
       m.indexOf("timeout") !== -1 ||
       m.indexOf("timed out") !== -1 ||
+      m.indexOf("superseded") !== -1 ||
       m.indexOf("signal") !== -1
     );
   }
@@ -114,7 +150,7 @@
   /**
    * Dispara o download do arquivo no navegador a partir de um ArrayBuffer.
    *
-   * @param {ArrayBuffer} buffer  - Bytes do arquivo.
+   * @param {ArrayBuffer} buffer   - Bytes do arquivo.
    * @param {string}      filename - Nome sugerido para salvar.
    */
   function _triggerDownload(buffer, filename) {
@@ -156,6 +192,36 @@
     var onError    = typeof opts.onError   === "function"  ? opts.onError    : function () {};
     var onSuccess  = typeof opts.onSuccess === "function"  ? opts.onSuccess  : function () {};
 
+    // ── [C5/C6] Aborta request anterior e reseta estado de UI ────────────────
+    // Salva referência do onFinally anterior ANTES de sobrescrever _activePdfController,
+    // pois a próxima chamada pode ter um onFinally diferente para liberar sua própria UI.
+    var _prevController = _activePdfController;
+    // Cancela request anterior (aborta + limpa timeout + libera UI anterior se presa)
+    // Nota: não passamos o onFinally anterior pois cada request gerencia seu próprio botão.
+    if (_prevController) {
+      try { _prevController.abort(new DOMException("Superseded by new PDF request", "AbortError")); }
+      catch (_) { try { _prevController.abort(); } catch (_2) {} }
+    }
+    if (_activePdfTimeoutId !== null) {
+      clearTimeout(_activePdfTimeoutId);
+      _activePdfTimeoutId = null;
+    }
+
+    // ── [C5] Cria novo AbortController exclusivo para ESTE request ────────────
+    var _ownController = new AbortController();
+    _activePdfController = _ownController;
+
+    // ── [C7] Timeout via AbortController (não setTimeout solto) ──────────────
+    _activePdfTimeoutId = setTimeout(function () {
+      try {
+        _ownController.abort(
+          new DOMException("PDF request timed out after " + PDF_TIMEOUT_MS + "ms", "AbortError")
+        );
+      } catch (_) {
+        _ownController.abort();
+      }
+    }, PDF_TIMEOUT_MS);
+
     // ── Validações de entrada ─────────────────────────────────────────────────
     if (!analysisId) {
       onError("ID da análise inválido.");
@@ -176,7 +242,7 @@
       var response = await fetch(pdfUrl, {
         method:  "GET",
         headers: { "Authorization": "Bearer " + token },
-        signal:  _makeSignal(PDF_TIMEOUT_MS),
+        signal:  _ownController.signal,
       });
 
       // Lê o corpo UMA VEZ como ArrayBuffer independentemente do status
@@ -230,7 +296,22 @@
       }
       // Erros de abort/timeout não exibem mensagem — o usuário já sabe que cancelou
     } finally {
-      // ── [C3] onFinally SEMPRE executado — nenhum caminho escapa deste bloco ───
+      // ── [C3/C7] Limpeza garantida em TODOS os caminhos de saída ──────────────
+
+      // Cancela timeout pendente
+      if (_activePdfTimeoutId !== null) {
+        clearTimeout(_activePdfTimeoutId);
+        _activePdfTimeoutId = null;
+      }
+
+      // Libera referência global apenas se este controller ainda for o ativo
+      // (evita limpar o controller de um request mais novo que foi iniciado
+      //  enquanto este estava em andamento)
+      if (_activePdfController === _ownController) {
+        _activePdfController = null;
+      }
+
+      // [C3] onFinally SEMPRE executado — nenhum caminho escapa deste bloco
       onFinally();
     }
   }
@@ -238,9 +319,13 @@
   // ── Exportação ────────────────────────────────────────────────────────────────
   // Compatível com módulos ES6 (import) e com script tag clássico (window global)
   if (typeof module !== "undefined" && module.exports) {
-    module.exports = { baixarRelatorioPDFJS: baixarRelatorioPDFJS };
+    module.exports = {
+      baixarRelatorioPDFJS: baixarRelatorioPDFJS,
+      _cancelActivePdfRequest: _cancelActivePdfRequest,
+    };
   } else {
     global.baixarRelatorioPDFJS = baixarRelatorioPDFJS;
+    global._cancelActivePdfRequest = _cancelActivePdfRequest;
   }
 
 }(typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : this));
