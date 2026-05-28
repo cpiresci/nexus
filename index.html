@@ -1420,10 +1420,23 @@ async function downloadPDF(){
       showAlert("inp-alert","alert-ok","PDF abrindo no navegador...");
       setTimeout(function(){ hideAlert("inp-alert"); }, 3000);
     } finally {
-      // finally garante liberação mesmo se window.location lançar exceção
-      setTimeout(function(){
+      // BUG-5 FIX: reativar o botão quando o usuário volta ao app (visibilitychange/focus),
+      // em vez de um setTimeout fixo de 2500 ms que pode reativar antes do PDF chegar.
+      var _btnRestored = false;
+      function _restorePdfBtn(){
+        if(_btnRestored) return;
+        _btnRestored = true;
+        document.removeEventListener("visibilitychange", _onVisChange);
+        window.removeEventListener("focus", _restorePdfBtn);
         if(btn){ btn.disabled = false; btn.innerHTML = t("btn_pdf_dl"); }
-      }, 2500);
+      }
+      function _onVisChange(){
+        if(document.visibilityState === "visible") _restorePdfBtn();
+      }
+      document.addEventListener("visibilitychange", _onVisChange);
+      window.addEventListener("focus", _restorePdfBtn);
+      // Fallback de segurança: reativar após 60 s caso nenhum evento dispare
+      setTimeout(_restorePdfBtn, 60000);
     }
     return;
   }
@@ -2070,6 +2083,15 @@ async function adminDownloadPDF(analysisId,ev){
       headers:{"Authorization":"Bearer "+tok},signal:aborter(45000)
     });
     if(!r.ok){var e=await r.json().catch(function(){return{};});alert(e.error||"Erro ao baixar PDF.");return;}
+    // BUG-4 FIX: verificar Content-Type antes de criar Blob — nunca salvar JSON como .pdf
+    var ct=(r.headers.get("Content-Type")||"").toLowerCase();
+    if(ct.indexOf("application/pdf")===-1){
+      var errBody=await r.text().catch(function(){return"";});
+      var errMsg="";
+      try{var parsed=JSON.parse(errBody);errMsg=parsed.error||"";}catch(ignored){}
+      alert("Erro interno: backend retornou "+(ct||"tipo desconhecido")+" em vez de PDF."+(errMsg?" ("+errMsg+")":""));
+      return;
+    }
     var blob=await r.blob();
     var url=URL.createObjectURL(blob);
     var a=document.createElement("a");a.href=url;a.download="wuzo_admin_pdf_"+analysisId+".pdf";
