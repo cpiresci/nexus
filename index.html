@@ -1063,7 +1063,10 @@ function normalizeAnalysisStatusPayload(pd){
     norm.agents=agents;
   }
   if(!norm.analysis_id&&pd){
-    norm.analysis_id=pd.analysis_id||pd.analysisId||pd.id||null;
+    // [FIX-PDF-ID] Preferir record_id (Analysis.id real); ignorar 0 (task sem record ainda).
+    // pd.id pode ser task_id — não usar como fallback para PDF.
+    var _rid=pd.record_id||pd.analysis_id||pd.analysisId||null;
+    norm.analysis_id=(_rid&&_rid>0)?_rid:null;
   }
   return norm;
 }
@@ -1111,7 +1114,11 @@ function updateAgentCardsLive(rawAgents, phase){
 function _finishPremiumAnalysis(norm, analysisId){
   stopPremiumPolling();
   clearInterval(_progInt);
-  _currentAnalysisId=analysisId||norm.analysis_id||_currentAnalysisId;
+  // [FIX-PDF-ID] norm.analysis_id é o Analysis.id (record_id real do banco).
+  // analysisId é o AnalysisTask.id (task_id), usado apenas para polling.
+  // O PDF usa Analysis.id — nunca usar task_id como fallback para o PDF.
+  var _resolvedId=(norm.analysis_id&&norm.analysis_id>0)?norm.analysis_id:null;
+  _currentAnalysisId=_resolvedId||_currentAnalysisId;
   _currentWuzoScore=norm.wuzo_score;
   if(typeof wuzoApplyJobProgress==="function"){wuzoApplyJobProgress("done",null,_lang);}
   finishGrid(norm.agents.length?norm.agents:null);
