@@ -1,6 +1,6 @@
 /**
  * ╔══════════════════════════════════════════════════════════════════════════════╗
- * ║   WUZO PDF Download Engine v1.1                                             ║
+ * ║   WUZO PDF Download Engine v1.2 — HFT Timeout Leak Fix                     ║
  * ║   Cliente resiliente para consumo da rota /api/report/pdf/<id>              ║
  * ╠══════════════════════════════════════════════════════════════════════════════╣
  * ║   Corrige os 3 elos do Efeito Dominó no lado do cliente:                    ║
@@ -223,12 +223,18 @@
     }, PDF_TIMEOUT_MS);
 
     // ── Validações de entrada ─────────────────────────────────────────────────
+    // [HFT] Limpa timeout antes de early-return — evita timer órfão que
+    // continuaria referenciando _ownController após o return.
     if (!analysisId) {
+      clearTimeout(_activePdfTimeoutId); _activePdfTimeoutId = null;
+      _activePdfController = null;
       onError("ID da análise inválido.");
       onFinally();
       return;
     }
     if (!token) {
+      clearTimeout(_activePdfTimeoutId); _activePdfTimeoutId = null;
+      _activePdfController = null;
       onError("Sessão expirada. Faça login novamente.");
       onFinally();
       return;
