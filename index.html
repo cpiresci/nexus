@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>WUZO — Consultor Financeiro IA</title>
+<title>WUZO — Raio-X de Carteira com IA</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
@@ -16,7 +16,21 @@
   --r:10px;--r2:6px;
 }
 html,body{background:var(--bg);color:var(--tx);font-family:'Outfit',sans-serif;min-height:100vh;}
-body{background-image:radial-gradient(ellipse 80% 50% at 0% 10%,rgba(201,168,76,.055) 0%,transparent 55%),radial-gradient(ellipse 60% 60% at 100% 90%,rgba(201,168,76,.04) 0%,transparent 55%);}
+body{
+  background-image:
+    radial-gradient(ellipse 90% 55% at 0% 5%,  rgba(201,168,76,.07) 0%,transparent 52%),
+    radial-gradient(ellipse 70% 70% at 100% 95%,rgba(201,168,76,.05) 0%,transparent 52%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(201,168,76,.018) 0%,transparent 70%);
+}
+/* NOISE GRAIN OVERLAY */
+body::before{
+  content:'';pointer-events:none;position:fixed;inset:0;z-index:0;
+  opacity:.028;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:180px 180px;
+}
+/* PARTICLE CANVAS */
+#particle-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.55;}
 ::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-thumb{background:var(--gd);border-radius:2px;}
 /* CRYPTO TICKER */
 #crypto-ticker{width:100%;background:rgba(3,3,2,.95);border-bottom:1px solid var(--bd2);overflow:hidden;padding:7px 0;position:sticky;top:0;z-index:300;backdrop-filter:blur(10px);}
@@ -30,8 +44,8 @@ body{background-image:radial-gradient(ellipse 80% 50% at 0% 10%,rgba(201,168,76,
 .ticker-chg{font-size:.6rem;}
 @keyframes ticker-scroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
 /* LAYOUT */
-.shell{max-width:680px;margin:0 auto;padding:20px 14px 80px;}
-.hdr{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 0 14px;border-bottom:1px solid var(--bd);margin-bottom:20px;gap:12px;flex-wrap:wrap;background:var(--bg);}
+.shell{max-width:680px;margin:0 auto;padding:20px 14px 80px;position:relative;z-index:1;}
+.hdr{display:flex;align-items:flex-start;justify-content:space-between;padding:16px 0 14px;border-bottom:1px solid var(--bd);margin-bottom:20px;gap:12px;flex-wrap:wrap;background:transparent;position:relative;}
 .logo{font-size:1.6rem;font-weight:900;letter-spacing:8px;background:linear-gradient(135deg,#7a5a1c,#f5ead0 35%,#c9a84c 55%,#f5ead0 75%,#7a5a1c);background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
 @keyframes shimmer{0%{background-position:200% center}100%{background-position:-200% center}}
 .logo-sub{font-family:'JetBrains Mono',monospace;font-size:.42rem;letter-spacing:3px;color:rgba(240,204,112,.95);margin-top:2px;}
@@ -49,20 +63,29 @@ body{background-image:radial-gradient(ellipse 80% 50% at 0% 10%,rgba(201,168,76,
 .abtn.red:hover{border-color:var(--rd);color:var(--rd);}
 #user-info{font-size:.6rem;color:var(--dm);font-family:'JetBrains Mono',monospace;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 /* CARDS */
-.card{background:linear-gradient(135deg,rgba(201,168,76,.04),rgba(201,168,76,.01));border:1px solid var(--bd);border-radius:var(--r);padding:18px 16px;margin-bottom:14px;position:relative;overflow:hidden;}
-.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.28),transparent);}
+.card{
+  background:linear-gradient(135deg,rgba(201,168,76,.055),rgba(201,168,76,.015),rgba(3,3,2,.6));
+  border:1px solid var(--bd);border-radius:var(--r);padding:18px 16px;margin-bottom:14px;
+  position:relative;overflow:hidden;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  transition:border-color .3s, box-shadow .3s;
+}
+.card:hover{border-color:rgba(201,168,76,.28);box-shadow:0 0 0 1px rgba(201,168,76,.08),0 8px 40px rgba(201,168,76,.07);}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.38),rgba(240,204,112,.2),transparent);}
+.card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.08),transparent);}
 .inp-lbl{font-family:'JetBrains Mono',monospace;font-size:.58rem;letter-spacing:2px;color:rgba(212,168,67,.85);text-transform:uppercase;margin-bottom:5px;}
-textarea{width:100%;background:rgba(0,0,0,.35);border:1px solid var(--bd);border-radius:var(--r2);color:var(--tx);font-family:'Outfit',sans-serif;font-size:.92rem;padding:14px 16px;resize:vertical;min-height:256px;outline:none;line-height:1.8;transition:border-color .2s,box-shadow .2s;margin-bottom:4px;}
-textarea:focus{border-color:rgba(201,168,76,.4);box-shadow:0 0 0 3px rgba(201,168,76,.07);}
-textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.65;font-style:italic;}
+textarea{width:100%;background:rgba(0,0,0,.45);border:1px solid var(--bd);border-radius:var(--r2);color:var(--tx);font-family:'Outfit',sans-serif;font-size:.92rem;padding:14px 16px;resize:vertical;min-height:148px;outline:none;line-height:1.8;transition:border-color .25s,box-shadow .25s;margin-bottom:4px;}
+textarea:focus{border-color:rgba(201,168,76,.5);box-shadow:0 0 0 3px rgba(201,168,76,.08),0 0 20px rgba(201,168,76,.06);}
+textarea::placeholder{color:rgba(212,168,67,.6);font-size:.78rem;line-height:1.65;font-style:italic;}
 .btn-row{display:flex;flex-direction:column;gap:12px;margin-top:22px;padding-top:6px;}
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px 16px;border-radius:50px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:800;font-size:.76rem;letter-spacing:.5px;transition:all .2s;}
 .btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important;}
-.btn-free{background:linear-gradient(135deg,#1a3a8a,#2255cc);color:#fff;box-shadow:0 4px 20px rgba(34,85,204,.4);position:relative;overflow:hidden;}
-.btn-free::after{content:"";position:absolute;inset:0;border-radius:50px;border:2px solid rgba(100,160,255,.45);animation:free-pulse 2.2s ease-in-out infinite;pointer-events:none;}
-@keyframes free-pulse{0%,100%{opacity:1;transform:scale(1);}55%{opacity:0;transform:scale(1.035);}}
-.btn-free:hover:not(:disabled){background:linear-gradient(135deg,#1e44a8,#2a66ee);transform:translateY(-2px);box-shadow:0 8px 28px rgba(34,85,204,.5);}
-.btn-free:hover:not(:disabled){transform:translateY(-1px);}
+.btn-free{background:linear-gradient(135deg,#0f2660,#1a3a8a,#2255cc);color:#fff;box-shadow:0 4px 24px rgba(34,85,204,.45);position:relative;overflow:hidden;}
+.btn-free::before{content:'';position:absolute;top:0;left:-120%;width:80%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);animation:btn-sweep 3.5s ease-in-out infinite;pointer-events:none;}
+@keyframes btn-sweep{0%{left:-120%;}55%{left:160%;}100%{left:160%;}}
+.btn-free::after{content:"";position:absolute;inset:0;border-radius:50px;border:1.5px solid rgba(100,160,255,.38);animation:free-pulse 2.4s ease-in-out infinite;pointer-events:none;}
+@keyframes free-pulse{0%,100%{opacity:1;transform:scale(1);}55%{opacity:0;transform:scale(1.04);}}
+.btn-free:hover:not(:disabled){background:linear-gradient(135deg,#1e44a8,#2a66ee);transform:translateY(-2px);box-shadow:0 10px 32px rgba(34,85,204,.55);}
 .btn-premium{background:linear-gradient(135deg,#b8860b,#e8c97a,#f5dfa0,#e8c97a,#8a6a2c);background-size:200% auto;color:#0d0900;animation:shimmer 3s linear infinite;box-shadow:0 4px 24px rgba(201,168,76,.45);position:relative;}
 .btn-premium:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,168,76,.65);}
 .btn-premium::before{content:"✦ MAIS POPULAR";position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#c9a84c;color:#0d0900;font-size:.5rem;font-weight:900;letter-spacing:2px;padding:3px 10px;border-radius:20px;white-space:nowrap;}
@@ -148,21 +171,95 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
 .admin-user-meta{font-size:.6rem;color:var(--dm);font-family:'JetBrains Mono',monospace;white-space:nowrap;}
 .admin-credit-btn{padding:3px 8px;border-radius:4px;border:1px solid var(--gd);background:rgba(201,168,76,.1);color:var(--g);cursor:pointer;font-size:.6rem;font-family:'JetBrains Mono',monospace;}
 /* LANGUAGE SELECTOR */
-.lang-selector{display:flex;gap:4px;align-items:center;}
+/* SCORE REVEAL FREE */
+.score-reveal{
+  background:linear-gradient(135deg,rgba(201,168,76,.09),rgba(201,168,76,.03),rgba(3,3,2,.5));
+  border:1px solid var(--bd2);border-radius:var(--r);padding:24px 18px 18px;margin-bottom:12px;
+  text-align:center;position:relative;overflow:hidden;
+  backdrop-filter:blur(12px);
+  animation:score-entrance .7s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes score-entrance{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+.score-reveal::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.6),rgba(240,204,112,.3),transparent);}
+.score-reveal::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.06) 0%,transparent 70%);pointer-events:none;animation:score-glow-pulse 3s ease-in-out infinite;}
+@keyframes score-glow-pulse{0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1);}50%{opacity:1;transform:translate(-50%,-50%) scale(1.15);}}
+.score-big{font-family:'JetBrains Mono',monospace;font-size:4.2rem;font-weight:700;line-height:1;color:var(--g2);letter-spacing:-3px;position:relative;z-index:1;display:inline-block;text-shadow:0 0 40px rgba(240,204,112,.35);}
+.score-denom{font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:var(--gd);font-weight:400;margin-left:2px;position:relative;z-index:1;}
+.score-lbl{font-family:'JetBrains Mono',monospace;font-size:.5rem;letter-spacing:3.5px;color:rgba(212,168,67,.65);text-transform:uppercase;margin-top:4px;margin-bottom:14px;position:relative;z-index:1;}
+.score-track{background:rgba(0,0,0,.5);border-radius:4px;height:7px;overflow:hidden;margin:0 auto;max-width:280px;position:relative;z-index:1;box-shadow:inset 0 1px 3px rgba(0,0,0,.5);}
+.score-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#7a1a1a 0%,#c9430d 25%,#c9a84c 55%,#4aaf78 100%);transition:width 1.4s cubic-bezier(.22,1,.36,1);box-shadow:0 0 8px rgba(201,168,76,.4);}
+.score-range{display:flex;justify-content:space-between;max-width:280px;margin:5px auto 0;font-family:'JetBrains Mono',monospace;font-size:.46rem;color:var(--dm2);position:relative;z-index:1;}
+.score-verdict-tag{display:inline-block;margin-top:10px;padding:4px 14px;border-radius:20px;font-family:'JetBrains Mono',monospace;font-size:.54rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;position:relative;z-index:1;}
+.svt-critico{background:rgba(224,82,82,.14);border:1px solid rgba(224,82,82,.4);color:#f5a0a0;box-shadow:0 0 12px rgba(224,82,82,.15);}
+.svt-atencao{background:rgba(201,168,76,.14);border:1px solid rgba(201,168,76,.4);color:var(--g2);box-shadow:0 0 12px rgba(201,168,76,.15);}
+.svt-bom{background:rgba(74,175,120,.14);border:1px solid rgba(74,175,120,.4);color:#a0f5c0;box-shadow:0 0 12px rgba(74,175,120,.15);}
+/* LOCK CARD PREMIUM */
+.lock-card{
+  background:linear-gradient(135deg,rgba(201,168,76,.08),rgba(201,168,76,.03),rgba(3,3,2,.65));
+  border:1px solid rgba(201,168,76,.38);border-radius:var(--r);padding:24px 18px;text-align:center;margin-top:-4px;
+  position:relative;overflow:hidden;
+  backdrop-filter:blur(12px);
+  box-shadow:0 0 0 1px rgba(201,168,76,.06),0 8px 40px rgba(201,168,76,.08);
+}
+.lock-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.55),transparent);}
+.lock-icon{font-size:2rem;margin-bottom:8px;display:block;filter:drop-shadow(0 0 8px rgba(201,168,76,.4));}
+.lock-title{color:var(--g2);font-size:1.05rem;font-weight:800;margin-bottom:6px;text-shadow:0 0 20px rgba(201,168,76,.2);}
+.lock-sub{color:var(--dm);font-size:.82rem;margin-bottom:18px;line-height:1.75;}
 .lang-btn{background:transparent;border:1px solid var(--bd);border-radius:12px;color:var(--dm);font-family:'JetBrains Mono',monospace;font-size:.55rem;font-weight:700;letter-spacing:1px;padding:3px 8px;cursor:pointer;transition:all .2s;text-transform:uppercase;}
 .lang-btn:hover{border-color:var(--g);color:var(--g);}
 .lang-btn.active{background:rgba(201,168,76,.12);border-color:var(--gd);color:var(--g);}
+/* PORTFOLIO CHIPS UPGRADE */
+.portfolio-hint{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;margin-bottom:4px;}
+.ph-chip{background:rgba(201,168,76,.05);border:1px solid rgba(201,168,76,.16);border-radius:5px;padding:4px 10px;font-family:'JetBrains Mono',monospace;font-size:.54rem;color:var(--dm);cursor:pointer;transition:all .18s;white-space:nowrap;letter-spacing:.5px;}
+.ph-chip:hover{border-color:rgba(201,168,76,.45);color:var(--g);background:rgba(201,168,76,.1);transform:translateY(-1px);box-shadow:0 2px 8px rgba(201,168,76,.12);}
+/* VERDICT CARD UPGRADE */
+.verdict-card{background:linear-gradient(135deg,rgba(180,140,50,.07),rgba(180,140,50,.02),rgba(3,3,2,.5));border:1px solid var(--bd2);border-radius:var(--r);padding:16px;margin-bottom:12px;position:relative;overflow:hidden;backdrop-filter:blur(8px);}
+.verdict-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.5),transparent);}
+.verdict-card::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--g),var(--g2),var(--g));animation:accent-glow 3s ease-in-out infinite;}
+@keyframes accent-glow{0%,100%{opacity:.7;}50%{opacity:1;box-shadow:2px 0 14px rgba(201,168,76,.4);}}
+/* PROGRESS UPGRADE */
+.prog{background:rgba(201,168,76,.06);border-radius:3px;height:5px;overflow:hidden;margin:8px 0;box-shadow:inset 0 1px 3px rgba(0,0,0,.4);}
+.prog-fill{height:100%;background:linear-gradient(90deg,var(--gdd),var(--g),var(--g2));border-radius:3px;transition:width .6s cubic-bezier(.22,1,.36,1);box-shadow:0 0 8px rgba(201,168,76,.3);width:0%;}
+/* MODAL UPGRADE */
+.modal-box{background:linear-gradient(160deg,#100e08,#0d0c0a 60%,#070605);border:1px solid var(--bd2);border-radius:16px;padding:28px 24px;width:100%;max-width:360px;position:relative;backdrop-filter:blur(20px);}
+.modal-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--g),rgba(240,204,112,.5),transparent);}
+/* AGENT UPGRADE */
+.ac{background:rgba(0,0,0,.55);border:1px solid rgba(40,28,10,.85);border-radius:8px;padding:10px 5px;text-align:center;transition:border-color .3s,box-shadow .3s,transform .25s;}
+.ac.thinking{border-color:var(--g);animation:pg 1.3s ease-in-out infinite;transform:scale(1.025);}
+.ac.done{border-color:var(--gr);background:rgba(74,175,120,.04);}
+/* CARD FADE-UP */
+@keyframes fade-up-kf{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+#card-input{animation:fade-up-kf .55s .04s cubic-bezier(.22,1,.36,1) both;}
+/* SHARE BTN */
+#btn-share{background:linear-gradient(135deg,#1a0a2e,#4a1a8a,#7c3aed);color:#fff;box-shadow:0 4px 20px rgba(124,58,237,.35);}
+#btn-share:hover:not(:disabled){box-shadow:0 8px 28px rgba(124,58,237,.55);transform:translateY(-2px);}
+/* TICKER UPGRADE */
+#crypto-ticker{width:100%;background:rgba(3,3,2,.97);border-bottom:1px solid rgba(201,168,76,.22);overflow:hidden;padding:7px 0;position:sticky;top:0;z-index:300;backdrop-filter:blur(16px);}
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800;900&family=Barlow:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-<!-- ULTRA TICKER v5.0 -->
+<canvas id="particle-canvas"></canvas>
+<!-- ULTRA TICKER v6.0 -->
 <div id="crypto-ticker">
   <div class="ticker-track">
     <div class="ticker-item">⬡ <span style="color:var(--dm);font-size:.55rem;letter-spacing:2px;" data-i18n="live">AO VIVO</span></div>
+    <div class="ticker-item"><span class="ticker-sym">BTC</span>&nbsp;<span class="ticker-price" id="t-btc">---</span>&nbsp;<span class="ticker-chg" id="t-btc-c"></span></div>
+    <div class="ticker-item"><span class="ticker-sym">ETH</span>&nbsp;<span class="ticker-price" id="t-eth">---</span>&nbsp;<span class="ticker-chg" id="t-eth-c"></span></div>
+    <div class="ticker-item"><span class="ticker-sym">S&amp;P500</span>&nbsp;<span class="ticker-price" id="t-sp">---</span></div>
+    <div class="ticker-item"><span class="ticker-sym">IBOV</span>&nbsp;<span class="ticker-price" id="t-ibov">---</span></div>
+    <div class="ticker-item"><span class="ticker-sym">USDBRL</span>&nbsp;<span class="ticker-price" id="t-usd">---</span></div>
+    <div class="ticker-item"><span class="ticker-sym">SOL</span>&nbsp;<span class="ticker-price" id="t-sol">---</span></div>
+    <div class="ticker-item"><span class="ticker-sym">OURO</span>&nbsp;<span class="ticker-price" id="t-gold">---</span></div>
+    <!-- clone para loop contínuo -->
+    <div class="ticker-item">⬡ <span style="color:var(--dm);font-size:.55rem;letter-spacing:2px;">AO VIVO</span></div>
     <div class="ticker-item"><span class="ticker-sym">BTC</span>&nbsp;<span class="ticker-price">---</span></div>
     <div class="ticker-item"><span class="ticker-sym">ETH</span>&nbsp;<span class="ticker-price">---</span></div>
     <div class="ticker-item"><span class="ticker-sym">S&amp;P500</span>&nbsp;<span class="ticker-price">---</span></div>
+    <div class="ticker-item"><span class="ticker-sym">IBOV</span>&nbsp;<span class="ticker-price">---</span></div>
+    <div class="ticker-item"><span class="ticker-sym">USDBRL</span>&nbsp;<span class="ticker-price">---</span></div>
+    <div class="ticker-item"><span class="ticker-sym">SOL</span>&nbsp;<span class="ticker-price">---</span></div>
+    <div class="ticker-item"><span class="ticker-sym">OURO</span>&nbsp;<span class="ticker-price">---</span></div>
   </div>
 </div>
 <div class="shell">
@@ -170,7 +267,7 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
 <div class="hdr">
   <div>
     <div class="logo">WUZO</div>
-    <div class="logo-sub">FINANCIAL INTELLIGENCE · MULTI-AGENT IA</div>
+    <div class="logo-sub">RAIO-X DE CARTEIRA · 16 ESPECIALISTAS IA</div>
   </div>
   <div class="hdr-right">
     <div class="lang-selector">
@@ -194,11 +291,21 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
 </div>
 <!-- INPUT CARD -->
 <div class="card" id="card-input">
-  <div class="inp-lbl" data-i18n="inp_lbl">Descreva sua situação financeira</div>
-  <textarea id="txt-input" placeholder="Ex: Tenho R$ 50.000 para investir, dívida no cartão de R$ 8.000 com juros de 12% ao mês, renda de R$ 6.000/mês. Quero construir patrimônio nos próximos 5 anos com perfil moderado."></textarea>
+  <div class="inp-lbl" data-i18n="inp_lbl">Liste seus investimentos</div>
+  <textarea id="txt-input" placeholder="Ex: AAPL 50 shares, BTC 0.4, ETH 2.5, S&P500 ETF $20k, NVDA 30 shares, gold 5oz — or describe: I have $80k split between index funds and crypto and want to know if I'm well allocated"></textarea>
+  <div class="portfolio-hint" id="portfolio-hint">
+    <span class="ph-chip" onclick="addChip('AAPL 50 shares')">+ AAPL</span>
+    <span class="ph-chip" onclick="addChip('NVDA 30 shares')">+ NVDA</span>
+    <span class="ph-chip" onclick="addChip('BTC 0.5')">+ BTC</span>
+    <span class="ph-chip" onclick="addChip('ETH 2.0')">+ ETH</span>
+    <span class="ph-chip" onclick="addChip('SPY ETF $10k')">+ SPY</span>
+    <span class="ph-chip" onclick="addChip('Gold 5oz')">+ Gold</span>
+    <span class="ph-chip" onclick="addChip('TSLA 20 shares')">+ TSLA</span>
+    <span class="ph-chip" onclick="addChip('SOL 15')">+ SOL</span>
+  </div>
   <div class="btn-row">
-    <button class="btn btn-free"    id="btn-free"    onclick="handleFree()">&#9889; ANALISAR GRÁTIS AGORA<br><span class="btn-sub">Sem cadastro · Resultado em segundos · Sem cartão</span></button>
-    <button class="btn btn-premium" id="btn-premium" onclick="handlePremium()">&#11088; RELATÓRIO COMPLETO — 16 IA com Dados Ao Vivo<br><span class="btn-sub">&#10003; Cripto em tempo real &nbsp;&#10003; Ações &amp; FIIs &nbsp;&#10003; PDF por 72h &nbsp;&#10003; Acesso imediato</span></button>
+    <button class="btn btn-free"    id="btn-free"    onclick="handleFree()">&#9889; RADIOGRAFAR CARTEIRA — GRÁTIS<br><span class="btn-sub">Sem cadastro · 16 especialistas · Wuzo Score em segundos</span></button>
+    <button class="btn btn-premium" id="btn-premium" onclick="handlePremium()">&#11088; FULL REPORT — 16 AI Specialists with Live Data<br><span class="btn-sub">&#10003; Crypto live &nbsp;&#10003; Global Equities &nbsp;&#10003; PDF 72h &nbsp;&#10003; Instant access</span></button>
     <button class="btn btn-buy"     id="btn-buy"     onclick="handleBuy()">&#128274; LIBERAR ACESSO AGORA — R$&nbsp;19,90<br><span class="btn-sub">&#128179; Pix ou Cartão &nbsp;&#183;&nbsp; Acesso imediato &nbsp;&#183;&nbsp; Sem assinatura &nbsp;&#183;&nbsp; Sem recorrência</span></button>
   </div>
   <div class="alert alert-err" id="inp-alert"></div>
@@ -217,14 +324,22 @@ textarea::placeholder{color:rgba(212,168,67,.75);font-size:.78rem;line-height:1.
 <!-- FREE RESULT -->
 <div id="sec-free" style="display:none;">
   <div class="verdict-card">
-    <div class="verdict-title" data-i18n="verdict_title">&#9878;&#65039; Veredito — Consultor Sênior WUZO</div>
+    <div class="verdict-title" data-i18n="verdict_title">&#9878;&#65039; Diagnóstico Inicial — Consultor Sênior WUZO</div>
     <div class="vline"></div>
     <div class="verdict-body" id="verdict-body"></div>
   </div>
+  <!-- WUZO SCORE REVEAL -->
+  <div class="score-reveal" id="free-score-reveal">
+    <div><span class="score-big" id="free-score-num">—</span><span class="score-denom">/100</span></div>
+    <div class="score-lbl">WUZO SCORE · SUA CARTEIRA</div>
+    <div class="score-track"><div class="score-fill" id="free-score-fill" style="width:0%"></div></div>
+    <div class="score-range"><span>0 · crítico</span><span>50 · atenção</span><span>100 · ótimo</span></div>
+    <div id="free-score-tag" class="score-verdict-tag svt-atencao">calculando...</div>
+  </div>
   <div class="lock-card">
-    <div class="lock-icon">⚠️</div>
-    <div class="lock-title" data-i18n="lock_title">Desbloqueie o Relatório Completo — 16 Especialistas</div>
-    <div class="lock-sub" data-i18n="lock_sub">Análise completa de Cripto (preços ao vivo), Ações, Renda Fixa, FIIs, Dívidas, Tributário, Compliance e mais — com PDF executivo disponível por 72h.</div>
+    <div class="lock-icon">🔍</div>
+    <div class="lock-title" id="lock-title-dynamic">Encontramos pontos críticos na sua carteira</div>
+    <div class="lock-sub" id="lock-sub-dynamic">Veja exatamente onde você está perdendo dinheiro — os 14 especialistas restantes identificaram riscos específicos nos seus ativos que ainda estão bloqueados.</div>
     <button class="btn btn-premium" onclick="handlePremiumFromFree()" style="max-width:400px;margin:0 auto;">
       <span data-i18n="lock_btn">&#128274; QUERO O RELATÓRIO COMPLETO — R$&nbsp;19,90</span>
     </button>
@@ -448,11 +563,11 @@ var _lang = localStorage.getItem("wuzo_lang") || "pt";
 var I18N = {
   pt: {
     live:             "AO VIVO",
-    inp_lbl:          "Descreva sua situação financeira",
-    inp_placeholder:  "Ex: Tenho R$50k na poupança perdendo pra inflação, dívida no cartão me destruindo e ganho R$6k/mês. Quero sair do aluguel em 5 anos. Me diga o que fazer.",
+    inp_lbl:          "Liste seus investimentos",
+    inp_placeholder:  "Ex: AAPL 50 ações, BTC 0.4, ETH 2.5, SPY ETF $20k, NVDA 30 ações, ouro 5oz — ou descreva: tenho $80k divididos entre index funds e cripto e quero saber se estou bem alocado.",
     pipeline_lbl:     "16 ESPECIALISTAS · DADOS EM TEMPO REAL",
-    lock_title:       "⚠️ Sua análise está incompleta — 14 especialistas ainda não falaram",
-    lock_sub:         "Você recebeu apenas o diagnóstico inicial. Os 14 especialistas restantes — Cripto, Ações, Renda Fixa, FIIs, Tributário, Compliance e mais — identificaram pontos críticos na sua situação que ainda estão bloqueados. Desbloqueie agora por R$ 19,90.",
+    lock_title:       "Encontramos pontos críticos na sua carteira",
+    lock_sub:         "Os 14 especialistas restantes identificaram onde você está perdendo dinheiro — renda fixa, alocação, custos ocultos e oportunidades com dados de hoje. Desbloqueie por R$ 19,90.",
     pdf_title:        "&#128196; Relatório PDF Profissional",
     pdf_sub:          "Todos os 16 especialistas com dados em tempo real — formato PDF executivo.",
     pdf_timer:        "Este relatório fica disponível por <strong>72 horas</strong> — baixe agora",
@@ -475,7 +590,7 @@ var I18N = {
     btn_free_main:    "&#9889; ANALISAR GRÁTIS AGORA",
     btn_free_sub:     "2 especialistas analisam agora · Sem cadastro · Sem cartão",
     btn_premium_main: "&#11088; RELATÓRIO COMPLETO — 16 IA com Dados Ao Vivo",
-    btn_premium_sub:  "&#10003; Cripto em tempo real &nbsp;&#10003; Ações &amp; FIIs &nbsp;&#10003; PDF por 72h &nbsp;&#10003; Acesso imediato",
+    btn_premium_sub:  "&#10003; Crypto live &nbsp;&#10003; Global Equities &nbsp;&#10003; PDF 72h &nbsp;&#10003; Instant access",
     btn_buy_main:     "&#128274; LIBERAR ACESSO AGORA — R$&nbsp;19,90",
     btn_buy_sub:      "Acesso imediato &nbsp;&#183;&nbsp; Sem assinatura &nbsp;&#183;&nbsp; Sem recorrência",
     btn_free_popular: "✦ MAIS POPULAR",
@@ -490,7 +605,7 @@ var I18N = {
     log_processing:   "Processando 16 especialistas...",
     log_done:         "Concluído.",
     log_second_ok:    "Segunda análise integrada ao veredito.",
-    err_describe:     "Descreva sua situação financeira.",
+    err_describe:     "Liste seus investimentos para começar.",
     err_server_wake:  "&#9203; Servidor acordando, aguarde...",
     login_placeholder_email: "seu@email.com",
     login_placeholder_pass:  "Senha",
@@ -500,11 +615,11 @@ var I18N = {
   },
   en: {
     live:             "LIVE",
-    inp_lbl:          "Describe your financial situation",
-    inp_placeholder:  "E.g.: I have $10k losing to inflation, $2k credit card debt killing me, earn $2,500/mo. I want my own home in 5 years. Tell me exactly what to do.",
+    inp_lbl:          "List your investments",
+    inp_placeholder:  "E.g.: AAPL 50 shares, BTC 0.4, ETH 2.5, SPY ETF $20k, NVDA 30 shares, gold 5oz — or describe: I have $80k split between index funds and crypto and want to know if I'm well allocated.",
     pipeline_lbl:     "16 SPECIALISTS · REAL-TIME DATA",
-    lock_title:       "⚠️ Your analysis is incomplete — 14 specialists haven't spoken yet",
-    lock_sub:         "You only received the initial diagnosis. The remaining 14 specialists — Crypto, Stocks, Fixed Income, REITs, Tax, Compliance and more — identified critical issues in your situation that are still locked. Unlock now for R$ 19.90.",
+    lock_title:       "We found critical issues in your portfolio",
+    lock_sub:         "The remaining 14 specialists identified exactly where you're losing money — fixed income, allocation, hidden fees and live opportunities. Unlock for R$ 19.90.",
     pdf_title:        "&#128196; Professional PDF Report",
     pdf_sub:          "All 16 specialists with real-time data — executive PDF format.",
     pdf_timer:        "This report is available for <strong>72 hours</strong> — download now",
@@ -552,11 +667,11 @@ var I18N = {
   },
   es: {
     live:             "EN VIVO",
-    inp_lbl:          "Describe tu situación financiera",
-    inp_placeholder:  "Ej.: Tengo $10k perdiendo contra la inflación, $2k de deuda en tarjeta destruyéndome, gano $2.500/mes. Quiero casa propia en 5 años. Dime exactamente qué hacer.",
+    inp_lbl:          "Lista tus inversiones",
+    inp_placeholder:  "Ej.: AAPL 50 acciones, BTC 0.4, ETH 2.5, SPY ETF $20k, NVDA 30 acciones, oro 5oz — o describe: tengo $80k repartidos entre fondos indexados y cripto y quiero saber si estoy bien asignado.",
     pipeline_lbl:     "16 ESPECIALISTAS · DATOS EN TIEMPO REAL",
-    lock_title:       "⚠️ Tu análisis está incompleto — 14 especialistas aún no hablaron",
-    lock_sub:         "Solo recibiste el diagnóstico inicial. Los 14 especialistas restantes — Cripto, Acciones, Renta Fija, FIIs, Tributario, Compliance y más — identificaron puntos críticos en tu situación que aún están bloqueados. Desbloquea ahora por R$ 19,90.",
+    lock_title:       "Encontramos puntos críticos en tu cartera",
+    lock_sub:         "Los 14 especialistas restantes identificaron exactamente dónde estás perdiendo dinero — renta fija, asignación, costos ocultos y oportunidades con datos de hoy. Desbloquea por R$ 19,90.",
     pdf_title:        "&#128196; Informe PDF Profesional",
     pdf_sub:          "Los 16 especialistas con datos en tiempo real — formato PDF ejecutivo.",
     pdf_timer:        "Este informe está disponible por <strong>72 horas</strong> — descárgalo ahora",
@@ -664,6 +779,13 @@ function getToken(){
   return getSaved(LS.TOKEN);
 }
 function authHeader(){var t=getToken();return t?{"Content-Type":"application/json","Authorization":"Bearer "+t}:{"Content-Type":"application/json"};}
+function addChip(text){
+  var ta=document.getElementById("txt-input");
+  if(!ta) return;
+  var cur=ta.value.trim();
+  ta.value=cur?(cur+", "+text):text;
+  ta.focus();
+}
 var _online=false,_currentAnalysisId=null,_currentVerdict="",_currentAgents=[],_currentWuzoScore=65;
 // ── Detecção de ambiente Capacitor/APK ──────────────────────────────────────
 var _isCapacitor = !!(window.Capacitor) || navigator.userAgent.indexOf("WuzoApp") !== -1;
@@ -775,10 +897,23 @@ async function _fetchBinanceDirect(){
   return items;
 }
 async function updateTicker(){
+  // Atualiza IDs específicos do ticker expandido se existirem
+  function setTickerEl(id,val,cls){
+    var el=document.getElementById(id);
+    if(el){el.textContent=val;if(cls)el.className="ticker-chg "+(cls==="up"?"ticker-up":"ticker-dn");}
+  }
   try{
     var r=await _tickerFetch(BACKEND+"/api/market/ticker",12000);
     if(r.ok){
       var data=await r.json();
+      // Tenta popular IDs específicos
+      if(data.BTC){var b=data.BTC;setTickerEl("t-btc","US$"+Number(b.price||b.usd||0).toLocaleString("en-US",{maximumFractionDigits:0}),"");if(b.chg24h!=null)setTickerEl("t-btc-c",(b.chg24h>=0?"▲":"▼")+Math.abs(b.chg24h).toFixed(2)+"%",b.chg24h>=0?"up":"dn");}
+      if(data.ETH){var e=data.ETH;setTickerEl("t-eth","US$"+Number(e.price||e.usd||0).toLocaleString("en-US",{maximumFractionDigits:0}),"");if(e.chg24h!=null)setTickerEl("t-eth-c",(e.chg24h>=0?"▲":"▼")+Math.abs(e.chg24h).toFixed(2)+"%",e.chg24h>=0?"up":"dn");}
+      if(data.SOL){var s=data.SOL;setTickerEl("t-sol","US$"+Number(s.price||s.usd||0).toFixed(2),"");}
+      if(data.USD_BRL||data.USDBRL){var fx=data.USD_BRL||data.USDBRL;setTickerEl("t-usd","R$"+Number(fx.price||fx.rate||fx||5).toFixed(2),"");}
+      if(data.SP500||data["S&P500"]){var sp=data.SP500||data["S&P500"];setTickerEl("t-sp",Number(sp.price||sp||0).toLocaleString("en-US",{maximumFractionDigits:0}),"");}
+      if(data.IBOV||data.IBOVESPA){var ib=data.IBOV||data.IBOVESPA;setTickerEl("t-ibov",Number(ib.price||ib||0).toLocaleString("pt-BR",{maximumFractionDigits:0}),"");}
+      if(data.GOLD||data.XAU){var g=data.GOLD||data.XAU;setTickerEl("t-gold","US$"+Number(g.price||g||0).toLocaleString("en-US",{maximumFractionDigits:0}),"");}
       var items=_buildTickerItems(data);
       if(items.length){_tickerData=items;_renderTicker();return;}
     }
@@ -925,20 +1060,20 @@ function logout(){
 }
 // ── PIPELINE VISUAL ───────────────────────────────────────────
 var AGENTS_UI=[
-  {id:"macroeconomia",              em:"&#127758;",nm:"Macro"},
-  {id:"noticias_realtime",          em:"&#128240;",nm:"Radar"},
-  {id:"sentimento_mercado",         em:"&#129504;",nm:"Psicologia"},
-  {id:"criptomoedas",               em:"&#8383;",  nm:"Cripto"},
-  {id:"acoes_equity",               em:"&#128200;",nm:"Ações"},
-  {id:"renda_fixa",                 em:"&#128176;",nm:"R. Fixa"},
-  {id:"imoveis_fiis",               em:"&#127970;",nm:"FIIs"},
-  {id:"derivativos",                em:"&#128202;",nm:"Derivat."},
+  {id:"macroeconomia",              em:"&#127760;",nm:"Global Macro"},
+  {id:"noticias_realtime",          em:"&#128240;",nm:"Live Radar"},
+  {id:"sentimento_mercado",         em:"&#129504;",nm:"Sentiment"},
+  {id:"criptomoedas",               em:"&#8383;",  nm:"Crypto"},
+  {id:"acoes_equity",               em:"&#128200;",nm:"Equities"},
+  {id:"renda_fixa",                 em:"&#128176;",nm:"Fixed Inc."},
+  {id:"imoveis_fiis",               em:"&#127970;",nm:"REITs"},
+  {id:"derivativos",                em:"&#128202;",nm:"Derivatives"},
   {id:"rwa",                        em:"&#128279;",nm:"RWA"},
-  {id:"quitacao_dividas",           em:"&#128179;",nm:"Dividas"},
-  {id:"credito_financiamento",      em:"&#127970;",nm:"Credito"},
-  {id:"planejamento_tributario",    em:"&#128203;",nm:"Tribut."},
-  {id:"previdencia_aposentadoria",  em:"&#127919;",nm:"Previd."},
-  {id:"compliance_risco",           em:"&#9888;",  nm:"Compliance"},
+  {id:"quitacao_dividas",           em:"&#128179;",nm:"Liabilities"},
+  {id:"credito_financiamento",      em:"&#127970;",nm:"Credit"},
+  {id:"planejamento_tributario",    em:"&#128203;",nm:"Tax"},
+  {id:"previdencia_aposentadoria",  em:"&#127919;",nm:"Retirement"},
+  {id:"compliance_risco",           em:"&#9888;",  nm:"Risk"},
   {id:"auditor_dados",              em:"&#128269;",nm:"Auditor"},
   {id:"consultor_senior",           em:"&#128084;",nm:"Senior"},
 ];
@@ -1282,6 +1417,12 @@ async function handleFree(){
       var pd=await pr.json().catch(function(){return {};});
       if(pd.status==="done"){
         finishGrid([{id:"consultor_senior"},{id:"macroeconomia"}]);
+        // Extrai e aplica score do payload free
+        var freeScore=pd.wuzo_score;
+        if(typeof freeScore!=="number"){freeScore=parseFloat(freeScore);if(isNaN(freeScore))freeScore=null;}
+        if(freeScore==null&&pd.verdict){var wm=String(pd.verdict).match(/\b([4-9]\d|100)\/100\b/);if(wm)freeScore=parseInt(wm[1],10);}
+        if(freeScore==null||isNaN(freeScore))freeScore=65;
+        _currentWuzoScore=Math.round(freeScore);
         renderFreeResult(pd.verdict,pd.preview);
         setBtns(false);
         return;
@@ -1300,6 +1441,49 @@ function renderFreeResult(verdict,preview){
   document.getElementById("verdict-body").innerHTML=(verdict||"").replace(/\n/g,"<br>").replace(/\*\*(.*?)\*\*/g,"<b>$1</b>");
   document.getElementById("sec-pipeline").style.display="none";
   document.getElementById("sec-free").style.display="block";
+
+  // — Score reveal animado —
+  var score=_currentWuzoScore||65;
+  var numEl=document.getElementById("free-score-num");
+  var fillEl=document.getElementById("free-score-fill");
+  var tagEl=document.getElementById("free-score-tag");
+  var lockTitle=document.getElementById("lock-title-dynamic");
+  var lockSub=document.getElementById("lock-sub-dynamic");
+
+  // Anima o número contando até o valor
+  var start=0, duration=1200, step=16;
+  var inc=Math.ceil(score/(duration/step));
+  var counter=setInterval(function(){
+    start=Math.min(start+inc,score);
+    if(numEl) numEl.textContent=start;
+    if(start>=score) clearInterval(counter);
+  },step);
+
+  // Anima a barra
+  setTimeout(function(){
+    if(fillEl) fillEl.style.width=score+"%";
+  },80);
+
+  // Tag de classificação
+  var tagClass,tagText;
+  if(score<40){tagClass="svt-critico";tagText="⚠ CARTEIRA EM RISCO";}
+  else if(score<65){tagClass="svt-atencao";tagText="⚡ ATENÇÃO — PONTOS CRÍTICOS";}
+  else{tagClass="svt-bom";tagText="✓ BOM — OTIMIZAÇÕES POSSÍVEIS";}
+  if(tagEl){tagEl.className="score-verdict-tag "+tagClass;tagEl.textContent=tagText;}
+
+  // Lock copy dinâmico baseado no score
+  var numCriticos=score<40?5:score<65?3:2;
+  if(lockTitle) lockTitle.textContent="Encontramos "+numCriticos+" pontos críticos na sua carteira";
+  if(lockSub){
+    if(score<65){
+      lockSub.innerHTML="Seu Wuzo Score é <strong style='color:var(--g2)'>"
+        +score+"/100</strong>. Os 14 especialistas restantes identificaram onde exatamente você está perdendo dinheiro — renda fixa, alocação, custos ocultos e oportunidades com dados de hoje.";
+    } else {
+      lockSub.innerHTML="Seu Wuzo Score é <strong style='color:var(--g2)'>"
+        +score+"/100</strong>. Há otimizações relevantes identificadas pelos 14 especialistas restantes — alternativas com melhor rendimento nos seus ativos específicos, com dados ao vivo.";
+    }
+  }
+
   document.getElementById("sec-free").scrollIntoView({behavior:"smooth"});
 }
 // ── PREMIUM ───────────────────────────────────────────────────
@@ -2242,6 +2426,61 @@ document.addEventListener("DOMContentLoaded",function(){
   setLang(_lang);buildGrid();getToken();updateUI();checkHealth();
   updateTicker();
   setInterval(updateTicker,30000);
+
+  // ── PARTICLE CANVAS ──────────────────────────────────────────
+  (function(){
+    var c=document.getElementById("particle-canvas");
+    if(!c)return;
+    var ctx=c.getContext("2d");
+    var W,H,pts=[];
+    function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+    resize();
+    window.addEventListener("resize",resize,{passive:true});
+    for(var i=0;i<42;i++){
+      pts.push({
+        x:Math.random()*W,y:Math.random()*H,
+        vx:(Math.random()-.5)*.16,vy:(Math.random()-.5)*.16,
+        r:Math.random()*.9+.25,
+        o:Math.random()*.28+.06
+      });
+    }
+    var raf;
+    function draw(){
+      ctx.clearRect(0,0,W,H);
+      for(var i=0;i<pts.length;i++){
+        for(var j=i+1;j<pts.length;j++){
+          var dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);
+          if(d<150){
+            ctx.beginPath();
+            ctx.strokeStyle="rgba(201,168,76,"+((0.1)*(1-d/150)).toFixed(3)+")";
+            ctx.lineWidth=.35;
+            ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke();
+          }
+        }
+      }
+      pts.forEach(function(p){
+        p.x+=p.vx;p.y+=p.vy;
+        if(p.x<0)p.x=W;if(p.x>W)p.x=0;
+        if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+        ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle="rgba(201,168,76,"+p.o+")";ctx.fill();
+      });
+      raf=requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+
+  // ── INPUT CHAR COUNTER ───────────────────────────────────────
+  var ta=document.getElementById("txt-input");
+  if(ta){
+    ta.addEventListener("input",function(){
+      var n=this.value.length;
+      var hint=document.getElementById("char-count-hint");
+      if(!hint){hint=document.createElement("div");hint.id="char-count-hint";hint.style.cssText="font-family:'JetBrains Mono',monospace;font-size:.5rem;color:var(--dm2);text-align:right;margin-top:2px;letter-spacing:.5px;";ta.parentNode.insertBefore(hint,ta.nextSibling);}
+      hint.textContent=n+" caracteres";
+      hint.style.color=n>1800?"rgba(224,82,82,.7)":n>800?"var(--g)":"var(--dm2)";
+    });
+  }
 });
 </script>
 
